@@ -1,1 +1,1 @@
-javascript:jQuery.getScript('https://jottocraft.github.io/dtps/init.js');
+javascript:jQuery.getScript('https://jottocraft.github.io/dtps/init.js');dtpsLoader=1;
