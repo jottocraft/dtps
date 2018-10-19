@@ -72,6 +72,37 @@ var xhttp = new XMLHttpRequest();
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
   xhttp.send("id=9915857+10145967+9715213+9915843+9915882&e=15668509&csrf_token=a6b227ce5120182257f86aab1815027b273f429e");
 }
+dtps.render = function() {
+  document.title = "Project dtps Alpha"
+  $("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: "https://jottocraft.github.io/dtps/fluid.css"
+}).appendTo("head");
+  $("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: "https://jottocraft.github.io/dtps/dtps.css"
+}).appendTo("head");
+  $("body").html(`
+<div class="container">
+<div class="section">
+<h1>Project dtps</h1>
+    <div class="header">
+      <i class="material-icons">timeline</i>
+      <h3>Grades</h3>
+    </div>
+    <div class="body">
+    <h5>` + classes[0].name +  `: ` + classes[0].letter + ` (` + classes[0].grade + `%)</h5>
+<h5>` + classes[1].name +  `: ` + classes[1].letter + ` (` + classes[1].grade + `%)</h5>
+<h5>` + classes[2].name +  `: ` + classes[2].letter + ` (` + classes[2].grade + `%)</h5>
+<h5>` + classes[3].name +  `: ` + classes[3].letter + ` (` + classes[3].grade + `%)</h5>
+<h5>` + classes[4].name +  `: ` + classes[4].letter + ` (` + classes[4].grade + `%)</h5>
+    </div>
+</div>
+</div>
+`)
+}
 
 dtps.init();
 
