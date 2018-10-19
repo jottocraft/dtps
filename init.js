@@ -53,15 +53,15 @@ var xhttp = new XMLHttpRequest();
       dtps.classes = [];
       for (var i = 0; i < data.length; i++) {
         var section = jQuery(data[i]);
-        var grade = section.children(".right").text().replace(/\s/g, "");
+        var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
         dtps.classes.push({
           name: jQuery(section.children()[1]).text(),
           abbrv: jQuery(section.children()[0]).text(),
-          grade: Number(grade.match(/\d+/g).join(".")).toFixed(2),
-          letter: grade.replace(/[0-9]/g, '').replace(".", "")
+          grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
+          letter: (grade == "--") ? ( grade ) : (grade.replace(/[0-9]/g, '').replace(".", ""))
         })
       }
-      dtps.log("Grades loaded", classes)
+      dtps.log("Grades loaded", dtps.classes)
     }
   };
   xhttp.open("POST", "https://dtechhs.learning.powerschool.com/u/10837719/portal/portlet_reportcard?my_portal=true", true);
