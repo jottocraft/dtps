@@ -1,6 +1,16 @@
 var dtps = {
   ver: 001
 };
+dtps.changelog = function () {
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>What's new in project dtps</h2>
+<h4>v0.0.1 [Alpha]</h4>
+<ul>
+<li>Bugfixes</li>
+</ul>
+</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Continue"></span>
+`)
+};
 dtps.log = function(msg) {
 console.log("[DTPS] " + msg);
 }
@@ -10,16 +20,6 @@ dtps.firstrun = function () {
 <h4>v0.0.1 [Alpha]</h4>
 <p>Click "Install" below to continue</p>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true';" type="button" value="Install"></span>
-`)
-}
-dtps.changelog = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>What's new in project dtps</h2>
-<h4>v0.0.1 [Alpha]</h4>
-<ul>
-<li>Bugfixes</li>
-</ul>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Continue"></span>
 `)
 };
 dtps.getCookie = function(cname) {
