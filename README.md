@@ -1,2 +1,2 @@
-# powerschool-lms-mod
-Powerschool lms mod project thing
+# jottocraft/dtps
+Powerschool LMS mod
