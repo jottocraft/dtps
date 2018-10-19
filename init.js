@@ -96,11 +96,11 @@ dtps.render = function() {
       <h3>Grades</h3>
     </div>
     <div class="body">
-    <h5>` + classes[0].name +  `: ` + classes[0].letter + ` (` + classes[0].grade + `%)</h5>
-<h5>` + classes[1].name +  `: ` + classes[1].letter + ` (` + classes[1].grade + `%)</h5>
-<h5>` + classes[2].name +  `: ` + classes[2].letter + ` (` + classes[2].grade + `%)</h5>
-<h5>` + classes[3].name +  `: ` + classes[3].letter + ` (` + classes[3].grade + `%)</h5>
-<h5>` + classes[4].name +  `: ` + classes[4].letter + ` (` + classes[4].grade + `%)</h5>
+    <h5>` + dtps.classes[0].name +  `: ` + dtps.classes[0].letter + ` (` + dtps.classes[0].grade + `%)</h5>
+<h5>` + dtps.classes[1].name +  `: ` + dtps.classes[1].letter + ` (` + dtps.classes[1].grade + `%)</h5>
+<h5>` + dtps.classes[2].name +  `: ` + dtps.classes[2].letter + ` (` + dtps.classes[2].grade + `%)</h5>
+<h5>` + dtps.classes[3].name +  `: ` + dtps.classes[3].letter + ` (` + dtps.classes[3].grade + `%)</h5>
+<h5>` + dtps.classes[4].name +  `: ` + dtps.classes[4].letter + ` (` + dtps.classes[4].grade + `%)</h5>
     </div>
 </div>
 </div>
