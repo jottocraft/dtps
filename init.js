@@ -71,3 +71,5 @@ var xhttp = new XMLHttpRequest();
   xhttp.send("id=9915857+10145967+9715213+9915843+9915882&e=15668509&csrf_token=a6b227ce5120182257f86aab1815027b273f429e");
 }
 
+dtps.init();
+
