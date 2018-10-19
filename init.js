@@ -9,7 +9,7 @@ dtps.changelog = function () {
 <li>Added the first bits of the new dtps UI</li>
 <li>VERY FIRST BITS OF THIS, everything will change quickly and soon</li>
 </ul>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Continue"></span>
+</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
 `)
 };
 dtps.log = function(msg) {
@@ -42,6 +42,8 @@ dtps.init = function () {
   dtps.log("Loading project dtps...");
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
+  } else {
+    dtps.render();
   }
   if (dtps.getCookie("dtpsInstalled") !== "true") {
     dtps.firstrun();
