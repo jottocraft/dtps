@@ -39,7 +39,7 @@ dtps.getCookie = function(cname) {
     return "";
 }
 dtps.init = function () {
-  dtps.log("Loading project dtps...");
+  dtps.log("Starting dtps v" + dtps.ver + "...");
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
   } else {
