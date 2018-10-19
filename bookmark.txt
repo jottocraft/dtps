@@ -1,1 +1,1 @@
-javascript:jQuery.getScript('another_file.js');
+javascript:jQuery.getScript('https://jottocraft.github.io/dtps/init.js');
