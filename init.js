@@ -77,17 +77,17 @@ var xhttp = new XMLHttpRequest();
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
-  $("<link/>", {
+  jQuery("<link/>", {
    rel: "stylesheet",
    type: "text/css",
    href: "https://jottocraft.github.io/dtps/fluid.css"
 }).appendTo("head");
-  $("<link/>", {
+  jQuery("<link/>", {
    rel: "stylesheet",
    type: "text/css",
    href: "https://jottocraft.github.io/dtps/dtps.css"
 }).appendTo("head");
-  $("body").html(`
+  jQuery("body").html(`
 <div class="container">
 <div class="section">
 <h1>Project dtps</h1>
