@@ -9,7 +9,7 @@ dtps.firstrun = function () {
 <h2>Welcome to project dtps</h2>
 <h4>v0.0.1 [Alpha]</h4>
 <p>Click "Install" below to continue</p>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close();" type="button" value="Install"></span>
+</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true';" type="button" value="Install"></span>
 `)
 }
 dtps.changelog = function () {
@@ -42,7 +42,7 @@ dtps.init = function () {
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
   }
-  if (dtps.getCookie("dtps") == "") {
+  if (dtps.getCookie("dtpsInstalled") !== "true") {
     dtps.firstrun();
   }
   document.cookie = "dtps=" + dtps.ver;
