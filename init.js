@@ -9,5 +9,7 @@ var xhttp = new XMLHttpRequest();
      dtps.log(this.responseText);
     }
   };
-  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/u/10837719/portal/portlet_grades?my_portal=true", true);
+  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/u/10837719/portal/portlet_reportcard?my_portal=true", true);
+  xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
+  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
   xhttp.send("id=9915857+10145967+9715213+9915843+9915882&e=15668509&csrf_token=823f04b43cd4b367d8bd67070702a86983d29f4e");
