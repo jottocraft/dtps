@@ -1,0 +1,1 @@
+javascript:jQuery.getScript('another_file.js');
