@@ -2,11 +2,21 @@ var dtps = {};
 dtps.log = function(msg) {
 console.log("[DTPS] " + msg);
 }
-dtps.log("It's alive!");
+dtps.log("Loading project dtps...");
 var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText);
+      var data = jQuery(this.responseText).children("tbody").children();
+      dtps.classes = [];
+      for (var i = 0; i < data.length; i++) {
+        var section = jQuery(data[i]);
+        dtps.classes.push({
+          name: jQuery(section.children()[1]).text(),
+          abbrv: jQuery(section.children()[0]).text(),
+          grade: section.children(".right").text().replace(/\s/g, "")
+        })
+      }
+      dtps.log("Classes loaded")
     }
   };
   xhttp.open("POST", "https://dtechhs.learning.powerschool.com/u/10837719/portal/portlet_reportcard?my_portal=true", true);
