@@ -1,4 +1,6 @@
-var dtps = {};
+var dtps = {
+  ver: 001
+};
 dtps.log = function(msg) {
 console.log("[DTPS] " + msg);
 }
@@ -19,8 +21,31 @@ dtps.changelog = function () {
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Continue"></span>
 `)
+};
+dtps.getCookie = function(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }
-dtps.log("Loading project dtps...");
+dtps.init = function () {
+  dtps.log("Loading project dtps...");
+  if (Number(dtps.getCookie("dtps")) < dtps.ver) {
+    dtps.changelog();
+  }
+  if (dtps.getCookie("dtps") == "") {
+    dtps.firstrun();
+  }
+  document.cookie = "dtps=" + dtps.ver;
 var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -44,3 +69,5 @@ var xhttp = new XMLHttpRequest();
   xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
   xhttp.send("id=9915857+10145967+9715213+9915843+9915882&e=15668509&csrf_token=a6b227ce5120182257f86aab1815027b273f429e");
+}
+
