@@ -67,8 +67,17 @@ var xhttp = new XMLHttpRequest();
       for (var i = 0; i < data.length; i++) {
         var section = jQuery(data[i]);
         var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
+        var name = jQuery(section.children()[1]).text();
+        var subject = null;
+        if (name.includes("Physics")) var subject = "Physics"
+        if (name.includes("English")) var subject = "English"
+        if (name.includes("Physical Education")) var subject = "PE"
+        if (name.includes("Prototyping")) var subject = "Prototyping"
+        if (name.includes("Algebra")) var subject = "Algebra"
+        if (name.includes("Algebra 2")) var subject = "Algebra 2"
         dtps.classes.push({
-          name: jQuery(section.children()[1]).text(),
+          name: name,
+          subject: subject,
           abbrv: jQuery(section.children()[0]).text(),
           grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
           letter: (grade == "--") ? ( grade ) : (grade.replace(/[0-9]/g, '').replace(".", ""))
