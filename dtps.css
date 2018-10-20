@@ -1,3 +1,6 @@
-/*
-N/A
-*/
+body:not(.dark) {
+  background-color: white;
+}
+body {
+  background-image: none;
+}
