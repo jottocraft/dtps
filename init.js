@@ -255,7 +255,7 @@ dtps.showClasses = function () {
 <div class="classDivider"></div>
 ` + dtps.classlist.join(""));
   if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
-  if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); }
+  if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
        $( ".class" ).click(function(event) {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
