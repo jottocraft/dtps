@@ -165,6 +165,57 @@ dtps.loadPages = function(num) {
   xhttp.setRequestHeader("Upgrade-Insecure-Requests", "1")
   xhttp.send();
 }
+dtps.classStream = function(num) {
+  dtps.showClasses();
+  jQuery(".classContent").html(`
+<div class="spinner">
+  <div class="bounce1"></div>
+  <div class="bounce2"></div>
+  <div class="bounce3"></div>
+</div>
+`);
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText)
+      /*var data = jQuery(this.responseText).find("#sidebar .sidebar_nav").children().toArray()
+      dtps.rawData = data;
+      dtps.classes[num].pages = [];
+      dtps.classes[num].pagelist = [];
+      for (var i = 0; i < data.length; i++) {
+      var tmp = jQuery(data[i]).find("a.nav").attr("href").split("/");
+      dtps.classes[num].pages.push({
+        id: tmp[tmp.length-1],
+        title: jQuery(data[i]).find("a.nav").text(),
+        content:  "",
+        num: i
+      });
+        dtps.classes[num].pagelist.push(`
+<div onclick="dtps.selectedPage = ` + tmp[tmp.length-1] + `" class="class">
+<div class="label">` + jQuery(data[i]).find("a.nav").text() + `</div>
+<div class="grade"><i class="material-icons">notes</i></div>
+</div>
+`);
+       }
+      jQuery(".sidebar").html(`<div onclick="dtps.showClasses()" class="class">
+<div class="label">Classes</div>
+<div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
+</div>
+<div class="classDivider"></div>
+` + dtps.classes[num].pagelist.join(""))
+      $( ".class" ).click(function(event) {
+  $(this).siblings().removeClass("active")
+  $(this).addClass("active")
+  dtps.getPage(dtps.classes[dtps.selectedClass].loc);
+});*/
+    } 
+  };
+  xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/assignment", true);
+  xhttp.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+  xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+  xhttp.setRequestHeader("Upgrade-Insecure-Requests", "1")
+  xhttp.send();
+}
 dtps.getPage = function(loc, id) {
   if (id == undefined) var id = dtps.selectedPage;
   jQuery(".classContent").html(`
@@ -246,7 +297,7 @@ dtps.render = function() {
 <div class="header">
 <h1 id="headText">Stream</h1>
 <div style="display: none;" class="btns row">
-<button onclick="dtps.selectedContent = 'stream'" class="btn active stream">
+<button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
 Stream
 <i class="material-icons">view_stream</i>
 </button>
