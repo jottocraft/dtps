@@ -90,7 +90,6 @@ dtps.render = function() {
    jQuery("body").html(`
 <div class="container">
 <div class="section">
-<h1>Project dtps</h1>
     <div class="header">
       <i class="material-icons">timeline</i>
       <h3>Grades</h3>
