@@ -203,12 +203,15 @@ dtps.getPage = function(loc, id) {
   xhttp.send();
 }
 dtps.showClasses = function () {
-  jQuery(".sidebar").html(`<div class="class active">
+  var streamClass = "active"
+  if (dtps.selectedClass !== "stream") var streamClass = "";
+  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
 <div class="label">Stream</div>
 <div class="grade"><i class="material-icons">view_stream</i></div>
 </div>
 <div class="classDivider"></div>
 ` + dtps.classlist.join(""));
+  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active") 
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); }
        $( ".class" ).click(function(event) {
   $(this).siblings().removeClass("active")
@@ -225,6 +228,7 @@ dtps.showClasses = function () {
 dtps.render = function() {
   document.title = "Project dtps Alpha"
    $ = jQuery;
+  dtps.selectedClass = "stream";
   dtps.classlist = [];
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
