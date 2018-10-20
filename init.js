@@ -124,6 +124,7 @@ dtps.loadPages = function(num) {
   <div class="bounce3"></div>
 </div>
 `);
+	jQuery(".classContent").html("");
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -253,7 +254,7 @@ dtps.showClasses = function () {
 </div>
 <div class="classDivider"></div>
 ` + dtps.classlist.join(""));
-  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active") 
+  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active"); dtps.classStream(dtps.selectedClass);
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); }
        $( ".class" ).click(function(event) {
   $(this).siblings().removeClass("active")
