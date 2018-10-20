@@ -121,10 +121,10 @@ dtps.loadPages = function(num) {
       dtps.rawData = data;
       dtps.classes[num].pages = [];
       for (var i = 0; i < data.length; i++) {
-      var tmp = jQuery(pages[i]).find("a.nav").attr("href").split("/");
+      var tmp = jQuery(data[i]).find("a.nav").attr("href").split("/");
       dtps.classes[num].pages.push({
         id: tmp[tmp.length-1],
-        title: jQuery(pages[i]).find("a.nav").text(),
+        title: jQuery(data[i]).find("a.nav").text(),
         content:  ""
       });
        }
