@@ -193,7 +193,7 @@ dtps.classStream = function(num) {
         dtps.classes[num].streamlist.push(`
 <div class="card assignment">
     <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
-	<h5>` + due + `</h5>
+	<h5>Due ` + due + `</h5>
 </div>
 `);
        }
