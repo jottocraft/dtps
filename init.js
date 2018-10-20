@@ -46,6 +46,7 @@ dtps.getCookie = function(cname) {
 }
 dtps.init = function () {
   dtps.log("Starting dtps v" + dtps.ver + "...");
+  $ = jQuery;
   dtps.loading();
   dtps.shouldRender = false;
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
@@ -86,17 +87,7 @@ var xhttp = new XMLHttpRequest();
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
-  jQuery("<link/>", {
-   rel: "stylesheet",
-   type: "text/css",
-   href: "https://jottocraft.github.io/dtps/fluid.css"
-}).appendTo("head");
-  jQuery("<link/>", {
-   rel: "stylesheet",
-   type: "text/css",
-   href: "https://jottocraft.github.io/dtps/dtps.css"
-}).appendTo("head");
-  jQuery("body").html(`
+   jQuery("body").html(`
 <div class="container">
 <div class="section">
 <h1>Project dtps</h1>
@@ -114,6 +105,23 @@ dtps.render = function() {
 </div>
 </div>
 `)
+  jQuery("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: "https://jottocraft.github.io/dtps/fluid.css"
+}).appendTo("head");
+  jQuery("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: "https://jottocraft.github.io/dtps/dtps.css"
+}).appendTo("head");
+  jQuery("<link/>", {
+   rel: "stylesheet",
+   type: "text/css",
+   href: "https://fonts.googleapis.com/icon?family=Material+Icons"
+}).appendTo("head");
+  jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
+
 }
 
 dtps.init();
