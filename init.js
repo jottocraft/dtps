@@ -110,6 +110,7 @@ dtps.render = function() {
 </div>
 </div>
 `)
+  $("link").remove();
   jQuery("<link/>", {
    rel: "stylesheet",
    type: "text/css",
