@@ -198,17 +198,12 @@ dtps.showClasses = function () {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
   //dtps.loadClass()
-var hh = document.querySelector('#headText');
-hh.style.opacity = 0;
-         setTimeout(function() {
   $(".header h1").html($(this).children(".label").text())
- hh.style.opacity = 1;
   if ($(this).children(".label").text() == "Stream") {
   $(".header .btns").hide();
   } else {
   $(".header .btns").show();
   }
-       }, 500);
 });
 }
 dtps.render = function() {
