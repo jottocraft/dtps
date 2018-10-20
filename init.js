@@ -178,36 +178,24 @@ dtps.classStream = function(num) {
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       console.log(this.responseText)
-      /*var data = jQuery(this.responseText).find("#sidebar .sidebar_nav").children().toArray()
-      dtps.rawData = data;
-      dtps.classes[num].pages = [];
-      dtps.classes[num].pagelist = [];
+      var data = jQuery(this.responseText).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
+      dtps.classes[num].stream = [];
+      dtps.classes[num].streamlist = [];
       for (var i = 0; i < data.length; i++) {
-      var tmp = jQuery(data[i]).find("a.nav").attr("href").split("/");
-      dtps.classes[num].pages.push({
-        id: tmp[tmp.length-1],
-        title: jQuery(data[i]).find("a.nav").text(),
-        content:  "",
-        num: i
+      var assignment = jQuery(data[i])
+      dtps.classes[num].stream.push({
+        id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
+        title: assignment.children("td:nth-child(1)").text(),
+        due: assignment.children("td:nth-child(3)").text().slice(0,-1)
       });
-        dtps.classes[num].pagelist.push(`
-<div onclick="dtps.selectedPage = ` + tmp[tmp.length-1] + `" class="class">
-<div class="label">` + jQuery(data[i]).find("a.nav").text() + `</div>
-<div class="grade"><i class="material-icons">notes</i></div>
+        dtps.classes[num].streamlist.push(`
+<div class="card assignment">
+    <h4>` + + `</h4>
+	<h5>` + assignment.children("td:nth-child(3)").text().slice(0,-1) + `</h5>
 </div>
 `);
        }
-      jQuery(".sidebar").html(`<div onclick="dtps.showClasses()" class="class">
-<div class="label">Classes</div>
-<div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
-</div>
-<div class="classDivider"></div>
-` + dtps.classes[num].pagelist.join(""))
-      $( ".class" ).click(function(event) {
-  $(this).siblings().removeClass("active")
-  $(this).addClass("active")
-  dtps.getPage(dtps.classes[dtps.selectedClass].loc);
-});*/
+      jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
     } 
   };
   xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/assignment", true);
