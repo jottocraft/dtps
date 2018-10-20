@@ -23,6 +23,12 @@ dtps.firstrun = function () {
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true';" type="button" value="Install"></span>
 `)
 };
+dtps.loading = function () {
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>Loading...</h2>
+</div>
+`)
+};
 dtps.getCookie = function(cname) {
     var name = cname + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -40,6 +46,7 @@ dtps.getCookie = function(cname) {
 }
 dtps.init = function () {
   dtps.log("Starting dtps v" + dtps.ver + "...");
+  dtps.loading();
   dtps.shouldRender = false;
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
