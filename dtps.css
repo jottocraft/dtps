@@ -143,3 +143,25 @@ body.dark .header .card {
     transform: scale(1.0);
   }
 }
+.header .card .points {
+	float: right;
+	position: absolute;
+	display: inline-block;
+	right: 25;
+}
+.header .card .points .earned {
+	font-size: 32px;
+	display: inline-block;
+}
+.header .card .points .total {
+	font-size: 18px;
+	margin-top: 15px;
+	display: inline-block;
+	color: #8e8e8e;
+}
+.header .card.assignment h5 {
+	font-size: 1.5rem;
+}
+.header .card.assignment h4 {
+	margin-top: 0px;
+}
