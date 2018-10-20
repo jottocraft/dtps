@@ -143,6 +143,11 @@ dtps.loadPages = function(num) {
 </div>
 <div class="classDivider"></div>
 ` + dtps.classes[num].pagelist.join(""))
+      $( ".class" ).click(function(event) {
+  $(this).siblings().removeClass("active")
+  $(this).addClass("active")
+  dtps.getPage(dtps.classes[dtps.selectedClass].loc);
+});
     } 
   };
   xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", true);
@@ -152,10 +157,15 @@ dtps.loadPages = function(num) {
   xhttp.send();
 }
 dtps.getPage = function(loc, id) {
+  if (id == undefined) var id = dtps.selectedPage;
    var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      dtps.log("done getting page")
+      jQuery(".classContent").html(`
+<div class="card">
+` + this.responseText + `
+</div>
+`)
     } 
   };
   xhttp.open("POST", "https://dtechhs.learning.powerschool.com/" + loc  +  "/cms_box/render_content/" + id, true);
