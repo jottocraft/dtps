@@ -254,8 +254,8 @@ dtps.showClasses = function () {
 </div>
 <div class="classDivider"></div>
 ` + dtps.classlist.join(""));
-  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active"); dtps.classStream(dtps.selectedClass);
-  if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); }
+  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
+  if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); }
        $( ".class" ).click(function(event) {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
@@ -273,6 +273,7 @@ dtps.render = function() {
   document.title = "Project dtps Alpha"
    $ = jQuery;
   dtps.selectedClass = "stream";
+  dtps.selectedContent = "stream";
   dtps.classlist = [];
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
