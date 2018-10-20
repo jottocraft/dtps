@@ -32,6 +32,8 @@ dtps.firstrun = function () {
 `)
 };
 dtps.alert = function (text, sub) {
+  if (text == undefined) var text = "";
+  if (sub == undefined) var sub = "";
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
 <p>` + sub + `</p>
