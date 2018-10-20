@@ -233,6 +233,8 @@ Gradebook
 <i class="material-icons">book</i>
 </button>
 </div>
+<div class="classContent">
+</div>
 </div>
 </div>
 `)
