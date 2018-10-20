@@ -98,7 +98,8 @@ var xhttp = new XMLHttpRequest();
           abbrv: jQuery(section.children()[0]).text(),
           grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
           letter: (grade == "--") ? ( grade ) : (grade.replace(/[0-9]/g, '').replace(".", "")),
-          loc: loc[1] + "/" + loc[2]
+          loc: loc[1] + "/" + loc[2],
+          num: i
         })
       }
       dtps.log("Grades loaded", dtps.classes)
@@ -120,14 +121,28 @@ dtps.loadPages = function(num) {
       var data = jQuery(this.responseText).find("#sidebar .sidebar_nav").children().toArray()
       dtps.rawData = data;
       dtps.classes[num].pages = [];
+      dtps.classes[num].pagelist = [];
       for (var i = 0; i < data.length; i++) {
       var tmp = jQuery(data[i]).find("a.nav").attr("href").split("/");
       dtps.classes[num].pages.push({
         id: tmp[tmp.length-1],
         title: jQuery(data[i]).find("a.nav").text(),
-        content:  ""
+        content:  "",
+        num: i
       });
+        dtps.classes[num].pagelist.push(`
+<div onclick="dtps.selectedPage = ` + tmp[tmp.length-1] + `" class="class">
+<div class="label">` + jQuery(data[i]).find("a.nav").text() + `</div>
+<div class="grade"><i class="material-icons">notes</i></div>
+</div>
+`);
        }
+      jQuery(".sidebar").html(`<div onclick="dtps.showClasses()" class="class">
+<div class="label">Classes</div>
+<div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
+</div>
+<div class="classDivider"></div>
+` + dtps.pagelist.join("") + `)
     } 
   };
   xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", true);
@@ -150,6 +165,25 @@ dtps.getPage = function(loc, id) {
   xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
   xhttp.send("csrf_token=" + CSRFTOK);
+}
+dtps.showClasses = function () {
+  jQuery(".sidebar").html(`<div class="class active">
+<div class="label">Stream</div>
+<div class="grade"><i class="material-icons">view_stream</i></div>
+</div>
+<div class="classDivider"></div>
+` + dtps.classlist.join("") + `);
+       $( ".class" ).click(function(event) {
+  $(this).siblings().removeClass("active")
+  $(this).addClass("active")
+  //dtps.loadClass()
+  $(".header h1").html($(this).children(".label").text())
+  if ($(this).children(".label").text() == "Stream") {
+  $(".header .btns").hide();
+  } else {
+  $(".header .btns").show();
+  }
+});
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
@@ -176,15 +210,15 @@ dtps.render = function() {
 <div class="header">
 <h1>Stream</h1>
 <div style="display: none;" class="btns row">
-<button class="btn active">
+<button onclick="dtps.selectedContent = 'stream'" class="btn active">
 Stream
 <i class="material-icons">view_stream</i>
 </button>
-<button class="btn">
+<button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn">
 Pages
 <i class="material-icons">list</i>
 </button>
-<button class="btn">
+<button onclick="dtps.selectedContent = 'grades'" class="btn">
 Gradebook
 <i class="material-icons">book</i>
 </button>
