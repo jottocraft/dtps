@@ -139,8 +139,8 @@ dtps.loadPages = function(num) {
         })
       }
       dtps.log("Grades loaded", dtps.classes)
-      if (dtps.shouldRender) dtps.render();
-    } */
+      if (dtps.shouldRender) dtps.render();*/
+    } 
   };
   xhttp.open("POST", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc +  "/cms_page/view", true);
   xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
@@ -149,7 +149,6 @@ dtps.loadPages = function(num) {
   xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
   xhttp.send("csrf_token=" + CSRFTOK);
-}
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
