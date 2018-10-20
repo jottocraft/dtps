@@ -86,6 +86,45 @@ var xhttp = new XMLHttpRequest();
         var section = jQuery(data[i]);
         var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
         var name = jQuery(section.children()[1]).text();
+        var loc = section.children("td").children("a.filter").attr("href").split("/")
+        var subject = null;
+        if (name.includes("Physics")) { var subject = "Physics" }; if (name.includes("English")) { var subject = "English" }; if (name.includes("Physical Education")) { var subject = "PE" };
+        if (name.includes("Prototyping")) { var subject = "Prototyping" }; if (name.includes("Algebra")) { var subject = "Algebra" };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
+        if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };
+        if (subject == null) var subject = name;
+        dtps.classes.push({
+          name: name,
+          subject: subject,
+          abbrv: jQuery(section.children()[0]).text(),
+          grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
+          letter: (grade == "--") ? ( grade ) : (grade.replace(/[0-9]/g, '').replace(".", "")),
+          loc: loc[1] + "/" + loc[2]
+        })
+      }
+      dtps.log("Grades loaded", dtps.classes)
+      if (dtps.shouldRender) dtps.render();
+    }
+  };
+  xhttp.open("POST", "portal/portlet_reportcard?my_portal=true", true);
+  xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
+  xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+  xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
+  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+  xhttp.send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
+}
+dtps.loadPages = function(class) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText)
+      /* var data = jQuery(this.responseText).children("tbody").children();
+      dtps.rawData = data;
+      dtps.classes = [];
+      for (var i = 0; i < data.length; i++) {
+        var section = jQuery(data[i]);
+        var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
+        var name = jQuery(section.children()[1]).text();
         var subject = null;
         if (name.includes("Physics")) { var subject = "Physics" }; if (name.includes("English")) { var subject = "English" }; if (name.includes("Physical Education")) { var subject = "PE" };
         if (name.includes("Prototyping")) { var subject = "Prototyping" }; if (name.includes("Algebra")) { var subject = "Algebra" };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
@@ -101,15 +140,15 @@ var xhttp = new XMLHttpRequest();
       }
       dtps.log("Grades loaded", dtps.classes)
       if (dtps.shouldRender) dtps.render();
-    }
+    } */
   };
-  xhttp.open("POST", "portal/portlet_reportcard?my_portal=true", true);
+  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/" + dtps.classes[class].loc +  "/cms_page/view", true);
   xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
   xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
   xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  xhttp.send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
+  xhttp.send("csrf_token=" + CSRFTOK);
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
@@ -117,7 +156,7 @@ dtps.render = function() {
   dtps.classlist = [];
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
-<div class="class">
+<div onclick="dtps.selectedClass = ` + i + `" class="class">
 <div class="label">` + dtps.classes[i].subject + `</div>
 <div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
 </div>
