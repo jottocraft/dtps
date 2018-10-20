@@ -114,7 +114,7 @@ dtps.render = function() {
 <div class="grade"><i class="material-icons">view_stream</i></div>
 </div>
 <div class="classDivider"></div>
-` + dtps.classlist.join() + `
+` + dtps.classlist.join("") + `
 </div>
 <div class="background">
 <div class="header">
