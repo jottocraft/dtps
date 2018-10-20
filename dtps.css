@@ -160,8 +160,8 @@ body.dark .header .card {
 	color: #8e8e8e;
 }
 .header .card.assignment h5 {
-	font-size: 1.5rem;
+	font-size: 1.5rem !important;
 }
 .header .card.assignment h4 {
-	margin-top: 0px;
+	margin-top: 0px !important;
 }
