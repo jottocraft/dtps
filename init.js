@@ -142,7 +142,7 @@ dtps.loadPages = function(num) {
 <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
 </div>
 <div class="classDivider"></div>
-` + dtps.pagelist.join(""))
+` + dtps.classes[num].pagelist.join(""))
     } 
   };
   xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", true);
