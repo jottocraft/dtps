@@ -7,7 +7,7 @@ dtps.changelog = function () {
 <h2>What's new in project dtps</h2>
 <h4>` + dtps.readableVer + `</h4>
 <ul>
-<li>Added class pages</li>
+<li>Added class pages (supports pages with one block only. multi-block pages coming soon)</li>
 <li>Next update will hopefully be the first beta with the assignment stream in place and class colors</li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
