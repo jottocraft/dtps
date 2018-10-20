@@ -142,13 +142,12 @@ dtps.loadPages = function(num) {
       if (dtps.shouldRender) dtps.render();*/
     } 
   };
-  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc +  "/cms_page/view", true);
+  xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc +  "/cms_page/view", true);
   xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
   xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-  xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
-  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  xhttp.send("csrf_token=" + CSRFTOK);
+  xhttp.setRequestHeader("Sec-Metadata", 'cause="user-activated", destination="document", site="same-origin"')
+  xhttp.setRequestHeader("Upgrade-Insecure-Requests", "1")
+  xhttp.send();
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
