@@ -143,6 +143,3 @@ body.dark .header .card {
     transform: scale(1.0);
   }
 }
-#TB_window {
-	margin: 100px calc(50% - 400px);
-}
