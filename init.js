@@ -115,6 +115,14 @@ var xhttp = new XMLHttpRequest();
   xhttp.send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
 }
 dtps.loadPages = function(num) {
+  jQuery(".sidebar").html(`
+<div class="classDivider"></div>
+<div class="spinner">
+  <div class="bounce1"></div>
+  <div class="bounce2"></div>
+  <div class="bounce3"></div>
+</div>
+`);
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -158,6 +166,13 @@ dtps.loadPages = function(num) {
 }
 dtps.getPage = function(loc, id) {
   if (id == undefined) var id = dtps.selectedPage;
+  jQuery(".classContent").html(`
+<div class="spinner">
+  <div class="bounce1"></div>
+  <div class="bounce2"></div>
+  <div class="bounce3"></div>
+</div>
+`);
    var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
