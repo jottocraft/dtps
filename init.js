@@ -198,7 +198,10 @@ dtps.showClasses = function () {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
   //dtps.loadClass()
+var hh = document.querySelector('#headText');
+hh.style.opacity = 0;
   $(".header h1").html($(this).children(".label").text())
+ hh.style.opacity = 1;
   if ($(this).children(".label").text() == "Stream") {
   $(".header .btns").hide();
   } else {
@@ -220,16 +223,10 @@ dtps.render = function() {
   }
    jQuery("body").html(`
 <div class="sidebar">
-<div class="class active">
-<div class="label">Stream</div>
-<div class="grade"><i class="material-icons">view_stream</i></div>
-</div>
-<div class="classDivider"></div>
-` + dtps.classlist.join("") + `
 </div>
 <div class="background">
 <div class="header">
-<h1>Stream</h1>
+<h1 id="headText">Stream</h1>
 <div style="display: none;" class="btns row">
 <button onclick="dtps.selectedContent = 'stream'" class="btn active">
 Stream
@@ -249,6 +246,7 @@ Gradebook
 </div>
 </div>
 `)
+  dtps.showClasses();
   $("link").remove();
   jQuery("<link/>", {
    rel: "shortcut icon",
