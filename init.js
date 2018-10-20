@@ -1,13 +1,14 @@
 var dtps = {
-  ver: 003
+  ver: 004,
+  readableVer: "v0.0.4 [ALPHA]"
 };
 dtps.changelog = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>What's new in project dtps</h2>
-<h4>v0.0.3 [Alpha]</h4>
+<h4>` + readableVer + `</h4>
 <ul>
-<li>Added the first bits of the new dtps UI</li>
-<li>VERY FIRST BITS OF THIS, everything will change quickly and soon</li>
+<li>Added the shell of the dtps UI. Class selector and background gradient probably finished to beta standards.</li>
+<li>Stream coming soon. This might take a while, though.</li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
 `)
@@ -18,7 +19,7 @@ console.log("[DTPS] " + msg);
 dtps.firstrun = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>Welcome to project dtps</h2>
-<h4>v0.0.1 [Alpha]</h4>
+<h4>` + readableVer + `</h4>
 <p>Click "Install" below to continue</p>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true';" type="button" value="Install"></span>
 `)
@@ -158,6 +159,19 @@ Gradebook
    href: "https://fonts.googleapis.com/icon?family=Material+Icons"
 }).appendTo("head");
   jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
+  
+  $( ".class" ).click(function(event) {
+  $(this).siblings().removeClass("active")
+  $(this).addClass("active")
+  //dtps.loadClass()
+  $(".header h1").html($(this).children(".label").text())
+  if ($(this).children(".label").text() == "Stream") {
+  $(".header .btns").hide();
+  } else {
+  $(".header .btns").show();
+  }
+});
+  
 }
 
 dtps.init();
