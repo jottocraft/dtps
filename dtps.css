@@ -84,3 +84,14 @@
 	color: white;
 	padding-top: 100px;
 }
+.header .card {
+	margin: 25px 75px;
+	text-align: left;
+	border-radius: 30px;
+}
+body:not(.dark) .header .card {
+	color: black;
+}
+body.dark .header .card {
+	color: white;
+}
