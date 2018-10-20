@@ -161,7 +161,7 @@ dtps.getPage = function(loc, id) {
    var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      var newID = jQuery(this.responseText).find(".col_2_1 .cms_box").attr("id").split("_")[1]
+      var newID = jQuery(this.responseText).find("#col_2_1 .cms_box").attr("id").split("_")[1]
       var xhttpB = new XMLHttpRequest();
       xhttpB.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
