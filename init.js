@@ -258,6 +258,7 @@ dtps.showClasses = function () {
        $( ".class" ).click(function(event) {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
+  if (dtps.selectedContent == "stream") classStream(dtps.selectedClass);
   //dtps.loadClass()
   $(".header h1").html($(this).children(".label").text())
   if ($(this).children(".label").text() == "Stream") {
