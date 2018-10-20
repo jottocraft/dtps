@@ -161,20 +161,31 @@ dtps.getPage = function(loc, id) {
    var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      jQuery(".classContent").html(`
+      var newID = jQuery(this.responseText).find(".col_2_1 .cms_box").attr("id").split("_")[1]
+      var xhttpB = new XMLHttpRequest();
+      xhttpB.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          /*jQuery(".classContent").html(`
 <div class="card">
 ` + this.responseText + `
 </div>
-`)
+`)*/
+        }
+      }
+      xhttpB.open("POST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, true);
+  xhttpB.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
+  xhttpB.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+  xhttpB.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+  xhttpB.setRequestHeader("X-Prototype-Version", "1.7.1")
+  xhttpB.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+  xhttpB.send("csrf_token=" + CSRFTOK);
     } 
   };
-  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/" + loc  +  "/cms_box/render_content/" + id, true);
-  xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
+  xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + loc  +  "/cms_page/view/" + id + "/cms_box/render_content/", true);
+  xhttp.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
   xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-  xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
-  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  xhttp.send("csrf_token=" + CSRFTOK);
+  xhttp.setRequestHeader("Upgrade-Insecure-Requests", "1")
+  xhttp.send();
 }
 dtps.showClasses = function () {
   jQuery(".sidebar").html(`<div class="class active">
