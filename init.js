@@ -62,6 +62,7 @@ var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       var data = jQuery(this.responseText).children("tbody").children();
+      dtps.rawData = data;
       dtps.classes = [];
       for (var i = 0; i < data.length; i++) {
         var section = jQuery(data[i]);
