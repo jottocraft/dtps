@@ -95,3 +95,10 @@ body:not(.dark) .header .card {
 body.dark .header .card {
 	color: white;
 }
+#headText {
+   -webkit-transition: opacity .5s ease-in-out;
+   -moz-transition: opacity .5s ease-in-out;
+   -ms-transition: opacity .5s ease-in-out;
+   -o-transition: opacity .5s ease-in-out;
+   transition: opacity .5s ease-in-out;
+}
