@@ -1,14 +1,14 @@
 var dtps = {
-  ver: 005,
-  readableVer: "v0.0.5 [ALPHA]"
+  ver: 006,
+  readableVer: "v0.0.6 [ALPHA]"
 };
 dtps.changelog = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 100px calc(50% - 400px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>What's new in project dtps</h2>
 <h4>` + dtps.readableVer + `</h4>
 <ul>
-<li>Added class pages (supports pages with one block only. multi-block pages coming soon)</li>
-<li>Next update will hopefully be the first beta with the assignment stream in place and class colors</li>
+<li>Added class stream phase one (PowerSchool seperates assignments into the all assignments category and graded assignments. So, to get assignment grades, I need to check the grades, but it leaves out ungraded assignments. Right now, it just shows all assignments, and grades are not reflected. Phase two will add grades. Stream phase 3 will add the stream for all classes combined)</li>
+<li>Next update bringing stream phase two, class colors, and beta release</li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
 `)
