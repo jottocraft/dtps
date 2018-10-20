@@ -90,7 +90,7 @@ dtps.render = function() {
   var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/png';
     link.rel = 'shortcut icon';
-    link.href = 'https://jottocraft.github.io/dtps/dtps.png';
+    link.href = 'https://jottocraft.github.io/dtps/favicon.png';
     document.getElementsByTagName('head')[0].appendChild(link);
    jQuery("body").html(`
 <div class="container">
