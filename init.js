@@ -232,7 +232,7 @@ dtps.render = function() {
   dtps.classlist = [];
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
-<div onclick="dtps.selectedClass = ` + i + `" class="class">
+<div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + `">
 <div class="label">` + dtps.classes[i].subject + `</div>
 <div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
 </div>
