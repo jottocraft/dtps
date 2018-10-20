@@ -59,15 +59,18 @@ dtps.init = function () {
   dtps.log("Starting dtps v" + dtps.ver + "...");
   dtps.shouldRender = false;
   dtps.user = jQuery("#header-body h1").text().split(", ")[1];
-  if (Number(dtps.getCookie("dtps")) < dtps.ver) {
+  if (window.location.host !== "dtechhs.learning.powerschool.com") {
+    dtps.shouldRender = false;
+    dtps.alert("Unsupported school", "Project dtps only works at Design Tech High School");
+  } else {
+    
+     if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
   } else {
     dtps.shouldRender = true;
     dtps.alert("Loading...");
   }
-  if (window.location.host !== "dtechhs.learning.powerschool.com") {
-    dtps.shouldRender = false;
-    dtps.alert("Unsupported school", "Project dtps only works at select schools at the moment");
+    
   }
   if (dtps.getCookie("dtpsInstalled") !== "true") {
     dtps.firstrun();
