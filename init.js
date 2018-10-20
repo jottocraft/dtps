@@ -142,7 +142,7 @@ dtps.loadPages = function(num) {
 <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
 </div>
 <div class="classDivider"></div>
-` + dtps.pagelist.join("") + `)
+` + dtps.pagelist.join(""))
     } 
   };
   xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", true);
@@ -172,7 +172,7 @@ dtps.showClasses = function () {
 <div class="grade"><i class="material-icons">view_stream</i></div>
 </div>
 <div class="classDivider"></div>
-` + dtps.classlist.join("") + `);
+` + dtps.classlist.join(""));
        $( ".class" ).click(function(event) {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
