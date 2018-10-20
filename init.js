@@ -98,11 +98,6 @@ var xhttp = new XMLHttpRequest();
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
-  var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-    link.type = 'image/png';
-    link.rel = 'shortcut icon';
-    link.href = 'https://jottocraft.github.io/dtps/favicon.png';
-    document.getElementsByTagName('head')[0].appendChild(link);
    jQuery("body").html(`
 <div class="container">
 <div class="section">
@@ -121,6 +116,11 @@ dtps.render = function() {
 </div>
 `)
   $("link").remove();
+  jQuery("<link/>", {
+   rel: "shortcut icon",
+   type: "image/png",
+   href: "https://jottocraft.github.io/dtps/favicon.png"
+}).appendTo("head");
   jQuery("<link/>", {
    rel: "stylesheet",
    type: "text/css",
