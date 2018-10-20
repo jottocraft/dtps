@@ -69,12 +69,13 @@ var xhttp = new XMLHttpRequest();
         var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
         var name = jQuery(section.children()[1]).text();
         var subject = null;
-        if (name.includes("Physics")) var subject = "Physics"
-        if (name.includes("English")) var subject = "English"
-        if (name.includes("Physical Education")) var subject = "PE"
-        if (name.includes("Prototyping")) var subject = "Prototyping"
-        if (name.includes("Algebra")) var subject = "Algebra"
-        if (name.includes("Algebra 2")) var subject = "Algebra 2"
+        if (name.includes("Physics")) var subject = "Physics";
+        if (name.includes("English")) var subject = "English";
+        if (name.includes("Physical Education")) var subject = "PE";
+        if (name.includes("Prototyping")) var subject = "Prototyping";
+        if (name.includes("Algebra")) var subject = "Algebra";
+        if (name.includes("Algebra 2")) var subject = "Algebra 2";
+        if (subject == null) var subject = name;
         dtps.classes.push({
           name: name,
           subject: subject,
@@ -110,11 +111,11 @@ dtps.render = function() {
       <h3>Grades</h3>
     </div>
     <div class="body">
-    <h5>` + dtps.classes[0].name +  `: ` + dtps.classes[0].letter + ` (` + dtps.classes[0].grade + `%)</h5>
-<h5>` + dtps.classes[1].name +  `: ` + dtps.classes[1].letter + ` (` + dtps.classes[1].grade + `%)</h5>
-<h5>` + dtps.classes[2].name +  `: ` + dtps.classes[2].letter + ` (` + dtps.classes[2].grade + `%)</h5>
-<h5>` + dtps.classes[3].name +  `: ` + dtps.classes[3].letter + ` (` + dtps.classes[3].grade + `%)</h5>
-<h5>` + dtps.classes[4].name +  `: ` + dtps.classes[4].letter + ` (` + dtps.classes[4].grade + `%)</h5>
+    <h5>` + dtps.classes[0].subject +  `: ` + dtps.classes[0].letter + ` (` + dtps.classes[0].grade + `%)</h5>
+<h5>` + dtps.classes[1].subject +  `: ` + dtps.classes[1].letter + ` (` + dtps.classes[1].grade + `%)</h5>
+<h5>` + dtps.classes[2].subject +  `: ` + dtps.classes[2].letter + ` (` + dtps.classes[2].grade + `%)</h5>
+<h5>` + dtps.classes[3].subject +  `: ` + dtps.classes[3].letter + ` (` + dtps.classes[3].grade + `%)</h5>
+<h5>` + dtps.classes[4].subject +  `: ` + dtps.classes[4].letter + ` (` + dtps.classes[4].grade + `%)</h5>
     </div>
 </div>
 </div>
