@@ -178,10 +178,12 @@ dtps.classStream = function(num) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
+	    
       console.log(this.responseText)
       var data = jQuery(this.responseText).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
       dtps.classes[num].stream = [];
       dtps.classes[num].streamlist = [];
+      dtps.classes[num].streamitems = [];    
       for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
       var due = assignment.children("td:nth-child(3)").text().slice(0,-1);
@@ -191,6 +193,7 @@ dtps.classStream = function(num) {
         title: assignment.children("td:nth-child(1)").text(),
         due: assignment.children("td:nth-child(3)").text().slice(0,-1)
       });
+	   dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", "")) 
         dtps.classes[num].streamlist.push(`
 <div class="card assignment">
     <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
@@ -199,6 +202,21 @@ dtps.classStream = function(num) {
 `);
        }
       jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
+	    
+	    var xhttpB = new XMLHttpRequest();
+  xhttpB.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+	     raw = jQuery(this.responseText).find("table.list.hover_glow tbody").children("tr:not(.noglow)").toArray();
+	    console.log(raw)
+    }
+  }    
+	    
+	    xhttpB.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", true);
+  xhttpB.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+  xhttpB.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+  xhttpB.setRequestHeader("Upgrade-Insecure-Requests", "1")
+  xhttpB.send();
+	    
     } 
   };
   xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/assignment", true);
