@@ -150,6 +150,7 @@ dtps.loadPages = function(num) {
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
   xhttp.send("csrf_token=" + CSRFTOK);
 }
+}
 dtps.render = function() {
   document.title = "Project dtps Alpha"
    $ = jQuery;
