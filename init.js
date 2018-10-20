@@ -209,6 +209,7 @@ dtps.showClasses = function () {
 </div>
 <div class="classDivider"></div>
 ` + dtps.classlist.join(""));
+  if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); }
        $( ".class" ).click(function(event) {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
@@ -240,15 +241,15 @@ dtps.render = function() {
 <div class="header">
 <h1 id="headText">Stream</h1>
 <div style="display: none;" class="btns row">
-<button onclick="dtps.selectedContent = 'stream'" class="btn active">
+<button onclick="dtps.selectedContent = 'stream'" class="btn active stream">
 Stream
 <i class="material-icons">view_stream</i>
 </button>
-<button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn">
+<button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
 Pages
 <i class="material-icons">list</i>
 </button>
-<button onclick="dtps.selectedContent = 'grades'" class="btn">
+<button onclick="dtps.selectedContent = 'grades'" class="btn grades">
 Gradebook
 <i class="material-icons">book</i>
 </button>
