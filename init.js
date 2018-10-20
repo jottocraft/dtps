@@ -98,20 +98,41 @@ var xhttp = new XMLHttpRequest();
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
+  dtps.classlist = [];
+  for (var i = 0; i < dtps.classes.length; i++) {
+    dtps.classlist.push(`
+<div class="class">
+<div class="label">` + dtps.classes[i].subject + `</div>
+<div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+</div>
+`);
+  }
    jQuery("body").html(`
-<div class="container">
-<div class="section">
-    <div class="header">
-      <i class="material-icons">timeline</i>
-      <h3>Grades</h3>
-    </div>
-    <div class="body">
-    <h5>` + dtps.classes[0].subject +  `: ` + dtps.classes[0].letter + ` (` + dtps.classes[0].grade + `%)</h5>
-<h5>` + dtps.classes[1].subject +  `: ` + dtps.classes[1].letter + ` (` + dtps.classes[1].grade + `%)</h5>
-<h5>` + dtps.classes[2].subject +  `: ` + dtps.classes[2].letter + ` (` + dtps.classes[2].grade + `%)</h5>
-<h5>` + dtps.classes[3].subject +  `: ` + dtps.classes[3].letter + ` (` + dtps.classes[3].grade + `%)</h5>
-<h5>` + dtps.classes[4].subject +  `: ` + dtps.classes[4].letter + ` (` + dtps.classes[4].grade + `%)</h5>
-    </div>
+<div class="sidebar">
+<div class="class active">
+<div class="label">Stream</div>
+<div class="grade"><i class="material-icons">view_stream</i></div>
+</div>
+<div class="classDivider"></div>
+` + dtps.classlist.join() + `
+</div>
+<div class="background">
+<div class="header">
+<h1>Stream</h1>
+<div style="display: none;" class="btns row">
+<button class="btn active">
+Stream
+<i class="material-icons">view_stream</i>
+</button>
+<button class="btn">
+Pages
+<i class="material-icons">list</i>
+</button>
+<button class="btn">
+Gradebook
+<i class="material-icons">book</i>
+</button>
+</div>
 </div>
 </div>
 `)
@@ -137,7 +158,6 @@ dtps.render = function() {
    href: "https://fonts.googleapis.com/icon?family=Material+Icons"
 }).appendTo("head");
   jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
-
 }
 
 dtps.init();
