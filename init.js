@@ -24,9 +24,10 @@ dtps.firstrun = function () {
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true';" type="button" value="Install"></span>
 `)
 };
-dtps.loading = function () {
+dtps.alert = function (text, sub) {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>Loading...</h2>
+<h2>` + text + `</h2>
+<p>` + sub + `</p>
 </div>
 `)
 };
@@ -47,12 +48,17 @@ dtps.getCookie = function(cname) {
 }
 dtps.init = function () {
   dtps.log("Starting dtps v" + dtps.ver + "...");
-  dtps.loading();
   dtps.shouldRender = false;
+  dtps.user = jQuery("#header-body h1").text().split(", ")[1];
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
   } else {
     dtps.shouldRender = true;
+    dtps.alert("Loading...");
+  }
+  if (window.location.host !== "dtechhs.learning.powerschool.com") {
+    dtps.shouldRender = false;
+    dtps.alert("Unsupported school", "Project dtps only works at select schools at the moment");
   }
   if (dtps.getCookie("dtpsInstalled") !== "true") {
     dtps.firstrun();
@@ -69,12 +75,9 @@ var xhttp = new XMLHttpRequest();
         var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
         var name = jQuery(section.children()[1]).text();
         var subject = null;
-        if (name.includes("Physics")) var subject = "Physics";
-        if (name.includes("English")) var subject = "English";
-        if (name.includes("Physical Education")) var subject = "PE";
-        if (name.includes("Prototyping")) var subject = "Prototyping";
-        if (name.includes("Algebra")) var subject = "Algebra";
-        if (name.includes("Algebra 2")) var subject = "Algebra 2";
+        if (name.includes("Physics")) { var subject = "Physics" }; if (name.includes("English")) { var subject = "English" }; if (name.includes("Physical Education")) { var subject = "PE" };
+        if (name.includes("Prototyping")) { var subject = "Prototyping" }; if (name.includes("Algebra")) { var subject = "Algebra" };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
+        if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };
         if (subject == null) var subject = name;
         dtps.classes.push({
           name: name,
@@ -88,13 +91,13 @@ var xhttp = new XMLHttpRequest();
       if (dtps.shouldRender) dtps.render();
     }
   };
-  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/u/10837719/portal/portlet_reportcard?my_portal=true", true);
+  xhttp.open("POST", "portal/portlet_reportcard?my_portal=true", true);
   xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
   xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
   xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  xhttp.send("id=9915857+10145967+9715213+9915843+9915882&e=15668509&csrf_token=a6b227ce5120182257f86aab1815027b273f429e");
+  xhttp.send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
