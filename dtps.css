@@ -57,7 +57,8 @@
 	background-color: #a3a3a3;
 }
 .class .label {
-	width: 100px;
+	width: 156px;
+	white-space: nowrap;
 	display: inline-block;
 	overflow: hidden;
 	text-overflow: ellipsis;
