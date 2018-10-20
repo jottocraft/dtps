@@ -171,6 +171,7 @@ Gradebook
   $(".header .btns").show();
   }
 });
+  fluid.init();
   
 }
 
