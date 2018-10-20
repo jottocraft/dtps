@@ -40,10 +40,11 @@ dtps.getCookie = function(cname) {
 }
 dtps.init = function () {
   dtps.log("Starting dtps v" + dtps.ver + "...");
+  dtps.shouldRender = false;
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
   } else {
-    dtps.render();
+    dtps.shouldRender = true;
   }
   if (dtps.getCookie("dtpsInstalled") !== "true") {
     dtps.firstrun();
@@ -65,6 +66,7 @@ var xhttp = new XMLHttpRequest();
         })
       }
       dtps.log("Grades loaded", dtps.classes)
+      if (dtps.shouldRender) dtps.render();
     }
   };
   xhttp.open("POST", "https://dtechhs.learning.powerschool.com/u/10837719/portal/portlet_reportcard?my_portal=true", true);
