@@ -8,7 +8,7 @@ dtps.changelog = function () {
 <h4>` + dtps.readableVer + `</h4>
 <ul>
 <li>Added the shell of the dtps UI. Class selector and background gradient probably finished to beta standards.</li>
-<li>Stream coming soon. This might take a while, though.</li>
+<li>Stream, class colors, pages and gradebook coming soon. This might take a while, though. Will add after a smaller planned update.</li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
 `)
@@ -47,7 +47,6 @@ dtps.getCookie = function(cname) {
 }
 dtps.init = function () {
   dtps.log("Starting dtps v" + dtps.ver + "...");
-  $ = jQuery;
   dtps.loading();
   dtps.shouldRender = false;
   if (Number(dtps.getCookie("dtps")) < dtps.ver) {
@@ -99,6 +98,7 @@ var xhttp = new XMLHttpRequest();
 }
 dtps.render = function() {
   document.title = "Project dtps Alpha"
+   $ = jQuery;
   dtps.classlist = [];
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
