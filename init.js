@@ -117,7 +117,7 @@ dtps.loadPages = function(num) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      var data = jQuery(this.responseText).find("#sidebar .sidebar_nav").children().array()
+      var data = jQuery(this.responseText).find("#sidebar .sidebar_nav").children().toArray()
       dtps.rawData = data;
       dtps.classes[num].pages = [];
       for (var i = 0; i < data.length; i++) {
