@@ -1,14 +1,14 @@
 var dtps = {
-  ver: 004,
-  readableVer: "v0.0.4 [ALPHA]"
+  ver: 005,
+  readableVer: "v0.0.5 [ALPHA]"
 };
 dtps.changelog = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px; left: 141.5px; top: 200px;"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>What's new in project dtps</h2>
 <h4>` + dtps.readableVer + `</h4>
 <ul>
-<li>Added the shell of the dtps UI. Class selector and background gradient probably finished to beta standards.</li>
-<li>Stream, class colors, pages and gradebook coming soon. This might take a while, though. Will add after a smaller planned update.</li>
+<li>Added class pages</li>
+<li>Next update will hopefully be the first beta with the assignment stream in place and class colors</li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
 `)
@@ -165,11 +165,11 @@ dtps.getPage = function(loc, id) {
       var xhttpB = new XMLHttpRequest();
       xhttpB.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          /*jQuery(".classContent").html(`
+         jQuery(".classContent").html(`
 <div class="card">
 ` + this.responseText + `
 </div>
-`)*/
+`)
         }
       }
       xhttpB.open("POST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, true);
