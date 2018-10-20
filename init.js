@@ -183,6 +183,8 @@ dtps.classStream = function(num) {
       dtps.classes[num].streamlist = [];
       for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
+      var due = assignment.children("td:nth-child(3)").text().slice(0,-1);
+	if (var due == "n/a") var due = "Assigned";      
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
@@ -190,8 +192,8 @@ dtps.classStream = function(num) {
       });
         dtps.classes[num].streamlist.push(`
 <div class="card assignment">
-    <h4>` + + `</h4>
-	<h5>` + assignment.children("td:nth-child(3)").text().slice(0,-1) + `</h5>
+    <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
+	<h5>` + due + `</h5>
 </div>
 `);
        }
