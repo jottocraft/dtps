@@ -181,7 +181,7 @@ dtps.getPage = function(loc, id) {
   xhttpB.send("csrf_token=" + CSRFTOK);
     } 
   };
-  xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + loc  +  "/cms_page/view/" + id + "/cms_box/render_content/", true);
+  xhttp.open("GET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, true);
   xhttp.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
   xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
   xhttp.setRequestHeader("Upgrade-Insecure-Requests", "1")
