@@ -113,7 +113,7 @@ var xhttp = new XMLHttpRequest();
   xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
   xhttp.send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
 }
-dtps.loadPages = function(class) {
+dtps.loadPages = function(num) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -142,7 +142,7 @@ dtps.loadPages = function(class) {
       if (dtps.shouldRender) dtps.render();
     } */
   };
-  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/" + dtps.classes[class].loc +  "/cms_page/view", true);
+  xhttp.open("POST", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc +  "/cms_page/view", true);
   xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
   xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
   xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
