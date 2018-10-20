@@ -200,6 +200,7 @@ dtps.showClasses = function () {
   //dtps.loadClass()
 var hh = document.querySelector('#headText');
 hh.style.opacity = 0;
+         setTimeout(function() {
   $(".header h1").html($(this).children(".label").text())
  hh.style.opacity = 1;
   if ($(this).children(".label").text() == "Stream") {
@@ -207,6 +208,7 @@ hh.style.opacity = 0;
   } else {
   $(".header .btns").show();
   }
+       }, 500);
 });
 }
 dtps.render = function() {
