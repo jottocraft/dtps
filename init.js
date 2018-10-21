@@ -211,7 +211,7 @@ dtps.classStream = function(num) {
 	    var xhttpB = new XMLHttpRequest();
   xhttpB.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-	     raw = jQuery(this.responseText).find("table.list.hover_glow tbody").children("tr:not(.noglow)").toArray();
+	     raw = jQuery(this.responseText).find("table.list.hover_glow tbody").children("tr:not(.noglow):not(:has(th))").toArray();
 	    console.log(raw)
     }
   }    
