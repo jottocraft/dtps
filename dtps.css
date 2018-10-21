@@ -147,7 +147,7 @@ body.dark .header .card {
 	float: right;
 	position: absolute;
 	display: inline-block;
-	right: 25;
+	right: 25px;
 }
 .header .card .points .earned {
 	font-size: 32px;
