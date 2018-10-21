@@ -187,7 +187,7 @@ dtps.classStream = function(num) {
       for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
       var due = assignment.children("td:nth-child(3)").text().slice(0,-1);
-	if (due == "n/a") var due = "Assigned";      
+	if (due == "n/a") var due = "N/A";      
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
@@ -217,6 +217,28 @@ dtps.classStream = function(num) {
 	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
 	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
 	    }
+	    dtps.classes[num].streamlist = [];
+	    for (var i = 0; i < dtps.classes[num].stream.length; i++) {
+		    if ((dtps.classes[num].stream[i].grade !== "-") && (dtps.classes[num].stream[i].grade)) {
+		  dtps.classes[num].streamlist.push(`
+<div class="card assignment">
+<div class="points">
+ <div class="earned">` + dtps.classes[num].stream[i].grade.split("/")[0] + `</div>
+<div class="total">/` + dtps.classes[num].stream[i].grade.split("/")[1] + `</div>
+</div>
+    <h4>` + dtps.classes[num].stream[i].title + `</h4>
+	<h5>Due ` + dtps.classes[num].stream[i].due + `</h5>
+</div>
+`); } else {
+dtps.classes[num].streamlist.push(`
+<div class="card assignment">
+    <h4>` + dtps.classes[num].stream[i].title + `</h4>
+	<h5>Due ` + dtps.classes[num].stream[i].due + `</h5>
+</div>
+`);	
+}
+	    }
+	     jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
     }
   }    
 	    
