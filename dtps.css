@@ -149,6 +149,10 @@ body.dark .header .card {
 	display: inline-block;
 	right: 25px;
 }
+.header .card .points.spinner {
+	top: 25px;
+	margin-top: 0px;
+}
 .header .card .points .earned {
 	font-size: 32px;
 	display: inline-block;
