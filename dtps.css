@@ -259,3 +259,8 @@ body.dark .header .card {
 	color: var(--dark);
 	background-color: var(--light);
 }
+
+body:not(.dev) .dev {
+	display: none !important;
+}
+
