@@ -1,10 +1,11 @@
 var dtps = {
   ver: 006,
-  readableVer: "v0.0.6 [ALPHA]"
+  readableVer: "v0.0.6 [ALPHA]",
+  trackSuffix: " [ALPHA]"
 };
 dtps.changelog = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 100px calc(50% - 400px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>What's new in project dtps</h2>
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 100px calc(50% - 400px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>What's new in Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <ul>
 <li>Added class stream phase one (PowerSchool seperates assignments into the all assignments category and graded assignments. So, to get assignment grades, I need to check the grades, but it leaves out ungraded assignments. Right now, it just shows all assignments, and grades are not reflected. Phase two will add grades. Stream phase 3 will add the stream for all classes combined)</li>
@@ -17,8 +18,8 @@ dtps.log = function(msg) {
 console.log("[DTPS] " + msg);
 }
 dtps.firstrun = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 100px calc(50% - 400px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>Welcome to project dtps</h2>
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 100px calc(50% - 400px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <h4>Before using project dtps, make sure you know what you're signing up for. Read all of this carefully.<h4>
 <li>Project dtps is a powerschool skin / mod that will pull data from your powerschool account and show you a much better UI</li>
@@ -34,7 +35,7 @@ dtps.firstrun = function () {
 dtps.alert = function (text, sub) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 100px calc(50% - 400px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">project dtps</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 100px calc(50% - 400px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
 <p>` + sub + `</p>
 </div>
@@ -56,12 +57,24 @@ dtps.getCookie = function(cname) {
     return "";
 }
 dtps.init = function () {
-  dtps.log("Starting dtps " + dtps.readableVer + "...");
+  dtps.log("Starting DTPS " + dtps.readableVer + "...");
   dtps.shouldRender = false;
   dtps.user = jQuery("#header-body h1").text().split(", ")[1];
+  dtps.classColors = [];
+  var eClassList = jQuery(".eclass_list ul").toArray();
+  for (var i = 0; i < eClassList.length; i++) {
+	  var eclass = jQuery(eClassList[i])
+	  var col = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
+              return item.trim().match(/^border_color/);
+          })[0].replace("border_color_", "filter_");
+	  var id = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
+               return item.trim().match(/^eclass_/);
+          })[1];
+	  dtps.classColors.push({id: id, col: col}); 
+  }
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
-    dtps.alert("Unsupported school", "Project dtps only works at Design Tech High School");
+    dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
   } else {
     
      if (Number(dtps.getCookie("dtps")) < dtps.ver) {
@@ -319,7 +332,7 @@ dtps.showClasses = function () {
 });
 }
 dtps.render = function() {
-  document.title = "Project dtps Alpha"
+  document.title = "Project DTPS" + dtps.trackSuffix
    $ = jQuery;
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
