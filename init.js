@@ -24,13 +24,13 @@ dtps.firstrun = function () {
 <h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <h4>Before using Project DTPS, make sure you know what you're signing up for. Read all of this carefully.<h4>
-<li>Project dtps is a powerschool skin / mod that will pull data from your powerschool account and show you a much better UI</li>
+<li>Project dtps basically a completly different website ran via a script on powerschool that will pull data from your powerschool account and show you a much better UI</li>
 <li>Project dtps is meant to be simple, so various powerschool features will be left out. If you need to use an unsupported feature, reload powerschool and don't click the bookmark.</li>
-<li>Project dtps will not store any of your user data anywhere. Project dtps currently only saves the last used version of Project DTPS (for changelogs) and if you agree to this prompt locally on your computer as a cookie.</li>
+<li>Project dtps will not store any of your user data anywhere. Project dtps currently only saves the last used version of Project DTPS (for changelogs) and if you agreed to this prompt locally on your computer as a cookie.</li>
 <li>Project dtps has the potential to write / edit data on your powerschool account, but there are no plans for that and it currently does not write/edit anything on your powerschool account, powerschool assignments, any powerschool coursework, etc.</li>
-<li>Project dtps needs to be launched via the bookmark <b>every time</b> you visit powerschool in order to work. You can choose to not click the bookmark and powerschool will work as normal. Project dtps does not and cannot run any scrips of any kind without you clicking the bookmark. A chrome extension may be created in the future to automatically load Project DTPS.</li>
+<li>Project dtps needs to be launched via the bookmark <b>every time</b> you visit powerschool in order to work. You can choose to not click the bookmark and powerschool will work as normal. Project dtps does not and cannot run any scrips of any kind without you clicking the bookmark (unless using the Project DTPS auto load chrome extension)</li>
 <li>To prevent any privacy incidents from occuring, please don't run other scripts alongside Project DTPS. Project DTPS can be reverse engineered and taken advantage of if you run other scripts.</li>
-<li><b>Project dtps or myself are not responsible for any issues of any kind regarding anything related to powerschool. Use this at your own risk. Project dtps will have bugs, some of which may inaccuratly reflect your academic status. If you have any doubts, you can just not click the bookmark and use powerschool normally.</b></li>
+<li><b>Project DTPS and myself are not responsible for any issues of any kind regarding anything related to powerschool. Use this at your own risk. Project DTPS will have bugs, some of which may inaccuratly reflect your academic status. If you have any doubts about anything, you can just not click the bookmark and use powerschool normally.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true'; dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
