@@ -59,53 +59,54 @@ dtps.getCookie = function(cname) {
     return "";
 }
 dtps.requests = {};
+dtps.http = {};
 dtps.webReq = function(req, url, callback) {
 	if (dtps.requests[url] == undefined) {
 	if (req == "psGET") {
-		var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
+		dtps.http[url] = new XMLHttpRequest();
+  dtps.http[url].onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       if (callback) callback(this.responseText);
 	  dtps.requests[url] = this.responseText;
     } 
   };
-  xhttp.open("GET", url, true);
-  xhttp.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-  xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  xhttp.setRequestHeader("Upgrade-Insecure-Requests", "1")
-  xhttp.send();
+  dtps.http[url].open("GET", url, true);
+  dtps.http[url].setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+  dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+  dtps.http[url].setRequestHeader("Upgrade-Insecure-Requests", "1")
+  dtps.http[url].send();
 	}
 	if (req == "psPOST") {
-		var xhttpB = new XMLHttpRequest();
-      xhttpB.onreadystatechange = function() {
+		dtps.http[url] = new XMLHttpRequest();
+      dtps.http[url].onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
          if (callback) callback(this.responseText);
 	  dtps.requests[url] = this.responseText;
         }
       }
-      xhttpB.open("POST", url, true);
-  xhttpB.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
-  xhttpB.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  xhttpB.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-  xhttpB.setRequestHeader("X-Prototype-Version", "1.7.1")
-  xhttpB.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  xhttpB.send("csrf_token=" + CSRFTOK);
+      dtps.http[url].open("POST", url, true);
+  dtps.http[url].setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
+  dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+  dtps.http[url].setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+  dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
+  dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
+  dtps.http[url].send("csrf_token=" + CSRFTOK);
 	}
 	if (req == "letPOST") {
-		var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
+		dtps.http[url] = new XMLHttpRequest();
+    dtps.http[url].onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
        if (callback) callback(this.responseText);
 	  dtps.requests[url] = this.responseText;
     }
 	}
-  xhttp.open("POST", url, true);
-  xhttp.setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
-  xhttp.setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-  xhttp.setRequestHeader("X-Prototype-Version", "1.7.1")
-  xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  xhttp.send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
+  dtps.http[url].open("POST", url, true);
+  dtps.http[url].setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
+  dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+  dtps.http[url].setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
+  dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
+  dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
+  dtps.http[url].send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
 	}
 	} else {
 			if (callback) callback(dtps.requests[url]);
