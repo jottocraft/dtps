@@ -282,7 +282,7 @@ dtps.classStream = function(num) {
 	    for (var i = 0; i < dtps.classes[num].stream.length; i++) {
 		    if ((dtps.classes[num].stream[i].grade !== "-") && (dtps.classes[num].stream[i].grade)) {
 		  dtps.classes[num].streamlist.push(`
-<div class="card assignment">
+<div class="card assignment ` + dtps.classes[num].col + `">
 <div class="points">
  <div class="earned">` + dtps.classes[num].stream[i].grade.split("/")[0] + `</div>
 <div class="total">/` + dtps.classes[num].stream[i].grade.split("/")[1] + `</div>
