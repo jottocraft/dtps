@@ -292,7 +292,7 @@ dtps.classStream = function(num) {
 </div>
 `); } else {
 dtps.classes[num].streamlist.push(`
-<div class="card assignment">
+<div class="card assignment ` + dtps.classes[num].col + `">
     <h4>` + dtps.classes[num].stream[i].title + `</h4>
 	<h5>Due ` + dtps.classes[num].stream[i].due + `</h5>
 </div>
@@ -303,6 +303,25 @@ dtps.classes[num].streamlist.push(`
     });    
 	    
     }); 
+
+}
+dtps.masterStream = function() {
+  dtps.showClasses();
+  jQuery(".classContent").html(`
+<div class="spinner">
+  <div class="bounce1"></div>
+  <div class="bounce2"></div>
+  <div class="bounce3"></div>
+</div>
+`);
+	var buffer = [];
+    for (var i = 0; i < dtps.classes.length; i++) {
+	    if (dtps.classes[i].streamlist) {
+		    buffer.push(dtps.classes[i].streamlist.join(""))
+	    }
+    }
+	jQuery(".classContent").html(buffer.join(""));
+	$(".card.assignment").addClass("color");
 
 }
 dtps.getPage = function(loc, id) {
@@ -328,7 +347,7 @@ dtps.getPage = function(loc, id) {
 dtps.showClasses = function () {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + ` dev">
+  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream'; dtps.masterStream();" class="class ` + streamClass + ` dev">
 <div class="label">Stream</div>
 <div class="grade"><i class="material-icons">code</i></div>
 </div>
