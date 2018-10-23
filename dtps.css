@@ -257,7 +257,7 @@ body.dark .header .card {
 	background-color: var(--dark);
 }
 .class.active .grade {
-	color: var(--norm);
+	color: var(--dark);
 	background-color: var(--light);
 }
 
