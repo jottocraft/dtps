@@ -127,7 +127,7 @@ dtps.init = function () {
 	  var id = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
                return item.trim().match(/^eclass_/);
           })[1].replace("eclass_", "");
-	  var loc = eclass.attr("href").split("/");
+	  var loc = eclass.children("div.eclass_filter").attr("onclick").split("/");
 	  dtps.classColors.push({id: id, col: col, loc: loc});
 	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/assignment");
   }
