@@ -49,6 +49,7 @@
 }
 .class.active {
 	border: 2px solid #a3a3a3;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
 }
 .class .label {
 	width: 156px;
@@ -256,7 +257,7 @@ body.dark .header .card {
 	background-color: var(--dark);
 }
 .class.active .grade {
-	color: var(--dark);
+	color: var(--norm);
 	background-color: var(--light);
 }
 
