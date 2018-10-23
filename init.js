@@ -65,7 +65,7 @@ dtps.webReq = function(req, url, callback) {
 		var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      callback(this.responseText);
+      if (callback) callback(this.responseText);
 	  dtps.requests[url] = this.responseText;
     } 
   };
@@ -79,7 +79,7 @@ dtps.webReq = function(req, url, callback) {
 		var xhttpB = new XMLHttpRequest();
       xhttpB.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-         callback(this.responseText);
+         if (callback) callback(this.responseText);
 	  dtps.requests[url] = this.responseText;
         }
       }
@@ -95,7 +95,7 @@ dtps.webReq = function(req, url, callback) {
 		var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-       callback(this.responseText);
+       if (callback) callback(this.responseText);
 	  dtps.requests[url] = this.responseText;
     }
 	}
@@ -108,7 +108,7 @@ dtps.webReq = function(req, url, callback) {
   xhttp.send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
 	}
 	} else {
-			callback(dtps.requests[url]);
+			if (callback) callback(dtps.requests[url]);
 		}
 }
 dtps.init = function () {
@@ -127,7 +127,9 @@ dtps.init = function () {
 	  var id = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
                return item.trim().match(/^eclass_/);
           })[1].replace("eclass_", "");
-	  dtps.classColors.push({id: id, col: col}); 
+	  var loc = eclass.attr("href").split("/");
+	  dtps.classColors.push({id: id, col: col, loc: loc});
+	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/assignment");
   }
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
