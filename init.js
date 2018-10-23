@@ -347,7 +347,7 @@ dtps.getPage = function(loc, id) {
 dtps.showClasses = function () {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream'; dtps.masterStream();" class="class ` + streamClass + ` dev">
+  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + ` dev">
 <div class="label">Stream</div>
 <div class="grade"><i class="material-icons">code</i></div>
 </div>
@@ -369,7 +369,9 @@ dtps.showClasses = function () {
   } else {
   $(".header .btns").show();
   }
-  if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass);
+  if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
+  if (dtps.selectedClass == "stream") dtps.masterStream();	       
+	    
 });
 }
 dtps.render = function() {
