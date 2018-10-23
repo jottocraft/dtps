@@ -272,9 +272,11 @@ dtps.classStream = function(num) {
     dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", function(resp) {
 	     data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow):not(:has(th))").toArray();
 	    for (var i = 0; i < data.length; i++) {
+	    if (jQuery(data[i]).find("a").attr("href")) {
 	    var id = dtps.classes[num].streamitems.indexOf(jQuery(data[i]).find("a").attr("href").split("/")[5])
 	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
 	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
+	    }
 	    }
 	    dtps.classes[num].streamlist = [];
 	    for (var i = 0; i < dtps.classes[num].stream.length; i++) {
