@@ -130,6 +130,7 @@ dtps.init = function () {
 	  var loc = eclass.children("div.eclass_filter").attr("onclick").split("/");
 	  dtps.classColors.push({id: id, col: col, loc: loc});
 	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/assignment");
+	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/grades");
   }
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
