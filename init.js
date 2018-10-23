@@ -203,8 +203,6 @@ dtps.classStream = function(num) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-	    
-      console.log(this.responseText)
       var data = jQuery(this.responseText).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
       dtps.classes[num].stream = [];
       dtps.classes[num].streamlist = [];
@@ -337,7 +335,7 @@ dtps.showClasses = function () {
 		  if (dtps.selectedClass !== "stream") $(".background").addClass(dtps.classes[dtps.selectedClass].col)
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
-  if (dtps.selectedContent == "stream") dtps.classStream(dtps.selectedClass);
+  if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass);
   //dtps.loadClass()
   $(".header h1").html($(this).children(".label").text())
   if ($(this).children(".label").text() == "Stream") {
