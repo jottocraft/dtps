@@ -341,7 +341,6 @@ dtps.showClasses = function () {
 		  if (dtps.selectedClass !== "stream") $(".background").addClass(dtps.classes[dtps.selectedClass].col)
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
-  if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass);
   //dtps.loadClass()
   $(".header h1").html($(this).children(".label").text())
   if ($(this).children(".label").text() == "Stream") {
@@ -349,6 +348,7 @@ dtps.showClasses = function () {
   } else {
   $(".header .btns").show();
   }
+  if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass);
 });
 }
 dtps.render = function() {
