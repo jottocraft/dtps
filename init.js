@@ -274,7 +274,7 @@ dtps.classStream = function(num) {
 	    for (var i = 0; i < data.length; i++) {
 	    if (jQuery(data[i]).find("a").attr("href")) {
 	    var id = dtps.classes[num].streamitems.indexOf(jQuery(data[i]).find("a").attr("href").split("/")[5])
-	    if (id !== undefined) {
+	    if (id && (id != -1)) {
 	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
 	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
 	    }
