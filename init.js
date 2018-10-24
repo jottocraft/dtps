@@ -386,7 +386,7 @@ dtps.showClasses = function () {
 <div class="label">Stream</div>
 <div class="grade"><i class="material-icons">view_stream</i></div>
 </div>
-<div class="classDivider dev"></div>
+<div class="classDivider"></div>
 ` + dtps.classlist.join(""));
   if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
