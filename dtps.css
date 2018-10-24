@@ -246,7 +246,7 @@ body.dark .header .card {
 }
 .card.color {
 	background: var(--grad);
-	color: white;
+	color: white !important;
 }
 .class {
 	border-color: var(--dark);
