@@ -157,11 +157,21 @@ body.dark .header .card {
 	display: inline-block;
 	color: #8e8e8e;
 }
+.header .card.color .points .total {
+	color: var(--light);
+}
 .header .card.assignment h5 {
 	font-size: 1.5rem !important;
 }
 .header .card.assignment h4 {
 	margin-top: 0px !important;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 0px;
+    overflow: hidden;
+}
+.header .card.assignment.graded h4 {
+	width: calc(100% - 125px);
 }
 .card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
 	--light: #a3a3a3;
