@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 010,
-  readableVer: "v0.1.0 (Beta)",
+  ver: 011,
+  readableVer: "v0.1.1 (Beta)",
   trackSuffix: " (Beta)"
 };
 dtps.changelog = function () {
@@ -8,10 +8,9 @@ dtps.changelog = function () {
 <h2>What's new in Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <ul>
-<li>Promoted from alpha to beta</li>
-<li>Added class colors (fetched from PowerSchool)</li>
-<li><a href="https://chrome.google.com/webstore/detail/project-dtps/pakgdifknldaiglefmpkkgfjndemfapo/">Chrome Extension</a></li>
-<li>Up next: multi-block pages and stream. Gradebook is low priority right now, so I'll be hiding the tab until it's ready.</li>
+<li>Added Stream to class list. Shows work from all classes.</li>
+<li><b>Known stream bug: does not show content from the class at top of the list.</b></li>
+<li>Up next: ironing things out and multi-block pages. Gradebook is low priority right now, so I'll be hiding the tab until it's ready.</li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
 `)
@@ -60,13 +59,13 @@ dtps.getCookie = function(cname) {
 }
 dtps.requests = {};
 dtps.http = {};
-dtps.webReq = function(req, url, callback) {
+dtps.webReq = function(req, url, callback, q) {
 	if (dtps.requests[url] == undefined) {
 	if (req == "psGET") {
 		dtps.http[url] = new XMLHttpRequest();
   dtps.http[url].onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      if (callback) callback(this.responseText);
+      if (callback) callback(this.responseText, q);
 	  dtps.requests[url] = this.responseText;
     } 
   };
@@ -80,7 +79,7 @@ dtps.webReq = function(req, url, callback) {
 		dtps.http[url] = new XMLHttpRequest();
       dtps.http[url].onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-         if (callback) callback(this.responseText);
+         if (callback) callback(this.responseText, q);
 	  dtps.requests[url] = this.responseText;
         }
       }
@@ -96,7 +95,7 @@ dtps.webReq = function(req, url, callback) {
 		dtps.http[url] = new XMLHttpRequest();
     dtps.http[url].onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-       if (callback) callback(this.responseText);
+       if (callback) callback(this.responseText, q);
 	  dtps.requests[url] = this.responseText;
     }
 	}
@@ -109,7 +108,7 @@ dtps.webReq = function(req, url, callback) {
   dtps.http[url].send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
 	}
 	} else {
-			if (callback) callback(dtps.requests[url]);
+			if (callback) callback(dtps.requests[url], q);
 		}
 }
 dtps.init = function () {
@@ -120,7 +119,9 @@ dtps.init = function () {
   dtps.user = HaikuContext.user;
   dtps.classColors = [];
   var eClassList = jQuery(".eclass_list ul").children().toArray();
+   dtps.classesReady = 0;
   for (var i = 0; i < eClassList.length; i++) {
+	  console.log(i)
 	  var eclass = jQuery(eClassList[i])
 	  var col = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
               return item.trim().match(/^border_color/);
@@ -131,7 +132,13 @@ dtps.init = function () {
 	  var loc = eclass.children("div.eclass_filter").attr("onclick").split("/");
 	  dtps.classColors.push({id: id, col: col, loc: loc});
 	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/assignment");
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/grades");
+	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/grades", function(resp, q) {
+		  var iTmp = null;
+		  for (i = 0; i < dtps.classes.length; i++) {
+			  if (dtps.classes[i].id == q.id) iTmp = i;
+		  }
+		  if (iTmp) dtps.classStream(iTmp, true); 
+	  }, { id: id, num: i });
   }
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
@@ -187,6 +194,9 @@ dtps.init = function () {
       if (dtps.shouldRender) dtps.render();
     });
 }
+dtps.checkReady = function(num) {
+	/* dtps.log(num + " reporting as READY total of " + dtps.classesReady); */ if ((dtps.selectedClass == "stream") && (dtps.classesReady == (dtps.classes.length - 1))) { dtps.log("LOADING STREAM"); dtps.masterStream(); }
+}
 dtps.loadPages = function(num) {
   jQuery(".sidebar").html(`
 <div class="classDivider"></div>
@@ -231,9 +241,9 @@ dtps.loadPages = function(num) {
 });
     });
 }
-dtps.classStream = function(num) {
+dtps.classStream = function(num, renderOv) {
   dtps.showClasses();
-  jQuery(".classContent").html(`
+  if (!renderOv) jQuery(".classContent").html(`
 <div class="spinner">
   <div class="bounce1"></div>
   <div class="bounce2"></div>
@@ -252,7 +262,8 @@ dtps.classStream = function(num) {
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
-        due: assignment.children("td:nth-child(3)").text().slice(0,-1)
+        due: assignment.children("td:nth-child(3)").text().slice(0,-1),
+		col: dtps.classes[num].col
       });
 	   dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", "")) 
         dtps.classes[num].streamlist.push(`
@@ -267,7 +278,7 @@ dtps.classStream = function(num) {
 </div>
 `);
        }
-      jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
+      if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
 	    
     dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", function(resp) {
 	     data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow):not(:has(th))").toArray();
@@ -281,31 +292,41 @@ dtps.classStream = function(num) {
 	    }
 	    }
 	    dtps.classes[num].streamlist = [];
-	    for (var i = 0; i < dtps.classes[num].stream.length; i++) {
-		    if ((dtps.classes[num].stream[i].grade !== "-") && (dtps.classes[num].stream[i].grade)) {
-		  dtps.classes[num].streamlist.push(`
-<div class="card assignment ` + dtps.classes[num].col + `">
+
+	     if (!renderOv) jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
+		 dtps.classesReady++;
+		 dtps.checkReady(num);
+    });    
+	    
+    }); 
+	
+
+}
+dtps.renderStream = function(stream) {
+	var streamlist = [];
+	if (col == undefined) var col = "";
+	for (var i = 0; i < stream.length; i++) {
+		    if ((stream[i].grade !== "-") && (stream[i].grade)) {
+		  streamlist.push(`
+<div class="card graded assignment ` + stream[i].col + `">
 <div class="points">
- <div class="earned">` + dtps.classes[num].stream[i].grade.split("/")[0] + `</div>
-<div class="total">/` + dtps.classes[num].stream[i].grade.split("/")[1] + `</div>
+ <div class="earned">` + stream[i].grade.split("/")[0] + `</div>
+<div class="total">/` + stream[i].grade.split("/")[1] + `</div>
 </div>
-    <h4>` + dtps.classes[num].stream[i].title + `</h4>
-	<h5>Due ` + dtps.classes[num].stream[i].due + `</h5>
+    <h4>` + stream[i].title + `</h4>
+	<h5>Due ` + stream[i].due + `</h5>
 </div>
 `); } else {
-dtps.classes[num].streamlist.push(`
-<div class="card assignment ` + dtps.classes[num].col + `">
-    <h4>` + dtps.classes[num].stream[i].title + `</h4>
-	<h5>Due ` + dtps.classes[num].stream[i].due + `</h5>
+streamlist.push(`
+<div class="card assignment ` + stream[i].col + `">
+    <h4>` + stream[i].title + `</h4>
+	<h5>Due ` + stream[i].due + `</h5>
 </div>
 `);	
 }
 	    }
-	     jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
-    });    
-	    
-    }); 
-
+		return streamlist.join("");
+		
 }
 dtps.masterStream = function() {
   dtps.showClasses();
@@ -318,11 +339,23 @@ dtps.masterStream = function() {
 `);
 	var buffer = [];
     for (var i = 0; i < dtps.classes.length; i++) {
-	    if (dtps.classes[i].streamlist) {
-		    buffer.push(dtps.classes[i].streamlist.join(""))
+	    if (dtps.classes[i].stream) {
+			dtps.log("BUILDING: " + i)
+			buffer = buffer.concat(dtps.classes[i].stream)
 	    }
     }
-	jQuery(".classContent").html(buffer.join(""));
+	console.log(buffer)
+	jQuery(".classContent").html(dtps.renderStream(buffer.sort(function(a, b){
+var year = new Date().getFullYear();
+var today = new Date().toHumanString();
+    var keyA = new Date(a.due.replace("Today", today).replace(year + " at", "")).setYear(year),
+        keyB = new Date(b.due.replace("Today", today).replace(year + " at", "")).setYear(year);
+
+    // Compare the 2 dates
+    if(keyA < keyB) return 1;
+    if(keyA > keyB) return -1;
+    return 0;
+})));
 	$(".card.assignment").addClass("color");
 
 }
@@ -349,9 +382,9 @@ dtps.getPage = function(loc, id) {
 dtps.showClasses = function () {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + ` dev">
+  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
 <div class="label">Stream</div>
-<div class="grade"><i class="material-icons">code</i></div>
+<div class="grade"><i class="material-icons">view_stream</i></div>
 </div>
 <div class="classDivider dev"></div>
 ` + dtps.classlist.join(""));
@@ -395,7 +428,7 @@ dtps.render = function() {
 </div>
 <div class="background">
 <div class="header">
-<h1 id="headText">PowerSchool</h1>
+<h1 id="headText">Stream</h1>
 <div style="display: none;" class="btns row">
 <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
 Stream
@@ -411,6 +444,13 @@ Gradebook
 </button>
 </div>
 <div class="classContent">
+
+<div class="spinner">
+  <div class="bounce1"></div>
+  <div class="bounce2"></div>
+  <div class="bounce3"></div>
+</div>
+
 </div>
 </div>
 </div>
