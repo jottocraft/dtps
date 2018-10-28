@@ -463,7 +463,7 @@ Gradebook
 <h3>Settings</h3>
 <h5>Project DTPS` + dtps.trackSuffix + ` ` + dtps.readableVer + `</h5>
 <br />
-<div class="switch` + dark + `"><span class="head"></span></div>
+<div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
 <div class="label">Enable dark mode</div>
 </div>
 
