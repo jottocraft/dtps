@@ -113,6 +113,7 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
+	jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   var sudoers = ["10837719", "10838212", "10894474"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
   dtps.shouldRender = false;
@@ -488,7 +489,6 @@ Gradebook
    type: "text/css",
    href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
 }).appendTo("head");
-  jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   fluid.init();
   
 }
