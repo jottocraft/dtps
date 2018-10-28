@@ -426,7 +426,7 @@ dtps.render = function() {
 </div>
 `);
   }
-	var dark = fluid.isDark()
+	if (fluid.isDark()) { var dark = " active" } else { var dark = "" }
    jQuery("body").html(`
 <div class="sidebar">
 </div>
@@ -463,7 +463,7 @@ Gradebook
 <h3>Settings</h3>
 <h5>Project DTPS` + dtps.trackSuffix + ` ` + dtps.readableVer + `</h5>
 <br />
-<div class="switch` + {dark ? (" active") : ("")} + `"><span class="head"></span></div>
+<div class="switch` + dark + `"><span class="head"></span></div>
 <div class="label">Enable dark mode</div>
 </div>
 
