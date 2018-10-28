@@ -1,5 +1,5 @@
 /*!
-Fluid UI v3.0 beta 2
+Fluid UI Elements v3.0.0 beta 4
 
 Copyright (c) 2017-2018 jottocraft
 
@@ -22,33 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-
- /* Custom dark elements */
-
-/* Syntax
-
-Light mode
-body:not(.dark) *element(s)* {
-
+/*  THEME COLORS
+Feel free to change these colors to fit your brand.
+For the outline colors, convert the main colors to RGB and add ", 0.75" for RGBA opacity */
+:root {
+  --theme-color: #3396e6;
+  --theme-color-outline: #3396e6C0;
+  --theme-text-color: white;
 }
 
-Dark mode
-body.dark *element(s)* {
 
-}
-*/
 
 /*
 
 Fluid Elements
 
 */
+body {
+  transition: background-color 0.5s;
+}
 .outline-icons {
   display: inline-block;
   width: 20px;
   height: 20px;
   background-repeat: no-repeat;
   background-size: contain;
+}
+.theme, body.outline .theme code {
+  color: var(--theme-text-color) !important;
+  background-color: var(--theme-color) !important;
 }
 
 /* Product Sans */
@@ -75,13 +77,33 @@ html {
   font-weight: 400;
   src: url(https://fluid.js.org/caesar.ttf) format('truetype');
 }
+.material-icons {
+  font-family: 'Material Icons Extended';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
 h1, h2, h3, h4, h5 {
     font-family: "Product sans", sans-serif;
     font-weight: normal;
 }
-p, div, button, a, span, input, body, html {
+p, div, button, a, span, input, body, html, textarea {
   font-family: "Google sans", sans-serif;
   font-weight: normal;
+}
+p i {
+  vertical-align: middle;
+  font-size: 20px;
+  margin: 0px 2px;
 }
 img.emoji {
   height: 1em;
@@ -171,10 +193,10 @@ body.dark .collection .collection-item {
   color: white;
 }
 body:not(.dark) .collection {
-  border: thin solid #e0e0e0
+  border: 1.4px solid #e0e0e0
 }
 body.dark .collection {
-  border: thin solid #161616
+  border: 1.4px solid #161616
 }
 body:not(.dark) .collection a.collection-item:not(.active):hover {
     background-color: #ddd
@@ -294,9 +316,10 @@ button:focus {outline:0;}
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    transition: all 0.4s;
+    transition: background-color 0.4s, box-shadow 0.4s, color 0.4s;
     user-select: none;
     vertical-align: middle;
+    margin: 0px 5px;
   }
   .btn i {
     display: inline-block;
@@ -305,6 +328,48 @@ button:focus {outline:0;}
     margin-bottom:-7px;
     margin-right: 5px;
     line-height: inherit;
+  }
+  .switch {
+    border-radius: 25px;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: background-color 0.4s;
+    box-shadow: none !important;
+  }
+  body.outline .switch:not(.active) .head {
+    background-color: transparent !important;
+  }
+  .switch .head {
+    transition: background-color 0.4s, box-shadow 0.4s, margin 0.4s;
+    background-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 2.5px;
+    position: absolute;
+  }
+  body.outline .switch:not(.active) .head {
+    margin: 1.4px;
+  }
+  body.outline .switch.active .head {
+    margin: 1.4px;
+    margin-left: 25.5px;
+  }
+  .switch.active .head {
+    margin-left: 27.5px;
+    background-color: var(--theme-text-color);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+  }
+  .label {
+    line-height: 25px;
+    height: 25px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 25px;
   }
   .list .item i {
     display: inline-block;
@@ -320,36 +385,45 @@ button:focus {outline:0;}
     margin-top: -13px;
     margin-left: -13px;
   }
+  body.dark:not(.outline) .btn:not(.active):hover {
+    background-color: #16181a
+  }
+  body:not(.dark).outline .btn:not(.active):hover {
+    border: 1.4px solid #bababa;
+  }
+  body.dark.outline .btn:not(.active):hover {
+    border: 1.4px solid #0d0e0f;
+  }
+  .btns .btn:not(.active):hover {
+    box-shadow: none !important;
+  }
   body:not(.dark):not(.outline) .btn:not(.active):hover {
     background-color: #dddddd
   }
   body.dark:not(.outline) .btn:not(.active):hover {
     background-color: #16181a
   }
-  body:not(.dark).outline .btn:not(.active):hover {
-    border: thin solid #bababa;
-  }
-  body.dark.outline .btn:not(.active):hover {
-    border: thin solid black;
-  }
   .row:not(.btns) .btn {
     margin-right: 10px;
   }
-  body:not(.dark):not(.outline) .btn:not(.active), body:not(.dark):not(.outline) .btns.row {
-  background-color: #f2f2f2;
+  body:not(.dark):not(.outline) .btn:not(.active), body:not(.dark):not(.outline) .btns.row, body:not(.dark):not(.outline) .switch:not(.active) {
+  background-color: #efefef;
       color: #333333;
     }
-    body:not(.dark).outline .btn:not(.active) {
-    border: thin solid #dddddd;
+    body:not(.dark).outline .btn:not(.active), body:not(.dark).outline  .switch:not(.active), body:not(.dark).outline  .switch:not(.active) .head {
+    border: 1.4px solid #dddddd;
     background-color: inherit;
         color: #333333;
       }
-    body.dark:not(.outline) .btn:not(.active), body.dark:not(.outline) .btns.row {
-    background-color: #1c2023;
+    body.dark:not(.outline) .btn:not(.active), body.dark:not(.outline) .switch:not(.active), body.dark:not(.outline) .btns.row {
+    background-color: #181b1d;
         color: white;
       }
-      body.dark.outline .btn:not(.active) {
-        border: thin solid #151617;
+      .btns.row .btn {
+        margin: 0;
+      }
+      body.dark.outline .btn:not(.active), body.dark.outline .switch:not(.active), body.dark.outline  .switch:not(.active) .head {
+        border: 1.4px solid #1f2123;
         background-color: inherit;
           color: white;
         }
@@ -357,13 +431,13 @@ button:focus {outline:0;}
       background-color: transparent !important;
     }
     body.outline .btns .btn:not(.active) {
-      border: thin solid transparent !important;
+      border: 1.4px solid transparent !important;
     }
     body:not(.dark).outline .btns {
-      border: thin solid #dddddd;
+      border: 1.4px solid #dddddd;
       }
       body.dark.outline .btns {
-        border: thin solid #151617;
+        border: 1.4px solid #1f2123;
         }
         .btns {
           width:auto;
@@ -373,15 +447,15 @@ button:focus {outline:0;}
           margin-left: 5px;
         }
 
-  body:not(.outline) .btn.active, body:not(.outline) .btn.active:hover, body:not(.outline) .list .item.active, body:not(.outline) .list .item.active:hover {
-  background-color: #3396e6;
-      color: white;
+  body:not(.outline) .btn.active, body:not(.outline) .switch.active, body:not(.outline) .btn.active:hover, body:not(.outline) .list .item.active, body:not(.outline) .list .item.active:hover {
+  background-color: var(--theme-color);
+      color: var(--theme-text-color);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
     }
-    body.outline .btn.active, body.outline .btn.active:hover, body.outline .list .item.active, body.outline .list .item.active:hover {
-    background-color: rgb(32, 123, 223, 0.8);
-    border: thin solid #3396e6;
-        color: white;
+    body.outline .btn.active, body.outline .switch.active, body.outline .btn.active:hover, body.outline .list .item.active, body.outline .list .item.active:hover {
+    background-color: var(--theme-color-outline);
+    border: 1.4px solid var(--theme-color);
+        color: var(--theme-text-color);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
       }
 
@@ -404,11 +478,29 @@ body:not(.dark) .tabs .tab a:hover, body:not(.dark) .tabs .tab a.active, body:no
 /* Nav  */
 .nav {
 display: inline-block;
-border: thin solid #f0f0f0;
+border: 1.4px solid #f0f0f0;
 margin: 15px;
 border-radius: 10px;
 user-select: none;
-text-align: right;
+}
+.nav.right {
+  float: right !important;
+}
+.card.nav {
+  padding: 5px;
+  max-width: 100%;
+  margin: 0;
+  text-align: center;
+}
+.card.nav li {
+  border-radius: 22px;
+  font-size: 20px;
+  padding: 5px 10px;
+  background-color: transparent !important;
+  border: none !important;
+}
+.card.nav li i, .card.nav li span {
+  vertical-align: middle;
 }
 .nav.sticky, .navbar.sticky {
   position: fixed;
@@ -435,9 +527,9 @@ text-align: right;
   margin-right: 0;
 }
 .nav li {
-  margin: 2px 10px;
+  margin: 2px 7px;
   border-radius: 30px;
-  transition: all 0.4s;
+  transition: background-color 0.4s, box-shadow 0.4s, color 0.4s;
   cursor: pointer;
   padding: 12px;
 }
@@ -457,24 +549,27 @@ text-align: right;
   user-select: none;
 }
 
-.nav ul {
+.nav:not(.card) ul {
   margin-top: 7px;
-  margin-bottom: 7px;
+  margin-bottom: 0;
+}
+.nav.card ul {
+  margin: 3px;
 }
 body.dark:not(.outline) .nav {
-  border: thin solid #23272A;
+  border: 1.4px solid #23272A;
   background-color: #23272A;
 }
 body:not(.dark):not(.outline) .nav {
 background-color:#fcfcfc;
 }
 body.dark.outline .nav {
-  border: thin solid #151617;
+  border: 1.4px solid #1f2123;
   box-shadow: none ;
   background-color: #2C2F33;
 }
 body:not(.dark).outline .nav {
-  border: thin solid #dddddd;
+  border: 1.4px solid #dddddd;
   box-shadow: none;
 background-color: #FFFFFF;
 }
@@ -489,10 +584,12 @@ body:not(.dark) .nav a {
   padding:10px;z-index:99;
 }
 .nav ul {
+  white-space: nowrap;
+  overflow: auto;
   list-style-type: none;padding:0
 }
 .nav ul li {
-    float: left;
+    display: inline-block;
 }
 body:not(.dark):not(.outline) .nav li:not(.active) {
   background-color: #ededed
@@ -513,14 +610,14 @@ body.dark:not(.outline) .nav li.active {
 }
 
 body:not(.dark).outline .nav li:not(.active) {
-  border: thin solid #dddddd
+  border: 1.4px solid #dddddd
 }
 body.dark.outline .nav li:not(.active) {
-  border: thin solid #151617
+  border: 1.4px solid #1f2123
 }
 body:not(.dark).outline .nav li.active {
   background-color: rgb(76, 76, 76, 0.8);
-  border: thin solid #4c4c4c;
+  border: 1.4px solid #4c4c4c;
   color: white;
 }
 body:not(.dark).outline .nav li.active span {
@@ -528,7 +625,7 @@ body:not(.dark).outline .nav li.active span {
 }
 body.dark .nav li.active {
   background-color: rgb(237, 237, 237, 0.8);
-  border: thin solid #dddddd;
+  border: 1.4px solid #dddddd;
   color: black;
 }
 
@@ -558,8 +655,7 @@ input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]
   outline: none;
   height: 3rem;
   margin-bottom: 20px;
-  -webkit-transition: all 0.1s;
-  transition: all 0.1s
+  transition: background-color 0.4s, box-shadow 0.3s, color 0.4s;
 }
 input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]):not(.noshadow):focus, textarea:not(.noshadow):focus {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -571,26 +667,22 @@ textarea {
 .white-text {
   color:white;
 }
-body:not(.dark):not(.outline) textarea, body:not(.dark):not(.outline) input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
-    background-color:#f2f2f2;
+body:not(.dark):not(.outline) textarea, body:not(.dark):not(.outline) .fluid.element, body:not(.dark):not(.outline) input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+    background-color:#efefef;
     color: black;
 }
-body.dark:not(.outline) textarea, body.dark:not(.outline) input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+body.dark:not(.outline) textarea, body.dark:not(.outline) .fluid.element, body.dark:not(.outline) input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
     background-color:#23272A;
     color: white;
 }
-body:not(.dark).outline textarea, body:not(.dark).outline input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+body:not(.dark).outline textarea, body:not(.dark).outline .fluid.element, body:not(.dark).outline input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
     background-color:transparent;
-    border: thin solid #dddddd;
+    border: 1.4px solid #dddddd;
     color: black;
 }
-body.dark textarea, body.dark input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
-    background-color:#23272A;
-    color: white;
-}
-body.dark.outline textarea, body.dark.outline input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+body.dark.outline textarea, body.dark.outline .fluid.element, body.dark.outline input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
     background-color:transparent;
-    border: thin solid #151617;
+    border: 1.4px solid #1f2123;
     color: white;
 }
 body:not(.dark) .chips {
@@ -745,19 +837,17 @@ body.dark .chips {
 
 /* Sections */
 .section {
-  border-radius: 20px;
+  border-radius: 30px;
   margin-bottom: 15px;
-  transition: all 0.5s !important;
+  transition: background-color 0.4s, color 0.4s !important;
 }
 .section.collapse .header, .section.collapse .header h1, .section.collapse .header h2, .section.collapse .header h3, .section.collapse .header h4, .section.collapse .header h5, .section.collapse .header h6  {
-  transition: all 0.5s !important;
-}
-.section.collapse .body  {
-  transition: all 0.5s !important;
+  transition: all 0.5s, color 0s !important;
 }
 .section.collapsed .header h1, .section.collapsed .header h2, .section.collapsed .header h3, .section.collapsed .header h4, .section.collapsed .header h5, .section.collapsed .header h6  {
-  transition: all 0.5s !important;
+  transition: all 0.5s, color 0s !important;
   font-size: 2.2rem;
+  margin-left: 10px;
 }
 .section.collapsed .header  {
   padding: 10px !important;
@@ -781,45 +871,30 @@ body.dark:not(.outline) .section {
   background-color:#1c2023;
 }
 body:not(.dark).outline .section {
-  border: thin solid #dddddd;
+  border: 1.4px solid #dddddd;
 }
 body.dark.outline .section {
-  border: thin solid #151617;
+  border: 1.4px solid #1f2123;
 }
-body:not(.outline) .section .header, body:not(.outline) .section.header {
-  padding: 30px;
+
+.beta.notice {
+  font-size: 20px;
+  vertical-align: middle;
+  border: 2px solid #ff7e00;
+  color: #ff7e00;
+  padding: 2px 4px;
+  border-radius: 10px;
 }
-body:not(.outline) .section .header i, body:not(.outline) .section.header i {
-  font-size: 30px;
+.section .header, .section.header {
+  padding: 40px;
+}
+.section .header i, .section.header i {
+  font-size: 32px;
   margin-left: 5px;
 }
-body.outline .section .header, body.outline .section.header {
-  padding: 64px;
-  padding-bottom: 15px;
-  padding-top: 30px;
-}
-body.outline .section .header i, body.outline .section.header i {
-  display:none;
-}
-body:not(.outline) .section .body {
-  padding: 45px;
+.section .body {
+  padding: 60px;
   padding-top: 0px;
-}
-body.outline .section .body {
-  padding: 64px;
-  padding-top: 15px;
-}
-body:not(.dark):not(.outline) .section input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]), body:not(.dark):not(.outline) .section textarea, body:not(.dark):not(.outline) .section .btn:not(.active), body:not(.dark):not(.outline) .section .btns.row {
-  background-color: #efefef;
-}
-body:not(.dark):not(.outline) .section .btn:not(.active):hover {
-  background-color: #cccccc;
-}
-body.dark:not(.outline) .section input:not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]), body.dark:not(.outline) .section textarea, body.dark:not(.outline) .section .btn:not(.active), body.dark:not(.outline) .section .btns.row {
-  background-color: #121416;
-}
-body.dark:not(.outline) .section .btn:not(.active):hover {
-  background-color: #0c0d0f !important;
 }
 
 .section .header i {
@@ -829,6 +904,11 @@ body.dark:not(.outline) .section .btn:not(.active):hover {
 .section.header i, .section.header span, .section.header h1, .section.header h2, .section.header h3, .section.header h4, .section.header h5 {
   display: inline-block;
   vertical-align: middle;
+}
+.section .header, .section.header {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Splash Screens */
@@ -840,15 +920,18 @@ div.splash {
 
 .card, code, .list .item {
     /* Add shadows to create the "card" effect */
-    transition: all 0.3s;
-    border-radius: 15px;
+    transition: background-color 0.4s, background 0.4s, box-shadow 0.4s, color 0.4s;
+    border-radius: 20px;
     z-index: 10;
+}
+.card {
+    border-radius: 20px;
 }
 code, .list .item {
 padding: 15px;
 }
 .card {
-  padding: 25px;
+  padding: 30px;
 }
 .list:not(.contextmenu) {
   padding: 3px;
@@ -864,8 +947,13 @@ padding: 15px;
 code {
   display:block;
   font-family: monospace, monospace !important;
+  font-size: 16px;
+  padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
   overflow: auto;
+}
+code xmp {
+  margin: 0;
 }
 /* contextmenus */
 .contextmenu {
@@ -883,7 +971,7 @@ code {
   display:inline-block;
 }
 body.outline .list .item:not(.active) {
-  border: thin solid transparent;
+  border: 1.4px solid transparent;
 }
 body:not(.dark):not(.outline) .list.contextmenu .item:not(.active):not(.disabled):hover {
   background-color: #f2f2f2;
@@ -892,10 +980,10 @@ body.dark:not(.outline) .list.contextmenu .item:not(.active):not(.disabled):hove
   background-color: #1f2022;
 }
 body:not(.dark).outline .list.contextmenu .item:not(.active):not(.disabled):hover {
-  border: thin solid #dddddd;
+  border: 1.4px solid #dddddd;
 }
 body.dark.outline .list.contextmenu .item:not(.active):not(.disabled):hover {
-  border: thin solid #1f2022;
+  border: 1.4px solid #1f2022;
 }
 body:not(.dark) .list .item.disabled {
   filter: blur(0.5px);
@@ -905,8 +993,11 @@ body.dark .list .item.disabled {
   filter: blur(0.5px);
   background-color: #32373c;
 }
-.list {
-  border-radius: 10px;
+.list:not(.contextmenu) {
+  border-radius: 25px;
+}
+.list.contextmenu {
+  border-radius: 20px;
 }
 .list .item {
   cursor: pointer;
@@ -945,11 +1036,11 @@ body:not(.dark) .card, body:not(.dark):not(.outline) code, body:not(.dark):not(.
   background-color:#fcfcfc;
 }
 body.dark.outline code, body.dark.outline .list {
-  border: thin solid #151617;
+  border: 1.4px solid #1f2123;
   box-shadow: none !important;
 }
 body:not(.dark).outline code, body:not(.dark).outline .list {
-  border: thin solid #dddddd;
+  border: 1.4px solid #dddddd;
   box-shadow: none !important;
 }
 body.dark.outline .list.contextmenu {
@@ -1001,18 +1092,71 @@ R.I.P Materialize
 
 .container {
     margin: 0 auto;
-    max-width: 1280px;
+    max-width: 1500px;
 }
 
 @media only screen and (min-width: 601px) {
     .container {
-        width: 85%
+        width: 90%
+    }
+    .nav {
+      max-width: calc(100% - 30px)
+    }
+    .fluid.logo {
+      display:none;
+    }
+}
+@media only screen and (max-width: 600px) {
+    .section {
+        border: none !important;
+        background-color: transparent !important;
+    }
+    .section.header, .section .header, .section .body {
+      padding: 10px !important;
+    }
+    input {
+      width: 100% !important;
+    }
+    .btns.row .btn {
+      display:block !important;
+      width: 100% !important;
+    }
+    .btns.row {
+      width: 100%;
+    }
+    #reldownload.fluid, #relspace.fluid {
+      display: none;
+    }
+    .nav ul {
+      text-align: center;
+    }
+    .nav li {
+      margin: 0 3px;
+    }
+     body:not(.dark).outline .section {
+      border: 1.4px solid #dddddd !important;
+    }
+     body.dark.outline .section {
+      border: 1.4px solid #1f2123 !important;
+    }
+    .section {
+      margin-left: 3px;
+      margin-right: 3px;
+    }
+    .fluid.logo {
+      display:none;
     }
 }
 
 @media only screen and (min-width: 993px) {
     .container {
-        width: 80%
+        width: 75%
+    }
+    .nav {
+      max-width: 55%
+    }
+    .fluid.logo {
+      display:inline-block;
     }
 }
 
@@ -1082,4 +1226,53 @@ body {
   -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
+}
+.divider {
+  width: 100%;
+  margin: 0 10px;
+  background-color: #b2b2b2;
+  height: 3px;
+  border-radius: 100px;
+}
+
+.space {
+ padding: 10px;
+ display:inline-block;
+ float: left;
+ margin: 0px 3px;
+}
+.space.demo {
+  padding: 5px 3px;
+  border-radius: 10px;
+  text-align:center;
+}
+.space.c1 {
+  width: calc(10% - 6px);
+}
+.space.c2 {
+  width: calc(20% - 6px);
+}
+.space.c3 {
+  width: calc(30% - 6px);
+}
+.space.c4 {
+  width: calc(40% - 6px);
+}
+.space.c5 {
+  width: calc(50% - 6px);
+}
+.space.c6 {
+  width: calc(60% - 6px);
+}
+.space.c7 {
+  width: calc(70% - 6px);
+}
+.space.c8 {
+  width: calc(80% - 6px);
+}
+.space.c9 {
+  width: calc(90% - 6px);
+}
+.space.c10 {
+  width: calc(100% - 6px);
 }
