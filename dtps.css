@@ -51,7 +51,7 @@
 	border: 2px solid #a3a3a3;
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
 }
-.class .label {
+.class .name {
 	width: 156px;
 	white-space: nowrap;
 	display: inline-block;
