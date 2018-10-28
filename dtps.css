@@ -279,3 +279,16 @@ body:not(.dev) .dev {
 	display: none !important;
 }
 
+.item.link {
+	font-size: 20px;
+	cursor: pointer;
+	margin-top: 10px;
+	padding-left: 10px;
+}
+.item.link i {
+	vertical-align: middle;
+	margin-right: 10px;
+}
+.item.link span {
+	vertical-align: middle;
+}
