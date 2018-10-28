@@ -1,498 +1,474 @@
-var dtps = {
-  ver: 011,
-  readableVer: "v0.1.1 (Beta)",
-  trackSuffix: " (Beta)"
-};
-dtps.changelog = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>What's new in Project DTPS</h2>
-<h4>` + dtps.readableVer + `</h4>
-<ul>
-<li>Added Stream to class list. Shows work from all classes.</li>
-<li><b>Known stream bug: does not show content from the class at top of the list.</b></li>
-<li>Up next: ironing things out and multi-block pages. Gradebook is low priority right now, so I'll be hiding the tab until it's ready.</li>
-</ul>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
-`)
-};
-dtps.log = function(msg) {
-console.log("[DTPS] " + msg);
-}
-dtps.firstrun = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>Welcome to Project DTPS</h2>
-<h4>` + dtps.readableVer + `</h4>
-<h4>Before using Project DTPS, make sure you know what you're signing up for. Read all of this carefully.<h4>
-<li>Project dtps basically a completly different website ran via a script on powerschool that will pull data from your powerschool account and show you a much better UI</li>
-<li>Project dtps is meant to be simple, so various powerschool features will be left out. If you need to use an unsupported feature, reload powerschool and don't click the bookmark.</li>
-<li>Project dtps will not store any of your user data anywhere. Project dtps currently only saves the last used version of Project DTPS (for changelogs) and if you agreed to this prompt locally on your computer as a cookie.</li>
-<li>Project dtps has the potential to write / edit data on your powerschool account, but there are no plans for that and it currently does not write/edit anything on your powerschool account, powerschool assignments, any powerschool coursework, etc.</li>
-<li>Project dtps needs to be launched via the bookmark <b>every time</b> you visit powerschool in order to work. You can choose to not click the bookmark and powerschool will work as normal. Project dtps does not and cannot run any scrips of any kind without you clicking the bookmark (unless using the Project DTPS auto load chrome extension)</li>
-<li>To prevent any privacy incidents from occuring, please don't run other scripts alongside Project DTPS. Project DTPS can be reverse engineered and taken advantage of if you run other scripts.</li>
-<li><b>Project DTPS and myself are not responsible for any issues of any kind regarding anything related to powerschool. Use this at your own risk. Project DTPS will have bugs, some of which may inaccuratly reflect your academic status. If you have any doubts about anything, you can just not click the bookmark and use powerschool normally.</b></li>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true'; dtps.render();" type="button" value="Accept & Continue"></span>
-`)
-};
-dtps.alert = function (text, sub) {
-  if (text == undefined) var text = "";
-  if (sub == undefined) var sub = "";
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>` + text + `</h2>
-<p>` + sub + `</p>
-</div>
-`)
-};
-dtps.getCookie = function(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
+/*!
+Fluid UI JavaScript Modules v3.0.0 beta 4
+
+Copyright (c) 2017-2018 jottocraft
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+ function getCookie(cname) {
+     var name = cname + "=";
+     var decodedCookie = decodeURIComponent(document.cookie);
+     var ca = decodedCookie.split(';');
+     for(var i = 0; i <ca.length; i++) {
+         var c = ca[i];
+         while (c.charAt(0) == ' ') {
+             c = c.substring(1);
+         }
+         if (c.indexOf(name) == 0) {
+             return c.substring(name.length, c.length);
+         }
+     }
+     return "";
+ }
+
+fluid = new Object;
+fluid.cloudEnabled = true;
+fluid.contextMenuOpen = false;
+
+fluid.dark = function(theme, auto) {
+  if (!fluid.forcedTheme) {
+  if (theme == undefined) {
+  $("body").toggleClass("dark");
+  }
+  if (theme == true) {
+  $("body").addClass("dark");
+  }
+  if (theme == false) {
+  $("body").removeClass("dark");
+  }
+  if ( $(".themeico").length ) {
+    if (fluid.isDark()) {
+      $(".themeico").text("brightness_low");
+    } else {
+      $(".themeico").text("brightness_high");
     }
-    return "";
+  }
+  if ($("#activecontextmenu").children(".btn").hasClass("active")) {$("#activecontextmenu").children(".btn").css("background-color", "#207bdf") } else {
+  if ($("#activecontextmenu").length) { if ($("#activecontextmenu").children().length == 2) { if ($("body").hasClass("dark")) { $("#activecontextmenu").children(".btn, i").css("background-color", "#16181a") } else { $("#activecontextmenu").children(".btn, i").css("background-color", "#dddddd") } } } }
+  if (auto !== true) document.cookie = "fluidIsDark=" + fluid.isDark();
+} else {
+  console.error("Unable to change theme: Fluid Cloud Console policies configured by the site owner disallow setting a custom theme")
 }
-dtps.requests = {};
-dtps.http = {};
-dtps.webReq = function(req, url, callback, q) {
-	if (dtps.requests[url] == undefined) {
-	if (req == "psGET") {
-		dtps.http[url] = new XMLHttpRequest();
-  dtps.http[url].onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      if (callback) callback(this.responseText, q);
-	  dtps.requests[url] = this.responseText;
-    } 
-  };
-  dtps.http[url].open("GET", url, true);
-  dtps.http[url].setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
-  dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  dtps.http[url].setRequestHeader("Upgrade-Insecure-Requests", "1")
-  dtps.http[url].send();
-	}
-	if (req == "psPOST") {
-		dtps.http[url] = new XMLHttpRequest();
-      dtps.http[url].onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-         if (callback) callback(this.responseText, q);
-	  dtps.requests[url] = this.responseText;
-        }
-      }
-      dtps.http[url].open("POST", url, true);
-  dtps.http[url].setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
-  dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  dtps.http[url].setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-  dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
-  dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  dtps.http[url].send("csrf_token=" + CSRFTOK);
-	}
-	if (req == "letPOST") {
-		dtps.http[url] = new XMLHttpRequest();
-    dtps.http[url].onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-       if (callback) callback(this.responseText, q);
-	  dtps.requests[url] = this.responseText;
+}
+fluid.isDark = function() {
+  return $("body").hasClass("dark");
+}
+fluid.isOutlined = function() {
+  return $("body").hasClass("outline");
+}
+fluid.auto = function(auto) {
+  if (!fluid.forcedTheme) {
+  var hours = new Date().getHours()
+  // Light: 6AM - 6PM Dark: 7PM - 5AM
+  if (hours > 5 && hours < 19) {
+    $("body").removeClass("dark");
+  } else {
+    $("body").addClass("dark");
+  }
+  if ( $(".themeico").length ) {
+    if (fluid.isDark()) {
+      $(".themeico").text("brightness_low");
+    } else {
+      $(".themeico").text("brightness_high");
     }
-	}
-  dtps.http[url].open("POST", url, true);
-  dtps.http[url].setRequestHeader("Accept", "text/javascript, text/html, application/xml, text/xml, */*")
-  dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
-  dtps.http[url].setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8")
-  dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
-  dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
-  dtps.http[url].send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
-	}
-	} else {
-			if (callback) callback(dtps.requests[url], q);
-		}
-}
-dtps.init = function () {
-  dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  var sudoers = ["10837719", "10838212", "10894474"]
-  if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
-  dtps.shouldRender = false;
-  dtps.user = HaikuContext.user;
-  dtps.classColors = [];
-  var eClassList = jQuery(".eclass_list ul").children().toArray();
-   dtps.classesReady = 0;
-  for (var i = 0; i < eClassList.length; i++) {
-	  console.log(i)
-	  var eclass = jQuery(eClassList[i])
-	  var col = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
-              return item.trim().match(/^border_color/);
-          })[0].replace("border_color_", "filter_");
-	  var id = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
-               return item.trim().match(/^eclass_/);
-          })[1].replace("eclass_", "");
-	  var loc = eclass.children("div.eclass_filter").attr("onclick").split("/");
-	  dtps.classColors.push({id: id, col: col, loc: loc});
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/assignment");
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/grades", function(resp, q) {
-		  var iTmp = null;
-		  for (i = 0; i < dtps.classes.length; i++) {
-			  if (dtps.classes[i].id == q.id) iTmp = i;
-		  }
-		  if (iTmp) dtps.classStream(iTmp, true); 
-	  }, { id: id, num: i });
   }
-  if (window.location.host !== "dtechhs.learning.powerschool.com") {
-    dtps.shouldRender = false;
-    dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
+  if (auto !== true) document.cookie = "fluidIsDark=auto";
+} else {
+  console.error("Unable to change theme: Fluid Cloud Console policies configured by the site owner disallow setting a custom theme")
+}
+}
+fluid.tcoh = function() {
+  $("body").addClass("litleceser");
+  $('img').attr('src', 'https://i.imgur.com/uhZT30E.png');
+  var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/png';
+    link.rel = 'shortcut icon';
+    link.href = 'https://i.imgur.com/uhZT30E.png';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    document.title = "LITTLE CESERS HOT N READY FOR ONLY FIVE DOLALARS EXTRA MOST BESTEST IS ONLY SIX FOR EXTRA CHEESE AND PEPERONI AND THE NATIONS BEST PRICE"
+}
+/* Loader auto initilization */
+setTimeout(function () {
+try { $("loader").html('<div class="bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>');
+}
+catch(err) {
+}
+}, 1);
+fluid.load = function(mode) {
+  if (mode) {
+    $("loader").removeClass("hidden");
   } else {
-    
-     if (Number(dtps.getCookie("dtps")) < dtps.ver) {
-    dtps.changelog();
+    $("loader").addClass("hidden");
+  }
+}
+fluid.init = function() {
+  if (getCookie("fluidIsDark") == "true") {
+    fluid.dark(true, true)
   } else {
-    dtps.shouldRender = true;
-    dtps.alert("Loading...");
+    if (getCookie("fluidIsDark") == "auto") {
+      fluid.auto(true);
+    } else {
+      if (getCookie("fluidIsDark") == "false") {
+    fluid.dark(false, true)
+  } else {
+    if ($("body").hasClass("auto")) {
+      fluid.auto(true);
+    }
   }
-    
-    if (dtps.getCookie("dtpsInstalled") !== "true") {
-    dtps.firstrun();
   }
-    
   }
-  document.cookie = "dtps=" + dtps.ver;
-    dtps.webReq("letPOST", "portal/portlet_reportcard?my_portal=true", function(resp) {
-      var data = jQuery(resp).children("tbody").children();
-      dtps.rawData = data;
-      dtps.classes = [];
-      for (var i = 0; i < data.length; i++) {
-        var section = jQuery(data[i]);
-        var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
-        var name = jQuery(section.children()[1]).text();
-        var loc = section.children("td").children("a.filter").attr("href").split("/");
-		var id = jQuery.grep(section.children("td").children("a.filter").attr("class").split(" "), function (item, index) {
-               return item.trim().match(/^eclass_/);
-          })[0].replace("eclass_", "");
-        var subject = null;
-        if (name.includes("Physics")) { var subject = "Physics" }; if (name.includes("English")) { var subject = "English" }; if (name.includes("Physical Education")) { var subject = "PE" };
-        if (name.includes("Prototyping")) { var subject = "Prototyping" }; if (name.includes("Algebra")) { var subject = "Algebra" };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
-        if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };
-        if (subject == null) var subject = name;
-		for (var ii = 0; ii < dtps.classColors.length; ii++) {
-		if (dtps.classColors[ii].id == id) var col = dtps.classColors[ii].col;
-		}
-        dtps.classes.push({
-          name: name,
-          subject: subject,
-          abbrv: jQuery(section.children()[0]).text(),
-          grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
-          letter: (grade == "--") ? ( grade ) : (grade.replace(/[0-9]/g, '').replace(".", "")),
-          loc: loc[1] + "/" + loc[2],
-		  col: col,
-		  id: id,
-          num: i
-        })
-      }
-      dtps.log("Grades loaded: ", dtps.classes)
-      if (dtps.shouldRender) dtps.render();
-    });
+  if (!$("body").hasClass("notwemoji")) {
+  twemoji.parse(document.body);
 }
-dtps.checkReady = function(num) {
-	/* dtps.log(num + " reporting as READY total of " + dtps.classesReady); */ if ((dtps.selectedClass == "stream") && (dtps.classesReady == (dtps.classes.length - 1))) { dtps.log("LOADING STREAM"); dtps.masterStream(); }
-}
-dtps.loadPages = function(num) {
-  jQuery(".sidebar").html(`
-<div class="classDivider"></div>
-<div class="spinner">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
-</div>
-`);
-	jQuery(".classContent").html("");
-  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", function(resp) {
-	  console.log("GOT DATA", resp)
-      var data = jQuery(resp).find("#sidebar .sidebar_nav").children().toArray()
-      dtps.rawData = data;
-      dtps.classes[num].pages = [];
-      dtps.classes[num].pagelist = [];
-      for (var i = 0; i < data.length; i++) {
-      var tmp = jQuery(data[i]).find("a.nav").attr("href").split("/");
-      dtps.classes[num].pages.push({
-        id: tmp[tmp.length-1],
-        title: jQuery(data[i]).find("a.nav").text(),
-        content:  "",
-        num: i
-      });
-        dtps.classes[num].pagelist.push(`
-<div onclick="dtps.selectedPage = ` + tmp[tmp.length-1] + `" class="class">
-<div class="label">` + jQuery(data[i]).find("a.nav").text() + `</div>
-<div class="grade"><i class="material-icons">notes</i></div>
-</div>
-`);
-       }
-      jQuery(".sidebar").html(`<div onclick="dtps.showClasses()" class="class">
-<div class="label">Classes</div>
-<div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
-</div>
-<div class="classDivider"></div>
-` + dtps.classes[num].pagelist.join(""))
-      $( ".class" ).click(function(event) {
+
+  $( ".btns .btn, .list.select .item" ).click(function(event) {
+  if ($(event.target).parent().hasClass("multiple")) {
+    $(this).toggleClass("active")
+  } else {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
-  dtps.getPage(dtps.classes[dtps.selectedClass].loc);
+}
 });
-    });
+fluid.shouldSwitch = true;
+$( ".switch, .switch .head" ).click(function(event) {
+if ($(event.target).hasClass("head")) {
+var ele = $(event.target).parent();
+} else { var ele = event.target }
+if (fluid.shouldSwitch) {
+$(ele).toggleClass("active");
+fluid.shouldSwitch = false;
+setTimeout(() => fluid.shouldSwitch = true, 400)
 }
-dtps.classStream = function(num, renderOv) {
-  dtps.showClasses();
-  if (!renderOv) jQuery(".classContent").html(`
-<div class="spinner">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
-</div>
-`);
-    dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/assignment", function(resp) {
-      var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
-      dtps.classes[num].stream = [];
-      dtps.classes[num].streamlist = [];
-      dtps.classes[num].streamitems = [];    
-      for (var i = 0; i < data.length; i++) {
-      var assignment = jQuery(data[i])
-      var due = assignment.children("td:nth-child(3)").text().slice(0,-1);
-	if (due == "n/a") var due = "N/A";      
-      dtps.classes[num].stream.push({
-        id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
-        title: assignment.children("td:nth-child(1)").text(),
-        due: assignment.children("td:nth-child(3)").text().slice(0,-1),
-		col: dtps.classes[num].col
-      });
-	   dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", "")) 
-        dtps.classes[num].streamlist.push(`
-<div class="card assignment">
-<div class="spinner points">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
-</div>
-    <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
-	<h5>Due ` + due + `</h5>
-</div>
-`);
-       }
-      if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
-	    
-    dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", function(resp) {
-	     data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow):not(:has(th))").toArray();
-	    for (var i = 0; i < data.length; i++) {
-	    if (jQuery(data[i]).find("a").attr("href")) {
-	    var id = dtps.classes[num].streamitems.indexOf(jQuery(data[i]).find("a").attr("href").split("/")[5])
-	    if (id && (id != -1)) {
-	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
-	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
-	    }
-	    }
-	    }
-	    dtps.classes[num].streamlist = [];
+});
+$( "#activecontextmenu" ).contextmenu(function(event) {
+  event.preventDefault();
+});
+fluid.contextMenu = function(target, event) {
+  var element = target
+  if ($(element).children("a").length == 1) element = $(element).children("a").children("i").get(0);
+  if ($(element).siblings(".contextmenu").length == 1) {
+     if (event) event.preventDefault();
+    if (!fluid.contextMenuOpen) {
+      $(element).addClass("outOfContext")
+      document.body.style.overflow = "hidden";
+      $( "body" ).css( "padding-right", "5px");
+    fluid.contextMenuOpen = true;
+    fluid.generateWrapper();
 
-	     if (!renderOv) jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
-		 dtps.classesReady++;
-		 dtps.checkReady(num);
-    });    
-	    
-    }); 
-	
+    var bodyRect = document.body.getBoundingClientRect(),
+      elemRect = element.getBoundingClientRect(),
+      left   = elemRect.left - bodyRect.left,
+      top   = elemRect.top - bodyRect.top;
 
-}
-dtps.renderStream = function(stream) {
-	var streamlist = [];
-	if (col == undefined) var col = "";
-	for (var i = 0; i < stream.length; i++) {
-		    if ((stream[i].grade !== "-") && (stream[i].grade)) {
-		  streamlist.push(`
-<div class="card graded assignment ` + stream[i].col + `">
-<div class="points">
- <div class="earned">` + stream[i].grade.split("/")[0] + `</div>
-<div class="total">/` + stream[i].grade.split("/")[1] + `</div>
-</div>
-    <h4>` + stream[i].title + `</h4>
-	<h5>Due ` + stream[i].due + `</h5>
-</div>
-`); } else {
-streamlist.push(`
-<div class="card assignment ` + stream[i].col + `">
-    <h4>` + stream[i].title + `</h4>
-	<h5>Due ` + stream[i].due + `</h5>
-</div>
-`);	
-}
-	    }
-		return streamlist.join("");
-		
-}
-dtps.masterStream = function() {
-  dtps.showClasses();
-  jQuery(".classContent").html(`
-<div class="spinner">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
-</div>
-`);
-	var buffer = [];
-    for (var i = 0; i < dtps.classes.length; i++) {
-	    if (dtps.classes[i].stream) {
-			dtps.log("BUILDING: " + i)
-			buffer = buffer.concat(dtps.classes[i].stream)
-	    }
+    $("#activecontextmenu").css("left", left)
+    $("#activecontextmenu").css("top", top)
+    $(element).parent().css("height", $(element).parent().height());
+    if ($(element).hasClass("material-icons")) {
+      $(element).parent().parent().css("width", "44px")
+      $(element).parent().parent().css("height", "44px")
+      $("#pagewrapper").attr("onclick","fluid.exitContextMenu(true);");
+    } else {
+      $("#pagewrapper").attr("onclick","fluid.exitContextMenu(false);");
     }
-	console.log(buffer)
-	jQuery(".classContent").html(dtps.renderStream(buffer.sort(function(a, b){
-var year = new Date().getFullYear();
-var today = new Date().toHumanString();
-    var keyA = new Date(a.due.replace("Today", today).replace(year + " at", "")).setYear(year),
-        keyB = new Date(b.due.replace("Today", today).replace(year + " at", "")).setYear(year);
-
-    // Compare the 2 dates
-    if(keyA < keyB) return 1;
-    if(keyA > keyB) return -1;
-    return 0;
-})));
-	$(".card.assignment").addClass("color");
-
-}
-dtps.getPage = function(loc, id) {
-  if (id == undefined) var id = dtps.selectedPage;
-  jQuery(".classContent").html(`
-<div class="spinner">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
-</div>
-`);
-    dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, function(resp) {
-      var newID = jQuery(resp).find("#col_2_1 .cms_box").attr("id").split("_")[1]
-        dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp) {
-         jQuery(".classContent").html(`
-<div class="card">
-` + resp + `
-</div>
-`)
-        });
-    }); 
-}
-dtps.showClasses = function () {
-  var streamClass = "active"
-  if (dtps.selectedClass !== "stream") var streamClass = "";
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
-<div class="label">Stream</div>
-<div class="grade"><i class="material-icons">view_stream</i></div>
-</div>
-<div class="classDivider"></div>
-` + dtps.classlist.join(""));
-  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
-  if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
-       $( ".class" ).click(function(event) {
-	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
-              return item.trim().match(/^filter_/);
-          })[0]);
-		  if (dtps.selectedClass !== "stream") $(".background").addClass(dtps.classes[dtps.selectedClass].col)
-  $(this).siblings().removeClass("active")
-  $(this).addClass("active")
-  //dtps.loadClass()
-  $(".header h1").html($(this).children(".label").text())
-  if ($(this).children(".label").text() == "Stream") {
-  $(".header .btns").hide();
+    $(element).parent().addClass("contextMenuSource")
+    if ($(element).hasClass("active")) {$(element).css("background-color", "#207bdf") } else {
+    if ($("body").hasClass("outline")){
+    if ($("body").hasClass("dark")) { $(element).css("border", "1px solid #16181a") } else { $(element).css("border", "1px solid #dddddd") }}
+    else { if ($("body").hasClass("dark")) { $(element).css("background-color", "#16181a") } else { $(element).css("background-color", "#dddddd") }} }
+    $(element).siblings(".contextmenu").css("display", "inline-block");
+    $(element).siblings(".contextmenu").css("margin-left", "-20px")
+    $(element).siblings(".contextmenu").css("margin-right", "10px")
+    $(element).parent().children().appendTo("#activecontextmenu");
+    $("#activecontextmenu").css("width", $("body").width() - Number($("#activecontextmenu").css("left").slice(0,-2)))
+    if ($(element).siblings('.contextmenu').css("right").charAt(0) == "-") {
+      $(element).siblings('.contextmenu').css("right", 0)
+      $(element).siblings(".contextmenu").css("margin-top", $(element).height() + 3)
+    } else {
+      $(element).siblings(".contextmenu").css("margin-top", $(element).height())
+    }
+    $("#pagewrapper").addClass("blur", 100)
+  }
   } else {
-  $(".header .btns").show();
+    if (fluid.expBeh) {
+      event.preventDefault();
+      fluid.bounceBack(element);
+    }
   }
-  if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
-  if (dtps.selectedClass == "stream") dtps.masterStream();	       
-	    
-});
 }
-dtps.render = function() {
-  document.title = "Project DTPS" + dtps.trackSuffix
-   $ = jQuery;
-  dtps.selectedClass = "stream";
-  dtps.selectedContent = "stream";
-  dtps.classlist = [];
-  for (var i = 0; i < dtps.classes.length; i++) {
-    dtps.classlist.push(`
-<div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-<div class="label">` + dtps.classes[i].subject + `</div>
-<div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
-</div>
-`);
+$( ".btn, .nav a, .nav li" ).contextmenu(function(event) {
+fluid.contextMenu(event.target, event)
+});
+$( ".contextmenu.list .item" ).click(function(event) {
+  fluid.exitContextMenu(false);
+});
+$( "div.nav.active li" ).click(function(event) {
+$(this).siblings().removeClass("active")
+$(this).addClass("active")
+});
+
+$( ".section.collapse .header" ).click(function(event) {
+  if ($(this).parent().hasClass("collapsed")) {
+    if ($(this).parent().hasClass("one")) {
+      $(this).parent().siblings().addClass("collapsed");
+    }
   }
-   jQuery("body").html(`
-<div class="sidebar">
-</div>
-<div class="background">
-<div class="header">
-<h1 id="headText">Stream</h1>
-<div style="display: none;" class="btns row">
-<button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
-Stream
-<i class="material-icons">view_stream</i>
-</button>
-<button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
-Pages
-<i class="material-icons">list</i>
-</button>
-<button onclick="dtps.selectedContent = 'grades'" class="btn grades dev">
-Gradebook
-<i class="material-icons">code</i>
-</button>
-</div>
-<div class="classContent">
+$(this).parent().toggleClass("collapsed");
+});
 
-<div class="spinner">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
-</div>
+$( ".list .item, a" ).contextmenu(function(event) {
+if (fluid.expBeh) { event.preventDefault(); fluid.bounceBack(event.target); }
+});
 
-</div>
-</div>
-</div>
-`)
-  dtps.showClasses();
-  $("link").remove();
-  jQuery("<link/>", {
-   rel: "shortcut icon",
-   type: "image/png",
-   href: "https://jottocraft.github.io/dtps/favicon.png"
-}).appendTo("head");
-  jQuery("<link/>", {
-   rel: "stylesheet",
-   type: "text/css",
-   href: "https://jottocraft.github.io/dtps/fluid.css"
-}).appendTo("head");
-  jQuery("<link/>", {
-   rel: "stylesheet",
-   type: "text/css",
-   href: "https://jottocraft.github.io/dtps/dtps.css"
-}).appendTo("head");
-  jQuery("<link/>", {
-   rel: "stylesheet",
-   type: "text/css",
-   href: "https://fonts.googleapis.com/icon?family=Material+Icons"
-}).appendTo("head");
-  jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
-  
-  $( ".class" ).click(function(event) {
-  $(this).siblings().removeClass("active")
-  $(this).addClass("active")
-  //dtps.loadClass()
-  $(".header h1").html($(this).children(".label").text())
-  if ($(this).children(".label").text() == "Stream") {
-  $(".header .btns").hide();
+}
+
+$( document ).ready(fluid.init);
+
+$( window ).resize(function() {
+  fluid.exitContextMenu(true);
+});
+
+fluid.exitContextMenu = function(force) {
+  $("#pagewrapper").removeClass("blur")
+  $("#activecontextmenu").children(".contextmenu").css("display", "none");
+  if (force) { wait = 0; } else { wait = 300; }
+  setTimeout(function() {
+  $("#activecontextmenu").children().appendTo(".contextMenuSource")
+  $(".contextMenuSource").children(".btn, i").css("background-color", "");
+  $(".contextMenuSource").children(".btn, i").css("border", "");
+  $(".contextMenuSource").children(".btn, i").removeClass("outOfContext")
+  $(".contextMenuSource").css("height", "");
+  $("#pagewrapper").attr("onclick","");
+  $(".contextMenuSource").removeClass("contextMenuSource")
+  fluid.contextMenuOpen = false;
+  document.body.style.overflow = "";
+  $( "body" ).css( "padding-right", "");
+}, wait);
+}
+
+fluid.bounceBack = function (ele) {
+  if (!fluid.contextMenuOpen) {
+  fluid.contextMenuOpen = true;
+
+  $("#pagewrapper").addClass("blur")
+  document.body.style.overflow = "hidden";
+  $( "body" ).css( "padding-right", "5px");
+  setTimeout(function() {
+    $("#pagewrapper").removeClass("blur");
+    document.body.style.overflow = "";
+    $( "body" ).css( "padding-right", "");
+  }, 200)
+}
+}
+
+/* Cards */
+menuopen = false;
+fluid.cards = function(element, isModal) {
+  var focus = $(element).hasClass('focus');
+  if (focus) {
+    fluid.generateWrapper();
+        $(element).css({top: window.scrollY + 50});
+        if (menuopen) {
+          fluid.cards.close(".focus");
+          $("#pagewrapper").addClass('blur');
+          if (isModal) document.body.style.overflow = "hidden"
+          $( "body" ).css( "padding-right", "5px");
+          $(element).removeClass('close');
+          setTimeout(function() {$("#pagewrapper").attr("onclick","fluid.card.close('" + element + "');");}, 100)
+        } else {
+          $("#pagewrapper").addClass('blur');
+          if (isModal) document.body.style.overflow = "hidden"
+          $( "body" ).css( "padding-right", "5px");
+          $(element).removeClass('close');
+          setTimeout(function() {$("#pagewrapper").attr("onclick","fluid.cards.close('.focus');");}, 100)
+        }
   } else {
-  $(".header .btns").show();
+    $("#pagewrapper").attr("onclick","");
+    if (menuopen) {
+      fluid.cards.close();
+      $(element).removeClass('close');
+    } else {
+     menuopen = true;
+     $(element).removeClass('close');
+    }
   }
-});
-  fluid.init();
-  
+}
+fluid.modal = function(element) {
+  fluid.cards(element, true)
+}
+fluid.toast = function(icon, text, sticky, focus) {
+  fluid.toastNav = $(".nav:not(.toast):not(.card):visible")
+  $(fluid.toastNav).hide();
+  var iconExtraStyles = ""
+  if (text == undefined) { var text = ""; }
+  if (icon == undefined) { var icon = "";  }
+  if (text == "") { var iconExtraStyles = "margin-right: -15px;"; }
+  fluid.generateWrapper();
+  $("#activetoast").hide();
+    $("#activetoast").html(`<div class="nav sticky toast">
+    <i onclick="fluid.exitToast()" class="material-icons" style="vertical-align: middle;cursor:pointer;` + iconExtraStyles + `">` + icon + `</i>
+    <h5 style="margin:0px;display:inline-block;vertical-align:middle;margin-right: 7px;margin-left: 5px;">` + text + `</h5>
+        </div>`)
+        $("#activetoast").show("fade");
+        fluid.toastHiding = false;
+        $( ".toast" ).hover(
+  function() {
+    $(".toast i").html("cancel")
+  }, function() {
+    if (!fluid.toastHiding) $(".toast i").html(icon)
+  }
+);
+}
+fluid.exitToast = function() {
+  $(fluid.toastNav).show();
+  var iconExtraStyles = ""
+  fluid.toastHiding = true;
+  $("#activetoast").hide("fade");
+}
+fluid.cards.close = function(element) {
+  $(element).addClass('close');
+  $('#pagewrapper').removeClass("blur");
+  document.body.style.overflow = ""
+  $( "body" ).css( "padding-right", "");
+  $("#pagewrapper").attr("onclick","");
+  menuopen = false;
+}
+fluid.generateWrapper = function() {
+  if ( !$( "#pagewrapper" ).length ) {
+  $( "body" ).wrapInner( "<div id='pagewrapper'></div>");
+  $( "#pagewrapper" ).after( "<div id='focuscardwrapper' class='container'></div>" );
+  $( "#pagewrapper" ).after( "<div id='activecontextmenu' style='position:absolute'></div>" );
+  $( "#pagewrapper" ).after( "<div id='activetoast'></div>" );
+  $( "#pagewrapper" ).after( "<div id='splashscreen' style='display:none;margin-top: 100px;' class='container'><h1 style='font-size:5rem;' id='splashscreenname'></h1><div id='splashscreencnt'></div></div>" );
+  $(".card.focus").appendTo("#focuscardwrapper");
+  $(".splash").appendTo("#splashscreencnt");
+  }
+}
+fluid.splash = function(element) {
+  fluid.splashScroll = window.scrollY;
+  fluid.generateWrapper();
+  $("#pagewrapper").hide();
+ var title = $(element).attr("title");
+  $("#splashscreenname").html(title);
+  $(element).show();
+  $("#splashscreen").show();
 }
 
-dtps.init();
+fluid.unsplash = function() {
+  $("#splashscreen").hide();
+  $("#splashscreenname").html("");
+  $(".splash").hide();
+  $("#pagewrapper").show();
+  window.scrollTo(0, fluid.splashScroll);
+}
 
+/* Fluid Commands */
+// a key map of allowed keys
+var allowedKeys = {
+  38: 'up',
+  40: 'down',
+  119: 'f8'
+};
+var darkOverride = ['up', 'up', 'down', 'down', 'f8'];
+var darkOverridePosition = 0;
+
+var allowedKeysAuto = {
+  38: 'up',
+  40: 'down',
+  118: 'f7'
+};
+var autoOverride = ['up', 'up', 'down', 'down', 'f7'];
+var autoOverridePosition = 0;
+
+
+
+document.addEventListener('keydown', function(e) {
+  var key = allowedKeys[e.keyCode];
+  var requiredKey = darkOverride[darkOverridePosition];
+  if (key == requiredKey) {
+    darkOverridePosition++;
+    if (darkOverridePosition == darkOverride.length) {
+      fluid.dark();
+      darkOverridePosition = 0;
+    }
+  } else {
+    darkOverridePosition = 0;
+  }
+
+  var key = allowedKeysAuto[e.keyCode];
+  var requiredKey = autoOverride[autoOverridePosition];
+  if (key == requiredKey) {
+    autoOverridePosition++;
+    if (autoOverridePosition == autoOverride.length) {
+      fluid.auto();
+      autoOverridePosition = 0;
+    }
+  } else {
+    autoOverridePosition = 0;
+  }
+
+});
+
+
+
+// a key map of allowed keys
+var outlineKeysAuto = {
+  38: 'up',
+  40: 'down',
+  120: 'f9'
+};
+var outlineOverride = ['up', 'up', 'down', 'down', 'f9'];
+var outlineOverridePosition = 0;
+document.addEventListener('keydown', function(e) {
+  var key = outlineKeysAuto[e.keyCode];
+  var requiredKey = outlineOverride[outlineOverridePosition];
+  if (key == requiredKey) {
+    outlineOverridePosition++;
+    if (outlineOverridePosition == outlineOverride.length) {
+      $('body').toggleClass('outline');
+      outlineOverridePosition = 0;
+    }
+  } else {
+    outlineOverridePosition = 0;
+  }
+});
+
+// a key map of allowed keys
+var emojiKeysAuto = {
+  38: 'up',
+  40: 'down',
+  69: 'e'
+};
+var emojiOverride = ['up', 'up', 'down', 'down', 'e'];
+var emojiOverridePosition = 0;
+document.addEventListener('keydown', function(e) {
+  var key = emojiKeysAuto[e.keyCode];
+  var requiredKey = emojiOverride[emojiOverridePosition];
+  if (key == requiredKey) {
+    emojiOverridePosition++;
+    if (emojiOverridePosition == emojiOverride.length) {
+      twemoji.parse(document.body);
+      emojiOverridePosition = 0;
+    }
+  } else {
+    emojiOverridePosition = 0;
+  }
+});
+
+/*! Copyright Twitter Inc. and other contributors. Licensed under MIT */
+var twemoji=function(){"use strict";var twemoji={base:"https://twemoji.maxcdn.com/2/",ext:".png",size:"72x72",className:"emoji",convert:{fromCodePoint:fromCodePoint,toCodePoint:toCodePoint},onerror:function onerror(){if(this.parentNode){this.parentNode.replaceChild(createText(this.alt,false),this)}},parse:parse,replace:replace,test:test},escaper={"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"},re=/(?:\ud83d[\udc68\udc69])(?:\ud83c[\udffb-\udfff])?\u200d(?:\u2695\ufe0f|\u2696\ufe0f|\u2708\ufe0f|\ud83c[\udf3e\udf73\udf93\udfa4\udfa8\udfeb\udfed]|\ud83d[\udcbb\udcbc\udd27\udd2c\ude80\ude92]|\ud83e[\uddb0-\uddb3])|(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75]|\u26f9)((?:\ud83c[\udffb-\udfff]|\ufe0f)\u200d[\u2640\u2642]\ufe0f)|(?:\ud83c[\udfc3\udfc4\udfca]|\ud83d[\udc6e\udc71\udc73\udc77\udc81\udc82\udc86\udc87\ude45-\ude47\ude4b\ude4d\ude4e\udea3\udeb4-\udeb6]|\ud83e[\udd26\udd35\udd37-\udd39\udd3d\udd3e\uddb8\uddb9\uddd6-\udddd])(?:\ud83c[\udffb-\udfff])?\u200d[\u2640\u2642]\ufe0f|(?:\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d\udc68|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d\udc8b\u200d\ud83d[\udc68\udc69]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\u2764\ufe0f\u200d\ud83d\udc68|\ud83d\udc68\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc68\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc68\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\u2764\ufe0f\u200d\ud83d[\udc68\udc69]|\ud83d\udc69\u200d\ud83d\udc66\u200d\ud83d\udc66|\ud83d\udc69\u200d\ud83d\udc67\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83c\udff3\ufe0f\u200d\ud83c\udf08|\ud83c\udff4\u200d\u2620\ufe0f|\ud83d\udc41\u200d\ud83d\udde8|\ud83d\udc68\u200d\ud83d[\udc66\udc67]|\ud83d\udc69\u200d\ud83d[\udc66\udc67]|\ud83d\udc6f\u200d\u2640\ufe0f|\ud83d\udc6f\u200d\u2642\ufe0f|\ud83e\udd3c\u200d\u2640\ufe0f|\ud83e\udd3c\u200d\u2642\ufe0f|\ud83e\uddde\u200d\u2640\ufe0f|\ud83e\uddde\u200d\u2642\ufe0f|\ud83e\udddf\u200d\u2640\ufe0f|\ud83e\udddf\u200d\u2642\ufe0f)|[\u0023\u002a\u0030-\u0039]\ufe0f?\u20e3|(?:[\u00a9\u00ae\u2122\u265f]\ufe0f)|(?:\ud83c[\udc04\udd70\udd71\udd7e\udd7f\ude02\ude1a\ude2f\ude37\udf21\udf24-\udf2c\udf36\udf7d\udf96\udf97\udf99-\udf9b\udf9e\udf9f\udfcd\udfce\udfd4-\udfdf\udff3\udff5\udff7]|\ud83d[\udc3f\udc41\udcfd\udd49\udd4a\udd6f\udd70\udd73\udd76-\udd79\udd87\udd8a-\udd8d\udda5\udda8\uddb1\uddb2\uddbc\uddc2-\uddc4\uddd1-\uddd3\udddc-\uddde\udde1\udde3\udde8\uddef\uddf3\uddfa\udecb\udecd-\udecf\udee0-\udee5\udee9\udef0\udef3]|[\u203c\u2049\u2139\u2194-\u2199\u21a9\u21aa\u231a\u231b\u2328\u23cf\u23ed-\u23ef\u23f1\u23f2\u23f8-\u23fa\u24c2\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe\u2600-\u2604\u260e\u2611\u2614\u2615\u2618\u2620\u2622\u2623\u2626\u262a\u262e\u262f\u2638-\u263a\u2640\u2642\u2648-\u2653\u2660\u2663\u2665\u2666\u2668\u267b\u267f\u2692-\u2697\u2699\u269b\u269c\u26a0\u26a1\u26aa\u26ab\u26b0\u26b1\u26bd\u26be\u26c4\u26c5\u26c8\u26cf\u26d1\u26d3\u26d4\u26e9\u26ea\u26f0-\u26f5\u26f8\u26fa\u26fd\u2702\u2708\u2709\u270f\u2712\u2714\u2716\u271d\u2721\u2733\u2734\u2744\u2747\u2757\u2763\u2764\u27a1\u2934\u2935\u2b05-\u2b07\u2b1b\u2b1c\u2b50\u2b55\u3030\u303d\u3297\u3299])(?:\ufe0f|(?!\ufe0e))|(?:(?:\ud83c[\udfcb\udfcc]|\ud83d[\udd74\udd75\udd90]|[\u261d\u26f7\u26f9\u270c\u270d])(?:\ufe0f|(?!\ufe0e))|(?:\ud83c[\udf85\udfc2-\udfc4\udfc7\udfca]|\ud83d[\udc42\udc43\udc46-\udc50\udc66-\udc69\udc6e\udc70-\udc78\udc7c\udc81-\udc83\udc85-\udc87\udcaa\udd7a\udd95\udd96\ude45-\ude47\ude4b-\ude4f\udea3\udeb4-\udeb6\udec0\udecc]|\ud83e[\udd18-\udd1c\udd1e\udd1f\udd26\udd30-\udd39\udd3d\udd3e\uddb5\uddb6\uddb8\uddb9\uddd1-\udddd]|[\u270a\u270b]))(?:\ud83c[\udffb-\udfff])?|(?:\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f|\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc77\udb40\udc6c\udb40\udc73\udb40\udc7f|\ud83c\udde6\ud83c[\udde8-\uddec\uddee\uddf1\uddf2\uddf4\uddf6-\uddfa\uddfc\uddfd\uddff]|\ud83c\udde7\ud83c[\udde6\udde7\udde9-\uddef\uddf1-\uddf4\uddf6-\uddf9\uddfb\uddfc\uddfe\uddff]|\ud83c\udde8\ud83c[\udde6\udde8\udde9\uddeb-\uddee\uddf0-\uddf5\uddf7\uddfa-\uddff]|\ud83c\udde9\ud83c[\uddea\uddec\uddef\uddf0\uddf2\uddf4\uddff]|\ud83c\uddea\ud83c[\udde6\udde8\uddea\uddec\udded\uddf7-\uddfa]|\ud83c\uddeb\ud83c[\uddee-\uddf0\uddf2\uddf4\uddf7]|\ud83c\uddec\ud83c[\udde6\udde7\udde9-\uddee\uddf1-\uddf3\uddf5-\uddfa\uddfc\uddfe]|\ud83c\udded\ud83c[\uddf0\uddf2\uddf3\uddf7\uddf9\uddfa]|\ud83c\uddee\ud83c[\udde8-\uddea\uddf1-\uddf4\uddf6-\uddf9]|\ud83c\uddef\ud83c[\uddea\uddf2\uddf4\uddf5]|\ud83c\uddf0\ud83c[\uddea\uddec-\uddee\uddf2\uddf3\uddf5\uddf7\uddfc\uddfe\uddff]|\ud83c\uddf1\ud83c[\udde6-\udde8\uddee\uddf0\uddf7-\uddfb\uddfe]|\ud83c\uddf2\ud83c[\udde6\udde8-\udded\uddf0-\uddff]|\ud83c\uddf3\ud83c[\udde6\udde8\uddea-\uddec\uddee\uddf1\uddf4\uddf5\uddf7\uddfa\uddff]|\ud83c\uddf4\ud83c\uddf2|\ud83c\uddf5\ud83c[\udde6\uddea-\udded\uddf0-\uddf3\uddf7-\uddf9\uddfc\uddfe]|\ud83c\uddf6\ud83c\udde6|\ud83c\uddf7\ud83c[\uddea\uddf4\uddf8\uddfa\uddfc]|\ud83c\uddf8\ud83c[\udde6-\uddea\uddec-\uddf4\uddf7-\uddf9\uddfb\uddfd-\uddff]|\ud83c\uddf9\ud83c[\udde6\udde8\udde9\uddeb-\udded\uddef-\uddf4\uddf7\uddf9\uddfb\uddfc\uddff]|\ud83c\uddfa\ud83c[\udde6\uddec\uddf2\uddf3\uddf8\uddfe\uddff]|\ud83c\uddfb\ud83c[\udde6\udde8\uddea\uddec\uddee\uddf3\uddfa]|\ud83c\uddfc\ud83c[\uddeb\uddf8]|\ud83c\uddfd\ud83c\uddf0|\ud83c\uddfe\ud83c[\uddea\uddf9]|\ud83c\uddff\ud83c[\udde6\uddf2\uddfc]|\ud83c[\udccf\udd8e\udd91-\udd9a\udde6-\uddff\ude01\ude32-\ude36\ude38-\ude3a\ude50\ude51\udf00-\udf20\udf2d-\udf35\udf37-\udf7c\udf7e-\udf84\udf86-\udf93\udfa0-\udfc1\udfc5\udfc6\udfc8\udfc9\udfcf-\udfd3\udfe0-\udff0\udff4\udff8-\udfff]|\ud83d[\udc00-\udc3e\udc40\udc44\udc45\udc51-\udc65\udc6a-\udc6d\udc6f\udc79-\udc7b\udc7d-\udc80\udc84\udc88-\udca9\udcab-\udcfc\udcff-\udd3d\udd4b-\udd4e\udd50-\udd67\udda4\uddfb-\ude44\ude48-\ude4a\ude80-\udea2\udea4-\udeb3\udeb7-\udebf\udec1-\udec5\uded0-\uded2\udeeb\udeec\udef4-\udef9]|\ud83e[\udd10-\udd17\udd1d\udd20-\udd25\udd27-\udd2f\udd3a\udd3c\udd40-\udd45\udd47-\udd70\udd73-\udd76\udd7a\udd7c-\udda2\uddb4\uddb7\uddc0-\uddc2\uddd0\uddde-\uddff]|[\u23e9-\u23ec\u23f0\u23f3\u267e\u26ce\u2705\u2728\u274c\u274e\u2753-\u2755\u2795-\u2797\u27b0\u27bf\ue50a])|\ufe0f/g,UFE0Fg=/\uFE0F/g,U200D=String.fromCharCode(8205),rescaper=/[&<>'"]/g,shouldntBeParsed=/^(?:iframe|noframes|noscript|script|select|style|textarea)$/,fromCharCode=String.fromCharCode;return twemoji;function createText(text,clean){return document.createTextNode(clean?text.replace(UFE0Fg,""):text)}function escapeHTML(s){return s.replace(rescaper,replacer)}function defaultImageSrcGenerator(icon,options){return"".concat(options.base,options.size,"/",icon,options.ext)}function grabAllTextNodes(node,allText){var childNodes=node.childNodes,length=childNodes.length,subnode,nodeType;while(length--){subnode=childNodes[length];nodeType=subnode.nodeType;if(nodeType===3){allText.push(subnode)}else if(nodeType===1&&!("ownerSVGElement"in subnode)&&!shouldntBeParsed.test(subnode.nodeName.toLowerCase())){grabAllTextNodes(subnode,allText)}}return allText}function grabTheRightIcon(rawText){return toCodePoint(rawText.indexOf(U200D)<0?rawText.replace(UFE0Fg,""):rawText)}function parseNode(node,options){var allText=grabAllTextNodes(node,[]),length=allText.length,attrib,attrname,modified,fragment,subnode,text,match,i,index,img,rawText,iconId,src;while(length--){modified=false;fragment=document.createDocumentFragment();subnode=allText[length];text=subnode.nodeValue;i=0;while(match=re.exec(text)){index=match.index;if(index!==i){fragment.appendChild(createText(text.slice(i,index),true))}rawText=match[0];iconId=grabTheRightIcon(rawText);i=index+rawText.length;src=options.callback(iconId,options);if(src){img=new Image;img.onerror=options.onerror;img.setAttribute("draggable","false");attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&!img.hasAttribute(attrname)){img.setAttribute(attrname,attrib[attrname])}}img.className=options.className;img.alt=rawText;img.src=src;modified=true;fragment.appendChild(img)}if(!img)fragment.appendChild(createText(rawText,false));img=null}if(modified){if(i<text.length){fragment.appendChild(createText(text.slice(i),true))}subnode.parentNode.replaceChild(fragment,subnode)}}return node}function parseString(str,options){return replace(str,function(rawText){var ret=rawText,iconId=grabTheRightIcon(rawText),src=options.callback(iconId,options),attrib,attrname;if(src){ret="<img ".concat('class="',options.className,'" ','draggable="false" ','alt="',rawText,'"',' src="',src,'"');attrib=options.attributes(rawText,iconId);for(attrname in attrib){if(attrib.hasOwnProperty(attrname)&&attrname.indexOf("on")!==0&&ret.indexOf(" "+attrname+"=")===-1){ret=ret.concat(" ",attrname,'="',escapeHTML(attrib[attrname]),'"')}}ret=ret.concat("/>")}return ret})}function replacer(m){return escaper[m]}function returnNull(){return null}function toSizeSquaredAsset(value){return typeof value==="number"?value+"x"+value:value}function fromCodePoint(codepoint){var code=typeof codepoint==="string"?parseInt(codepoint,16):codepoint;if(code<65536){return fromCharCode(code)}code-=65536;return fromCharCode(55296+(code>>10),56320+(code&1023))}function parse(what,how){if(!how||typeof how==="function"){how={callback:how}}return(typeof what==="string"?parseString:parseNode)(what,{callback:how.callback||defaultImageSrcGenerator,attributes:typeof how.attributes==="function"?how.attributes:returnNull,base:typeof how.base==="string"?how.base:twemoji.base,ext:how.ext||twemoji.ext,size:how.folder||toSizeSquaredAsset(how.size||twemoji.size),className:how.className||twemoji.className,onerror:how.onerror||twemoji.onerror})}function replace(text,callback){return String(text).replace(re,callback)}function test(text){re.lastIndex=0;var result=re.test(text);re.lastIndex=0;return result}function toCodePoint(unicodeSurrogates,sep){var r=[],c=0,p=0,i=0;while(i<unicodeSurrogates.length){c=unicodeSurrogates.charCodeAt(i++);if(p){r.push((65536+(p-55296<<10)+(c-56320)).toString(16));p=0}else if(55296<=c&&c<=56319){p=c}else{r.push(c.toString(16))}}return r.join(sep||"-")}}();
