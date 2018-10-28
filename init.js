@@ -383,11 +383,13 @@ dtps.showClasses = function () {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
   jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
-<div class="label">Stream</div>
+<div class="name">Stream</div>
 <div class="grade"><i class="material-icons">view_stream</i></div>
 </div>
 <div class="classDivider"></div>
-` + dtps.classlist.join(""));
+` + dtps.classlist.join("") + `<div onclick="fluid.cards('.abt')" class="item link">
+<div class="name"><i class="material-icons">settings</i><span>Settings</span></div>
+</div>`);
   if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
        $( ".class" ).click(function(event) {
@@ -398,8 +400,8 @@ dtps.showClasses = function () {
   $(this).siblings().removeClass("active")
   $(this).addClass("active")
   //dtps.loadClass()
-  $(".header h1").html($(this).children(".label").text())
-  if ($(this).children(".label").text() == "Stream") {
+  $(".header h1").html($(this).children(".name").text())
+  if ($(this).children(".name").text() == "Stream") {
   $(".header .btns").hide();
   } else {
   $(".header .btns").show();
@@ -418,7 +420,7 @@ dtps.render = function() {
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
 <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-<div class="label">` + dtps.classes[i].subject + `</div>
+<div class="name">` + dtps.classes[i].subject + `</div>
 <div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
 </div>
 `);
@@ -454,6 +456,15 @@ Gradebook
 </div>
 </div>
 </div>
+
+<div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
+<h3>Settings</h3>
+<h5>Project DTPS` + dtps.trackSuffix + ` ` + dtps.readableVer + `</h5>
+<br />
+<div class="switch` + {fluid.isDark() ? (" active") : ("")} + `"><span class="head"></span></div>
+<div class="label">Enable dark mode</div>
+</div>
+
 `)
   dtps.showClasses();
   $("link").remove();
@@ -475,21 +486,9 @@ Gradebook
   jQuery("<link/>", {
    rel: "stylesheet",
    type: "text/css",
-   href: "https://fonts.googleapis.com/icon?family=Material+Icons"
+   href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
 }).appendTo("head");
   jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
-  
-  $( ".class" ).click(function(event) {
-  $(this).siblings().removeClass("active")
-  $(this).addClass("active")
-  //dtps.loadClass()
-  $(".header h1").html($(this).children(".label").text())
-  if ($(this).children(".label").text() == "Stream") {
-  $(".header .btns").hide();
-  } else {
-  $(".header .btns").show();
-  }
-});
   fluid.init();
   
 }
