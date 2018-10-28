@@ -113,7 +113,6 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-	jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   var sudoers = ["10837719", "10838212", "10894474"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
   dtps.shouldRender = false;
@@ -415,6 +414,7 @@ dtps.showClasses = function () {
 dtps.render = function() {
   document.title = "Project DTPS" + dtps.trackSuffix
    $ = jQuery;
+jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.classlist = [];
