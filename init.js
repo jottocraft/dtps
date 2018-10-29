@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 011,
-  readableVer: "v0.1.1 (Beta)",
+  ver: 012,
+  readableVer: "v0.1.2 (Beta)",
   trackSuffix: " (Beta)"
 };
 dtps.changelog = function () {
@@ -8,7 +8,9 @@ dtps.changelog = function () {
 <h2>What's new in Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <ul>
-<li>Added Stream to class list. Shows work from all classes.</li>
+<li>Added dark mode UI toggle</li>
+<li>Added about page</li>
+<li>Added send feedback button</li>
 <li><b>Known stream bug: does not show content from the class at top of the list.</b></li>
 <li>Up next: ironing things out and multi-block pages. Gradebook is low priority right now, so I'll be hiding the tab until it's ready.</li>
 </ul>
