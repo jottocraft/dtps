@@ -68,7 +68,7 @@ dtps.webReq = function(req, url, callback, q) {
     if (this.readyState == 4 && this.status == 200) {
       if (callback) callback(this.responseText, q);
 	  dtps.requests[url] = this.responseText;
-    } 
+    }
   };
   dtps.http[url].open("GET", url, true);
   dtps.http[url].setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
@@ -114,7 +114,7 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  var sudoers = ["10837719", "10838212"]
+  var sudoers = ["10837719", "10838212", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
   dtps.shouldRender = false;
   dtps.user = HaikuContext.user;
@@ -138,25 +138,25 @@ dtps.init = function () {
 		  for (i = 0; i < dtps.classes.length; i++) {
 			  if (dtps.classes[i].id == q.id) iTmp = i;
 		  }
-		  if (iTmp) dtps.classStream(iTmp, true); 
+		  if (iTmp) dtps.classStream(iTmp, true);
 	  }, { id: id, num: i });
   }
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
   } else {
-    
+
      if (Number(dtps.getCookie("dtps")) < dtps.ver) {
     dtps.changelog();
   } else {
     dtps.shouldRender = true;
     dtps.alert("Loading...");
   }
-    
+
     if (dtps.getCookie("dtpsInstalled") !== "true") {
     dtps.firstrun();
   }
-    
+
   }
   document.cookie = "dtps=" + dtps.ver;
     dtps.webReq("letPOST", "portal/portlet_reportcard?my_portal=true", function(resp) {
@@ -259,18 +259,18 @@ dtps.classStream = function(num, renderOv) {
       var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
       dtps.classes[num].stream = [];
       dtps.classes[num].streamlist = [];
-      dtps.classes[num].streamitems = [];    
+      dtps.classes[num].streamitems = [];
       for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
       var due = assignment.children("td:nth-child(3)").text().slice(0,-1);
-	if (due == "n/a") var due = "N/A";      
+	if (due == "n/a") var due = "N/A";
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
 		col: dtps.classes[num].col
       });
-	   dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", "")) 
+	   dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""))
         dtps.classes[num].streamlist.push(`
 <div class="card assignment">
 <div class="spinner points">
@@ -284,7 +284,7 @@ dtps.classStream = function(num, renderOv) {
 `);
        }
       if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
-	    
+
     dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", function(resp) {
 	     data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow):not(:has(th))").toArray();
 	    for (var i = 0; i < data.length; i++) {
@@ -301,10 +301,10 @@ dtps.classStream = function(num, renderOv) {
 	     if (!renderOv) jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
 		 dtps.classesReady++;
 		 dtps.checkReady(num);
-    });    
-	    
-    }); 
-	
+    });
+
+    });
+
 
 }
 dtps.renderStream = function(stream) {
@@ -327,11 +327,11 @@ streamlist.push(`
     <h4>` + stream[i].title + `</h4>
 	<h5>Due ` + stream[i].due + `</h5>
 </div>
-`);	
+`);
 }
 	    }
 		return streamlist.join("");
-		
+
 }
 dtps.masterStream = function() {
   dtps.showClasses();
@@ -382,7 +382,7 @@ dtps.getPage = function(loc, id) {
 </div>
 `)
         });
-    }); 
+    });
 }
 dtps.showClasses = function () {
   var streamClass = "active"
@@ -414,8 +414,8 @@ dtps.showClasses = function () {
   $(".header .btns").show();
   }
   if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
-  if (dtps.selectedClass == "stream") dtps.masterStream();	       
-	    
+  if (dtps.selectedClass == "stream") dtps.masterStream();
+
 });
 }
 dtps.render = function() {
@@ -501,7 +501,7 @@ Gradebook
    href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
 }).appendTo("head");
   fluid.init();
-  
+
 }
 
 dtps.init();
