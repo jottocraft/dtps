@@ -24,15 +24,13 @@ dtps.firstrun = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
-<li>Project DTPS is a completly different website ran via a script on PowerSchool that will pull data directly from PowerSchool</li>
 <li>Project DTPS is meant to be simple, so many PowerSchool features will be left out</li>
-<li>Project DTPS does not store user data anywhere. The only data stored at the moment on your computer is: dark mode prefrence, last used version (for changelogs), and this prompt.</li>
-<li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit or write data of any kind on your PowerSchool account.</li>
+<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer as a cookie. Grades and other personal data will never be stored anywhere.</li>
+<li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account.</li>
 <li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
-<li>Don't run any scripts alongside Project DTPS.</li>
 <li>Report feedback by clicking the feedback button at the top right corner. All of Project DTPS's code is on GitHub, so feel free to leave an issue there.</li>
 <li>Project DTPS's code is often untested and fresh off the vine. Things will break on a regular basis.</li>
-<li><b>Project DTPS is still in development, so it may display incorrect data and will take a while to load. Use Project DTPS at your own risk.</b></li>
+<li><b>Project DTPS is still in development, so it may display incorrect data and will take a while to load (I'm trying to get things to work before worrying about speed). Use Project DTPS at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true'; dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
@@ -471,6 +469,8 @@ Gradebook
 <br />
 <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
 <div class="label">Enable dark mode</div>
+<br />
+<button onclick="document.cookie = 'dtps=1'; window.alert('Reload page and run script to view changelog');" class="btn">Changelog</button>
 </div>
 
 `)
