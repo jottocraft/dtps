@@ -375,6 +375,8 @@ fluid.unsplash = function() {
   window.scrollTo(0, fluid.splashScroll);
 }
 
+$( document ).ready(fluid.init);
+
 /* Fluid Commands */
 // a key map of allowed keys
 var allowedKeys = {
