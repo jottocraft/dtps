@@ -174,7 +174,11 @@ dtps.init = function () {
         var subject = null;
         if (name.includes("Physics")) { var subject = "Physics" }; if (name.includes("English")) { var subject = "English" }; if (name.includes("Physical Education")) { var subject = "PE" };
         if (name.includes("Prototyping")) { var subject = "Prototyping" }; if (name.includes("Algebra")) { var subject = "Algebra" };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
-        if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };
+        if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };if (name.includes("Environmental")) { var subject = "Environmental Science" };
+	      if (name.includes("Robotics")) { var subject = "Robotics" };if (name.includes("Biology")) { var subject = "Biology" };if (name.includes("Engineering")) { var subject = "Engineering" };if (name.includes("Geometry")) { var subject = "Geometry" };
+	      if (name.includes("Photography")) { var subject = "Photography" };if (name.includes("World History")) { var subject = "World History" };if (name.includes("U.S. History")) { var subject = "US History" };
+	      if (name.includes("Calculus")) { var subject = "Calculus" };if (name.includes("Precalculus")) { var subject = "Precalculus" };if (name.includes("Statistics")) { var subject = "Advanced Statistics" };
+	      if (name.includes("Model United Nations")) { var subject = "Model UN" };if (name.includes("Government")) { var subject = "Government" }; if (name.includes("Economics")) { var subject = "Economics" };
         if (subject == null) var subject = name;
 		for (var ii = 0; ii < dtps.classColors.length; ii++) {
 		if (dtps.classColors[ii].id == id) var col = dtps.classColors[ii].col;
