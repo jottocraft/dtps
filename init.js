@@ -387,8 +387,10 @@ dtps.showClasses = function () {
 <div class="grade"><i class="material-icons">view_stream</i></div>
 </div>
 <div class="classDivider"></div>
-` + dtps.classlist.join("") + `<div onclick="fluid.cards('.abt')" class="item link">
-<div class="name"><i class="material-icons">settings</i><span>Settings</span></div>
+` + dtps.classlist.join("") + `<div class="items">
+<h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
+<i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
+<i onclick="window.open('https://github.com/jottocraft/dtps/issues/new')" class="material-icons">feedback</i>
 </div>`);
   if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
@@ -460,8 +462,9 @@ Gradebook
 </div>
 
 <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
-<h3>Settings</h3>
-<h5>Project DTPS` + dtps.trackSuffix + ` ` + dtps.readableVer + `</h5>
+<h3>About</h3>
+<h5>Project DTPS` + dtps.trackSuffix + ` ` + dtps.readableVer + ` (user ` + dtps.user.login + `)</h5>
+<p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
 <br />
 <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
 <div class="label">Enable dark mode</div>
