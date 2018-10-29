@@ -31,6 +31,7 @@ dtps.firstrun = function () {
 <li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Don't run any scripts alongside Project DTPS.</li>
 <li>Report feedback by clicking the feedback button at the top right corner. All of Project DTPS's code is on GitHub, so feel free to leave an issue there.</li>
+<li>Project DTPS's code is often untested and fresh off the vine. Things will break on a regular basis.</li>
 <li><b>Project DTPS is still in development, so it may display incorrect data and will take a while to load. Use Project DTPS at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true'; dtps.render();" type="button" value="Accept & Continue"></span>
 `)
