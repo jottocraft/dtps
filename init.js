@@ -414,7 +414,6 @@ dtps.showClasses = function () {
 dtps.render = function() {
   document.title = "Project DTPS" + dtps.trackSuffix
    $ = jQuery;
-jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.classlist = [];
@@ -490,6 +489,7 @@ Gradebook
    type: "text/css",
    href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
 }).appendTo("head");
+jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   fluid.init();
   
 }
