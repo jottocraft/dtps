@@ -279,6 +279,29 @@ body:not(.dev) .dev {
 	display: none !important;
 }
 
+
+.items {
+	position: fixed;
+	right:0;
+	top: 0;
+	margin: 15px;
+	color: white;
+	padding-right: 10px;
+	z-index: 100;
+}
+.items h4 {
+	vertical-align: middle;
+	display: inline-block;
+	margin: 0;
+	margin-right: 15px;
+}
+.items i {
+	cursor: pointer;
+	vertical-align: middle;
+	margin-left: 7px;
+	margin-right: 7px;
+	margin-top: 3px;
+}
 .item.link {
 	font-size: 20px;
 	cursor: pointer;
