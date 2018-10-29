@@ -1,5 +1,3 @@
-# jottocraft/dtps
-
 [Install using bookmark script](https://jottocraft.github.io/dtps/bookmark.txt)
 
 or
