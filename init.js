@@ -392,7 +392,7 @@ dtps.showClasses = function () {
 ` + dtps.classlist.join("") + `<div class="items">
 <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
 <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
-<i onclick="window.open('https://github.com/jottocraft/dtps/issues/new')" class="material-icons">feedback</i>
+<i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
 </div>`);
   if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
