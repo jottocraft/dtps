@@ -417,6 +417,7 @@ dtps.render = function() {
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.classlist = [];
+	jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
 <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
@@ -489,7 +490,6 @@ Gradebook
    type: "text/css",
    href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
 }).appendTo("head");
-jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   fluid.init();
   
 }
