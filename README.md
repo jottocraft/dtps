@@ -1,7 +1,4 @@
 # jottocraft/dtps
-Powerschool LMS mod
-
-
 
 [Install using bookmark script](https://jottocraft.github.io/dtps/bookmark.txt)
 
