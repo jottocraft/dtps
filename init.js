@@ -468,13 +468,13 @@ Gradebook
 
 <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
 <h3>About</h3>
-<h5>Project DTPS` + dtps.trackSuffix + ` ` + dtps.readableVer + ` (user ` + dtps.user.login + `)</h5>
+<h5>Project DTPS ` + dtps.readableVer + ` (user ` + dtps.user.login + `)</h5>
 <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
 <br />
 <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
 <div class="label">Enable dark mode</div>
-<br />
-<button onclick="document.cookie = 'dtps=1'; dtps.changelog();" class="btn">Changelog</button>
+<br /><br />
+<button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
 </div>
 
 `)
