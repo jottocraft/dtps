@@ -237,6 +237,7 @@ if (fluid.expBeh) { event.preventDefault(); fluid.bounceBack(event.target); }
 
 }
 
+$( document ).ready(fluid.init);
 $( window ).resize(function() {
   fluid.exitContextMenu(true);
 });
