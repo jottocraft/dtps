@@ -448,7 +448,7 @@ Pages
 </button>
 <button onclick="dtps.selectedContent = 'grades'" class="btn grades dev">
 Gradebook
-<i class="material-icons">code</i>
+<i class="material-icons">experiment</i>
 </button>
 </div>
 <div class="classContent">
