@@ -426,7 +426,7 @@ jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
 </div>
 `);
   }
-	if (fluid.isDark()) { var dark = " active" } else { var dark = "" }
+	if (dtps.getCookie("fluidIsDark") == "true") { var dark = " active" } else { var dark = "" }
    jQuery("body").html(`
 <div class="sidebar">
 </div>
