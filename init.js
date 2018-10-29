@@ -474,7 +474,7 @@ Gradebook
 <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
 <div class="label">Enable dark mode</div>
 <br />
-<button onclick="document.cookie = 'dtps=1'; window.alert('Reload page and run script to view changelog');" class="btn">Changelog</button>
+<button onclick="document.cookie = 'dtps=1'; dtps.changelog();" class="btn">Changelog</button>
 </div>
 
 `)
