@@ -72,11 +72,12 @@
 	height: 500px;
 	border-radius: 0px 0px 25px 25px;
 }
-.background .header {
+.header {
 	margin-left: 260px;
 	text-align: center;
 	color: white;
 	padding-top: 100px;
+	z-index: 100;
 }
 .header .card {
 	margin: 25px 75px;
