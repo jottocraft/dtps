@@ -231,13 +231,13 @@ dtps.loadPages = function(num) {
       });
       dtps.classes[num].pagelist.push(`
       <div onclick="dtps.selectedPage = ` + tmp[tmp.length-1] + `" class="class">
-      <div class="label">` + jQuery(data[i]).find("a.nav").text() + `</div>
+      <div class="name">` + jQuery(data[i]).find("a.nav").text() + `</div>
       <div class="grade"><i class="material-icons">notes</i></div>
       </div>
       `);
     }
     jQuery(".sidebar").html(`<div onclick="dtps.showClasses()" class="class">
-      <div class="label">Classes</div>
+      <div class="name">Classes</div>
       <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
       </div>
       <div class="classDivider"></div>
@@ -476,6 +476,8 @@ dtps.render = function() {
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label">Enable dark mode</div>
+<div onclick="window.alert('coming soon')" class="switch dev"><span class="head"></span></div>
+    <div class="label dev">Show letter grades instead of points earned</div>
     <br /><br />
     <button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
     </div>
