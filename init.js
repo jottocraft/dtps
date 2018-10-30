@@ -443,8 +443,9 @@ dtps.render = function() {
   jQuery("body").html(`
     <div class="sidebar">
     </div>
-    <div class="background trans">
-    <div class="header">
+    <div class="background trans"></div>
+
+<div class="header">
     <h1 id="headText">Stream</h1>
     <div style="display: none;" class="btns row">
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
@@ -468,7 +469,6 @@ dtps.render = function() {
       <div class="bounce3"></div>
     </div>
 
-    </div>
     </div>
     </div>
 
