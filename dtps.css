@@ -252,7 +252,26 @@ body.dark .header .card {
 	--grad: linear-gradient(to bottom right, #D3BCFE, #5D5373);
 }
 .background {
-	background: var(--grad);
+  background-size: 100%;
+  position: relative;
+  z-index: -90;
+}
+.background:before {
+    border-radius: inherit;
+    background: var(--grad);
+    content: '';    
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0; left: 0;
+    opacity: 0;
+    z-index: -100;
+    transition: all 0.5s ease-in-out;
+  }
+.background.trans:before {
+       opacity: 1; 
+    transition: all 0.5s;
 }
 .card.color {
 	background: var(--grad);
