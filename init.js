@@ -312,10 +312,15 @@ dtps.renderStream = function(stream) {
 	if (col == undefined) var col = "";
 	for (var i = 0; i < stream.length; i++) {
 		    if ((stream[i].grade !== "-") && (stream[i].grade)) {
+			    		if ("ABC".includes(stream[i].letter.toArray()[0])) {
+			var earnedTmp = stream[i].grade.split("/")[0];
+		    } else {
+		var earnedTmp = stream[i].letter;
+	}
 		  streamlist.push(`
 <div class="card graded assignment ` + stream[i].col + `">
 <div class="points">
- <div class="earned">` + stream[i].grade.split("/")[0] + `</div>
+ <div class="earned">` + earnedTmp + `</div>
 <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
 </div>
     <h4>` + stream[i].title + `</h4>
