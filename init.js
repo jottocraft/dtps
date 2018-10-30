@@ -398,6 +398,15 @@ dtps.showClasses = function () {
   if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class" ).click(function(event) {
+	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	  $(".background").css("background", prev)
+		  $(".background").addClass("trans");
+		  clearTimeout(dtps.bgTimeout);
+		  bgTimeout = setTimeout(function() {
+		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+		  $(".background").css("background", next)
+		  $(".background").removeClass("trans");
+		  }, 500);
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
