@@ -476,6 +476,7 @@ dtps.render = function() {
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label">Enable dark mode</div>
+<br /><br />
 <div onclick="window.alert('coming soon')" class="switch dev"><span class="head"></span></div>
     <div class="label dev">Show letter grades instead of points earned</div>
     <br /><br />
