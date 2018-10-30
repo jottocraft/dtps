@@ -443,7 +443,7 @@ dtps.render = function() {
   jQuery("body").html(`
     <div class="sidebar">
     </div>
-    <div class="background">
+    <div class="background trans">
     <div class="header">
     <h1 id="headText">Stream</h1>
     <div style="display: none;" class="btns row">
