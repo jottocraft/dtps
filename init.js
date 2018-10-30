@@ -108,8 +108,7 @@ dtps.webReq = function(req, url, callback, q) {
       dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
       dtps.http[url].send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
   	}
-	}
-  else {
+	} else {
 		if (callback) callback(dtps.requests[url], q);
 	}
 }
