@@ -273,7 +273,7 @@ dtps.classStream = function(num, renderOv) {
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
     		col: dtps.classes[num].col
       });
-      dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')",
+      dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
         dtps.classes[num].streamlist.push(`
           <div class="card assignment">
           <div class="spinner points">
@@ -284,7 +284,7 @@ dtps.classStream = function(num, renderOv) {
           <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
           <h5>Due ` + due + `</h5>
           </div>
-      `)));
+      `);
     }
     if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
 
