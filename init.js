@@ -488,7 +488,9 @@ dtps.render = function() {
     <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
-  `)
+  `);
+	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	  $(".background").css("background", prev)
   dtps.showClasses();
   $("link").remove();
   jQuery("<link/>", {
