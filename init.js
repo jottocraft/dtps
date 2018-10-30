@@ -1,7 +1,8 @@
 var dtps = {
   ver: 012,
   readableVer: "v0.1.2 (Beta)",
-  trackSuffix: " (Beta)"
+  trackSuffix: " (Beta)",
+  showLetters: false
 };
 dtps.changelog = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
@@ -315,6 +316,7 @@ dtps.renderStream = function(stream) {
 	    } else {
     		var earnedTmp = stream[i].letter;
     	}
+	    if (dtps.showLetters) earnedTmp = stream[i].letter;
 		  streamlist.push(`
         <div class="card graded assignment ` + stream[i].col + `">
         <div class="points">
@@ -476,7 +478,7 @@ dtps.render = function() {
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label">Enable dark mode</div>
 <br /><br />
-<div onclick="window.alert('coming soon')" class="switch dev"><span class="head"></span></div>
+<div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch dev"><span class="head"></span></div>
     <div class="label dev">Show letter grades instead of points earned</div>
     <br /><br />
     <button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
