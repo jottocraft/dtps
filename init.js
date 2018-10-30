@@ -443,9 +443,8 @@ dtps.render = function() {
   jQuery("body").html(`
     <div class="sidebar">
     </div>
-    <div class="background trans"></div>
-
-<div class="header">
+    <div class="background trans">
+    <div class="header">
     <h1 id="headText">Stream</h1>
     <div style="display: none;" class="btns row">
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
@@ -462,16 +461,14 @@ dtps.render = function() {
     </button>
     </div>
     <div class="classContent">
-
     <div class="spinner">
       <div class="bounce1"></div>
       <div class="bounce2"></div>
       <div class="bounce3"></div>
     </div>
-
     </div>
     </div>
-
+    </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
     <h3>About</h3>
     <h5>Project DTPS ` + dtps.readableVer + ` (user ` + dtps.user.login + `)</h5>
@@ -482,7 +479,6 @@ dtps.render = function() {
     <br /><br />
     <button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
     </div>
-
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
