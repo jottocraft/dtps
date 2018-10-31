@@ -479,7 +479,7 @@ dtps.render = function() {
     <div class="label">Enable dark mode</div>
 <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch dev"><span class="head"></span></div>
-    <div class="label dev">Show letter grades instead of points earned</div>
+    <div class="label dev"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
     <br /><br />
     <button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
     </div>
