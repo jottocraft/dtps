@@ -12,6 +12,7 @@ or
 * ~~Dark mode UI toggle~~
 * ~~Feedback and user name somewhere~~
 * ~~About menu~~
+* ~~Class colors~~
 * ~~Master/all classes stream~~
 * ~~Speed improvements~~
 
