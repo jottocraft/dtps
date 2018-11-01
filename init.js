@@ -2,7 +2,8 @@ var dtps = {
   ver: 022,
   readableVer: "v0.2.2 (Beta)",
   trackSuffix: " (Beta)",
-  showLetters: false
+  showLetters: false,
+  pePDV: false
 };
 dtps.changelog = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
@@ -185,7 +186,7 @@ dtps.init = function () {
     		if (dtps.classColors[ii].id == id) var col = dtps.classColors[ii].col;
   		}
 	    var letterTmp = grade.replace(/[0-9]/g, '').replace(".", "");
-	    if (subject == "PE") {if (letterTmp !== "DV") { letterTmp = "P"; }}
+	    if (dtps.pePDV) { if (subject == "PE") {if (letterTmp !== "DV") { letterTmp = "P"; }} }
       dtps.classes.push({
         name: name,
         subject: subject,
@@ -500,6 +501,9 @@ dtps.render = function() {
 <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch dev"><span class="head"></span></div>
     <div class="label dev"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
+    <br /><br />
+<div onclick="if (dtps.pePDV) {dtps.pePDV = false;} else {dtps.pePDV = true;}" class="switch dev"><span class="head"></span></div>
+    <div class="label dev"><i class="material-icons">experiment</i> Show P/DV letter grading for PE</div>
     <br /><br />
     <button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
     </div>
