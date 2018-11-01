@@ -18,12 +18,12 @@ or
 
 *Beta 2*
 
-* Multi-block pages
-* Pages speed improvements
+* ~~Multi-block pages~~
+* ~~Pages speed improvements~~
 
 *Beta 3*
 
-* dtps.masterStream speed improvements
+* dtps.masterStream speed improvements and fix stream bug
 * Pull Changelogs from GitHub and use Fluid for changelogs
 
 *Beta 4*
