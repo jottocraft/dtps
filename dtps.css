@@ -290,7 +290,7 @@ body.dark .header .card {
 	color: white !important;
 }
 .card.color .weighted {
-	color: var(--light);
+	color: var(--dark);
 }
 .class {
 	border-color: var(--dark);
