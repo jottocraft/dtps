@@ -6,7 +6,7 @@ or
 
 ## Project DTPS News
 
-DTPS v1.0.0 stable target release date is 11/7 (testing 11/3 - 11/6)
+DTPS v1.0.0 stable target release date is 11/5 (PM Release) (testing (GM / v0.9.x) 11/2 or 11/3 - 11/5)
 Project DTPS will open to contributions on 11/8
 
 **sudoer (experimental) features:**
@@ -25,7 +25,7 @@ Project DTPS will open to contributions on 11/8
 * ~~Master/all classes stream~~
 * ~~Speed improvements~~
 
-*Beta 2 - 2.2*
+*Beta 2 - 2.2 11/1*
 
 * ~~Fix animations (gradient)~~
 * ~~Multi-block pages~~
@@ -33,14 +33,14 @@ Project DTPS will open to contributions on 11/8
 * ~~Pages speed improvements~~
 * ~~show assignment weight category in stream~~
 
-*Beta 3*
+*Beta 3 11/2 (AM Release or PM if missed)*
 
 * dtps.masterStream speed improvements and fix stream bug
 * Pull Changelogs from GitHub and use Fluid for changelogs
 * Gradebook tab
 * Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)
 
-*v0.9.x*
+*v0.9.x 11/2 (PM Release) or 11/3*
 * GM (Release candidate)
 
 ### Post-release To-Do List (unordered)
