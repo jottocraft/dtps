@@ -515,8 +515,8 @@ dtps.render = function() {
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
     <h3>About</h3>
-    <h5>Project DTPS ` + dtps.readableVer.replace("(beta)", `<div class="beta notice">beta</div>`) + ` (user <i class="material-icons dev">experiment</i>` + dtps.user.login + `)</h5>
-    <p>Made by <a href="https://github.com/jottocraft">jottocraft</a><span class="dev">. Experimental features enabled for this account.</span></p>
+    <h5>Project DTPS ` + dtps.readableVer.replace("(beta)", `<div class="beta notice">beta</div>`) + ` (user <i style="vertical-align: middle;" class="material-icons dev">experiment</i>&nbsp;&nbsp;` + dtps.user.login + `)</h5>
+    <p>Made by <a href="https://github.com/jottocraft">jottocraft</a><span class="dev"> | Experimental features enabled for this account</span></p>
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label">Enable dark mode</div>
