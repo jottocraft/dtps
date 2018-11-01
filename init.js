@@ -334,7 +334,7 @@ dtps.renderStream = function(stream) {
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>Due ` + stream[i].due + ` <span class="weighted dev"><i class="material-icons">experiment</i> ` + wFormat + `</span></h5>
+      	<h5>Due ` + stream[i].due + ` <span class="weighted dev">` + wFormat + `</span></h5>
         </div>
       `);
     } else {
