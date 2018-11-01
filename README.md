@@ -22,7 +22,7 @@ dtps v1.0.0 stable target release date is: 11/5 (testing 11/2 - 11/4)
 * ~~Multi-block pages~~
 * ~~block titles~~
 * ~~Pages speed improvements~~
-* show assignment weight category in stream
+* ~~show assignment weight category in stream~~
 
 *Beta 3*
 
