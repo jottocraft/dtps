@@ -167,9 +167,14 @@ body.dark .header .card {
 	margin-left: 10px;
 }
 .card .weight {
-	margin: 0 !important;
+	margin: 0px !important;
+	overflow: hidden;
 	background: var(--grad);
 	color: white !important;
+	border-radius: 30px;
+}
+.card.gb {
+	padding: 0 !important;
 }
 .assignment .weighted i {
 	vertical-align: middle;
