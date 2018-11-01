@@ -161,6 +161,14 @@ body.dark .header .card {
 	display: inline-block;
 	color: #8e8e8e;
 }
+.assignment .weighted {
+	color: #8e8e8e;
+	font-size: 18px;
+}
+.assignment .weighted i {
+	vertical-align: middle;
+	font-size: 24px;
+}
 .header .card.color .points .total {
 	color: var(--light);
 }
@@ -280,6 +288,9 @@ body.dark .header .card {
 .card.color {
 	background: var(--grad);
 	color: white !important;
+}
+.card.color .weighted {
+	color: var(--light);
 }
 .class {
 	border-color: var(--dark);
