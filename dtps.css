@@ -78,6 +78,9 @@
 	color: white;
 	padding-top: 100px;
 	z-index: 100;
+	position: absolute;
+	top: 0;
+	width: calc(100% - 250px);
 }
 .header .card {
 	margin: 25px 75px;
@@ -255,7 +258,7 @@ body.dark .header .card {
 .background {
   background-size: 100%;
   position: relative;
-  /*z-index: -90;*/
+  z-index: -90;
 }
 .background:before {
     border-radius: inherit;
