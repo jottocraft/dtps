@@ -4,6 +4,7 @@ or
 
 [Install chrome extension](https://chrome.google.com/webstore/detail/project-dtps/pakgdifknldaiglefmpkkgfjndemfapo)
 
+dtps v1.0.0 stable target release date is: 11/5 (testing 11/2 - 11/4)
 
 ### Pre-Release To-Do List
 
