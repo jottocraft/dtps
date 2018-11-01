@@ -267,8 +267,8 @@ dtps.classStream = function(num, renderOv) {
     dtps.classes[num].streamitems = [];
     for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
-      var due = assignment.children("td:nth-child(3)").text().slice(0,-1);
-    	if (due == "n/a") var due = "N/A";
+      var due = "<h5>Due " + assignment.children("td:nth-child(3)").text().slice(0,-1) + "</h5>"
+    	if (assignment.children("td:nth-child(3)").text().slice(0,-1) == "n/a") var due = "";
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
@@ -284,7 +284,7 @@ dtps.classStream = function(num, renderOv) {
           <div class="bounce3"></div>
           </div>
           <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
-          <h5>Due ` + due + `</h5>
+          ` + due + `
           </div>
       `);
     }
