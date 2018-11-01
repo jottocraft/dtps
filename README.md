@@ -2,9 +2,15 @@
 
 or
 
-[Install chrome extension](https://chrome.google.com/webstore/detail/project-dtps/pakgdifknldaiglefmpkkgfjndemfapo)
+[Install Chrome Extension (auto load)](https://chrome.google.com/webstore/detail/project-dtps/pakgdifknldaiglefmpkkgfjndemfapo)
 
-dtps v1.0.0 stable target release date is: 11/5 (testing 11/2 - 11/4)
+## Project DTPS News
+
+DTPS v1.0.0 stable target release date is 11/7 (testing 11/3 - 11/6)
+Project DTPS will open to contributions on 11/8
+
+**sudoer (experimental) features:**
+* gradebook tab (v0.4.0)
 
 ### Pre-Release To-Do List
 
