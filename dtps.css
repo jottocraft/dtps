@@ -173,6 +173,9 @@ body.dark .header .card {
 	color: white !important;
 	border-radius: 30px;
 }
+.card .weight p {
+	color: var(--dark) !important;
+}
 .card.gb {
 	padding: 0 !important;
 }
