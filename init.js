@@ -459,6 +459,7 @@ dtps.showClasses = function () {
       $(".header .btns").show();
     }
     if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
+    if ((dtps.selectedContent == "grades") && (dtps.selectedClass !== "stream")) dtps.gradebook(dtps.selectedClass)
     if (dtps.selectedClass == "stream") dtps.masterStream();
   });
 }
@@ -493,7 +494,7 @@ dtps.render = function() {
     Pages
     <i class="material-icons">list</i>
     </button>
-    <button onclick="dtps.selectedContent = 'grades'" class="btn grades dev">
+    <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades dev">
     Gradebook
     <i class="material-icons">experiment</i>
     </button>
