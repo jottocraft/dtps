@@ -40,10 +40,8 @@ Project DTPS will open to contributions on 11/8
 * Gradebook tab
 * Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)
 
-*Beta 4*
+*v0.9.x*
 * GM (Release candidate)
-
-Hopefully release after beta 4
 
 ### Post-release To-Do List (unordered)
 * About page improvements
