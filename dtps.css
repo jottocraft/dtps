@@ -166,6 +166,11 @@ body.dark .header .card {
 	font-size: 18px;
 	margin-left: 10px;
 }
+.card .weight {
+	margin: 0 !important;
+	background: var(--grad);
+	color: white !important;
+}
 .assignment .weighted i {
 	vertical-align: middle;
 	font-size: 24px;
@@ -186,79 +191,79 @@ body.dark .header .card {
 .header .card.assignment.graded h4 {
 	width: calc(100% - 125px);
 }
-.card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
+.card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .card .weight:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
 	--light: #a3a3a3;
 	--norm: #777777;
 	--dark: #424242;
 	--grad: linear-gradient(to bottom right, #a3a3a3, #424242);
 }
-.background.filter_0, .class.filter_0, .card.filter_0 {
+.background.filter_0, .class.filter_0, .card.filter_0, .card .weight.filter_0 {
 	--light: #FE4040;
 	--norm: #e34b4b;
 	--dark: #8A1010;
 	--grad: linear-gradient(to bottom right, #FE4040, #8A1010);
 }
-.background.filter_1, .class.filter_1, .card.filter_1 {
+.background.filter_1, .class.filter_1, .card.filter_1, .card .weight.filter_1 {
 	--light: #FD9920;
 	--norm: #f5904c;
 	--dark: #C45E19;
 	--grad: linear-gradient(to bottom right, #FD9920, #C45E19);
 }
-.background.filter_2, .class.filter_2, .card.filter_2 {
+.background.filter_2, .class.filter_2, .card.filter_2, .card .weight.filter_2 {
 	--light: #FAE52B;
 	--norm: #d1c134;
 	--dark: #A29417;
 	--grad: linear-gradient(to bottom right, #FAE52B, #A29417);
 }
-.background.filter_3, .class.filter_3, .card.filter_3 {
+.background.filter_3, .class.filter_3, .card.filter_3, .card .weight.filter_3 {
 	--light: #7CE57C;
 	--norm: #519951;
 	--dark: #165816;
 	--grad: linear-gradient(to bottom right, #7CE57C, #165816);
 }
-.background.filter_4, .class.filter_4, .card.filter_4 {
+.background.filter_4, .class.filter_4, .card.filter_4, .card .weight.filter_4 {
 	--light: #45AFE6;
 	--norm: #517b91;
 	--dark: #184760;
 	--grad: linear-gradient(to bottom right, #45AFE6, #184760);
 }
-.background.filter_5, .class.filter_5, .card.filter_5 {
+.background.filter_5, .class.filter_5, .card.filter_5, .card .weight.filter_5 {
 	--light: #CF66E0;
 	--norm: #9442a1;
 	--dark: #62136E;
 	--grad: linear-gradient(to bottom right, #CF66E0, #62136E);
 }
-.background.filter_6, .class.filter_6, .card.filter_6 {
+.background.filter_6, .class.filter_6, .card.filter_6, .card .weight.filter_6 {
 	--light: #FA9CCA;
 	--norm: #d16f9e;
 	--dark: #A84273;
 	--grad: linear-gradient(to bottom right, #FA9CCA, #A84273);
 }
-.background.filter_7, .class.filter_7, .card.filter_7 {
+.background.filter_7, .class.filter_7, .card.filter_7, .card .weight.filter_7 {
 	--light: #C4A18A;
 	--norm: #8c705e;
 	--dark: #6A4F3D;
 	--grad: linear-gradient(to bottom right, #C4A18A, #6A4F3D);
 }
-.background.filter_8, .class.filter_8, .card.filter_8 {
+.background.filter_8, .class.filter_8, .card.filter_8, .card .weight.filter_8 {
 	--light: #F7C872;
 	--norm: #b8934d;
 	--dark: #896216;
 	--grad: linear-gradient(to bottom right, #F7C872, #896216);
 }
-.background.filter_9, .class.filter_9, .card.filter_9 {
+.background.filter_9, .class.filter_9, .card.filter_9, .card .weight.filter_9 {
 	--light: #CDE9A7;
 	--norm: #8fab6a;
 	--dark: #6F7F5B;
 	--grad: linear-gradient(to bottom right, #CDE9A7, #6F7F5B);
 }
-.background.filter_10, .class.filter_10, .card.filter_10 {
+.background.filter_10, .class.filter_10, .card.filter_10, .card .weight.filter_10 {
 	--light: #CDE9F9;
 	--norm: #7da1b5;
 	--dark: #69808C;
 	--grad: linear-gradient(to bottom right, #CDE9F9, #69808C);
 }
-.background.filter_11, .class.filter_11, .card.filter_11 {
+.background.filter_11, .class.filter_11, .card.filter_11, .card .weight.filter_11 {
 	--light: #D3BCFE;
 	--norm: #887aa3;
 	--dark: #5D5373;
