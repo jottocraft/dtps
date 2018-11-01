@@ -324,7 +324,7 @@ dtps.renderStream = function(stream) {
 	var streamlist = [];
 	if (col == undefined) var col = "";
 	for (var i = 0; i < stream.length; i++) {
-		var due = stream[i].due
+		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
   		if ("ABC".includes(stream[i].letter.toArray()[0])) {
