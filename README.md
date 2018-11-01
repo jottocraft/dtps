@@ -37,11 +37,11 @@ Project DTPS will open to contributions on 11/8
 
 * dtps.masterStream speed improvements and fix stream bug
 * Pull Changelogs from GitHub and use Fluid for changelogs
-
-*Beta 4*
-
 * Gradebook tab
 * Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)
+
+*Beta 4*
+* GM
 
 Hopefully release after beta 4
 
