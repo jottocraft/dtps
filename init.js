@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 012,
-  readableVer: "v0.1.2 (Beta)",
+  ver: 020,
+  readableVer: "v0.2.0 (Beta)",
   trackSuffix: " (Beta)",
   showLetters: false
 };
@@ -9,11 +9,10 @@ dtps.changelog = function () {
 <h2>What's new in Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <ul>
-<li>Added dark mode UI toggle</li>
-<li>Added about page</li>
-<li>Added send feedback button</li>
-<li><b>Known stream bug: does not show content from the class at top of the list.</b></li>
-<li>Up next: ironing things out and multi-block pages. Gradebook is low priority right now, so I'll be hiding the tab until it's ready.</li>
+<li>Added support for multi block pages</li>
+<li>Minor pages speed improvements</li>
+<li>sudoers: starting to test gradebook categories in stream</li>
+<li><b>Known stream bug: does not show content from the class at top of the list. Will be fixed in beta 3.</b></li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
 `)
@@ -388,7 +387,7 @@ dtps.getPage = function(loc, id) {
   `);
 	var spinnerTmp = true;
   dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, function(resp) {
-    var newIDs = jQuery(resp).find("#col_2_1 .cms_box").toArray();
+    var newIDs = jQuery(resp).find(".cms_box").toArray();
 	  if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; }
     for (var i = 0; i < newIDs.length; i++) {
 	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
