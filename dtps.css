@@ -168,6 +168,7 @@ body.dark .header .card {
 }
 .card .weight {
 	margin: 0px !important;
+	padding: 0px !important;
 	overflow: hidden;
 	background: var(--grad);
 	color: white !important;
