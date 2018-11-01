@@ -41,7 +41,7 @@ Project DTPS will open to contributions on 11/8
 * Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)
 
 *Beta 4*
-* GM
+* GM (Release candidate)
 
 Hopefully release after beta 4
 
