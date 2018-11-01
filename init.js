@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 020,
-  readableVer: "v0.2.0 (Beta)",
+  ver: 021,
+  readableVer: "v0.2.1 (Beta)",
   trackSuffix: " (Beta)",
   showLetters: false
 };
@@ -12,6 +12,7 @@ dtps.changelog = function () {
 <li>Added support for multi block pages</li>
 <li>Minor pages speed improvements</li>
 <li>sudoers: starting to test gradebook categories in stream</li>
+<li>new in v0.2.1: show block title</li>
 <li><b>Known stream bug: does not show content from the class at top of the list. Will be fixed in beta 3.</b></li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
@@ -391,9 +392,11 @@ dtps.getPage = function(loc, id) {
 	  if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; }
     for (var i = 0; i < newIDs.length; i++) {
 	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
+	    var title = jQuery(newIDs[i]).children(".head").text()
     dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp) {
        jQuery(".classContent").html(jQuery(".classContent").html() + `
         <div class="card">
+       <h4>` + title + `</h4>
         ` + resp + `
         </div>
       `)
