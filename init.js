@@ -324,6 +324,8 @@ dtps.renderStream = function(stream) {
 	var streamlist = [];
 	if (col == undefined) var col = "";
 	for (var i = 0; i < stream.length; i++) {
+		var due = stream[i].due
+    	    if (due.includes("n/a")) var due = "";
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
   		if ("ABC".includes(stream[i].letter.toArray()[0])) {
   			var earnedTmp = stream[i].grade.split("/")[0];
@@ -341,14 +343,14 @@ dtps.renderStream = function(stream) {
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>Due ` + stream[i].due + ` <span class="weighted">` + wFormat + `</span></h5>
+      	<h5>` + due + ` <span class="weighted">` + wFormat + `</span></h5>
         </div>
       `);
     } else {
       streamlist.push(`
         <div class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
-	       <h5>Due ` + stream[i].due + `</h5>
+	       <h5>` + due + `</h5>
          </div>
        `);
     }
