@@ -290,15 +290,23 @@ dtps.classStream = function(num, renderOv) {
     if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
 
     dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", function(resp) {
-	    data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow):not(:has(th))").toArray();
+	    data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow)").toArray();
+	    var prevWeight = null;
+	    dtps.classes[num].weights = [];
 	    for (var i = 0; i < data.length; i++) {
+		    if (jQuery(data[i]).children("th").length > 0) {
+			    prevWeight = jQuery(jQuery(data[i]).children("th").toArray()[0]).text();
+			    dtps.classes[num].weights.push(jQuery(jQuery(data[i]).children("th").toArray()[0]).text());
+	    } else {
   	    if (jQuery(data[i]).find("a").attr("href")) {
       	    var id = dtps.classes[num].streamitems.indexOf(jQuery(data[i]).find("a").attr("href").split("/")[5])
     	    if (id && (id != -1)) {
       	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
       	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
+            dtps.classes[num].stream[id].weight = prevWeight;
     	    }
   	    }
+	    }
 	    }
 	    dtps.classes[num].streamlist = [];
       if (!renderOv) jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
@@ -325,7 +333,7 @@ dtps.renderStream = function(stream) {
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>Due ` + stream[i].due + `</h5>
+      	<h5>Due ` + stream[i].due + ` <span class="weighted dev"><i class="material-icons">experiment</i> ` + stream[i].weight.replace(/ *\([^)]*\) */g, "") + `</span></h5>
         </div>
       `);
     } else {
