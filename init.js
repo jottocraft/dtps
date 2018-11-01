@@ -300,7 +300,7 @@ dtps.classStream = function(num, renderOv) {
 	    for (var i = 0; i < data.length; i++) {
 		    if (jQuery(data[i]).children("th").length > 0) {
 			    prevWeight = jQuery(jQuery(data[i]).children("th").toArray()[0]).text();
-			    dtps.classes[num].weights.push(jQuery(jQuery(data[i]).children("th").toArray()[0]).text());
+			    dtps.classes[num].weights.push({weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: []});
 	    } else {
   	    if (jQuery(data[i]).find("a").attr("href")) {
       	    var id = dtps.classes[num].streamitems.indexOf(jQuery(data[i]).find("a").attr("href").split("/")[5])
@@ -308,6 +308,7 @@ dtps.classStream = function(num, renderOv) {
       	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
       	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
             dtps.classes[num].stream[id].weight = prevWeight;
+	    dtps.classes[num].weights[dtps.classes[num].weights.indexOf(prevWeight)].assignments.push(dtps.classes[num].stream[id].title + ": " + dtps.classes[num].stream[id].letter + " (" + dtps.classes[num].stream[id].grade + ")");
     	    }
   	    }
 	    }
@@ -412,11 +413,13 @@ dtps.getPage = function(loc, id) {
 dtps.gradebook = function(num) {
 	var weightsTmp = [];
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
-		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].match(/\(([^)]+)\)/)[1] + `;" class="filter_` + i + ` weight">
-<h4>` + dtps.classes[num].weights[i] + `</h4>
-<p class="dev"><i class="material-icons">experiment</i> Test A</p>
-<p class="dev"><i class="material-icons">experiment</i> Test B</p>
-<p class="dev"><i class="material-icons">experiment</i> Test C</p>
+		var assignTmp = [];
+		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; i++) {
+			assignTmp.push(`<p class="dev"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
+		}
+		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + `;" class="filter_` + i + ` weight">
+<h4>` + dtps.classes[num].weights[i].weight + `</h4>
+` + assignTmp.join("") + `
 </div>`);
 	}
 	jQuery(".classContent").html(`
