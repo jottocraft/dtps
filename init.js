@@ -410,26 +410,18 @@ dtps.getPage = function(loc, id) {
   });
 }
 dtps.gradebook = function(num) {
+	var weightsTmp = [];
+	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
+		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].match(/\(([^)]+)\)/)[1] + `;" class="filter_` + i + ` weight">
+<h4>` + dtps.classes[num].weights[i] + `</h4>
+<p class="dev"><i class="material-icons">experiment</i> Test A</p>
+<p class="dev"><i class="material-icons">experiment</i> Test B</p>
+<p class="dev"><i class="material-icons">experiment</i> Test C</p>
+</div>`);
+	}
 	jQuery(".classContent").html(`
     <div style="height: 1000px;" class="card weight">
-    <div style="height: 20%;" class="filter_1 weight">
-<h4><i class="material-icons">experiment</i> Test 1</h4>
-<p>Test 1A</p>
-<p>Test 1B</p>
-<p>Test 1C</p>
-</div>
-    <div style="height: 50%;" class="filter_2 weight">
-<h4><i class="material-icons">experiment</i> Test 2</h4>
-<p>Test 2A</p>
-<p>Test 2B</p>
-<p>Test 2C</p>
-</div>
-    <div style="height: 30%;" class="filter_3 weight">
-<h4><i class="material-icons">experiment</i> Test 3</h4>
-<p>Test 3A</p>
-<p>Test 3B</p>
-<p>Test 3C</p>
-</div>
+    ` + weightsTmp.join("") + `
     </div>
   `);
 }
