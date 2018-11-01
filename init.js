@@ -326,6 +326,7 @@ dtps.renderStream = function(stream) {
     		var earnedTmp = stream[i].letter;
     	}
 	    if (dtps.showLetters) earnedTmp = stream[i].letter;
+	    if (stream[i].weight) var wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 		  streamlist.push(`
         <div class="card graded assignment ` + stream[i].col + `">
         <div class="points">
@@ -333,7 +334,7 @@ dtps.renderStream = function(stream) {
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>Due ` + stream[i].due + ` <span class="weighted dev"><i class="material-icons">experiment</i> ` + stream[i].weight.replace(/ *\([^)]*\) */g, "") + `</span></h5>
+      	<h5>Due ` + stream[i].due + ` <span class="weighted dev"><i class="material-icons">experiment</i> ` + wFormat + `</span></h5>
         </div>
       `);
     } else {
