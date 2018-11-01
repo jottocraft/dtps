@@ -413,13 +413,22 @@ dtps.gradebook = function(num) {
 	jQuery(".classContent").html(`
     <div style="height: 1000px;" class="card">
     <div style="height: 20%;" class="filter_1 weight">
-<h4><i class="material-icons">experiment</i> Test A</h4>
+<h4><i class="material-icons">experiment</i> Test 1</h4>
+<p>Test 1A</p>
+<p>Test 1B</p>
+<p>Test 1C</p>
 </div>
     <div style="height: 50%;" class="filter_2 weight">
-<h4><i class="material-icons">experiment</i> Test A</h4>
+<h4><i class="material-icons">experiment</i> Test 2</h4>
+<p>Test 2A</p>
+<p>Test 2B</p>
+<p>Test 2C</p>
 </div>
     <div style="height: 30%;" class="filter_3 weight">
-<h4><i class="material-icons">experiment</i> Test A</h4>
+<h4><i class="material-icons">experiment</i> Test 3</h4>
+<p>Test 3A</p>
+<p>Test 3B</p>
+<p>Test 3C</p>
 </div>
     </div>
   `);
