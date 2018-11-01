@@ -416,7 +416,7 @@ dtps.gradebook = function(num) {
 	var weightsTmp = [];
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
-		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; i++) {
+		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
 			assignTmp.push(`<p class="dev"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
 		}
 		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + `;" class="filter_` + i + ` weight">
