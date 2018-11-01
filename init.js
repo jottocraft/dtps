@@ -392,15 +392,14 @@ dtps.getPage = function(loc, id) {
 	  if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; }
     for (var i = 0; i < newIDs.length; i++) {
 	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
-	    var title = jQuery(newIDs[i]).children(".head").text()
-    dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp) {
+    dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp, q) {
        jQuery(".classContent").html(jQuery(".classContent").html() + `
         <div class="card">
-       <h4>` + title + `</h4>
+       <h4>` + q.title + `</h4>
         ` + resp + `
         </div>
       `)
-    });
+    }, {title: jQuery(newIDs[i]).children(".head").text()});
     }
   });
 }
