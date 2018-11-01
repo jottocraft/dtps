@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 021,
-  readableVer: "v0.2.1 (Beta)",
+  ver: 022,
+  readableVer: "v0.2.2 (Beta)",
   trackSuffix: " (Beta)",
   showLetters: false
 };
@@ -13,6 +13,7 @@ dtps.changelog = function () {
 <li>Minor pages speed improvements</li>
 <li>sudoers: starting to test gradebook categories in stream</li>
 <li>new in v0.2.1: show block title</li>
+<li>new in v0.2.2: show assignment categories in stream</li>
 <li><b>Known stream bug: does not show content from the class at top of the list. Will be fixed in beta 3.</b></li>
 </ul>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
@@ -326,7 +327,9 @@ dtps.renderStream = function(stream) {
     		var earnedTmp = stream[i].letter;
     	}
 	    if (dtps.showLetters) earnedTmp = stream[i].letter;
-	    if (stream[i].weight) var wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
+	    var wFormat = "";
+	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
+	    if (wFormat == "undefined") wFormat = "";
 		  streamlist.push(`
         <div class="card graded assignment ` + stream[i].col + `">
         <div class="points">
@@ -334,7 +337,7 @@ dtps.renderStream = function(stream) {
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>Due ` + stream[i].due + ` <span class="weighted dev">` + wFormat + `</span></h5>
+      	<h5>Due ` + stream[i].due + ` <span class="weighted">` + wFormat + `</span></h5>
         </div>
       `);
     } else {
