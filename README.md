@@ -11,6 +11,8 @@ Project DTPS will open to contributions on 11/8
 
 **sudoer (experimental) features:**
 * gradebook tab (v0.4.0)
+* show letter grades (v1.0.0+)
+* PE P/DV grading (v1.0.0+)
 
 ### Pre-Release To-Do List
 
@@ -25,6 +27,7 @@ Project DTPS will open to contributions on 11/8
 
 *Beta 2 - 2.2*
 
+* ~~Fix animations (gradient)~~
 * ~~Multi-block pages~~
 * ~~block titles~~
 * ~~Pages speed improvements~~
@@ -38,13 +41,9 @@ Project DTPS will open to contributions on 11/8
 *Beta 4*
 
 * Gradebook tab
+* Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)
 
-*Beta 5+*
-
-* Figure out why PowerSchool keeps clearing DTPS cookies :( (maybe use local storage?)
-* fix animations
-
-Hopefully release after beta 5
+Hopefully release after beta 4
 
 ### Post-release To-Do List (unordered)
 * About page improvements
