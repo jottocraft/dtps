@@ -184,14 +184,14 @@ dtps.init = function () {
   		for (var ii = 0; ii < dtps.classColors.length; ii++) {
     		if (dtps.classColors[ii].id == id) var col = dtps.classColors[ii].col;
   		}
-	    var gradeTmp = Number(grade.match(/\d+/g).join(".")).toFixed(2);
-	    if (subject == "PE") {if (gradeTmp !== "DV") { gradeTmp = "P"; }}
+	    var letterTmp = grade.replace(/[0-9]/g, '').replace(".", "");
+	    if (subject == "PE") {if (letterTmp !== "DV") { letterTmp = "P"; }}
       dtps.classes.push({
         name: name,
         subject: subject,
         abbrv: jQuery(section.children()[0]).text(),
-        grade: (grade == "--") ? ( grade ) : (gradeTmp),
-        letter: (grade == "--") ? ( grade ) : (grade.replace(/[0-9]/g, '').replace(".", "")),
+        grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
+        letter: (grade == "--") ? ( grade ) : (letterTmp),
         loc: loc[1] + "/" + loc[2],
   		  col: col,
   		  id: id,
