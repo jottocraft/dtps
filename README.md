@@ -16,10 +16,12 @@ or
 * ~~Master/all classes stream~~
 * ~~Speed improvements~~
 
-*Beta 2*
+*Beta 2 - 2.2*
 
 * ~~Multi-block pages~~
+* ~~block titles~~
 * ~~Pages speed improvements~~
+* show assignment weight category in stream
 
 *Beta 3*
 
