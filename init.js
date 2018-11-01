@@ -409,6 +409,21 @@ dtps.getPage = function(loc, id) {
     }
   });
 }
+dtps.gradebook = function(num) {
+	jQuery(".classContent").html(`
+    <div style="height: 1000px;" class="card">
+    <div style="height: 20%;" class="filter_1 weight">
+<h4><i class="material-icons">experiment</i> Test A</h4>
+</div>
+    <div style="height: 50%;" class="filter_2 weight">
+<h4><i class="material-icons">experiment</i> Test A</h4>
+</div>
+    <div style="height: 30%;" class="filter_3 weight">
+<h4><i class="material-icons">experiment</i> Test A</h4>
+</div>
+    </div>
+  `);
+}
 dtps.showClasses = function () {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
