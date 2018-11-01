@@ -271,7 +271,7 @@ dtps.classStream = function(num, renderOv) {
     for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
       var due = "<h5>Due " + assignment.children("td:nth-child(3)").text().slice(0,-1) + "</h5>"
-    	if (assignment.children("td:nth-child(3)").text().slice(0,-1) == "n/a") var due = "";
+    	if (due.includes("n/a")) var due = "";
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
