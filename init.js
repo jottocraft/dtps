@@ -411,7 +411,7 @@ dtps.getPage = function(loc, id) {
 }
 dtps.gradebook = function(num) {
 	jQuery(".classContent").html(`
-    <div style="height: 1000px;" class="card">
+    <div style="height: 1000px;" class="card weight">
     <div style="height: 20%;" class="filter_1 weight">
 <h4><i class="material-icons">experiment</i> Test 1</h4>
 <p>Test 1A</p>
