@@ -413,17 +413,17 @@ dtps.getPage = function(loc, id) {
 dtps.gradebook = function(num) {
 	var weightsTmp = [];
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
-		dtps.classes[num].weights[i].assignTmp = [];
+		var assignTmp = [];
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; i++) {
-			dtps.classes[num].weights[i].assignTmp.push(`<p class="dev"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
+			assignTmp.push(`<p class="dev"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
 		}
 		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + `;" class="filter_` + i + ` weight">
 <h4>` + dtps.classes[num].weights[i].weight + `</h4>
-` + dtps.classes[num].weights[i].assignTmp.join("") + `
+` + assignTmp.join("") + `
 </div>`);
 	}
 	jQuery(".classContent").html(`
-    <div style="height: 700px;" class="card weight">
+    <div style="height: 1000px;" class="card weight">
     ` + weightsTmp.join("") + `
     </div>
   `);
