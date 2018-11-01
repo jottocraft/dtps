@@ -386,15 +386,20 @@ dtps.getPage = function(loc, id) {
     <div class="bounce3"></div>
     </div>
   `);
+	var spinnerTmp = true;
   dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, function(resp) {
-    var newID = jQuery(resp).find("#col_2_1 .cms_box").attr("id").split("_")[1]
+    var newIDs = jQuery(resp).find("#col_2_1 .cms_box").toArray();
+	  if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; }
+    for (var i = 0; i < newIDs.length; i++) {
+	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
     dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp) {
-       jQuery(".classContent").html(`
+       jQuery(".classContent").html(jQuery(".classContent").html() + `
         <div class="card">
         ` + resp + `
         </div>
       `)
     });
+    }
   });
 }
 dtps.showClasses = function () {
