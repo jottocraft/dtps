@@ -174,7 +174,6 @@ body.dark .header .card {
 	color: white !important;
 }
 .card.weight {
-	margin: 0px !important;
 	padding: 0px !important;
 	overflow: hidden;
 }
