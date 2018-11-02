@@ -11,6 +11,7 @@ dtps.changelog = function () {
 };
 dtps.log = function(msg) {
   console.log("[DTPS] " + msg);
+  try { jQuery(".card.console .log").html(`<h5>[DTPS] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {}
 }
 dtps.firstrun = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
@@ -106,10 +107,10 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  var sudoers = ["10838212", "10894474", "10463823"]
-  if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled") }
-  var devs = []
-  if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
+  var sudoers = ["10837719", "10838212", "10894474", "10463823"]
+  if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
+  var devs = ["10837719"]
+  if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   dtps.shouldRender = false;
 	dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
@@ -542,11 +543,17 @@ dtps.render = function() {
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
+    <i onclick="fluid.cards('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <h3>What's new in Project DTPS</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
+</div>
+<div  style="width: calc(80%);border-radius: 30px;" class="card focus console close">
+<h3>dtps.log</h3>
+<span class="log">
+</span>
 </div>
   `);
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
