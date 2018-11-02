@@ -551,11 +551,7 @@ dtps.render = function() {
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
-		  jQuery(".card.changelog").html(`
-<h3>What's new in Project DTPS</h3>
-<h5>` + data[0].tag_name + dtps.trackSuffix + `</h5>
-` + markdown.makeHtml(data[0].body) + `
-`)
+		  jQuery(".card.changelog").html(markdown.makeHtml(data[0].body));
 			if (dtps.showChangelog) dtps.changelog();
 			 $(".btn.changelog").show();
         });
