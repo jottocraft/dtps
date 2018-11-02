@@ -162,7 +162,7 @@ dtps.init = function () {
     $ = jQuery;
       jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
     } else {
-	  if (Number(HaikuContext.user.login)) {
+	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
     dtps.alert("Unsupported Account", "Project DTPS only works on student accounts");
 	      } else {
