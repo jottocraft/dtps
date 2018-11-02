@@ -257,6 +257,7 @@ dtps.loadPages = function(num) {
   });
 }
 dtps.classStream = function(num, renderOv) {
+	console.log("rendering stream for " + num)
   dtps.showClasses();
   if (!renderOv) jQuery(".classContent").html(`
     <div class="spinner">
