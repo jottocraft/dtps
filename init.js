@@ -106,20 +106,10 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  var sudoers = ["10837719", "10838212", "10894474", "10463823"]
+  var sudoers = ["10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled") }
-  var devs = ["10837719"]
+  var devs = []
   if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
-  jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
-	  markdown = new showdown.Converter();
-	  jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
-		  jQuery(".card.changelog").html(`
-<h3>What's new in Project DTPS</h3>
-<h5>` + data[0].tag_name + dtps.trackSuffix + `</h5>
-` + markdown.makeHtml(data[0].body) + `
-`)
-        })
-  });	
   dtps.shouldRender = false;
 	dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
@@ -546,7 +536,7 @@ dtps.render = function() {
 <div onclick="if (dtps.pePDV) {dtps.pePDV = false;} else {dtps.pePDV = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show P/DV letter grading for PE</div>
     <br /><br />
-    <button onclick="dtps.changelog();" class="btn"><i class="material-icons">update</i>Changelog</button>
+    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
@@ -558,6 +548,19 @@ dtps.render = function() {
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
   `);
+	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
+	  markdown = new showdown.Converter();
+		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
+		  jQuery(".card.changelog").html(`
+<h3>What's new in Project DTPS</h3>
+<h5>` + data[0].tag_name + dtps.trackSuffix + `</h5>
+` + markdown.makeHtml(data[0].body) + `
+`)
+			if (dtps.showChangelog) dtps.changelog();
+			 $(".btn.changelog").show();
+        });
+  });	
+	
 	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	  $(".background").css("background", prev)
   dtps.showClasses();
@@ -583,6 +586,5 @@ dtps.render = function() {
     href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
   }).appendTo("head");
   fluid.init();
-  if (dtps.showChangelog) dtps.changelog();
 }
 dtps.init();
