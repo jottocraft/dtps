@@ -180,6 +180,14 @@ body.dark .header .card {
 .badge {
 	margin: 0 10px;
 }
+.badge.dev {
+	color: #0090ff;
+	border-color: #0090ff;
+}
+.badge.sudo {
+	color: #d64c0c;
+	border-color: #d64c0c;
+}
 .card.weight {
 	padding: 0px !important;
 	overflow: hidden;
