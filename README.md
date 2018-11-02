@@ -10,7 +10,6 @@ DTPS v1.0.0 stable target release date is 11/5 (PM Release) (testing (GM / v0.9.
 Project DTPS will open to contributions on 11/8
 
 **sudoer (experimental) features:**
-* gradebook tab (v0.4.0)
 * show letter grades (v1.0.0+)
 * PE P/DV grading (v1.0.0+)
 
@@ -34,15 +33,17 @@ Just because something is checked off on this list does not mean it is fully rel
 * ~~Pages speed improvements~~
 * ~~show assignment weight category in stream~~
 
-*Beta 3 11/2 (AM Release or PM if missed)*
+*Beta 3 11/1 (early release)*
 
-* dtps.masterStream speed improvements and fix stream bug (almost ready)
+* ~~dtps.masterStream speed improvements and fix stream bug (almost ready)~~
 * ~~Pull Changelogs from GitHub and use Fluid for changelogs~~
 * ~~Gradebook tab~~
 * ~~Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)~~
 
-*v0.9.x 11/2 (PM Release) or 11/3*
-* GM (Release candidate)
+*v0.9.x Late 11/2 or Early 11/3 - Late 11/4 or Early 11/5*
+* GMs (Release candidates)
+* each .x revision contains bugfixes and polishes. no new features in any GM release.
+* each v0.9.x version is basically what the release will look like (versions ready to be released). there should only be like 2 of these (1 is ideal, but it probably won't happen because of how the gradebook is right now)
 
 ### Post-release To-Do List (unordered)
 * About page improvements
@@ -50,4 +51,4 @@ Just because something is checked off on this list does not mean it is fully rel
 * Google Classroom integration (associate GC assignemnts with PS assignments in stream)
 * P/DV grading for PE (still show percentage on hover)
 * Show letter grades on assignments (settings)
-* Grade trend (with cookies? might not work because powerschool likes to clear my cookies)
+* Grade trend (with localstorage)
