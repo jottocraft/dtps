@@ -438,6 +438,7 @@ dtps.gradebook = function(num) {
 	$(".btns .btn.grades").hide();
         $(".btns .btn").removeClass("active");
         $(".btns .btn.stream").addClass("active");
+        dtps.selectedContent = "stream";
         dtps.classStream(num);
 }
 }
