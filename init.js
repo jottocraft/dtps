@@ -535,7 +535,7 @@ dtps.render = function() {
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
-    <div class="label">Use dark theme</div>
+    <div class="label"><i class="material-icons">brightness_3</i> Use dark theme</div>
 <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
