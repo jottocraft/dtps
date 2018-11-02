@@ -38,6 +38,9 @@
 	background-color: transparent;
 	margin: 15px 0;
 }
+.hidegrades .class .grade {
+	display: none !important;
+}
 .class .grade .letter {
 	font-size: 24px; 
 }
