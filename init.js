@@ -122,7 +122,7 @@ dtps.init = function () {
   var devs = ["10837719"]
   if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
   jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
-	  const markdown = new showdown.Converter();
+	  markdown = new showdown.Converter();
   });	
   dtps.shouldRender = false;
   dtps.user = HaikuContext.user;
