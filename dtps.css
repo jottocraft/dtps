@@ -177,6 +177,9 @@ body.dark .header .card {
 	color: white !important;
 	transition: height 0.4s;
 }
+.badge {
+	margin: 0 10px;
+}
 .card.weight {
 	padding: 0px !important;
 	overflow: hidden;
