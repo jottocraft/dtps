@@ -117,7 +117,7 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  var sudoers = ["10837719", "10838212", "10463823"]
+  var sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
   dtps.shouldRender = false;
   dtps.user = HaikuContext.user;
