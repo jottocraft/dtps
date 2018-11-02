@@ -307,7 +307,7 @@ dtps.classStream = function(num, renderOv) {
     	    if (id && (id != -1)) {
       	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
       	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
-            dtps.classes[num].stream[id].weight = dtps.classes[num].weights[prevWeight].weight;
+            if (prevWeight !== -1) dtps.classes[num].stream[id].weight = dtps.classes[num].weights[prevWeight].weight;
 	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push(dtps.classes[num].stream[id].title + ": " + dtps.classes[num].stream[id].grade);
     	    }
   	    }
