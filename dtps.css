@@ -349,7 +349,7 @@ body.dark .header .card {
 	background-color: var(--light);
 }
 
-body:not(.dev) .dev, body:not(.sudo) .sudo {
+body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og {
 	display: none !important;
 }
 
