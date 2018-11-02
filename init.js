@@ -144,6 +144,7 @@ dtps.init = function () {
     }
 
     if (window.localStorage.dtpsInstalled !== "true") {
+      dtps.shouldRender = false;
       dtps.firstrun();
     }
   }
