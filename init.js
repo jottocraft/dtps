@@ -118,7 +118,9 @@ dtps.webReq = function(req, url, callback, q) {
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
   var sudoers = ["10837719", "10838212", "10894474", "10463823"]
-  if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
+  if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled") }
+  var devs = ["10837719"]
+  if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
   jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  const markdown = new showdown.Converter();
   });	
@@ -422,7 +424,7 @@ dtps.gradebook = function(num) {
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-			assignTmp.push(`<p class="dev"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
+			assignTmp.push(`<p class="sudo"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
 		}
 		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + `;" class="filter_` + i + ` weight">
 <h4>` + dtps.classes[num].weights[i].weight + `</h4>
@@ -512,7 +514,7 @@ dtps.render = function() {
     Pages
     <i class="material-icons">list</i>
     </button>
-    <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades dev">
+    <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades sudo">
     Gradebook
     <i class="material-icons">experiment</i>
     </button>
@@ -527,17 +529,17 @@ dtps.render = function() {
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
     <h3>About</h3>
-    <h5>Project DTPS ` + dtps.readableVer.replace("(Beta)", `<div style="display:inline-block;" class="beta notice">beta&nbsp;<i style="vertical-align: middle;" class="material-icons dev">experiment</i></div>`) + ` (User ID: ` + dtps.user.login + `)</h5>
-    <p>Made by <a href="https://github.com/jottocraft">jottocraft</a><span class="dev"> | Experimental features enabled for this account</span></p>
+    <h5>Project DTPS ` + dtps.readableVer.replace("(Beta)", `<div style="display:inline-block;" class="beta notice">beta&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>`) + ` (User ID: ` + dtps.user.login + `)</h5>
+    <p>Made by <a href="https://github.com/jottocraft">jottocraft</a><span class="sudo"> | Experimental features enabled for this account</span></p>
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label">Enable dark mode</div>
 <br /><br />
-<div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch dev"><span class="head"></span></div>
-    <div class="label dev"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
+<div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
+    <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
     <br /><br />
-<div onclick="if (dtps.pePDV) {dtps.pePDV = false;} else {dtps.pePDV = true;}" class="switch dev"><span class="head"></span></div>
-    <div class="label dev"><i class="material-icons">experiment</i> Show P/DV letter grading for PE</div>
+<div onclick="if (dtps.pePDV) {dtps.pePDV = false;} else {dtps.pePDV = true;}" class="switch sudo"><span class="head"></span></div>
+    <div class="label sudo"><i class="material-icons">experiment</i> Show P/DV letter grading for PE</div>
     <br /><br />
     <button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
     </div>
