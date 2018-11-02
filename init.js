@@ -6,6 +6,7 @@ var dtps = {
   pePDV: false
 };
 dtps.changelog = function () {
+  fluid.cards.close(".card")
   jQuery("body").append(`<div class="card focus changelog">
 <h3>What's new in Project DTPS</h3>
 <h5>` + dtps.readableVer + `</h5>
