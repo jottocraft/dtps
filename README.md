@@ -15,6 +15,7 @@ Project DTPS will open to contributions on 11/8
 * PE P/DV grading (v1.0.0+)
 
 ### Pre-Release To-Do List
+Just because something is checked off on this list does not mean it is fully released. Checked off items are items that are present (even if only for devs) and basically finished. Checked off items do not mean that the corresponding release has been released.
 
 *Beta 1 - 1.2*
 
@@ -36,8 +37,8 @@ Project DTPS will open to contributions on 11/8
 *Beta 3 11/2 (AM Release or PM if missed)*
 
 * dtps.masterStream speed improvements and fix stream bug
-* Pull Changelogs from GitHub and use Fluid for changelogs
-* Gradebook tab
+* ~~Pull Changelogs from GitHub and use Fluid for changelogs~~
+* ~~Gradebook tab~~
 * Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)
 
 *v0.9.x 11/2 (PM Release) or 11/3*
