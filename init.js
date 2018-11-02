@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 022,
-  readableVer: "v0.2.2 (Beta)",
+  ver: 030,
+  readableVer: "v0.3.0 (Beta)",
   trackSuffix: " (Beta)",
   showLetters: false,
   pePDV: false
@@ -500,9 +500,9 @@ dtps.render = function() {
     Pages
     <i class="material-icons">list</i>
     </button>
-    <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades sudo">
+    <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades">
     Gradebook
-    <i class="material-icons">experiment</i>
+    <i class="material-icons">book</i>
     </button>
     </div>
     <div class="classContent">
