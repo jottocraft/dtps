@@ -496,6 +496,7 @@ dtps.showClasses = function () {
 dtps.render = function() {
   document.title = "Project DTPS" + dtps.trackSuffix
   $ = jQuery;
+  if (!dtps.showChangelog) jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.classlist = [];
