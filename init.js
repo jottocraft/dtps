@@ -553,7 +553,7 @@ dtps.render = function() {
     <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
-<div class="card focus changelog">
+<div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <h3>What's new in Project DTPS</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
