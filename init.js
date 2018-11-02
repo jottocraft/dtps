@@ -437,7 +437,7 @@ dtps.gradebook = function(num) {
 	    } else {
 	$(".btns .btn.grades").hide();
         $(".btns .btn").removeClass("active");
-        $(".btns .btn.stream").removeClass("active");
+        $(".btns .btn.stream").addClass("active");
         dtps.classStream(num);
 }
 }
