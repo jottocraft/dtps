@@ -7,19 +7,6 @@ var dtps = {
 };
 dtps.changelog = function () {
   fluid.cards.close(".card")
-  jQuery("body").append(`<div class="card focus changelog">
-<h3>What's new in Project DTPS</h3>
-<h5>` + dtps.readableVer + `</h5>
-<ul>
-<li>Added support for multi block pages</li>
-<li>Minor pages speed improvements</li>
-<li>sudoers: starting to test gradebook categories in stream</li>
-<li>new in v0.2.1: show block title</li>
-<li>new in v0.2.2: show assignment categories in stream</li>
-<li><b>Known stream bug: does not show content from the class at top of the list. Will be fixed in beta 3.</b></li>
-</ul>
-</div>
-`)
 	fluid.cards(".card.changelog");
 };
 dtps.log = function(msg) {
@@ -125,6 +112,14 @@ dtps.init = function () {
   if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled") }
   jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
+	  jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
+		  jQuery("body").append(`<div class="card focus changelog">
+<h3>What's new in Project DTPS</h3>
+<h5>` + data[0].tag_name + dtps.trackSuffix + `</h5>
+` + markdown.makeHtml(data[0].body) + `
+</div>
+`)
+        })
   });	
   dtps.shouldRender = false;
 	dtps.showChangelog = false;
