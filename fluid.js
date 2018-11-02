@@ -61,7 +61,7 @@ fluid.dark = function(theme, auto) {
   }
   if ($("#activecontextmenu").children(".btn").hasClass("active")) {$("#activecontextmenu").children(".btn").css("background-color", "#207bdf") } else {
   if ($("#activecontextmenu").length) { if ($("#activecontextmenu").children().length == 2) { if ($("body").hasClass("dark")) { $("#activecontextmenu").children(".btn, i").css("background-color", "#16181a") } else { $("#activecontextmenu").children(".btn, i").css("background-color", "#dddddd") } } } }
-  if (auto !== true) document.cookie = "fluidIsDark=" + fluid.isDark();
+  if (auto !== true) localStorage.setItem('fluidIsDark', fluid.isDark()); 
 } else {
   console.error("Unable to change theme: Fluid Cloud Console policies configured by the site owner disallow setting a custom theme")
 }
@@ -88,7 +88,7 @@ fluid.auto = function(auto) {
       $(".themeico").text("brightness_high");
     }
   }
-  if (auto !== true) document.cookie = "fluidIsDark=auto";
+  if (auto !== true) localStorage.setItem('fluidIsDark', 'auto');
 } else {
   console.error("Unable to change theme: Fluid Cloud Console policies configured by the site owner disallow setting a custom theme")
 }
@@ -118,13 +118,13 @@ fluid.load = function(mode) {
   }
 }
 fluid.init = function() {
-  if (getCookie("fluidIsDark") == "true") {
+  if (window.localStorage.fluidIsDark == "true") {
     fluid.dark(true, true)
   } else {
-    if (getCookie("fluidIsDark") == "auto") {
+    if (window.localStorage.fluidIsDark == "auto") {
       fluid.auto(true);
     } else {
-      if (getCookie("fluidIsDark") == "false") {
+      if (window.localStorage.fluidIsDark == "false") {
     fluid.dark(false, true)
   } else {
     if ($("body").hasClass("auto")) {
