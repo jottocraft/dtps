@@ -493,20 +493,20 @@ dtps.render = function() {
     <h1 id="headText">Stream</h1>
     <div style="display: none;" class="btns row">
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
-    Stream
     <i class="material-icons">view_stream</i>
+    Stream
     </button>
     <button onclick="dtps.selectedContent = 'google';" class="btn google sudo">
-    google_logo Classroom
     <i class="material-icons">experiment</i>
+    google_logo
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
-    Pages
     <i class="material-icons">list</i>
+    Pages
     </button>
     <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades">
-    Gradebook
     <i class="material-icons">book</i>
+    Gradebook
     </button>
     </div>
     <div class="classContent">
