@@ -204,7 +204,7 @@ dtps.init = function () {
   });
 }
 dtps.checkReady = function(num) {
-	/* dtps.log(num + " reporting as READY total of " + dtps.classesReady); */
+  dtps.log(num + " reporting as READY total of " + dtps.classesReady);
   if ((dtps.selectedClass == "stream") && (dtps.classesReady == (dtps.classes.length - 1))) {
     dtps.log("LOADING STREAM");
     dtps.masterStream();
