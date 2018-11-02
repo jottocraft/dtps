@@ -237,10 +237,6 @@ if (fluid.expBeh) { event.preventDefault(); fluid.bounceBack(event.target); }
 
 }
 
-$( window ).resize(function() {
-  fluid.exitContextMenu(true);
-});
-
 fluid.exitContextMenu = function(force) {
   $("#pagewrapper").removeClass("blur")
   $("#activecontextmenu").children(".contextmenu").css("display", "none");
