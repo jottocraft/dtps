@@ -528,7 +528,7 @@ dtps.render = function() {
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
     <h3>About</h3>
-    <h5>Project DTPS ` + dtps.readableVer.replace(dtps.trackSufix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`) + `</h5>
+    <h5>Project DTPS ` + dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`) + `</h5>
     Logged in as user ` + dtps.user.login + `<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a><span class="sudo"> | Experimental features enabled for this account</span></p>
     <br />
