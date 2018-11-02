@@ -497,7 +497,7 @@ dtps.render = function() {
     Stream
     <i class="material-icons">view_stream</i>
     </button>
-    <button onclick="dtps.selectedContent = 'google';" class="btn active google sudo">
+    <button onclick="dtps.selectedContent = 'google';" class="btn google sudo">
     google_logo Classroom
     <i class="material-icons">experiment</i>
     </button>
