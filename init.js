@@ -113,11 +113,10 @@ dtps.init = function () {
   jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
 	  jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
-		  jQuery("body").append(`<div class="card focus changelog">
+		  jQuery(".card.changelog").html(`
 <h3>What's new in Project DTPS</h3>
 <h5>` + data[0].tag_name + dtps.trackSuffix + `</h5>
 ` + markdown.makeHtml(data[0].body) + `
-</div>
 `)
         })
   });	
@@ -554,6 +553,10 @@ dtps.render = function() {
     <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
+<div class="card focus changelog">
+<h3>What's new in Project DTPS</h3>
+<h5>There was an error loading the changelog. Try again later.</h5>
+</div>
   `);
 	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	  $(".background").css("background", prev)
