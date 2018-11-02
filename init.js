@@ -315,7 +315,7 @@ dtps.classStream = function(num, renderOv) {
 	    }
 	    dtps.classes[num].streamlist = [];
       if (!renderOv) jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
-      dtps.classesReady
+      dtps.classesReady++;
       dtps.checkReady(num);
     });
   });
