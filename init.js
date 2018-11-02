@@ -529,6 +529,9 @@ dtps.render = function() {
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
     <br /><br />
+<div onclick="jQuery('body').toggleClass('hidegrades')" class="switch sudo"><span class="head"></span></div>
+    <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
+    <br /><br />
 <div onclick="if (dtps.pePDV) {dtps.pePDV = false;} else {dtps.pePDV = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show P/DV letter grading for PE</div>
     <br /><br />
