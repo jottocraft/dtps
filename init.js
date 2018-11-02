@@ -18,13 +18,13 @@ dtps.firstrun = function () {
 <h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <li>Project DTPS is meant to be simple, so many PowerSchool features will be left out</li>
-<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer as a cookie. Grades and other personal data will never be stored anywhere.</li>
+<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">local storage</a>. Grades and other personal data will never be stored anywhere.</li>
 <li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account.</li>
 <li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Report feedback by clicking the feedback button at the top right corner. All of Project DTPS's code is on GitHub, so feel free to leave an issue there.</li>
 <li>Project DTPS's code is often untested and fresh off the vine. Things will break on a regular basis.</li>
 <li><b>Project DTPS is still in development, so it may display incorrect data and will take a while to load (I'm trying to get things to work before worrying about speed). Use Project DTPS at your own risk.</b></li>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); document.cookie = 'dtpsInstalled=true'; dtps.render();" type="button" value="Accept & Continue"></span>
+</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
 dtps.alert = function (text, sub) {
@@ -36,21 +36,6 @@ dtps.alert = function (text, sub) {
 </div>
 `)
 };
-dtps.getCookie = function(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-  }
-  return "";
-}
 dtps.requests = {};
 dtps.http = {};
 dtps.webReq = function(req, url, callback, q) {
@@ -141,7 +126,7 @@ dtps.init = function () {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
   } else {
-    if (Number(dtps.getCookie("dtps")) < dtps.ver) {
+    if (Number(window.localStorage.dtps) < dtps.ver) {
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
@@ -156,11 +141,11 @@ dtps.init = function () {
     }
     }
 
-    if (dtps.getCookie("dtpsInstalled") !== "true") {
+    if (window.localStorage.dtpsInstalled !== "true") {
       dtps.firstrun();
     }
   }
-  document.cookie = "dtps=" + dtps.ver;
+  localStorage.setItem('dtps', dtps.ver);
   dtps.webReq("letPOST", "portal/portlet_reportcard?my_portal=true", function(resp) {
     var data = jQuery(resp).children("tbody").children();
     dtps.rawData = data;
@@ -497,7 +482,7 @@ dtps.render = function() {
       </div>
     `);
   }
-	if (dtps.getCookie("fluidIsDark") == "true") { var dark = " active" } else { var dark = "" }
+	if (window.localStorage.fluidIsDark == "true") { var dark = " active" } else { var dark = "" }
   jQuery("body").html(`
     <div class="sidebar">
     </div>
