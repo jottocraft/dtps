@@ -18,7 +18,7 @@ dtps.firstrun = function () {
 <h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <li>Project DTPS is meant to be simple, so many PowerSchool features will be left out</li>
-<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">local storage</a>. Grades and other personal data will never be stored anywhere</li>
+<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer in local storage (window.localStorage). Grades and other personal data will never be stored anywhere</li>
 <li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account</li>
 <li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
@@ -194,10 +194,11 @@ dtps.checkReady = function(num) {
   //dtps.log(num + " reporting as READY total of " + dtps.classesReady);
   if ((dtps.selectedClass == "stream") && (dtps.classesReady == dtps.classes.length)) {
     dtps.log("All classes ready, loading master stream");
-    dtps.masterStream();
-  }
+    dtps.masterStream(true);
+  } else {
   if ((dtps.selectedClass == "stream") && (dtps.classesReady < dtps.classes.length)) {
 	  dtps.masterStream();
+  }
   }
 }
 dtps.loadPages = function(num) {
@@ -211,7 +212,7 @@ dtps.loadPages = function(num) {
 `);
 	jQuery(".classContent").html("");
   dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", function(resp) {
-	  console.log("GOT DATA", resp)
+	  dtps.log("GOT DATA", resp)
     var data = jQuery(resp).find("#sidebar .sidebar_nav").children().toArray()
     dtps.rawData = data;
     dtps.classes[num].pages = [];
@@ -245,7 +246,7 @@ dtps.loadPages = function(num) {
   });
 }
 dtps.classStream = function(num, renderOv) {
-	console.log("rendering stream for " + num)
+	dtps.log("rendering stream for " + num)
   dtps.showClasses();
   if (!renderOv) jQuery(".classContent").html(`
     <div class="spinner">
@@ -348,7 +349,7 @@ dtps.renderStream = function(stream) {
   }
   return streamlist.join("");
 }
-dtps.masterStream = function() {
+dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
   jQuery(".classContent").html(`
     <div class="spinner">
@@ -364,8 +365,16 @@ dtps.masterStream = function() {
   		buffer = buffer.concat(dtps.classes[i].stream)
     }
   }
-	console.log(buffer)
-	jQuery(".classContent").html(dtps.renderStream(buffer.sort(function(a, b){
+	dtps.log(buffer)
+	var loadingDom = "";
+	if (!doneLoading) {
+		loadingDom = `<div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+    </div>`;
+	}
+	jQuery(".classContent").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
     var keyA = new Date(a.due.replace("Today", today).replace(year + " at", "")).setYear(year),
