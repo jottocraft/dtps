@@ -166,12 +166,16 @@ body.dark .header .card {
 	font-size: 18px;
 	margin-left: 10px;
 }
+.card .weight:hover {
+	min-height: 500px !important;
+}
 .card .weight {
 	margin: 0px !important;
 	padding: 10px !important;
 	overflow: auto;
 	background: var(--grad);
 	color: white !important;
+	transition: height 0.4s;
 }
 .card.weight {
 	padding: 0px !important;
