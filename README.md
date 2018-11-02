@@ -36,10 +36,10 @@ Just because something is checked off on this list does not mean it is fully rel
 
 *Beta 3 11/2 (AM Release or PM if missed)*
 
-* dtps.masterStream speed improvements and fix stream bug
+* dtps.masterStream speed improvements and fix stream bug (almost ready)
 * ~~Pull Changelogs from GitHub and use Fluid for changelogs~~
 * ~~Gradebook tab~~
-* Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)
+* ~~Figure out why PowerSchool keeps clearing DTPS cookies and fix it :( (maybe use local storage?)~~
 
 *v0.9.x 11/2 (PM Release) or 11/3*
 * GM (Release candidate)
