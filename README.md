@@ -4,6 +4,9 @@ or
 
 [Install Chrome Extension (auto load)](https://chrome.google.com/webstore/detail/project-dtps/pakgdifknldaiglefmpkkgfjndemfapo)
 
+## GitHub Status
+**GitHub Pages builds aren't working right now in Project DTPS. Running Project DTPS may run outdated code instead of the latest shown on this repo. Check for updates regarding this issue at the [GitHub Status Page](https://status.github.com).**
+
 ## Project DTPS News
 
 DTPS v1.0.0 stable target release date is 11/5 (PM Release) (testing (GM / v0.9.x) 11/2 or 11/3 - 11/5)
