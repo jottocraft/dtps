@@ -18,12 +18,11 @@ dtps.firstrun = function () {
 <h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <li>Project DTPS is meant to be simple, so many PowerSchool features will be left out</li>
-<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">local storage</a>. Grades and other personal data will never be stored anywhere.</li>
-<li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account.</li>
+<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage">local storage</a>. Grades and other personal data will never be stored anywhere</li>
+<li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account</li>
 <li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
-<li>Report feedback by clicking the feedback button at the top right corner. All of Project DTPS's code is on GitHub, so feel free to leave an issue there.</li>
-<li>Project DTPS's code is often untested and fresh off the vine. Things will break on a regular basis.</li>
-<li><b>Project DTPS is still in development, so it may display incorrect data and will take a while to load (I'm trying to get things to work before worrying about speed). Use Project DTPS at your own risk.</b></li>
+<li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
+<li><b>Project DTPS may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Project DTPS at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
@@ -520,7 +519,8 @@ dtps.render = function() {
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
     <h3>About</h3>
-    <h5>Project DTPS ` + dtps.readableVer.replace("(Beta)", `<div style="display:inline-block;" class="beta badge notice">beta</div><div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>`) + ` (User ID: ` + dtps.user.login + `)</h5>
+    <h5>Project DTPS ` + dtps.readableVer.replace("(Beta)", `<div style="display:inline-block;" class="beta badge notice">beta</div>`) + `</h5>
+    Logged in as user ` + dtps.user.login + `<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a><span class="sudo"> | Experimental features enabled for this account</span></p>
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
