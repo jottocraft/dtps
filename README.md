@@ -10,8 +10,9 @@ DTPS v1.0.0 stable target release date is 11/5 (PM Release) (testing (GM / v0.9.
 Project DTPS will open to contributions on 11/8
 
 **sudoer (experimental) features:**
-* show letter grades (v1.0.0+)
+* show letter grades on all assignments (v1.0.0+)
 * PE P/DV grading (v1.0.0+)
+* hide grades from class list (v1.0.0+)
 
 ### Pre-Release To-Do List
 Just because something is checked off on this list does not mean it is fully released. Checked off items are items that are present (even if only for devs) and basically finished. Checked off items do not mean that the corresponding release has been released.
@@ -45,10 +46,15 @@ Just because something is checked off on this list does not mean it is fully rel
 * each .x revision contains bugfixes and polishes. no new features in any GM release.
 * each v0.9.x version is basically what the release will look like (versions ready to be released). there should only be like 2 of these (1 is ideal, but it probably won't happen because of how the gradebook is right now)
 
-### Post-release To-Do List (unordered)
+### Planned Features
 * About page improvements
 * Google Classroom integration (in classroom tab)
 * Google Classroom integration (associate GC assignemnts with PS assignments in stream)
-* P/DV grading for PE (still show percentage on hover)
-* Show letter grades on assignments (settings)
+* P/DV grading for PE (in development for sudoers)
+* Show letter grades on assignments (in development for sudoers)
+* hide grades from class list (live for sudoers)
 * Grade trend (with localstorage)
+* ability to simulate a different grade on an assignment and have dtps calculate what your grade in the class would be if you had that grade (this and grade trend part of advanced gradebook update. low priority)
+
+### Planned Features (from submitted feedback)
+* n/a
