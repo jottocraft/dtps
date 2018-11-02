@@ -118,7 +118,6 @@ dtps.init = function () {
   var eClassList = jQuery(".eclass_list ul").children().toArray();
   dtps.classesReady = 0;
   for (var i = 0; i < eClassList.length; i++) {
-	  console.log(i)
 	  var eclass = jQuery(eClassList[i])
 	  var col = jQuery.grep(eclass.attr("class").split(" "), function (item, index) {
       return item.trim().match(/^border_color/);
@@ -135,8 +134,7 @@ dtps.init = function () {
 		  for (i = 0; i < dtps.classes.length; i++) {
 			  if (dtps.classes[i].id == q.id) iTmp = i;
 		  }
-		  if (iTmp) dtps.classStream(iTmp, true);
-		  console.log("got data! " + iTmp)
+		  if (iTmp !== null) dtps.classStream(iTmp, true);
 	  }, { id: id, num: i });
   }
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
@@ -206,9 +204,9 @@ dtps.init = function () {
   });
 }
 dtps.checkReady = function(num) {
-  dtps.log(num + " reporting as READY total of " + dtps.classesReady);
-  if ((dtps.selectedClass == "stream") && (dtps.classesReady == (dtps.classes.length - 1))) {
-    dtps.log("LOADING STREAM");
+  //dtps.log(num + " reporting as READY total of " + dtps.classesReady);
+  if ((dtps.selectedClass == "stream") && (dtps.classesReady == dtps.classes.length)) {
+    dtps.log("All classes ready, loading master stream");
     dtps.masterStream();
   }
 }
