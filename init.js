@@ -209,6 +209,9 @@ dtps.checkReady = function(num) {
     dtps.log("All classes ready, loading master stream");
     dtps.masterStream();
   }
+  if ((dtps.selectedClass == "stream") && (dtps.classesReady < dtps.classes.length)) {
+	  dtps.masterStream();
+  }
 }
 dtps.loadPages = function(num) {
   jQuery(".sidebar").html(`
