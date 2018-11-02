@@ -131,6 +131,8 @@ dtps.init = function () {
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
       jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
+	    dtps.shouldRender = true;
+      dtps.alert("Loading...", "Updating to DTPS " + dtps.readableVer);
     } else {
 	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
