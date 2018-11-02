@@ -535,7 +535,7 @@ dtps.render = function() {
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
     <h3>About</h3>
-    <h5>Project DTPS ` + dtps.readableVer.replace("(Beta)", `<div style="display:inline-block;" class="beta badge notice">beta&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>`) + ` (User ID: ` + dtps.user.login + `)</h5>
+    <h5>Project DTPS ` + dtps.readableVer.replace("(Beta)", `<div style="display:inline-block;" class="beta badge notice">beta</div><div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>`) + ` (User ID: ` + dtps.user.login + `)</h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a><span class="sudo"> | Experimental features enabled for this account</span></p>
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
