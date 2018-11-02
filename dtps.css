@@ -191,6 +191,10 @@ body.dark .header .card {
 	color: #d64c0c;
 	border-color: #d64c0c;
 }
+.badge.og {
+	color: #daa520;
+	border-color: #daa520;
+}
 .card.weight {
 	padding: 0px !important;
 	overflow: hidden;
