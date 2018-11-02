@@ -6,9 +6,9 @@ var dtps = {
   pePDV: false
 };
 dtps.changelog = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>What's new in Project DTPS</h2>
-<h4>` + dtps.readableVer + `</h4>
+  jQuery("body").append(`<div class="card focus changelog">
+<h3>What's new in Project DTPS</h3>
+<h5>` + dtps.readableVer + `</h5>
 <ul>
 <li>Added support for multi block pages</li>
 <li>Minor pages speed improvements</li>
@@ -17,8 +17,9 @@ dtps.changelog = function () {
 <li>new in v0.2.2: show assignment categories in stream</li>
 <li><b>Known stream bug: does not show content from the class at top of the list. Will be fixed in beta 3.</b></li>
 </ul>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();dtps.render();" type="button" value="Continue"></span>
+</div>
 `)
+	fluid.cards(".card.changelog");
 };
 dtps.log = function(msg) {
   console.log("[DTPS] " + msg);
@@ -125,6 +126,7 @@ dtps.init = function () {
 	  markdown = new showdown.Converter();
   });	
   dtps.shouldRender = false;
+	dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
   dtps.classColors = [];
   var eClassList = jQuery(".eclass_list ul").children().toArray();
@@ -155,10 +157,18 @@ dtps.init = function () {
     dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
   } else {
     if (Number(dtps.getCookie("dtps")) < dtps.ver) {
-      dtps.changelog();
+      dtps.showChangelog = true;
+	    //Load fluid JS modules early for changelogs
+    $ = jQuery;
+      jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
     } else {
+	  if (Number(HaikuContext.user.login)) {
+		  dtps.shouldRender = false;
+    dtps.alert("Unsupported Account", "Project DTPS only works on student accounts");
+	      } else {
       dtps.shouldRender = true;
       dtps.alert("Loading...");
+    }
     }
 
     if (dtps.getCookie("dtpsInstalled") !== "true") {
@@ -489,7 +499,6 @@ dtps.render = function() {
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.classlist = [];
-	jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
@@ -541,7 +550,7 @@ dtps.render = function() {
 <div onclick="if (dtps.pePDV) {dtps.pePDV = false;} else {dtps.pePDV = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show P/DV letter grading for PE</div>
     <br /><br />
-    <button onclick="document.cookie = 'dtps=1'; window.alert('Reload to see the changelog');" class="btn"><i class="material-icons">update</i>Changelog</button>
+    <button onclick="dtps.changelog();" class="btn"><i class="material-icons">update</i>Changelog</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
@@ -574,5 +583,6 @@ dtps.render = function() {
     href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
   }).appendTo("head");
   fluid.init();
+  if (dtps.showChangelog) dtps.changelog();
 }
 dtps.init();
