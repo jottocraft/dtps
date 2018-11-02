@@ -6,8 +6,8 @@ var dtps = {
   pePDV: false
 };
 dtps.changelog = function () {
-  fluid.cards.close(".card")
-	fluid.cards(".card.changelog");
+  fluid.cards.close(".card.focus")
+  fluid.cards(".card.changelog");
 };
 dtps.log = function(msg) {
   console.log("[DTPS] " + msg);
