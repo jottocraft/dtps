@@ -91,11 +91,11 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  var sudoers = ["10838212", "10894474", "10463823"]
+  var sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-  var og = ["10894474"]
+  var og = ["10894474", "10837719"]
   if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); dtps.log("OG mode enabled!!!"); }
-  var devs = []
+  var devs = ["10837719"]
   if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   dtps.shouldRender = false;
 	dtps.first = false;
