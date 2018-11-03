@@ -121,7 +121,7 @@ window.dataLayer = window.dataLayer || [];
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
-      jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
+      jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
       dtps.alert("Loading...", "Updating to DTPS " + dtps.readableVer);
     } else {
@@ -519,7 +519,7 @@ dtps.showClasses = function () {
 dtps.render = function() {
   document.title = "Project DTPS" + dtps.trackSuffix
   $ = jQuery;
-  if (!dtps.showChangelog) jQuery.getScript('https://jottocraft.github.io/dtps/fluid.js');
+  if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.classlist = [];
@@ -625,17 +625,17 @@ dtps.render = function() {
   jQuery("<link/>", {
     rel: "shortcut icon",
     type: "image/png",
-    href: "https://jottocraft.github.io/dtps/favicon.png"
+    href: "https://dtps.js.org/favicon.png"
   }).appendTo("head");
   jQuery("<link/>", {
     rel: "stylesheet",
     type: "text/css",
-    href: "https://jottocraft.github.io/dtps/fluid.css"
+    href: "https://dtps.js.org/fluid.css"
   }).appendTo("head");
   jQuery("<link/>", {
     rel: "stylesheet",
     type: "text/css",
-    href: "https://jottocraft.github.io/dtps/dtps.css"
+    href: "https://dtps.js.org/dtps.css"
   }).appendTo("head");
   jQuery("<link/>", {
     rel: "stylesheet",
