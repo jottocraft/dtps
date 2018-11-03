@@ -149,6 +149,7 @@ window.dataLayer = window.dataLayer || [];
     }
   }
   localStorage.setItem('dtps', dtps.ver);
+ dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc");
 	var eClassList = jQuery(".eclass_list ul").children().toArray();
   dtps.classesReady = 0;
   for (var i = 0; i < eClassList.length; i++) {
@@ -487,8 +488,16 @@ dtps.gradebook = function(num) {
 	}
 }
 dtps.announcements = function() {
+	if (dtps.selectedClass == "announcements") {
+  jQuery(".classContent").html(`
+    <div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+    </div>
+  `); }
 	dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
-		console.log(resp);
+		dtps.raw = resp;
 	});
 };
 dtps.gLoad = function() {
