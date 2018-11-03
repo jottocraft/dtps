@@ -502,7 +502,7 @@ dtps.showClasses = function () {
     }
     if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
     if ((dtps.selectedContent == "grades") && (dtps.selectedClass !== "stream")) dtps.gradebook(dtps.selectedClass)
-    if (dtps.selectedClass == "stream") dtps.masterStream();
+    if (dtps.selectedClass == "stream") dtps.masterStream(true);
     if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); }
   });
 }
