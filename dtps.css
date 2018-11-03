@@ -16,6 +16,9 @@
 .class .grade:not(:hover) .points, .class .grade:hover .letter {
 	display: none;
 }
+.label i {
+	vertical-align: middle;
+}
 .class .grade {
 	float: right;
 	width: 50px;
