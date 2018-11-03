@@ -191,7 +191,7 @@ body.dark .header .card {
 .weight:not(.open) .open, .weight.open .close {
 	display:none !important;
 }
-.weight.open .close p {
+.weight .close p {
 	margin: 0px !important;
 	cursor: pointer;
 }
