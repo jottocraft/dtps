@@ -3,7 +3,7 @@ var dtps = {
   readableVer: "v0.9.1 (GM)",
   trackSuffix: " (GM)",
   showLetters: false,
-  pePDV: false
+  demo: false
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -587,8 +587,8 @@ dtps.render = function() {
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
     <br /><br />
-<div onclick="if (dtps.pePDV) {dtps.pePDV = false;} else {dtps.pePDV = true;}" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">experiment</i> Show P/DV letter grading for PE</div>
+<div onclick="if (dtps.demo) {dtps.demo = false;} else {dtps.demo = true;}" class="switch dev"><span class="head"></span></div>
+    <div class="label sudo"><i class="material-icons">code</i> Demo mode</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     </div>
