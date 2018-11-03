@@ -670,7 +670,7 @@ dtps.render = function() {
     <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
     <br /><br />
 <div onclick="if (dtps.demo) {dtps.demo = false;} else {dtps.demo = true;}" class="switch dev"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">code</i> Demo mode</div>
+    <div class="label dev"><i class="material-icons">code</i> Demo mode</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
