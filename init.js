@@ -100,6 +100,7 @@ dtps.init = function () {
   dtps.shouldRender = false;
 	dtps.first = false;
 	dtps.showChangelog = false;
+	dtps.updateScript = false;
   dtps.user = HaikuContext.user;
   dtps.classColors = [];
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
@@ -128,8 +129,15 @@ window.dataLayer = window.dataLayer || [];
 		  dtps.shouldRender = false;
     dtps.alert("Unsupported Account", "Project DTPS only works on student accounts");
 	      } else {
+		      if (dtpsLoader < 2) {
+			      dtps.updateScript = true;
+			      dtps.shouldRender = true;
+			      dtps.alert("Loading...", "Make sure to update your bookmark script");
+			  } else {
       dtps.shouldRender = true;
       dtps.alert("Loading...");
+		      
+	      }
     }
     }
 
@@ -594,12 +602,18 @@ dtps.render = function() {
 <span class="log">
 </span>
 </div>
+<div  style="width: calc(80%);border-radius: 30px;" class="card focus script close">
+<i onclick="fluid.cards.close('.card.script')" class="material-icons close">close</i>
+<h3>Update your DTPS bookmark</h3>
+<p>It looks like you're using an outdated version of the Project DTPS bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
+</div>
   `);
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
 		  jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
 			if (dtps.showChangelog) dtps.changelog();
+			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.cards(".card.script"); }
 			 $(".btn.changelog").show();
         });
   });	
