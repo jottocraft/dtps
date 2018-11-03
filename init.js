@@ -502,7 +502,7 @@ dtps.announcements = function() {
 		var announcements = [];
 		for (var i = 0; i < ann.length; i++) {
 			announcements.push(`<div class="card">
-` + jQuery(jQuery(announcements[i]).children("td")[1]).children("div:not(.annc-with-images)").text() + `
+` + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
 		}
