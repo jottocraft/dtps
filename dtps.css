@@ -99,6 +99,13 @@ body:not(.dark) .header .card {
 body.dark .header .card {
 	color: white;
 }
+.card i.close {
+	position: absolute;
+    right: 0;
+	cursor: pointer;
+    top: 0;
+    margin: 25px;
+}
 #headText {
    -webkit-transition: opacity .5s ease-in-out;
    -moz-transition: opacity .5s ease-in-out;
