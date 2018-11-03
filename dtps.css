@@ -195,6 +195,9 @@ body.dark .header .card {
 	margin: 0px !important;
 	cursor: pointer;
 }
+.weight.parent .weight p {
+	color: #8e8e8e !important;
+}
 .weight.parent .weight:not(.open) {
 	overflow: hidden !important;
 }
