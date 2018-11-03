@@ -589,11 +589,11 @@ dtps.showClasses = function() {
     } else {
       $(".header .btns").show();
     }
-    if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
-    if ((dtps.selectedContent == "grades") && (dtps.selectedClass !== "stream")) dtps.gradebook(dtps.selectedClass)
+    if ((dtps.selectedContent == "stream") && (dtps.classes[dtps.selectedClass])) dtps.classStream(dtps.selectedClass)
+    if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
     if (dtps.selectedClass == "stream") dtps.masterStream(true);
     if (dtps.selectedClass == "announcements") dtps.announcements();
-    if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); }
+    if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
 }
 dtps.render = function() {
