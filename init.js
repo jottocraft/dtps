@@ -486,6 +486,11 @@ dtps.gradebook = function(num) {
 }
 	}
 }
+dtps.announcements = function() {
+	dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
+		console.log(resp);
+	});
+};
 dtps.gLoad = function() {
       dtps.log("Loading experimental Google Classroom features")
       jQuery.getScript("https://apis.google.com/js/api.js", function() {
@@ -560,7 +565,7 @@ dtps.showClasses = function() {
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
-  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
+  if (Number(dtps.selectedClass) !== NaN) $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class" ).click(function(event) {
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
@@ -575,11 +580,11 @@ dtps.showClasses = function() {
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
-	  if (dtps.selectedClass !== "stream") $(".background").addClass(dtps.classes[dtps.selectedClass].col)
+	  if (Number(dtps.selectedClass) !== NaN) $(".background").addClass(dtps.classes[dtps.selectedClass].col)
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
     $(".header h1").html($(this).children(".name").text())
-    if ($(this).children(".name").text() == "Stream") {
+    if (Number(dtps.selectedClass) == NaN) {
       $(".header .btns").hide();
     } else {
       $(".header .btns").show();
@@ -587,6 +592,7 @@ dtps.showClasses = function() {
     if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
     if ((dtps.selectedContent == "grades") && (dtps.selectedClass !== "stream")) dtps.gradebook(dtps.selectedClass)
     if (dtps.selectedClass == "stream") dtps.masterStream(true);
+    if (dtps.selectedClass == "announcements") dtps.announcements();
     if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); }
   });
 }
