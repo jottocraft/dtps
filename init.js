@@ -321,7 +321,7 @@ dtps.classStream = function(num, renderOv) {
 	    }
 	    }
 	    dtps.classes[num].streamlist = [];
-      if (!renderOv) jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
+      if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col)); if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } }
       dtps.classesReady++;
       dtps.checkReady(num);
     });
@@ -429,6 +429,7 @@ dtps.getPage = function(loc, id) {
 }
 dtps.gradebook = function(num) {
 	dtps.showClasses();
+	if (dtps.classes[num].weights) {
 	if (dtps.classes[num].weights.length) {
 		$(".btns .btn.grades").show();
 		var weightsTmp = [];
@@ -466,6 +467,7 @@ dtps.gradebook = function(num) {
         dtps.selectedContent = "stream";
         dtps.classStream(num);
 }
+	}
 }
 dtps.showClasses = function () {
   var streamClass = "active"
@@ -503,7 +505,7 @@ dtps.showClasses = function () {
     if ((dtps.selectedContent == "stream") && (dtps.selectedClass !== "stream")) dtps.classStream(dtps.selectedClass)
     if ((dtps.selectedContent == "grades") && (dtps.selectedClass !== "stream")) dtps.gradebook(dtps.selectedClass)
     if (dtps.selectedClass == "stream") dtps.masterStream(true);
-    if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); }
+    if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); }
   });
 }
 dtps.render = function() {
