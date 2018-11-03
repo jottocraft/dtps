@@ -18,7 +18,7 @@ dtps.firstrun = function () {
 <h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
 <li>Project DTPS is meant to be simple, so many PowerSchool features will be left out</li>
-<li>All data used by Project DTPS, user data and prefrences, will never be stored anywhere except for locally on your computer in local storage (window.localStorage). Grades and other personal data will never be stored anywhere. Project DTPS uses Google Analytics to track how many people are using DTPS and does not log your ID or IP address.</li>
+<li>Project DTPS does not store any personal user data (such as grades). Data Project DTPS does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Project DTPS uses Google Analytics to track how many people are using DTPS and will never log your ID or IP address with Google Analytics</li>
 <li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account</li>
 <li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
