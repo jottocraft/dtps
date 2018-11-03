@@ -487,6 +487,7 @@ dtps.gradebook = function(num) {
 	}
 }
 dtps.gClassroom = function() {
+      jQuery.getScript("https://apis.google.com/js/api.js", function() {
       var authorizeButton = document.getElementById('authorize_button');
       var signoutButton = document.getElementById('signout_button');
 	
@@ -544,6 +545,7 @@ dtps.gClassroom = function() {
           }
         });
       }
+      });
 }
 dtps.showClasses = function() {
   var streamClass = "active"
