@@ -172,7 +172,7 @@ body.dark .header .card {
 .weight.parent .weight {
 	padding: 10px !important;
 	overflow: auto;
-	margin-top: 5px;
+	margin: 10px 75px !important;
 	transition: height 0.4s;
 }
 .weight.parent .weight.open {
