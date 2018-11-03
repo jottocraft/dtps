@@ -438,7 +438,7 @@ dtps.gradebook = function(num) {
 			assignTmp.push(`<p class="sudo"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
 		}
 		if (Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) < 10) {
-		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + `;" class="weight card">
+		weightsTmp.push(`<div style="height: 40px;" class="weight card">
 <div class="open">
 <h4 onclick="if (Number($(this).parent().parent().css('height').slice(0,-2)) <= 400) {$(this).parent().parent().toggleClass('open')}">` + dtps.classes[num].weights[i].weight + `</h4>
 ` + assignTmp.join("") + `
