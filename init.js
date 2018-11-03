@@ -427,7 +427,7 @@ dtps.getPage = function(loc, id) {
 	var spinnerTmp = true;
   dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, function(resp) {
     var newIDs = jQuery(resp).find(".cms_box").toArray();
-	  if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; }
+	  if ((dtps.classes[dtps.selectedClass].loc == loc) && (dtps.selectedContent == "pages")) { if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; } }
     for (var i = 0; i < newIDs.length; i++) {
 	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
     dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp, q) {
