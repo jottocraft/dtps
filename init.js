@@ -565,7 +565,7 @@ dtps.showClasses = function() {
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
-  if (Number(dtps.selectedClass) !== NaN) $(".class." + dtps.selectedClass).addClass("active");
+  if (dtps.classes[dtps.selectedClass]) $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class" ).click(function(event) {
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
@@ -580,11 +580,11 @@ dtps.showClasses = function() {
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
-	  if (Number(dtps.selectedClass) !== NaN) $(".background").addClass(dtps.classes[dtps.selectedClass].col)
+	  if (dtps.classes[dtps.selectedClass]) $(".background").addClass(dtps.classes[dtps.selectedClass].col)
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
     $(".header h1").html($(this).children(".name").text())
-    if (Number(dtps.selectedClass) == NaN) {
+    if (!dtps.classes[dtps.selectedClass]) {
       $(".header .btns").hide();
     } else {
       $(".header .btns").show();
