@@ -448,7 +448,7 @@ dtps.gradebook = function(num) {
 </div>
 </div>`);
 	} else {
-		weightsTmp.push(`<div style="height: ` + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + `;" class="weight card">
+		weightsTmp.push(`<div style="height: calc(` + Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) + `% - 40px);" class="weight card">
 <h4 onclick="if (Number($(this).parent().css('height').slice(0,-2)) <= 400) {$(this).parent().toggleClass('open')}">` + dtps.classes[num].weights[i].weight + `</h4>
 ` + assignTmp.join("") + `
 </div>`);
