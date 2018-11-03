@@ -92,11 +92,11 @@ dtps.webReq = function(req, url, callback, q) {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  var sudoers = ["10837719", "10838212", "10894474", "10463823"]
+  sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-  var og = ["10894474", "10837719", "10838212"]
+  og = ["10894474", "10837719", "10838212"]
   if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
-  var contributors = ["10837719", "10463823"]
+  contributors = ["10837719", "10463823"]
   if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
   if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   dtps.shouldRender = false;
@@ -491,10 +491,6 @@ dtps.gLoad = function() {
       var authorizeButton = document.getElementById('authorize_button');
       var signoutButton = document.getElementById('signout_button');
 	
-      function handleClientLoad() {
-        gapi.load('client:auth2', initClient);
-      }
-	
       function initClient() {
         gapi.client.init({
           apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
@@ -545,6 +541,9 @@ dtps.gLoad = function() {
           }
         });
       }
+	      
+      gapi.load('client:auth2', initClient);
+	      
       });
 }
 dtps.showClasses = function() {
@@ -719,5 +718,6 @@ dtps.render = function() {
     href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
   }).appendTo("head");
   fluid.init();
+  if (sudoers.includes(HaikuContext.user.login)) dtps.gLoad();
 }
 dtps.init();
