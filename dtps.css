@@ -170,9 +170,9 @@ body.dark .header .card {
 	margin-left: 10px;
 }
 .weight.parent .weight {
-	margin: 5px 0px !important;
 	padding: 10px !important;
 	overflow: auto;
+	margin-top: 5px;
 	transition: height 0.4s;
 }
 .weight.parent .weight.open {
