@@ -491,6 +491,10 @@ dtps.showClasses = function () {
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
+   <div onclick="dtps.selectedClass = 'announcements';" class="class sudo">
+    <div class="name">Announcements</div>
+    <div class="grade"><i class="material-icons">experiment</i></div>
+    </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
   if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
