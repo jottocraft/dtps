@@ -93,10 +93,11 @@ dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
   var sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-  var og = ["10894474", "10837719"]
-  if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); dtps.log("OG mode enabled!!!"); }
-  var devs = ["10837719"]
-  if (devs.includes(HaikuContext.user.login)) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+  var og = ["10894474", "10837719", "10838212"]
+  if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
+  var contributors = ["10837719", "10463823"]
+  if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
+  if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   dtps.shouldRender = false;
 	dtps.first = false;
 	dtps.showChangelog = false;
@@ -579,7 +580,7 @@ dtps.render = function() {
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
     <h3>About</h3>
     <h5>Project DTPS ` + dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`) + `</h5>
-    Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div><div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
+    Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div><div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div><div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <br />
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
