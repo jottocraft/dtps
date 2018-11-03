@@ -219,6 +219,10 @@ body.dark .header .card {
 	color: #daa520;
 	border-color: #daa520;
 }
+.badge.contributor {
+	color: #20da61;
+	border-color: #20da61;
+}
 .weight.parent {
 	padding: 0px !important;
 	overflow: visible;
@@ -377,7 +381,7 @@ body.dark .header .card {
 	background-color: var(--light);
 }
 
-body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og {
+body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contributor) .contributor {
 	display: none !important;
 }
 
