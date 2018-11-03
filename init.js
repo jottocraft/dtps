@@ -435,7 +435,7 @@ dtps.gradebook = function(num) {
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-			assignTmp.push(`<p class="sudo"><i class="material-icons">experiment</i> ` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
+			assignTmp.push(`<p>` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
 		}
 		if (Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) < 10) {
 		weightsTmp.push(`<div style="height: 40px;" class="weight card">
