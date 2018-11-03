@@ -103,6 +103,8 @@ dtps.init = function () {
   dtps.user = HaikuContext.user;
   dtps.classColors = [];
   jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function () {
+	  ga('set', 'page', "https://dtechhs.learning.powerschool.com");
+	  //lets not log user ID in google analytics if possible
 	  window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
