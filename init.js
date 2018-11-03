@@ -428,6 +428,7 @@ dtps.getPage = function(loc, id) {
   });
 }
 dtps.gradebook = function(num) {
+	dtps.showClasses();
 	if (dtps.classes[num].weights.length) {
 		$(".btns .btn.grades").show();
 		var weightsTmp = [];
