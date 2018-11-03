@@ -102,6 +102,13 @@ dtps.init = function () {
 	dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
   dtps.classColors = [];
+  jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function () {
+	  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-105685403-3');
+  })
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
