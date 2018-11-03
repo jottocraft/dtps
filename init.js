@@ -543,6 +543,7 @@ dtps.render = function() {
     </div>
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
+<i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
     <h3>About</h3>
     <h5>Project DTPS ` + dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`) + `</h5>
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div><div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
@@ -569,10 +570,12 @@ dtps.render = function() {
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
+<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
 <h3>What's new in Project DTPS</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus console close">
+<i onclick="fluid.cards.close('.card.console')" class="material-icons close">close</i>
 <h3>dtps.log</h3>
 <span class="log">
 </span>
