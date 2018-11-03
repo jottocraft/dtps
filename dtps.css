@@ -221,7 +221,8 @@ body.dark .header .card {
 }
 .weight.parent {
 	padding: 0px !important;
-	overflow: hidden;
+	overflow: visible;
+	margin-bottom: 100px;
 }
 .card .weight p {
 	color: var(--dark) !important;
