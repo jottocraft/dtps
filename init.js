@@ -102,15 +102,13 @@ dtps.init = function () {
 	dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
   dtps.classColors = [];
-  jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function () {
-	  ga('set', 'page', "https://dtechhs.learning.powerschool.com");
-	  //lets not log user ID in google analytics if possible
-	  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-105685403-3');
-  })
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('set', 'page', "https://dtechhs.learning.powerschool.com");
+ga('create', 'UA-105685403-3', 'auto');
+ga('send', 'pageview');
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
