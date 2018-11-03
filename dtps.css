@@ -223,6 +223,9 @@ body.dark .header .card {
     margin-right: 0px;
     overflow: hidden;
 }
+.header .card.assignment.nograde h4 {
+	margin: 1.14rem 0 .912rem 0 !important;
+}
 .header .card.assignment.graded h4 {
 	width: calc(100% - 125px);
 }
