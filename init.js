@@ -137,17 +137,7 @@ window.dataLayer = window.dataLayer || [];
 			      dtps.alert("Loading...", "Make sure to update your bookmark script");
 			  } else {
       dtps.shouldRender = true;
-      dtps.alert("Loading...", `<div class="loading" style="/* display:none; */"><div style="min-height: 5em;position:relative;top:50%;left:50%"><div class="spinner" role="progressbar" style="position: relative; width: 0px; z-index: 2000000000; left: 20px; top: 40px;"><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-0-8 1s linear 0s infinite normal none running;">
-<div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(0deg) translate(8px, 0px); border-radius: 1px;"></div></div>
-<div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-1-8 1s linear 0s infinite normal none running;"><div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(45deg) translate(8px, 0px); border-radius: 1px;"></div></div>
-<div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-2-8 1s linear 0s infinite normal none running;">
-<div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(90deg) translate(8px, 0px); border-radius: 1px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-3-8 1s linear 0s infinite normal none running;">
-<div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(135deg) translate(8px, 0px); border-radius: 1px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-4-8 1s linear 0s infinite normal none running;">
-<div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(180deg) translate(8px, 0px); border-radius: 1px;"></div></div>
-<div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-5-8 1s linear 0s infinite normal none running;"><div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(225deg) translate(8px, 0px); border-radius: 1px;"></div></div>
-<div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-6-8 1s linear 0s infinite normal none running;">
-<div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(270deg) translate(8px, 0px); border-radius: 1px;"></div></div><div style="position: absolute; top: -1px; transform: translate3d(0px, 0px, 0px); opacity: 0.25; animation: opacity-60-25-7-8 1s linear 0s infinite normal none running;">
-<div style="position: absolute; width: 12px; height: 2px; background: rgb(0, 0, 0); box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 1px; transform-origin: left center 0px; transform: rotate(315deg) translate(8px, 0px); border-radius: 1px;"></div></div></div></div></div>`);
+      dtps.alert("Loading...");
 		      
 	      }
     }
@@ -508,6 +498,16 @@ dtps.announcements = function() {
   `); }
 	dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
 		dtps.raw = resp;
+		var ann = jQuery(resp).children("tbody").children("tr").toArray();
+		var announcements = [];
+		for (var i = 0; i < ann.length; i++) {
+			announcements.push(`<div class="card">
+` + jQuery(jQuery(announcements[i]).children("td")[1]).children("div:not(.annc-with-images)").text() + `
+</div>
+`);
+		}
+		if (dtps.selectedClass == "announcements") {
+  jQuery(".classContent").html(announcements.join("")); }
 	});
 };
 dtps.gLoad = function() {
