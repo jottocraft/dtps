@@ -188,6 +188,16 @@ body.dark .header .card {
 .weight.parent .weight.open {
 	height: 400px !important;
 }
+.weight:not(.open) .open, .weight.open .close {
+	display:none !important;
+}
+.weight.open .close p {
+	margin: 0px !important;
+	cursor: pointer;
+}
+.weight:not(.open) {
+	overflow: hidden;
+}
 .badge {
 	margin: 0 10px;
 }
