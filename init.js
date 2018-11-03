@@ -102,11 +102,15 @@ dtps.init = function () {
 	dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
   dtps.classColors = [];
-jQuery.getScript("https://www.google-analytics.com/analytics.js", function() {
-ga('create', 'UA-105685403-3', 'auto');
-ga('set', 'anonymizeIp', true);
-ga('set', 'page', "https://dtechhs.learning.powerschool.com");
-ga('send', 'pageview');
+jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
+window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('config', 'UA-105685403-3', {
+  'page_title' : 'portal',
+  'page_path': '/portal',
+  'anonymize_ip': true
+  });
+  gtag('js', new Date());
 });
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
