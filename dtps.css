@@ -176,7 +176,7 @@ body.dark .header .card {
 	transition: height 0.4s;
 }
 .weight.parent .weight.open {
-	height: 100px;
+	height: 400px !important;
 }
 .badge {
 	margin: 0 10px;
