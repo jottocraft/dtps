@@ -225,6 +225,7 @@ dtps.checkReady = function(num) {
   }
 }
 dtps.loadPages = function(num) {
+	if ((dtps.selectedClass == num) && (dtps.selectedContent == "pages")) {
   jQuery(".sidebar").html(`
 <div class="classDivider"></div>
 <div class="spinner">
@@ -233,7 +234,7 @@ dtps.loadPages = function(num) {
   <div class="bounce3"></div>
 </div>
 `);
-	jQuery(".classContent").html("");
+	jQuery(".classContent").html(""); }
   dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", function(resp) {
 	  dtps.log("GOT DATA", resp)
     var data = jQuery(resp).find("#sidebar .sidebar_nav").children().toArray()
@@ -255,12 +256,14 @@ dtps.loadPages = function(num) {
       </div>
       `);
     }
+	  if ((dtps.selectedClass == num) && (dtps.selectedContent == "pages")) {
     jQuery(".sidebar").html(`<div onclick="dtps.showClasses()" class="class">
       <div class="name">Classes</div>
       <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
       </div>
       <div class="classDivider"></div>
-    ` + dtps.classes[num].pagelist.join(""))
+    ` + dtps.classes[num].pagelist.join("")) }
+	  
     $( ".class" ).click(function(event) {
       $(this).siblings().removeClass("active")
       $(this).addClass("active")
@@ -271,13 +274,13 @@ dtps.loadPages = function(num) {
 dtps.classStream = function(num, renderOv) {
 	dtps.log("rendering stream for " + num)
   dtps.showClasses();
-  if (!renderOv) jQuery(".classContent").html(`
+  if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
     <div class="bounce2"></div>
     <div class="bounce3"></div>
     </div>
-  `);
+  `); } }
   dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/assignment", function(resp) {
     var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
     dtps.classes[num].stream = [];
@@ -329,7 +332,7 @@ dtps.classStream = function(num, renderOv) {
 	    }
 	    }
 	    dtps.classes[num].streamlist = [];
-      if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col)); if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } }
+      if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col)); if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } } }
       dtps.classesReady++;
       dtps.checkReady(num);
     });
@@ -374,13 +377,14 @@ dtps.renderStream = function(stream) {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
+	if (dtps.selectedClass == "stream") {
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
     <div class="bounce2"></div>
     <div class="bounce3"></div>
     </div>
-  `);
+  `);}
 	var buffer = [];
   for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
@@ -397,6 +401,7 @@ dtps.masterStream = function(doneLoading) {
     <div class="bounce3"></div>
     </div>`;
 	}
+	if (dtps.selectedClass == "stream") {
 	jQuery(".classContent").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
@@ -406,18 +411,19 @@ dtps.masterStream = function(doneLoading) {
     if(keyA < keyB) return 1;
     if(keyA > keyB) return -1;
     return 0;
-  })));
+  }))); }
 	$(".card.assignment").addClass("color");
 }
 dtps.getPage = function(loc, id) {
   if (id == undefined) var id = dtps.selectedPage;
+  if ((dtps.classes[dtps.selectedClass].loc == loc) && (dtps.selectedContent == "pages")) {
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
     <div class="bounce2"></div>
     <div class="bounce3"></div>
     </div>
-  `);
+  `); }
 	var spinnerTmp = true;
   dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, function(resp) {
     var newIDs = jQuery(resp).find(".cms_box").toArray();
@@ -425,12 +431,13 @@ dtps.getPage = function(loc, id) {
     for (var i = 0; i < newIDs.length; i++) {
 	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
     dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp, q) {
+	    if ((dtps.classes[dtps.selectedClass].loc == loc) && (dtps.selectedContent == "pages")) {
        jQuery(".classContent").html(jQuery(".classContent").html() + `
         <div class="card">
        <h4>` + q.title + `</h4>
         ` + resp + `
         </div>
-      `)
+      `);}
     }, {title: jQuery(newIDs[i]).children(".head").text()});
     }
   });
