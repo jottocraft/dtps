@@ -509,12 +509,12 @@ dtps.gLoad = function() {
 	  dtps.gClassroom = true;
           $(".btn.google").show();
           authorizeButton.style.display = 'none';
-          signoutButton.style.display = 'block';
+          signoutButton.style.display = '';
           listCourses();
         } else {
           dtps.gClassroom = false;
           $(".btn.google").hide();
-          authorizeButton.style.display = 'block';
+          authorizeButton.style.display = '';
           signoutButton.style.display = 'none';
         }
       }
@@ -683,6 +683,7 @@ dtps.render = function() {
 <p>It looks like you're using an outdated version of the Project DTPS bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
 </div>
   `);
+	if (sudoers.includes(HaikuContext.user.login)) dtps.gLoad();
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
@@ -718,6 +719,5 @@ dtps.render = function() {
     href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
   }).appendTo("head");
   fluid.init();
-  if (sudoers.includes(HaikuContext.user.login)) dtps.gLoad();
 }
 dtps.init();
