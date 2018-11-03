@@ -486,7 +486,7 @@ dtps.gradebook = function(num) {
 }
 	}
 }
-dtps.gClassroom = function() {
+dtps.gLoad = function() {
       jQuery.getScript("https://apis.google.com/js/api.js", function() {
       var authorizeButton = document.getElementById('authorize_button');
       var signoutButton = document.getElementById('signout_button');
