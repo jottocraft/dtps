@@ -188,7 +188,7 @@ body.dark .header .card {
 .weight.parent .weight.open {
 	height: 400px !important;
 }
-.weight:not(.open) .open, .weight.open .close {
+.weight.parent .weight:not(.open) .open, .weight.parent .weight.open .close {
 	display:none !important;
 }
 .weight .close p {
