@@ -195,8 +195,8 @@ body.dark .header .card {
 	margin: 0px !important;
 	cursor: pointer;
 }
-.weight:not(.open) {
-	overflow: hidden;
+.weight.parent .weight:not(.open) {
+	overflow: hidden !important;
 }
 .badge {
 	margin: 0 10px;
