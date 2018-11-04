@@ -260,7 +260,7 @@ dtps.loadPages = function(num) {
       `);
     }
 	  if ((dtps.selectedClass == num) && (dtps.selectedContent == "pages")) {
-    jQuery(".sidebar").html(`<div onclick="dtps.showClasses()" class="class">
+    jQuery(".sidebar").html(`<div onclick="dtps.classStream(dtps.selectedClass);" class="class back">
       <div class="name">Classes</div>
       <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
       </div>
@@ -268,9 +268,11 @@ dtps.loadPages = function(num) {
     ` + dtps.classes[num].pagelist.join("")) }
 	  
     $( ".class" ).click(function(event) {
+	    if (!$(this).hasClass("back")) {
       $(this).siblings().removeClass("active")
       $(this).addClass("active")
       dtps.getPage(dtps.classes[dtps.selectedClass].loc);
+	    }
     });
   });
 }
