@@ -628,9 +628,9 @@ dtps.demoMode = function() {
 if (!dtps.demo) {
 dtps.demo = true;
 dtps.classesBak = dtps.classes;
-dtps.classes[0].subject = "Math";dtps.classes[0].col = "filter_11";dtps.classes[1].subject = "Science";dtps.classes[1].col = "filter_9";
-dtps.classes[2].subject = "PE";dtps.classes[2].col = "filter_8";dtps.classes[3].subject = "English";dtps.classes[3].col = "filter_10";";dtps.classes[4].subject = "Spanish";
-dtps.classes[4].col = "filter_8";
+dtps.classes[0].subject = "Math"; dtps.classes[0].col = "filter_11"; dtps.classes[1].subject = "Science"; dtps.classes[1].col = "filter_9";
+dtps.classes[2].subject = "PE"; dtps.classes[2].col = "filter_8"; dtps.classes[3].subject = "English"; dtps.classes[3].col = "filter_10";
+dtps.classes[4].subject = "Spanish"; dtps.classes[4].col = "filter_8";
 for (var i = 0; i < dtps.classes.length; i++) {
 dtps.classes[i].grade = "100";
 dtps.classes[i].letter = "A";
