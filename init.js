@@ -276,6 +276,7 @@ dtps.loadPages = function(num) {
 }
 dtps.classStream = function(num, renderOv) {
 	dtps.log("rendering stream for " + num)
+	if (!dtps.demo) {
   dtps.showClasses();
   if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
@@ -340,8 +341,11 @@ dtps.classStream = function(num, renderOv) {
       dtps.checkReady(num);
     });
   });
+} else {
+jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
 }
-dtps.renderStream = function(stream) {
+}
+dtps.renderStream = function(stream, col) {
 	var streamlist = [];
 	if (col == undefined) var col = "";
 	for (var i = 0; i < stream.length; i++) {
