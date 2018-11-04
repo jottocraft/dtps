@@ -3,8 +3,7 @@ var dtps = {
   readableVer: "v0.9.1 (GM)",
   trackSuffix: " (GM)",
   showLetters: false,
-  demo: false,
-  gClassroom : false
+  demo: false
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -516,68 +515,6 @@ dtps.announcements = function() {
   jQuery(".classContent").html(announcements.join("")); }
 	});
 };
-dtps.gLoad = function() {
-      dtps.log("Loading experimental Google Classroom features")
-      jQuery.getScript("https://apis.google.com/js/api.js", function() {
-      var authorizeButton = document.getElementById('authorize_button');
-      var signoutButton = document.getElementById('signout_button');
-	
-      function initClient() {
-        gapi.client.init({
-          apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
-          clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
-          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
-          scope: "https://www.googleapis.com/auth/classroom.courses.readonly",
-	  cookie_policy: "none"
-        }).then(function () {
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-          authorizeButton.onclick = handleAuthClick;
-          signoutButton.onclick = handleSignoutClick;
-        });
-      }
-      function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-	  dtps.gClassroom = true;
-          $(".btn.google").show();
-          authorizeButton.style.display = 'none';
-          signoutButton.style.display = '';
-          listCourses();
-        } else {
-          dtps.gClassroom = false;
-          $(".btn.google").hide();
-          authorizeButton.style.display = '';
-          signoutButton.style.display = 'none';
-        }
-      }
-      function handleAuthClick(event) {
-        gapi.auth2.getAuthInstance().signIn();
-      }
-      function handleSignoutClick(event) {
-        gapi.auth2.getAuthInstance().signOut();
-      }
-      function listCourses() {
-        gapi.client.classroom.courses.list({
-          pageSize: 10
-        }).then(function(response) {
-          var courses = response.result.courses;
-          dtps.log('Courses:');
-
-          if (courses.length > 0) {
-            for (i = 0; i < courses.length; i++) {
-              var course = courses[i];
-              dtps.log(course.name)
-            }
-          } else {
-            dtps.log('No courses found.');
-          }
-        });
-      }
-	      
-      gapi.load('client:auth2', initClient);
-	      
-      });
-}
 dtps.showClasses = function() {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
@@ -671,10 +608,6 @@ dtps.render = function() {
     <i class="material-icons">view_stream</i>
     Stream
     </button>
-    <button style="display:none;" onclick="dtps.selectedContent = 'google';" class="btn google sudo">
-    <i class="material-icons">experiment</i>
-    google_logo
-    </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
     <i class="material-icons">list</i>
     Pages
@@ -712,8 +645,6 @@ dtps.render = function() {
     <div class="label dev"><i class="material-icons">code</i> Demo mode</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
-    <button id="authorize_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
@@ -738,7 +669,6 @@ dtps.render = function() {
 <p>It looks like you're using an outdated version of the Project DTPS bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
 </div>
   `);
-	if (sudoers.includes(HaikuContext.user.login)) dtps.gLoad();
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
