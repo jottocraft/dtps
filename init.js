@@ -2,8 +2,7 @@ var dtps = {
   ver: 091,
   readableVer: "v0.9.1 (GM)",
   trackSuffix: " (GM)",
-  showLetters: false,
-  demo: false
+  showLetters: false
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -277,7 +276,6 @@ dtps.loadPages = function(num) {
 }
 dtps.classStream = function(num, renderOv) {
 	dtps.log("rendering stream for " + num)
-	if (!dtps.demo) {
   dtps.showClasses();
   if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
@@ -342,9 +340,6 @@ dtps.classStream = function(num, renderOv) {
       dtps.checkReady(num);
     });
   });
-} else {
-jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
-}
 }
 dtps.renderStream = function(stream, col) {
 	var streamlist = [];
@@ -568,28 +563,6 @@ dtps.showClasses = function() {
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
 }
-dtps.demoMode = function() {
-if (!dtps.demo) {
-dtps.demo = true;
-dtps.classesBak = dtps.classes.slice();
-dtps.classes[0].subject = "Math"; dtps.classes[0].col = "filter_11"; dtps.classes[1].subject = "Science"; dtps.classes[1].col = "filter_9";
-dtps.classes[2].subject = "PE"; dtps.classes[2].col = "filter_8"; dtps.classes[3].subject = "English"; dtps.classes[3].col = "filter_10";
-dtps.classes[4].subject = "Spanish"; dtps.classes[4].col = "filter_8";
-for (var i = 0; i < dtps.classes.length; i++) {
-dtps.classes[i].grade = "100";
-dtps.classes[i].letter = "A";
-for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
-dtps.classes[i].stream[ii].due = "n/a";
-dtps.classes[i].stream[ii].letter = "A";
-dtps.classes[i].stream[ii].grade = "100/100";
-dtps.classes[i].stream[ii].title = "Assignment";
-}
-}
-} else {
-dtps.demo = false;
-dtps.classes = dtps.classesBak.slice();
-}
-};
 dtps.render = function() {
   document.title = "Project DTPS" + dtps.trackSuffix
   $ = jQuery;
@@ -640,9 +613,6 @@ dtps.render = function() {
     <br /><br />
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
-    <br /><br />
-<div onclick="dtps.demoMode();" class="switch dev"><span class="head"></span></div>
-    <div class="label dev"><i class="material-icons">code</i> Demo mode</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     </div>
