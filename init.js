@@ -574,6 +574,15 @@ dtps.gLoad = function() {
 dtps.showClasses = function() {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
+	dtps.classlist = [];
+  for (var i = 0; i < dtps.classes.length; i++) {
+    dtps.classlist.push(`
+      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
+      <div class="name">` + dtps.classes[i].subject + `</div>
+      <div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+      </div>
+    `);
+  }
   jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
@@ -615,21 +624,34 @@ dtps.showClasses = function() {
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
 }
+dtps.demoMode = function() {
+if (!dtps.demo) {
+dtps.demo = true;
+dtps.classesBak = dtps.classes;
+dtps.classes[0].subject = "Math";dtps.classes[0].col = "filter_11";dtps.classes[1].subject = "Science";dtps.classes[1].col = "filter_9";
+dtps.classes[2].subject = "PE";dtps.classes[2].col = "filter_8";dtps.classes[3].subject = "English";dtps.classes[3].col = "filter_10";";dtps.classes[4].subject = "Spanish";
+dtps.classes[4].col = "filter_8";
+for (var i = 0; i < dtps.classes.length; i++) {
+dtps.classes[i].grade = "100";
+dtps.classes[i].letter = "A";
+for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
+dtps.classes[i].stream[ii].due = "n/a";
+dtps.classes[i].stream[ii].letter = "A";
+dtps.classes[i].stream[ii].grade = "100/100";
+dtps.classes[i].stream[ii].title = "Assignment";
+}
+}
+} else {
+dtps.demo = false;
+dtps.classes = dtps.classesBak;
+}
+};
 dtps.render = function() {
   document.title = "Project DTPS" + dtps.trackSuffix
   $ = jQuery;
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
-  dtps.classlist = [];
-  for (var i = 0; i < dtps.classes.length; i++) {
-    dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + dtps.classes[i].subject + `</div>
-      <div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
-      </div>
-    `);
-  }
 	if (window.localStorage.fluidIsDark == "true") { var dark = " active" } else { var dark = "" }
   jQuery("body").html(`
     <div class="sidebar">
@@ -679,7 +701,7 @@ dtps.render = function() {
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
     <br /><br />
-<div onclick="if (dtps.demo) {dtps.demo = false;} else {dtps.demo = true;}" class="switch dev"><span class="head"></span></div>
+<div onclick="dtps.demoMode();" class="switch dev"><span class="head"></span></div>
     <div class="label dev"><i class="material-icons">code</i> Demo mode</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
