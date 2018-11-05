@@ -1,8 +1,10 @@
 var dtps = {
-  ver: 100,
-  readableVer: "v1.0.0 (dev)",
-  trackSuffix: " (dev)",
-  showLetters: false
+  ver: 091,
+  readableVer: "v0.9.1 (GM)",
+  trackSuffix: " (GM)",
+  showLetters: false,
+  demo: false,
+  gClassroom : false
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -13,22 +15,22 @@ dtps.log = function(msg) {
   if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
 }
 dtps.firstrun = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>Welcome to Power+` + dtps.trackSuffix + `</h2>
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>Welcome to Project DTPS</h2>
 <h4>` + dtps.readableVer + `</h4>
-<li>Power+ is meant to be simple, so many PowerSchool features will be left out</li>
-<li>Power+ does not store any personal user data (such as grades). Data Power+ does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Power+ uses Google Analytics to track how many people are using DTPS and will never log your ID or IP address with Google Analytics</li>
-<li>Power+ only reads data from PowerSchool. Power+ will never edit, write, or delete data of any kind on your PowerSchool account</li>
-<li>Power+ needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
+<li>Project DTPS is meant to be simple, so many PowerSchool features will be left out</li>
+<li>Project DTPS does not store any personal user data (such as grades). Data Project DTPS does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Project DTPS uses Google Analytics to track how many people are using DTPS and will never log your ID or IP address with Google Analytics</li>
+<li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account</li>
+<li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
-<li><b>Power+ may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
+<li><b>Project DTPS may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Project DTPS at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
 dtps.alert = function (text, sub) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Project DTPS</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
 <p>` + sub + `</p>
 </div>
@@ -115,7 +117,7 @@ window.dataLayer = window.dataLayer || [];
 });
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
-    dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
+    dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
   } else {
     if (Number(window.localStorage.dtps) < dtps.ver) {
       dtps.showChangelog = true;
@@ -127,7 +129,7 @@ window.dataLayer = window.dataLayer || [];
     } else {
 	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
-    dtps.alert("Unsupported Account", "Power+ only works on student accounts");
+    dtps.alert("Unsupported Account", "Project DTPS only works on student accounts");
 	      } else {
 		      if (dtpsLoader < 2) {
 			      dtps.updateScript = true;
@@ -276,6 +278,7 @@ dtps.loadPages = function(num) {
 }
 dtps.classStream = function(num, renderOv) {
 	dtps.log("rendering stream for " + num)
+	if (!dtps.demo) {
   dtps.showClasses();
   if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
@@ -335,12 +338,14 @@ dtps.classStream = function(num, renderOv) {
 	    }
 	    }
 	    dtps.classes[num].streamlist = [];
-      if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col)); } }
-	   if (dtps.selectedClass == num) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } }
+      if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col)); if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } } }
       dtps.classesReady++;
       dtps.checkReady(num);
     });
   });
+} else {
+jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col));
+}
 }
 dtps.renderStream = function(stream, col) {
 	var streamlist = [];
@@ -511,6 +516,68 @@ dtps.announcements = function() {
   jQuery(".classContent").html(announcements.join("")); }
 	});
 };
+dtps.gLoad = function() {
+      dtps.log("Loading experimental Google Classroom features")
+      jQuery.getScript("https://apis.google.com/js/api.js", function() {
+      var authorizeButton = document.getElementById('authorize_button');
+      var signoutButton = document.getElementById('signout_button');
+	
+      function initClient() {
+        gapi.client.init({
+          apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
+          clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
+          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
+          scope: "https://www.googleapis.com/auth/classroom.courses.readonly",
+	  cookie_policy: "none"
+        }).then(function () {
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+          authorizeButton.onclick = handleAuthClick;
+          signoutButton.onclick = handleSignoutClick;
+        });
+      }
+      function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+	  dtps.gClassroom = true;
+          $(".btn.google").show();
+          authorizeButton.style.display = 'none';
+          signoutButton.style.display = '';
+          listCourses();
+        } else {
+          dtps.gClassroom = false;
+          $(".btn.google").hide();
+          authorizeButton.style.display = '';
+          signoutButton.style.display = 'none';
+        }
+      }
+      function handleAuthClick(event) {
+        gapi.auth2.getAuthInstance().signIn();
+      }
+      function handleSignoutClick(event) {
+        gapi.auth2.getAuthInstance().signOut();
+      }
+      function listCourses() {
+        gapi.client.classroom.courses.list({
+          pageSize: 10
+        }).then(function(response) {
+          var courses = response.result.courses;
+          dtps.log('Courses:');
+
+          if (courses.length > 0) {
+            for (i = 0; i < courses.length; i++) {
+              var course = courses[i];
+              dtps.log(course.name)
+            }
+          } else {
+            dtps.log('No courses found.');
+          }
+        });
+      }
+	      
+      gapi.load('client:auth2', initClient);
+	      
+      });
+}
 dtps.showClasses = function() {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
@@ -534,8 +601,7 @@ dtps.showClasses = function() {
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
   if (dtps.classes[dtps.selectedClass]) $(".class." + dtps.selectedClass).addClass("active");
-  if (dtps.selectedClass == "announcements") $(".class." + dtps.selectedClass).addClass("active");
-  //if (dtps.selectedContent == "pages") { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
+  if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class" ).click(function(event) {
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	  $(".background").css("background", prev)
@@ -565,19 +631,35 @@ dtps.showClasses = function() {
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
 }
+dtps.demoMode = function() {
+if (!dtps.demo) {
+dtps.demo = true;
+dtps.classesBak = dtps.classes.slice();
+dtps.classes[0].subject = "Math"; dtps.classes[0].col = "filter_11"; dtps.classes[1].subject = "Science"; dtps.classes[1].col = "filter_9";
+dtps.classes[2].subject = "PE"; dtps.classes[2].col = "filter_8"; dtps.classes[3].subject = "English"; dtps.classes[3].col = "filter_10";
+dtps.classes[4].subject = "Spanish"; dtps.classes[4].col = "filter_8";
+for (var i = 0; i < dtps.classes.length; i++) {
+dtps.classes[i].grade = "100";
+dtps.classes[i].letter = "A";
+for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
+dtps.classes[i].stream[ii].due = "n/a";
+dtps.classes[i].stream[ii].letter = "A";
+dtps.classes[i].stream[ii].grade = "100/100";
+dtps.classes[i].stream[ii].title = "Assignment";
+}
+}
+} else {
+dtps.demo = false;
+dtps.classes = dtps.classesBak.slice();
+}
+};
 dtps.render = function() {
-  document.title = "Power+" + dtps.trackSuffix
+  document.title = "Project DTPS" + dtps.trackSuffix
   $ = jQuery;
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
 	if (window.localStorage.fluidIsDark == "true") { var dark = " active" } else { var dark = "" }
-	var relDom = "";
-	if (dtps.trackSuffix !== "") {
-	   relDom = dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`);
-	    } else {
-		  relDom = dtps.readableVer;
-	    }
   jQuery("body").html(`
     <div class="sidebar">
     </div>
@@ -588,6 +670,10 @@ dtps.render = function() {
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
     <i class="material-icons">view_stream</i>
     Stream
+    </button>
+    <button style="display:none;" onclick="dtps.selectedContent = 'google';" class="btn google sudo">
+    <i class="material-icons">experiment</i>
+    google_logo
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
     <i class="material-icons">list</i>
@@ -609,7 +695,7 @@ dtps.render = function() {
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
     <h3>About</h3>
-    <h5>Power+ ` + relDom + `</h5>
+    <h5>Project DTPS ` + dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`) + `</h5>
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div><div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div><div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <br />
@@ -622,7 +708,12 @@ dtps.render = function() {
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
     <br /><br />
+<div onclick="dtps.demoMode();" class="switch dev"><span class="head"></span></div>
+    <div class="label dev"><i class="material-icons">code</i> Demo mode</div>
+    <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
+    <button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
+    <button id="authorize_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
@@ -632,7 +723,7 @@ dtps.render = function() {
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
-<h3>What's new in Power+</h3>
+<h3>What's new in Project DTPS</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus console close">
@@ -643,10 +734,11 @@ dtps.render = function() {
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus script close">
 <i onclick="fluid.cards.close('.card.script')" class="material-icons close">close</i>
-<h3>Update your Power+ bookmark</h3>
-<p>It looks like you're using an outdated version of the Power+ bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
+<h3>Update your DTPS bookmark</h3>
+<p>It looks like you're using an outdated version of the Project DTPS bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
 </div>
   `);
+	if (sudoers.includes(HaikuContext.user.login)) dtps.gLoad();
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
