@@ -4,4 +4,4 @@ about: Suggest an idea
 
 ---
 
-**What idea/feature do you want to be added in Project DTPS?**
+**What do you want to be added in Power+?**
