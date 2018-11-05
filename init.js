@@ -251,7 +251,7 @@ dtps.loadPages = function(num) {
         num: i
       });
       dtps.classes[num].pagelist.push(`
-      <div onclick="dtps.selectedPage = ` + tmp[tmp.length-1] + `" class="class">
+      <div onclick="dtps.selectedPage = ` + tmp[tmp.length-1] + `" class="class ` + dtps.classes[num].col + `">
       <div class="name">` + jQuery(data[i]).find("a.nav").text() + `</div>
       <div class="grade"><i class="material-icons">notes</i></div>
       </div>
