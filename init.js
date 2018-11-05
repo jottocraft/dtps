@@ -565,7 +565,7 @@ dtps.showClasses = function() {
   });
 }
 dtps.render = function() {
-  document.title = "Project DTPS" + dtps.trackSuffix
+  document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "stream";
