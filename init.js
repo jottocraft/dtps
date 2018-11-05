@@ -523,8 +523,7 @@ dtps.showClasses = function() {
       </div>
     `);
   }
-  if (jQuery.(".sidebar .stream")) {
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + ` stream">
+  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
@@ -564,7 +563,6 @@ dtps.showClasses = function() {
     if (dtps.selectedClass == "announcements") dtps.announcements();
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
-  }
 }
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
