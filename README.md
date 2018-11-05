@@ -4,6 +4,6 @@ or
 
 [Install Chrome Extension (auto load, broken right now)](https://chrome.google.com/webstore/detail/project-dtps/pakgdifknldaiglefmpkkgfjndemfapo)
 
-**Power+ dev (unstable)**
+or
 
-[Bookmark script (dev)](https://dtps.js.org/devbookmark.txt)
+[Dev bookmark script (unstable)](https://dtps.js.org/devbookmark.txt)
