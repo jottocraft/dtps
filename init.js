@@ -123,7 +123,7 @@ window.dataLayer = window.dataLayer || [];
     $ = jQuery;
       jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
-      dtps.alert("Loading...", "Updating to DTPS " + dtps.readableVer);
+      dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
     } else {
 	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
