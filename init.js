@@ -529,9 +529,9 @@ dtps.showClasses = function() {
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
-   <div onclick="dtps.selectedClass = 'announcements';" class="class sudo">
+   <div onclick="dtps.selectedClass = 'announcements';" class="class">
     <div class="name">Announcements</div>
-    <div class="grade"><i class="material-icons">experiment</i></div>
+    <div class="grade"><i class="material-icons">announcement</i></div>
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
