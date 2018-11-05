@@ -94,7 +94,7 @@ dtps.init = function () {
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719", "10838212"]
   if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
-  contributors = ["10837719", "10463823"]
+  contributors = ["10837719", "10463823", "10894474"]
   if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
   if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   dtps.shouldRender = false;
