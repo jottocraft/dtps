@@ -523,7 +523,7 @@ dtps.showClasses = function() {
       </div>
     `);
   }
-  if (!jQuery.(".sidebar .stream")[0]) {
+  if (jQuery.(".sidebar .stream")) {
   jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + ` stream">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
