@@ -502,10 +502,12 @@ dtps.announcements = function() {
 		var ann = jQuery(resp).children("tbody").children("tr").toArray();
 		var announcements = [];
 		for (var i = 0; i < ann.length; i++) {
+			if (jQuery(ann[i]).children("td")[1] !== undefined) {
 			announcements.push(`<div class="card">
 ` + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
+		}
 		}
 		if (dtps.selectedClass == "announcements") {
   jQuery(".classContent").html(announcements.join("")); }
