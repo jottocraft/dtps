@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report an issue with Project DTPS
+about: Report an issue with Power+
 
 ---
 
