@@ -13,22 +13,22 @@ dtps.log = function(msg) {
   if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
 }
 dtps.firstrun = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Project DTPS` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>Welcome to Project DTPS` + dtps.trackSuffix + `</h2>
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>Welcome to Power+` + dtps.trackSuffix + `</h2>
 <h4>` + dtps.readableVer + `</h4>
-<li>Project DTPS is meant to be simple, so many PowerSchool features will be left out</li>
-<li>Project DTPS does not store any personal user data (such as grades). Data Project DTPS does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Project DTPS uses Google Analytics to track how many people are using DTPS and will never log your ID or IP address with Google Analytics</li>
-<li>Project DTPS only reads data from PowerSchool. Project DTPS will never edit, write, or delete data of any kind on your PowerSchool account</li>
-<li>Project DTPS needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
+<li>Power+ is meant to be simple, so many PowerSchool features will be left out</li>
+<li>Power+ does not store any personal user data (such as grades). Data Power+ does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Power+ uses Google Analytics to track how many people are using DTPS and will never log your ID or IP address with Google Analytics</li>
+<li>Power+ only reads data from PowerSchool. Power+ will never edit, write, or delete data of any kind on your PowerSchool account</li>
+<li>Power+ needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
-<li><b>Project DTPS may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Project DTPS at your own risk.</b></li>
+<li><b>Power+ may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
 dtps.alert = function (text, sub) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Project DTPS` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
 <p>` + sub + `</p>
 </div>
@@ -115,7 +115,7 @@ window.dataLayer = window.dataLayer || [];
 });
   if (window.location.host !== "dtechhs.learning.powerschool.com") {
     dtps.shouldRender = false;
-    dtps.alert("Unsupported school", "Project DTPS only works at Design Tech High School");
+    dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
   } else {
     if (Number(window.localStorage.dtps) < dtps.ver) {
       dtps.showChangelog = true;
@@ -127,7 +127,7 @@ window.dataLayer = window.dataLayer || [];
     } else {
 	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
-    dtps.alert("Unsupported Account", "Project DTPS only works on student accounts");
+    dtps.alert("Unsupported Account", "Power+ only works on student accounts");
 	      } else {
 		      if (dtpsLoader < 2) {
 			      dtps.updateScript = true;
@@ -566,7 +566,7 @@ dtps.showClasses = function() {
   });
 }
 dtps.render = function() {
-  document.title = "Project DTPS" + dtps.trackSuffix
+  document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "stream";
@@ -609,7 +609,7 @@ dtps.render = function() {
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
     <h3>About</h3>
-    <h5>Project DTPS ` + relDom + `</h5>
+    <h5>Power+ ` + relDom + `</h5>
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div><div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div><div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div><div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <br />
@@ -632,7 +632,7 @@ dtps.render = function() {
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
-<h3>What's new in Project DTPS</h3>
+<h3>What's new in Power+</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus console close">
@@ -643,8 +643,8 @@ dtps.render = function() {
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus script close">
 <i onclick="fluid.cards.close('.card.script')" class="material-icons close">close</i>
-<h3>Update your DTPS bookmark</h3>
-<p>It looks like you're using an outdated version of the Project DTPS bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
+<h3>Update your Power+ bookmark</h3>
+<p>It looks like you're using an outdated version of the Power+ bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
 </div>
   `);
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
