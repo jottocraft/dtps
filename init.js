@@ -135,7 +135,7 @@ window.dataLayer = window.dataLayer || [];
 			      dtps.alert("Loading...", "Make sure to update your bookmark script");
 			  } else {
       dtps.shouldRender = true;
-      dtps.alert("Loading...");
+      dtps.alert("Loading...", "Make sure to be on the home page");
 		      
 	      }
     }
