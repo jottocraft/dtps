@@ -535,7 +535,7 @@ dtps.showClasses = function() {
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
-  if (dtps.classes[dtps.selectedClass]) $(".class." + dtps.selectedClass).addClass("active");
+  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class" ).click(function(event) {
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
