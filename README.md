@@ -2,7 +2,7 @@
 
 or
 
-[chrome extension (auto load, broken right now)](https://chrome.google.com/webstore/detail/project-dtps/pakgdifknldaiglefmpkkgfjndemfapo)
+[chrome extension (auto load, broken right now)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo)
 
 or
 
