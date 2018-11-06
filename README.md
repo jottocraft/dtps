@@ -1,3 +1,7 @@
+**power+**
+
+<br />
+
 [bookmark script](https://dtps.js.org/bookmark.txt)
 
 or
@@ -10,4 +14,4 @@ or
 
 <br /><br /><br /><br /><br /><br />
 
-[license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
+made by jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
