@@ -7,3 +7,5 @@ or
 or
 
 [dev bookmark script (unstable)](https://dtps.js.org/devbookmark.txt)
+
+[license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
