@@ -8,4 +8,6 @@ or
 
 [dev bookmark script (unstable)](https://dtps.js.org/devbookmark.txt)
 
+<br /><br /><br /><br /><br /><br />
+
 [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
