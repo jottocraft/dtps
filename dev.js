@@ -606,8 +606,8 @@ dtps.render = function() {
     Gradebook
     </button>
     </div>
-<div style="display: none;" class="btns row master">
-    <button onclick="dtps.masterContent = 'list';" class="btn list">
+<div class="btns row master">
+    <button onclick="dtps.masterContent = 'list';" class="btn stream">
     <i class="material-icons">view_stream</i>
     List
     </button>
