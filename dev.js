@@ -9,26 +9,26 @@ dtps.changelog = function () {
   fluid.cards(".card.changelog");
 };
 dtps.log = function(msg) {
-  console.log("[DTPS] ", msg);
-  if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
+  console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
+  if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS` + dtps.trackSuffix + `] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
 }
 dtps.firstrun = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>Welcome to Power+</h2>
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>Welcome to Power+` + dtps.trackSuffix + `</h2>
 <h4>` + dtps.readableVer + `</h4>
-<li>Power+ is meant to be simple, so many PowerSchool features will be left out</li>
-<li>Power+ does not store any personal user data (such as grades). Data Power+ does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Power+ uses Google Analytics to track how many people are using DTPS and will never log your ID or IP address with Google Analytics</li>
-<li>Power+ only reads data from PowerSchool. Power+ will never edit, write, or delete data of any kind on your PowerSchool account</li>
-<li>Power+ needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
+<li>Power+` + dtps.trackSuffix + ` is meant to be simple, so many PowerSchool features will be left out</li>
+<li>Power+` + dtps.trackSuffix + ` does not store any personal user data (such as grades). Data Power+` + dtps.trackSuffix + ` does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Power+` + dtps.trackSuffix + ` uses Google Analytics to track how many people are using Power+` + dtps.trackSuffix + ` and will never log your ID or IP address with Google Analytics</li>
+<li>Power+` + dtps.trackSuffix + ` only reads data from PowerSchool. Power+` + dtps.trackSuffix + ` will never edit, write, or delete data of any kind on your PowerSchool account</li>
+<li>Power+` + dtps.trackSuffix + ` needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
-<li><b>Power+ may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
+<li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
 dtps.alert = function (text, sub) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
 <p>` + sub + `</p>
 </div>
@@ -530,7 +530,8 @@ dtps.showClasses = function() {
       </div>
     `);
   }
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
+	if (!Boolean(jQuery(".sidebar .class.masterStream")[0])) {
+  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class masterStream ` + streamClass + `">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
@@ -572,6 +573,7 @@ dtps.showClasses = function() {
     if (dtps.selectedClass == "announcements") dtps.announcements();
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
+}
 }
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
