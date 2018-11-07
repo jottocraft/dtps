@@ -607,7 +607,7 @@ dtps.render = function() {
     </button>
     </div>
 <div class="btns row master">
-    <button onclick="dtps.masterContent = 'list';" class="btn stream">
+    <button onclick="dtps.masterContent = 'list';" class="btn stream active">
     <i class="material-icons">view_stream</i>
     List
     </button>
