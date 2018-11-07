@@ -1,10 +1,11 @@
 var dtps = {
-  ver: 100,
-  readableVer: "v1.0.0 (dev)",
+  ver: 110,
+  readableVer: "v1.1.0 (dev)",
   trackSuffix: " (dev)",
   showLetters: false
 };
 dtps.changelog = function () {
+	localStorage.setItem('dtps', dtps.ver);
   fluid.cards.close(".card.focus")
   fluid.cards(".card.changelog");
 };
@@ -151,7 +152,6 @@ window.dataLayer = window.dataLayer || [];
 	    dtps.first = true;
     }
   }
-  localStorage.setItem('dtps', dtps.ver);
  dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc");
 	var eClassList = jQuery(".eclass_list ul").children().toArray();
   dtps.classesReady = 0;
@@ -677,7 +677,9 @@ dtps.render = function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
 		  jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
+			 if (data.tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
 			if (dtps.showChangelog) dtps.changelog();
+		 }
 			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.cards(".card.script"); }
 			 $(".btn.changelog").show();
         });
