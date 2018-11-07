@@ -561,8 +561,10 @@ dtps.showClasses = function() {
     $(".header h1").html($(this).children(".name").text())
     if (!dtps.classes[dtps.selectedClass]) {
       $(".header .btns").hide();
+      if (dtps.selectedClass == "stream") $(".header .btns.master").show();
     } else {
-      $(".header .btns").show();
+      $(".header .btns:not(.master)").show();
+      $(".header .btns.master").hide();
     }
     if ((dtps.selectedContent == "stream") && (dtps.classes[dtps.selectedClass])) dtps.classStream(dtps.selectedClass)
     if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
@@ -602,6 +604,16 @@ dtps.render = function() {
     <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades">
     <i class="material-icons">book</i>
     Gradebook
+    </button>
+    </div>
+<div style="display: none;" class="btns row master">
+    <button onclick="dtps.masterContent = 'list';" class="btn list">
+    <i class="material-icons">view_stream</i>
+    List
+    </button>
+    <button onclick="dtps.masterContent = 'cal';" class="btn cal sudo">
+    <i class="material-icons">calendar_today</i>
+    Calendar
     </button>
     </div>
     <div class="classContent">
