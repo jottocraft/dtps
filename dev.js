@@ -633,6 +633,8 @@ dtps.render = function() {
     <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
+<button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
+    <button id="authorize_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
