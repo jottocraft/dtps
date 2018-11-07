@@ -5,7 +5,6 @@ var dtps = {
   showLetters: false
 };
 dtps.changelog = function () {
-	localStorage.setItem('dtps', dtps.ver);
   fluid.cards.close(".card.focus")
   fluid.cards(".card.changelog");
 };
@@ -678,6 +677,7 @@ dtps.render = function() {
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
 		  jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
 			 if (data.tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
+				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
 		 }
 			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.cards(".card.script"); }
