@@ -135,7 +135,7 @@ window.dataLayer = window.dataLayer || [];
 			      dtps.alert("Loading...", "Make sure to update your bookmark script");
 			  } else {
 				 if (window.location.pathname.split("/")[3] !== "portal") {
-					 dtps.shouldRender = true;
+					 dtps.shouldRender = false;
       dtps.alert("Page error", 'Go to your <a href="https://dtechhs.learning.powerschool.com/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
 				     } else {
       dtps.shouldRender = true;
