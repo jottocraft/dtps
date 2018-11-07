@@ -526,7 +526,7 @@ dtps.showClasses = function() {
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
       <div class="name">` + dtps.classes[i].subject + `</div>
-      <div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
   }
@@ -640,11 +640,11 @@ dtps.render = function() {
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">brightness_3</i> Use dark theme</div>
 <br /><br />
+<div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">visibility_off</i> Hide grades</div>
+    <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
-    <br /><br />
-<div onclick="jQuery('body').toggleClass('hidegrades')" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
 <button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
