@@ -41,7 +41,7 @@
 	background-color: transparent;
 	margin: 15px 0;
 }
-.hidegrades .class .grade {
+.hidegrades .class .grade.val {
 	display: none !important;
 }
 .class .grade .letter {
