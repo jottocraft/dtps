@@ -85,6 +85,10 @@ if (req == "assignGET") {
       dtps.http[url].send("csrf_token=" + CSRFTOK);
   	}
   	if (req == "letPOST") {
+		if ((url == "portal/portlet_reportcard?my_portal=true") && (jQuery("#portlet_box_content_reportcard:not(:has(.loading))").html())) {
+		if (callback) callback(jQuery("#portlet_box_content_reportcard").html(), q);
+      	  dtps.requests[url] = this.responseText;
+	} else {
   		dtps.http[url] = new XMLHttpRequest();
       dtps.http[url].onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -99,6 +103,7 @@ if (req == "assignGET") {
       dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
       dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
       dtps.http[url].send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
+	}
   	}
 	} else {
 		if (callback) callback(dtps.requests[url], q);
