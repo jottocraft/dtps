@@ -535,7 +535,7 @@ dtps.submitDiag = function(loc, id) {
 <p><b>Don't blame Power+ for a bad grade on an assignment because of a submission bug. Double check everything you submit with Power+ on PowerSchool.</b></p>
 <div onclick="window.location.reload()" class="btn">I actually care about my grade. Bring me back to regular PowerSchool</div>
 <br /><br />
-<div onclick="if (window.prompt('type \'I UNDERSTAND\' to open the submission screen') == 'I UNDERSTAND') { window.alert('coming soon') }" class="btn sudo contributor"><i class="material-icons">warning</i> I have read the above and I will double check with PowerSchool</div>
+<div onclick="if (window.prompt('type I UNDERSTAND to open the submission screen') == 'I UNDERSTAND') { window.alert('coming soon') } else {window.alert('You did not type the phrase correctly. Bringing you back to normal PowerSchool so you can actually submit your assignment'); window.location.reload();}" class="btn sudo contributor"><i class="material-icons">warning</i> I have read the above and I will double check with PowerSchool</div>
 `);
 }
 dtps.announcements = function() {
