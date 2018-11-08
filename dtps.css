@@ -241,6 +241,12 @@ body.dark .header .card {
 .header .card.color .points .total {
 	color: var(--light);
 }
+.card.details fieldset, .card.details #tb_handin_link, .card.details div.p, .card.details label {
+	display:none;
+}
+.card.assignment {
+	cursor: pointer;
+}
 .header .card.assignment h5 {
 	font-size: 1.5rem !important;
 }
