@@ -301,7 +301,8 @@ dtps.classStream = function(num, renderOv) {
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
-    		col: dtps.classes[num].col
+    		col: dtps.classes[num].col,
+	      loc: dtps.classes[num].loc
       });
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
         dtps.classes[num].streamlist.push(`
@@ -346,9 +347,8 @@ dtps.classStream = function(num, renderOv) {
     });
   });
 }
-dtps.renderStream = function(stream, col) {
+dtps.renderStream = function(stream) {
 	var streamlist = [];
-	if (col == undefined) var col = "";
 	for (var i = 0; i < stream.length; i++) {
 		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
@@ -363,7 +363,7 @@ dtps.renderStream = function(stream, col) {
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
 		  streamlist.push(`
-        <div class="card graded assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div class="earned">` + earnedTmp + `</div>
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
@@ -491,6 +491,16 @@ dtps.gradebook = function(num) {
         dtps.classStream(num);
 }
 	}
+}
+dtps.assignment = function(loc, id) {
+	 $(".card.assignment").html(`
+<h3>Loading...</h3>
+`);
+	fluid.cards.close(".card.focus");
+          fluid.cards(".card.assignment");
+	dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/assignment/view/" + id, function(data) {
+	  $(".card.assignment").html(data);
+	});
 }
 dtps.announcements = function() {
 	if (dtps.selectedClass == "announcements") {
