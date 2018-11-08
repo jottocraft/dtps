@@ -52,6 +52,22 @@ dtps.webReq = function(req, url, callback, q) {
       dtps.http[url].setRequestHeader("Upgrade-Insecure-Requests", "1")
       dtps.http[url].send();
   	}
+if (req == "assignGET") {
+  		dtps.http[url] = new XMLHttpRequest();
+      dtps.http[url].onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          if (callback) callback(this.responseText, q);
+      	  dtps.requests[url] = this.responseText;
+        }
+      };
+      dtps.http[url].open("GET", url, true);
+      dtps.http[url].setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+      dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+      dtps.http[url].setRequestHeader("Upgrade-Insecure-Requests", "1");
+	dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
+      dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
+      dtps.http[url].send();
+  	}
   	if (req == "psPOST") {
   		dtps.http[url] = new XMLHttpRequest();
         dtps.http[url].onreadystatechange = function() {
@@ -498,7 +514,7 @@ dtps.assignment = function(loc, id) {
 `);
 	fluid.cards.close(".card.focus");
           fluid.cards(".card.details");
-	dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/assignment/view/" + id, function(data) {
+	dtps.webReq("assignGET", "https://dtechhs.learning.powerschool.com/" + loc + "/assignment/view/" + id, function(data) {
 	  $(".card.details").html(data);
 	});
 }
