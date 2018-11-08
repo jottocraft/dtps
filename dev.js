@@ -510,12 +510,13 @@ dtps.gradebook = function(num) {
 }
 dtps.assignment = function(loc, id) {
 	 $(".card.details").html(`
+<i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
 <h3>Loading...</h3>
 `);
 	fluid.cards.close(".card.focus");
           fluid.cards(".card.details");
 	dtps.webReq("assignGET", "https://dtechhs.learning.powerschool.com/" + loc + "/assignment/view/" + id, function(data) {
-	  $(".card.details").html(data);
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>` + data);
 	});
 }
 dtps.announcements = function() {
@@ -698,6 +699,7 @@ dtps.render = function() {
 <p>It looks like you're using an outdated or invalid version of the Power+ bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus details close">
+<i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
 <p>An error occured</p>
 </div>
   `);
