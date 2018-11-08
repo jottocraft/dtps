@@ -634,13 +634,13 @@ dtps.render = function() {
     Gradebook
     </button>
     </div>
-<div class="btns row master">
+<div class="btns row master sudo">
     <button onclick="dtps.masterContent = 'list';" class="btn stream active">
     <i class="material-icons">view_stream</i>
     List
     </button>
     <button onclick="dtps.masterContent = 'cal';" class="btn cal sudo">
-    <i class="material-icons">calendar_today</i>
+    <i class="material-icons">experiment</i>
     Calendar
     </button>
     </div>
