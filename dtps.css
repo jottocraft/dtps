@@ -32,6 +32,7 @@
 }
 .class .grade .letter, .class .grade .points , .class .grade .material-icons {
 	line-height: 50px;
+	font-weight: bold;
 }
 .classDivider {
 	display: inline-block;
