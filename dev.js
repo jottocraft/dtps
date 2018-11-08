@@ -390,7 +390,7 @@ dtps.renderStream = function(stream) {
       `);
     } else {
       streamlist.push(`
-        <div class="card assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
 	       <h5>` + due + `</h5>
          </div>
