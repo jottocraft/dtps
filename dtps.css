@@ -244,6 +244,9 @@ body.dark .header .card {
 .card.details fieldset, .card.details #tb_handin_link, .card.details div.p, .card.details label {
 	display:none;
 }
+body.dark .card.details * {
+	color: white !important;
+}
 .card.assignment {
 	cursor: pointer;
 }
