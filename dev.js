@@ -194,7 +194,7 @@ window.dataLayer = window.dataLayer || [];
     var data = jQuery(resp).children("tbody").children();
     dtps.rawData = data;
     dtps.classes = [];
-    dtps.classLocs[];
+    dtps.classLocs = [];
     for (var i = 0; i < data.length; i++) {
       var section = jQuery(data[i]);
       var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
