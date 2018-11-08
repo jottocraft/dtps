@@ -194,6 +194,7 @@ window.dataLayer = window.dataLayer || [];
     var data = jQuery(resp).children("tbody").children();
     dtps.rawData = data;
     dtps.classes = [];
+    dtps.classLocs[];
     for (var i = 0; i < data.length; i++) {
       var section = jQuery(data[i]);
       var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
@@ -215,7 +216,6 @@ window.dataLayer = window.dataLayer || [];
     		if (dtps.classColors[ii].id == id) var col = dtps.classColors[ii].col;
   		}
 	    var letterTmp = grade.replace(/[0-9]/g, '').replace(".", "");
-	    if (dtps.pePDV) { if (subject == "PE") {if (letterTmp !== "DV") { letterTmp = "P"; }} }
       dtps.classes.push({
         name: name,
         subject: subject,
@@ -227,6 +227,7 @@ window.dataLayer = window.dataLayer || [];
   		  id: id,
         num: i
       })
+	  dtps.classLocs.push(loc[1] + "/" + loc[2]);
     }
     dtps.log("Grades loaded: ", dtps.classes)
     if (dtps.shouldRender) dtps.render();
@@ -534,7 +535,11 @@ dtps.announcements = function() {
 		var announcements = [];
 		for (var i = 0; i < ann.length; i++) {
 			if (jQuery(ann[i]).children("td")[1] !== undefined) {
-			announcements.push(`<div class="card">
+				var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
+				var psClass = dtps.classLocs.indexOf(loc[1] + "/" + loc[2]);
+				var col = "";
+				if (psClass !== -1) col = dtps.classes[psClass].col
+			announcements.push(`<div class="card color ` + col + `">
 ` + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
