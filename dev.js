@@ -522,7 +522,7 @@ dtps.assignment = function(loc, id) {
 	fluid.cards.close(".card.focus");
           fluid.cards(".card.details");
 	var submitDom = "";
-	if (contributors.includes(HaikuContext.user.login)) submitDom = `<div class="btn"><i class="material-icons">warning</i> Submit</div>`
+	if (contributors.includes(HaikuContext.user.login)) submitDom = `<div class="btn sudo contributor" onclick="dtps.submitDiag('` + loc + `', '` + id + `')"><i class="material-icons">warning</i> Submit</div>`
 	dtps.webReq("assignGET", "https://dtechhs.learning.powerschool.com/" + loc + "/assignment/view/" + id, function(data) {
 	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + submitDom);
 	});
