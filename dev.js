@@ -521,9 +521,21 @@ dtps.assignment = function(loc, id) {
 `);
 	fluid.cards.close(".card.focus");
           fluid.cards(".card.details");
+	var submitDom = "";
+	if (contributors.includes(HaikuContext.user.login)) submitDom = `<div class="btn"><i class="material-icons">warning</i> Submit</div>`
 	dtps.webReq("assignGET", "https://dtechhs.learning.powerschool.com/" + loc + "/assignment/view/" + id, function(data) {
-	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data);
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + submitDom);
 	});
+}
+dtps.submitDiag = function(loc, id) {
+	$(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+<h3><i class="material-icons">warning</i> Experimental feature</h3>
+<p><b>Use this feature at your own risk. This feature might have bugs that cause your assignment to be incorrectly submitted. Double check with PowerSchool to make sure that the assignment was properly submitted. Power+ is not responsible for any submission failures</b></p>
+<p>Submitting assignments in Power+ is currently still in development. Only people that are both testers <i>and</i> contributors have access to this feature. Please report any bugs on GitHub and use this feature at your own risk.</p>
+<p><b>Don't blame Power+ for a bad grade on an assignment because of a submission bug. Double check everything you submit with Power+ on PowerSchool.</b></p>
+<div class="btn">I actually care about my grade. Bring me back to regular PowerSchool</div>
+<div onclick="if (window.prompt('type \'I UNDERSTAND\' to open the submission screen') == 'I UNDERSTAND') { window.alert('coming soon') }" class="btn sudo contributor"><i class="material-icons">warning</i> I have read the above and I will double check with PowerSchool</div>
+`);
 }
 dtps.announcements = function() {
 	if (dtps.selectedClass == "announcements") {
