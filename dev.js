@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 110,
-  readableVer: "v1.1.0 (dev)",
+  ver: 120,
+  readableVer: "v1.2.0 (dev)",
   trackSuffix: " (dev)",
   showLetters: false
 };
