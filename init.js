@@ -1,6 +1,6 @@
 var dtps = {
-  ver: 100,
-  readableVer: "v1.0.0",
+  ver: 110,
+  readableVer: "v1.1.0",
   trackSuffix: "",
   showLetters: false
 };
@@ -9,26 +9,26 @@ dtps.changelog = function () {
   fluid.cards(".card.changelog");
 };
 dtps.log = function(msg) {
-  console.log("[DTPS] ", msg);
-  if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
+  console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
+  if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS` + dtps.trackSuffix + `] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
 }
 dtps.firstrun = function () {
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
-<h2>Welcome to Power+</h2>
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+<h2>Welcome to Power+` + dtps.trackSuffix + `</h2>
 <h4>` + dtps.readableVer + `</h4>
-<li>Power+ is meant to be simple, so many PowerSchool features will be left out</li>
-<li>Power+ does not store any personal user data (such as grades). Data Power+ does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Power+ uses Google Analytics to track how many people are using DTPS and will never log your ID or IP address with Google Analytics</li>
-<li>Power+ only reads data from PowerSchool. Power+ will never edit, write, or delete data of any kind on your PowerSchool account</li>
-<li>Power+ needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
+<li>Power+` + dtps.trackSuffix + ` is meant to be simple, so many PowerSchool features will be left out</li>
+<li>Power+` + dtps.trackSuffix + ` does not store any personal user data (such as grades). Data Power+` + dtps.trackSuffix + ` does use and needs to store (such as prefrences and version info for changelogs) is stored locally on your computer, never in any online database. Power+` + dtps.trackSuffix + ` uses Google Analytics to track how many people are using Power+` + dtps.trackSuffix + ` and will never log your ID or IP address with Google Analytics</li>
+<li>Power+` + dtps.trackSuffix + ` only reads data from PowerSchool. Power+` + dtps.trackSuffix + ` will never edit, write, or delete data of any kind on your PowerSchool account</li>
+<li>Power+` + dtps.trackSuffix + ` needs to be loaded with the bookmark script every time (unless using the chrome extension). You can always use PowerSchool as normal by reloading and not clicking the bookmark</li>
 <li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
-<li><b>Power+ may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
+<li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
 dtps.alert = function (text, sub) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
-  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
+  jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
 <p>` + sub + `</p>
 </div>
@@ -52,6 +52,22 @@ dtps.webReq = function(req, url, callback, q) {
       dtps.http[url].setRequestHeader("Upgrade-Insecure-Requests", "1")
       dtps.http[url].send();
   	}
+if (req == "assignGET") {
+  		dtps.http[url] = new XMLHttpRequest();
+      dtps.http[url].onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          if (callback) callback(this.responseText, q);
+      	  dtps.requests[url] = this.responseText;
+        }
+      };
+      dtps.http[url].open("GET", url, true);
+      dtps.http[url].setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+      dtps.http[url].setRequestHeader("Accept-Language", "en-US,en;q=0.9")
+      dtps.http[url].setRequestHeader("Upgrade-Insecure-Requests", "1");
+	dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
+      dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
+      dtps.http[url].send();
+  	}
   	if (req == "psPOST") {
   		dtps.http[url] = new XMLHttpRequest();
         dtps.http[url].onreadystatechange = function() {
@@ -69,6 +85,10 @@ dtps.webReq = function(req, url, callback, q) {
       dtps.http[url].send("csrf_token=" + CSRFTOK);
   	}
   	if (req == "letPOST") {
+		if ((url == "portal/portlet_reportcard?my_portal=true") && (jQuery("#portlet_box_content_reportcard:not(:has(.loading))").html())) {
+		if (callback) callback(jQuery("#portlet_box_content_reportcard").html(), q);
+      	  dtps.requests[url] = this.responseText;
+	} else {
   		dtps.http[url] = new XMLHttpRequest();
       dtps.http[url].onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -83,6 +103,7 @@ dtps.webReq = function(req, url, callback, q) {
       dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
       dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
       dtps.http[url].send(portalClassesAndUserQuery()+ "&csrf_token=" + CSRFTOK);
+	}
   	}
 	} else {
 		if (callback) callback(dtps.requests[url], q);
@@ -113,7 +134,7 @@ window.dataLayer = window.dataLayer || [];
   });
   gtag('js', new Date());
 });
-  if (window.location.host !== "dtechhs.learning.powerschool.com") {
+  if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
   } else {
@@ -136,7 +157,7 @@ window.dataLayer = window.dataLayer || [];
 			  } else {
 				 if (window.location.pathname.split("/")[3] !== "portal") {
 					 dtps.shouldRender = false;
-      dtps.alert("Page error", 'Go to your <a href="https://dtechhs.learning.powerschool.com/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
+      dtps.alert("Page error", 'Go to your <a href="/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
 				     } else {
       dtps.shouldRender = true;
       dtps.alert("Loading...");
@@ -151,8 +172,7 @@ window.dataLayer = window.dataLayer || [];
 	    dtps.first = true;
     }
   }
-  localStorage.setItem('dtps', dtps.ver);
- dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc");
+ dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc");
 	var eClassList = jQuery(".eclass_list ul").children().toArray();
   dtps.classesReady = 0;
   for (var i = 0; i < eClassList.length; i++) {
@@ -165,9 +185,9 @@ window.dataLayer = window.dataLayer || [];
     })[1].replace("eclass_", "");
 	  var loc = eclass.children("div.eclass_filter").attr("onclick").split("/");
 	  dtps.classColors.push({id: id, col: col, loc: loc});
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/assignment");
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/cms_page/view");
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/grades", function(resp, q) {
+	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/assignment");
+	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/cms_page/view");
+	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/grades", function(resp, q) {
 		  var iTmp = null;
 		  for (i = 0; i < dtps.classes.length; i++) {
 			  if (dtps.classes[i].id == q.id) iTmp = i;
@@ -179,6 +199,7 @@ window.dataLayer = window.dataLayer || [];
     var data = jQuery(resp).children("tbody").children();
     dtps.rawData = data;
     dtps.classes = [];
+    dtps.classLocs = [];
     for (var i = 0; i < data.length; i++) {
       var section = jQuery(data[i]);
       var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
@@ -200,7 +221,6 @@ window.dataLayer = window.dataLayer || [];
     		if (dtps.classColors[ii].id == id) var col = dtps.classColors[ii].col;
   		}
 	    var letterTmp = grade.replace(/[0-9]/g, '').replace(".", "");
-	    if (dtps.pePDV) { if (subject == "PE") {if (letterTmp !== "DV") { letterTmp = "P"; }} }
       dtps.classes.push({
         name: name,
         subject: subject,
@@ -212,6 +232,7 @@ window.dataLayer = window.dataLayer || [];
   		  id: id,
         num: i
       })
+	  dtps.classLocs.push(loc[1] + "/" + loc[2]);
     }
     dtps.log("Grades loaded: ", dtps.classes)
     if (dtps.shouldRender) dtps.render();
@@ -241,7 +262,7 @@ dtps.loadPages = function(num) {
 </div>
 `);
 	jQuery(".classContent").html(""); }
-  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", function(resp) {
+  dtps.webReq("psGET", "/" + dtps.classes[num].loc  +  "/cms_page/view", function(resp) {
 	  dtps.log("GOT DATA", resp)
     var data = jQuery(resp).find("#sidebar .sidebar_nav").children().toArray()
     dtps.rawData = data;
@@ -289,7 +310,7 @@ dtps.classStream = function(num, renderOv) {
     <div class="bounce3"></div>
     </div>
   `); } }
-  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/assignment", function(resp) {
+  dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/assignment", function(resp) {
     var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
     dtps.classes[num].stream = [];
     dtps.classes[num].streamlist = [];
@@ -302,7 +323,8 @@ dtps.classStream = function(num, renderOv) {
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
-    		col: dtps.classes[num].col
+    		col: dtps.classes[num].col,
+	      loc: dtps.classes[num].loc
       });
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
         dtps.classes[num].streamlist.push(`
@@ -319,7 +341,7 @@ dtps.classStream = function(num, renderOv) {
     }
     if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
 
-    dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", function(resp) {
+    dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/grades", function(resp) {
 	    data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow)").toArray();
 	    var prevWeight = -1;
 	    dtps.classes[num].weights = [];
@@ -347,9 +369,8 @@ dtps.classStream = function(num, renderOv) {
     });
   });
 }
-dtps.renderStream = function(stream, col) {
+dtps.renderStream = function(stream) {
 	var streamlist = [];
-	if (col == undefined) var col = "";
 	for (var i = 0; i < stream.length; i++) {
 		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
@@ -364,7 +385,7 @@ dtps.renderStream = function(stream, col) {
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
 		  streamlist.push(`
-        <div class="card graded assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div class="earned">` + earnedTmp + `</div>
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
@@ -375,7 +396,7 @@ dtps.renderStream = function(stream, col) {
       `);
     } else {
       streamlist.push(`
-        <div class="card assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
 	       <h5>` + due + `</h5>
          </div>
@@ -434,12 +455,12 @@ dtps.getPage = function(loc, id) {
     </div>
   `); }
 	var spinnerTmp = true;
-  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, function(resp) {
+  dtps.webReq("psGET", "/" + loc + "/cms_page/view/" + id, function(resp) {
     var newIDs = jQuery(resp).find(".cms_box").toArray();
 	  if ((dtps.classes[dtps.selectedClass].loc == loc) && (dtps.selectedContent == "pages")) { if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; } }
     for (var i = 0; i < newIDs.length; i++) {
 	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
-    dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp, q) {
+    dtps.webReq("psPOST", "/" + loc + "/cms_box/render_content/" + newID, function(resp, q) {
 	    if ((dtps.classes[dtps.selectedClass].loc == loc) && (dtps.selectedContent == "pages")) {
        jQuery(".classContent").html(jQuery(".classContent").html() + `
         <div class="card">
@@ -493,6 +514,25 @@ dtps.gradebook = function(num) {
 }
 	}
 }
+dtps.assignment = function(loc, id) {
+	 $(".card.details").html(`
+<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+<h3>Loading...</h3>
+`);
+	fluid.cards.close(".card.focus");
+          fluid.cards(".card.details");
+	dtps.webReq("assignGET", "/" + loc + "/assignment/view/" + id, function(data) {
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + `
+<div class="btn" onclick="window.location.href = '/` + loc + `/dropbox/assignment/` + id + `#/'"><i class="material-icons">assignment</i> Hand In</div>
+<div class="btn sudo" onclick="dtps.myWork('` + loc + `', ` + id + `)"><i class="material-icons">experiment</i> View Work</div>
+`);
+	});
+}
+dtps.myWork = function(loc, id) {
+	dtps.webReq("assignGET", "/" + loc + "/dropbox/messages/" + id + "?user_id=" + dtps.user.login, function(data) {
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data);
+	});
+}
 dtps.announcements = function() {
 	if (dtps.selectedClass == "announcements") {
   jQuery(".classContent").html(`
@@ -502,13 +542,17 @@ dtps.announcements = function() {
     <div class="bounce3"></div>
     </div>
   `); }
-	dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
+	dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
 		dtps.raw = resp;
 		var ann = jQuery(resp).children("tbody").children("tr").toArray();
 		var announcements = [];
 		for (var i = 0; i < ann.length; i++) {
 			if (jQuery(ann[i]).children("td")[1] !== undefined) {
-			announcements.push(`<div class="card">
+				var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
+				var psClass = dtps.classLocs.indexOf(loc[1] + "/" + loc[2]);
+				var col = "";
+				if (psClass !== -1) col = dtps.classes[psClass].col
+			announcements.push(`<div class="card color ` + col + `">
 ` + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
@@ -526,11 +570,12 @@ dtps.showClasses = function() {
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
       <div class="name">` + dtps.classes[i].subject + `</div>
-      <div class="grade"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
   }
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class ` + streamClass + `">
+	if (!Boolean(jQuery(".sidebar .class.masterStream")[0])) {
+  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class masterStream ` + streamClass + `">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
@@ -561,8 +606,10 @@ dtps.showClasses = function() {
     $(".header h1").html($(this).children(".name").text())
     if (!dtps.classes[dtps.selectedClass]) {
       $(".header .btns").hide();
+      if (dtps.selectedClass == "stream") $(".header .btns.master").show();
     } else {
-      $(".header .btns").show();
+      $(".header .btns:not(.master)").show();
+      $(".header .btns.master").hide();
     }
     if ((dtps.selectedContent == "stream") && (dtps.classes[dtps.selectedClass])) dtps.classStream(dtps.selectedClass)
     if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
@@ -570,6 +617,7 @@ dtps.showClasses = function() {
     if (dtps.selectedClass == "announcements") dtps.announcements();
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
+}
 }
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
@@ -604,6 +652,16 @@ dtps.render = function() {
     Gradebook
     </button>
     </div>
+<div class="btns row master sudo">
+    <button onclick="dtps.masterContent = 'list';" class="btn stream active">
+    <i class="material-icons">view_stream</i>
+    List
+    </button>
+    <button onclick="dtps.masterContent = 'cal';" class="btn cal sudo">
+    <i class="material-icons">experiment</i>
+    Calendar
+    </button>
+    </div>
     <div class="classContent">
     <div class="spinner">
       <div class="bounce1"></div>
@@ -626,13 +684,15 @@ dtps.render = function() {
     <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">brightness_3</i> Use dark theme</div>
 <br /><br />
+<div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
+    <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
     <br /><br />
-<div onclick="jQuery('body').toggleClass('hidegrades')" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">experiment</i> Hide grades</div>
-    <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
+<button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
+    <button id="authorize_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
@@ -654,14 +714,21 @@ dtps.render = function() {
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus script close">
 <i onclick="fluid.cards.close('.card.script')" class="material-icons close">close</i>
 <h3>Update your DTPS bookmark</h3>
-<p>It looks like you're using an outdated version of the Power+ bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
+<p>It looks like you're using an outdated or invalid version of the Power+ bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
+</div>
+<div  style="width: calc(80%);border-radius: 30px;" class="card focus details close">
+<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+<p>An error occured</p>
 </div>
   `);
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
 		  jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
+			 if (data.tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
+				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
+		 }
 			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.cards(".card.script"); }
 			 $(".btn.changelog").show();
         });
