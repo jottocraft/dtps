@@ -134,7 +134,7 @@ window.dataLayer = window.dataLayer || [];
   });
   gtag('js', new Date());
 });
-  if (window.location.host !== "dtechhs.learning.powerschool.com") {
+  if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
   } else {
@@ -157,7 +157,7 @@ window.dataLayer = window.dataLayer || [];
 			  } else {
 				 if (window.location.pathname.split("/")[3] !== "portal") {
 					 dtps.shouldRender = false;
-      dtps.alert("Page error", 'Go to your <a href="https://dtechhs.learning.powerschool.com/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
+      dtps.alert("Page error", 'Go to your <a href="/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
 				     } else {
       dtps.shouldRender = true;
       dtps.alert("Loading...");
@@ -172,7 +172,7 @@ window.dataLayer = window.dataLayer || [];
 	    dtps.first = true;
     }
   }
- dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc");
+ dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc");
 	var eClassList = jQuery(".eclass_list ul").children().toArray();
   dtps.classesReady = 0;
   for (var i = 0; i < eClassList.length; i++) {
@@ -185,9 +185,9 @@ window.dataLayer = window.dataLayer || [];
     })[1].replace("eclass_", "");
 	  var loc = eclass.children("div.eclass_filter").attr("onclick").split("/");
 	  dtps.classColors.push({id: id, col: col, loc: loc});
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/assignment");
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/cms_page/view");
-	  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc[1] + "/" + loc[2] + "/grades", function(resp, q) {
+	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/assignment");
+	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/cms_page/view");
+	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/grades", function(resp, q) {
 		  var iTmp = null;
 		  for (i = 0; i < dtps.classes.length; i++) {
 			  if (dtps.classes[i].id == q.id) iTmp = i;
@@ -262,7 +262,7 @@ dtps.loadPages = function(num) {
 </div>
 `);
 	jQuery(".classContent").html(""); }
-  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc  +  "/cms_page/view", function(resp) {
+  dtps.webReq("psGET", "/" + dtps.classes[num].loc  +  "/cms_page/view", function(resp) {
 	  dtps.log("GOT DATA", resp)
     var data = jQuery(resp).find("#sidebar .sidebar_nav").children().toArray()
     dtps.rawData = data;
@@ -310,7 +310,7 @@ dtps.classStream = function(num, renderOv) {
     <div class="bounce3"></div>
     </div>
   `); } }
-  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/assignment", function(resp) {
+  dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/assignment", function(resp) {
     var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
     dtps.classes[num].stream = [];
     dtps.classes[num].streamlist = [];
@@ -341,7 +341,7 @@ dtps.classStream = function(num, renderOv) {
     }
     if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
 
-    dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + dtps.classes[num].loc + "/grades", function(resp) {
+    dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/grades", function(resp) {
 	    data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow)").toArray();
 	    var prevWeight = -1;
 	    dtps.classes[num].weights = [];
@@ -455,12 +455,12 @@ dtps.getPage = function(loc, id) {
     </div>
   `); }
 	var spinnerTmp = true;
-  dtps.webReq("psGET", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_page/view/" + id, function(resp) {
+  dtps.webReq("psGET", "/" + loc + "/cms_page/view/" + id, function(resp) {
     var newIDs = jQuery(resp).find(".cms_box").toArray();
 	  if ((dtps.classes[dtps.selectedClass].loc == loc) && (dtps.selectedContent == "pages")) { if (spinnerTmp) { jQuery(".classContent").html(""); spinnerTmp = false; } }
     for (var i = 0; i < newIDs.length; i++) {
 	var newID = jQuery(newIDs[i]).attr("id").split("_")[1];
-    dtps.webReq("psPOST", "https://dtechhs.learning.powerschool.com/" + loc + "/cms_box/render_content/" + newID, function(resp, q) {
+    dtps.webReq("psPOST", "/" + loc + "/cms_box/render_content/" + newID, function(resp, q) {
 	    if ((dtps.classes[dtps.selectedClass].loc == loc) && (dtps.selectedContent == "pages")) {
        jQuery(".classContent").html(jQuery(".classContent").html() + `
         <div class="card">
@@ -523,7 +523,7 @@ dtps.assignment = function(loc, id) {
           fluid.cards(".card.details");
 	var submitDom = "";
 	if (contributors.includes(HaikuContext.user.login)) submitDom = `<div class="btn sudo contributor" onclick="dtps.submitDiag('` + loc + `', '` + id + `')"><i class="material-icons">warning</i> Submit</div>`
-	dtps.webReq("assignGET", "https://dtechhs.learning.powerschool.com/" + loc + "/assignment/view/" + id, function(data) {
+	dtps.webReq("assignGET", "/" + loc + "/assignment/view/" + id, function(data) {
 	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + submitDom);
 	});
 }
@@ -547,7 +547,7 @@ dtps.announcements = function() {
     <div class="bounce3"></div>
     </div>
   `); }
-	dtps.webReq("letPOST", "https://dtechhs.learning.powerschool.com/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
+	dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
 		dtps.raw = resp;
 		var ann = jQuery(resp).children("tbody").children("tr").toArray();
 		var announcements = [];
