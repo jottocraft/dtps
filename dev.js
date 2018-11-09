@@ -325,7 +325,8 @@ dtps.classStream = function(num, renderOv) {
         title: assignment.children("td:nth-child(1)").text(),
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
     		col: dtps.classes[num].col,
-	      loc: dtps.classes[num].loc
+	      loc: dtps.classes[num].loc,
+	      turnedIn: Boolean(assignment.children("td:nth-child(5)").children("i").length)
       });
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
         dtps.classes[num].streamlist.push(`
@@ -385,6 +386,10 @@ dtps.renderStream = function(stream) {
 	    var wFormat = "";
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
+	    var turnInDom = "";
+	    if (stream[i].turnedIn) {
+		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
+	    }
 		  streamlist.push(`
         <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
@@ -392,14 +397,14 @@ dtps.renderStream = function(stream) {
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>` + due + ` <span class="weighted">` + wFormat + `</span></h5>
+      	<h5>` + due + ` <span class="weighted">` + wFormat + `</span>` + turnInDom + `</h5>
         </div>
       `);
     } else {
       streamlist.push(`
         <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
-	       <h5>` + due + `</h5>
+	       <h5>` + due + turnInDom +  `</h5>
          </div>
        `);
     }
