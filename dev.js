@@ -7,7 +7,7 @@ var dtps = {
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
-  fluid.cards(".card.changelog");
+  fluid.modal(".card.changelog");
 };
 dtps.log = function(msg) {
   console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
@@ -529,7 +529,7 @@ dtps.assignment = function(classNum, streamNum) {
 <h3>Loading...</h3>
 `);
 	fluid.cards.close(".card.focus");
-          fluid.cards(".card.details");
+          fluid.modal(".card.details");
 	var handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment</i> Hand In</div>`
 	if (assignment.turnedIn) handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment_returned</i> Resubmit</div>`
 	dtps.webReq("assignGET", "/" + assignment.loc + "/assignment/view/" + assignment.id, function(data) {
@@ -718,8 +718,8 @@ dtps.render = function() {
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
-    <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
-    <i onclick="fluid.cards('.console')" class="material-icons dev">code</i>
+    <i onclick="fluid.modal('.abt')" class="material-icons">info_outline</i>
+    <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
@@ -751,7 +751,7 @@ dtps.render = function() {
 				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
 		 }
-			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.cards(".card.script"); }
+			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.modal(".card.script"); }
 			 $(".btn.changelog").show();
         });
   });	
