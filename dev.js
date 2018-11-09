@@ -2,7 +2,8 @@ var dtps = {
   ver: 120,
   readableVer: "v1.2.0 (dev)",
   trackSuffix: " (dev)",
-  showLetters: false
+  showLetters: false,
+  unreadAnn: 0
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -552,6 +553,15 @@ dtps.announcements = function() {
 		dtps.raw = resp;
 		var ann = jQuery(resp).children("tbody").children("tr").toArray();
 		var announcements = [];
+		if (window.localStorage.unreadAnn) {
+		if (window.localStorage.unreadAnn < ann.length) {
+		dtps.unreadAnn = ann.length - window.localStorage.unreadAnn;
+		localStorage.setItem('unreadAnn', ann.length);
+		$("#annLabel").html("Announcements (" + dtps.unreadAnn + ")");
+	} else {
+		if (window.localStorage.unreadAnn > ann.length) localStorage.setItem('unreadAnn', ann.length);
+	}
+	}
 		for (var i = 0; i < ann.length; i++) {
 			if (jQuery(ann[i]).children("td")[1] !== undefined) {
 				var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
@@ -572,6 +582,8 @@ dtps.showClasses = function() {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
 	dtps.classlist = [];
+	var unreadAnn = "";
+	if (dtps.unreadAnn) unreadAnn = "&nbsp;&nsbp;(" + dtps.unreadAnn + ")";
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
@@ -586,7 +598,7 @@ dtps.showClasses = function() {
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
    <div onclick="dtps.selectedClass = 'announcements';" class="class">
-    <div class="name">Announcements</div>
+    <div class="name" id="annLabel">Announcements ` + unreadAnn + `</div>
     <div class="grade"><i class="material-icons">announcement</i></div>
     </div>
     <div class="classDivider"></div>
