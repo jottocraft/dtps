@@ -139,6 +139,7 @@ window.dataLayer = window.dataLayer || [];
     dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
   } else {
     if (Number(window.localStorage.dtps) < dtps.ver) {
+	    dtps.log("New release")
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
@@ -725,7 +726,7 @@ dtps.render = function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
 		  jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
-			 if (data.tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
+			 if (data[0].tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
 				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
 		 }
