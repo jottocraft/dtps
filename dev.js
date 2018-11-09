@@ -327,7 +327,8 @@ dtps.classStream = function(num, renderOv) {
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
     		col: dtps.classes[num].col,
 	      loc: dtps.classes[num].loc,
-	      turnedIn: Boolean(assignment.children("td:nth-child(5)").children("i").length)
+	      turnedIn: Boolean(assignment.children("td:nth-child(5)").children("i").length),
+	      class: num
       });
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
         dtps.classes[num].streamlist.push(`
@@ -392,7 +393,7 @@ dtps.renderStream = function(stream) {
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
 		  streamlist.push(`
-        <div onclick="dtps.assignment('` + JSON.stringify(stream[i]) + `')" class="card graded assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment(` + stream[i].num + `, ` + i + `)" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div class="earned">` + earnedTmp + `</div>
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
@@ -403,7 +404,7 @@ dtps.renderStream = function(stream) {
       `);
     } else {
       streamlist.push(`
-        <div onclick="dtps.assignment('` + JSON.stringify(stream[i]) + `')" class="card assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment(` + stream[i].num + `, ` + i + `)" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
 	       <h5>` + due + turnInDom +  `</h5>
          </div>
@@ -521,8 +522,8 @@ dtps.gradebook = function(num) {
 }
 	}
 }
-dtps.assignment = function(stream) {
-	var assignment = JSON.parse(stream);
+dtps.assignment = function(classNum, streamNum) {
+	var assignment = dtps.classes[classNum].stream[streamNum];
 	 $(".card.details").html(`
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <h3>Loading...</h3>
