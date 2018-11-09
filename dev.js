@@ -521,22 +521,17 @@ dtps.assignment = function(loc, id) {
 `);
 	fluid.cards.close(".card.focus");
           fluid.cards(".card.details");
-	var submitDom = "";
-	if (contributors.includes(HaikuContext.user.login)) submitDom = `<div class="btn sudo contributor" onclick="dtps.submitDiag('` + loc + `', '` + id + `')"><i class="material-icons">warning</i> Submit</div>`
 	dtps.webReq("assignGET", "/" + loc + "/assignment/view/" + id, function(data) {
-	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + submitDom);
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + `
+<div class="btn sudo" onclick="window.location.href = '/` + loc + `/dropbox/assignment/` + id + `#/'"><i class="material-icons">assignment</i> Hand In</div>
+<div class="btn sudo" onclick="dtps.myWork('` + loc + `', ` + id + `)"><i class="material-icons">experiment</i> View Work</div>
+`);
 	});
 }
-dtps.submitDiag = function(loc, id) {
-	$(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
-<h3><i class="material-icons">warning</i> Experimental feature. Things might break.</h3>
-<p><b>Use this feature at your own risk. This feature might have bugs that cause your assignment to be incorrectly submitted. Double check with PowerSchool to make sure that the assignment was properly submitted. Power+ is not responsible for any submission failures</b></p>
-<p>Submitting assignments in Power+ is currently still in development. Only people that are both testers <i>and</i> contributors have access to this feature. Please report any bugs on GitHub and use this feature at your own risk.</p>
-<p><b>Don't blame Power+ for a bad grade on an assignment because of a submission bug. Double check everything you submit with Power+ on PowerSchool.</b></p>
-<div onclick="window.location.reload()" class="btn">I actually care about my grade. Bring me back to regular PowerSchool</div>
-<br /><br />
-<div onclick="if (window.prompt('type I UNDERSTAND to open the submission screen') == 'I UNDERSTAND') { window.alert('coming soon') } else {window.alert('You did not type the phrase correctly. Bringing you back to normal PowerSchool so you can actually submit your assignment'); window.location.reload();}" class="btn sudo contributor"><i class="material-icons">warning</i> I have read the above and I will double check with PowerSchool</div>
-`);
+dtps.myWork = function(loc, id) {
+	dtps.webReq("assignGET", "/" + loc + "/dropbox/messages/" + id + "?user_id=" + dtps.user.login, function(data) {
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data);
+	});
 }
 dtps.announcements = function() {
 	if (dtps.selectedClass == "announcements") {
