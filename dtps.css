@@ -210,6 +210,14 @@ body.dark .header .card {
 .badge {
 	margin: 0 10px;
 }
+.beta.notice.turnin {
+	color: #0bb75b;
+	border-color: #0bb75b;
+}
+.beta.notice.missing {
+	color: #b7630a;
+	border-color: #b7630a;
+}
 .badge.dev {
 	color: #0090ff;
 	border-color: #0090ff;
