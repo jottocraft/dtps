@@ -392,7 +392,7 @@ dtps.renderStream = function(stream) {
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
 		  streamlist.push(`
-        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card graded assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment('` + JSON.stringify(stream[i]) + `')" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div class="earned">` + earnedTmp + `</div>
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
@@ -403,7 +403,7 @@ dtps.renderStream = function(stream) {
       `);
     } else {
       streamlist.push(`
-        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment('` + JSON.stringify(stream[i]) + `')" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
 	       <h5>` + due + turnInDom +  `</h5>
          </div>
@@ -521,17 +521,20 @@ dtps.gradebook = function(num) {
 }
 	}
 }
-dtps.assignment = function(loc, id) {
+dtps.assignment = function(stream) {
+	var assignment = JSON.parse(stream);
 	 $(".card.details").html(`
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <h3>Loading...</h3>
 `);
 	fluid.cards.close(".card.focus");
           fluid.cards(".card.details");
-	dtps.webReq("assignGET", "/" + loc + "/assignment/view/" + id, function(data) {
+	var handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment</i> Hand In</div>`
+	if (assignment.turnedIn) handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment_returned</i> Resubmit</div>`
+	dtps.webReq("assignGET", "/" + assignment.loc + "/assignment/view/" + assignment.id, function(data) {
 	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + `
-<div class="btn" onclick="window.location.href = '/` + loc + `/dropbox/assignment/` + id + `#/'"><i class="material-icons">assignment</i> Hand In</div>
-<div class="btn sudo" onclick="dtps.myWork('` + loc + `', ` + id + `)"><i class="material-icons">experiment</i> View Work</div>
+` + handInDom + `
+<div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons">experiment</i> View Work</div>
 `);
 	});
 }
