@@ -207,20 +207,20 @@ body.dark .header .card {
 .weight.parent .weight:not(.open) {
 	overflow: hidden !important;
 }
-.badge {
+.badge, .beta.notice {
+	display: inline-block;
 	margin: 0 10px;
+}
+.badge i, .beta.notice i {
+	vertical-align: middle;
 }
 .beta.notice.turnin {
 	color: #0bb75b;
 	border-color: #0bb75b;
-	display: inline-block;
-	margin: 0 10px;
 }
 .beta.notice.missing {
 	color: #b7630a;
 	border-color: #b7630a;
-	display: inline-block;
-	margin: 0 10px;
 }
 .badge.dev {
 	color: #0090ff;
