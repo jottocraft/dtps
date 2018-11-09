@@ -376,6 +376,9 @@ dtps.renderStream = function(stream) {
 	for (var i = 0; i < stream.length; i++) {
 		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
+		if (stream[i].turnedIn) {
+		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
+	    }
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
   		if ("ABC".includes(stream[i].letter.toArray()[0])) {
   			var earnedTmp = stream[i].grade.split("/")[0];
@@ -387,9 +390,6 @@ dtps.renderStream = function(stream) {
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
 	    var turnInDom = "";
-	    if (stream[i].turnedIn) {
-		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
-	    }
 		  streamlist.push(`
         <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
