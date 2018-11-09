@@ -1,7 +1,7 @@
 var dtps = {
   ver: 120,
-  readableVer: "v1.2.0",
-  trackSuffix: "",
+  readableVer: "v1.2.0 (dev)",
+  trackSuffix: " (dev)",
   showLetters: false
 };
 dtps.changelog = function () {
