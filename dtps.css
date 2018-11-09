@@ -213,10 +213,14 @@ body.dark .header .card {
 .beta.notice.turnin {
 	color: #0bb75b;
 	border-color: #0bb75b;
+	display: inline-block;
+	margin: 0 10px;
 }
 .beta.notice.missing {
 	color: #b7630a;
 	border-color: #b7630a;
+	display: inline-block;
+	margin: 0 10px;
 }
 .badge.dev {
 	color: #0090ff;
