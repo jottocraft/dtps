@@ -1,7 +1,7 @@
 var dtps = {
   ver: 120,
-  readableVer: "v1.2.0 (dev)",
-  trackSuffix: " (dev)",
+  readableVer: "v1.2.0",
+  trackSuffix: "",
   showLetters: false
 };
 dtps.changelog = function () {
@@ -139,6 +139,7 @@ window.dataLayer = window.dataLayer || [];
     dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
   } else {
     if (Number(window.localStorage.dtps) < dtps.ver) {
+	    dtps.log("New release")
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
@@ -523,7 +524,7 @@ dtps.assignment = function(loc, id) {
           fluid.cards(".card.details");
 	dtps.webReq("assignGET", "/" + loc + "/assignment/view/" + id, function(data) {
 	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + `
-<div class="btn sudo" onclick="window.location.href = '/` + loc + `/dropbox/assignment/` + id + `#/'"><i class="material-icons">assignment</i> Hand In</div>
+<div class="btn" onclick="window.location.href = '/` + loc + `/dropbox/assignment/` + id + `#/'"><i class="material-icons">assignment</i> Hand In</div>
 <div class="btn sudo" onclick="dtps.myWork('` + loc + `', ` + id + `)"><i class="material-icons">experiment</i> View Work</div>
 `);
 	});
@@ -725,7 +726,7 @@ dtps.render = function() {
 	  markdown = new showdown.Converter();
 		 jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function(data) {
 		  jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
-			 if (data.tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
+			 if (data[0].tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
 				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
 		 }
