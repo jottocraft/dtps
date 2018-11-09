@@ -393,7 +393,7 @@ dtps.renderStream = function(stream) {
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
 		  streamlist.push(`
-        <div onclick="dtps.assignment(` + stream[i].num + `, ` + i + `)" class="card graded assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment(` + stream[i].class + `, ` + i + `)" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div class="earned">` + earnedTmp + `</div>
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
@@ -404,7 +404,7 @@ dtps.renderStream = function(stream) {
       `);
     } else {
       streamlist.push(`
-        <div onclick="dtps.assignment(` + stream[i].num + `, ` + i + `)" class="card assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment(` + stream[i].class + `, ` + i + `)" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
 	       <h5>` + due + turnInDom +  `</h5>
          </div>
