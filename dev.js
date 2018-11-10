@@ -331,6 +331,10 @@ dtps.classStream = function(num, renderOv) {
 	      class: num
       });
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
+	    var turnInDom = "";
+		if (Boolean(assignment.children("td:nth-child(5)").children("i").length)) {
+		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
+	    }
         dtps.classes[num].streamlist.push(`
           <div class="card assignment">
           <div class="spinner points">
@@ -339,7 +343,7 @@ dtps.classStream = function(num, renderOv) {
           <div class="bounce3"></div>
           </div>
           <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
-          ` + due + `
+          ` + due + turnInDom +  `
           </div>
       `);
     }
