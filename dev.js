@@ -565,6 +565,8 @@ dtps.announcements = function() {
 	} else {
 		if (window.localStorage.unreadAnn > ann.length) localStorage.setItem('unreadAnn', ann.length);
 	}
+	} else {
+		localStorage.setItem('unreadAnn', ann.length);
 	}
 		for (var i = 0; i < ann.length; i++) {
 			if (jQuery(ann[i]).children("td")[1] !== undefined) {
