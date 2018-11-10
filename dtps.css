@@ -30,6 +30,49 @@
 	border-radius: 50%;
 	opacity: 0.9;
 }
+.class .dot {
+    position: absolute;
+	height: 30px;
+	line-height: 30px;
+	padding: 0px 10px;
+	right: -18;
+	margin-top: -15px;
+	border-radius: 20px;
+	background-color: var(--light);
+	font-weight: bold;
+	color: white;
+	vertical-align: middle;
+	text-align: right;
+}
+.class.active .dot {
+	background-color: var(--dark);
+	color: white;
+}
+.class .dot i {
+	margin-right: 5px;
+	vertical-align: middle;
+	font-weight: normal;
+	font-size: 18px;
+}
+.class .dot.num {
+	width: 30px;
+	text-align: center;
+}
+.card .dot {
+	right: 0;
+	background-color: #e9e8e8;
+	border-radius: 20px;
+	display: inline-block;
+	position: absolute;
+	margin-top: 10px;
+	height: 35px;
+	padding: 0px 10px;
+	line-height: 35px;
+	font-size: 20px;
+}
+body.dark .card .dot {
+	background-color: #181b1d;
+}
 .class .grade .letter, .class .grade .points , .class .grade .material-icons {
 	line-height: 50px;
 }
