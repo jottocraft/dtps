@@ -3,7 +3,8 @@ var dtps = {
   readableVer: "v1.2.0 (dev)",
   trackSuffix: " (dev)",
   showLetters: false,
-  unreadAnn: 0
+  unreadAnn: 0,
+  trackers: []
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -134,6 +135,10 @@ window.dataLayer = window.dataLayer || [];
   'anonymize_ip': true
   });
   gtag('js', new Date());
+	ga.getAll().forEach( (tracker) => {
+  var id = tracker.get('clientId'); dtps.trackers.push(id)
+})
+	
 });
   if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
     dtps.shouldRender = false;
@@ -702,7 +707,7 @@ dtps.render = function() {
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
     <h3>About</h3>
     <h5>Power+ ` + relDom + `</h5>
-    Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
+    Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `, ` + dtps.trackers.join(", ") + `)
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
 <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
