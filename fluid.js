@@ -22,7 +22,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-try {
  function getCookie(cname) {
      var name = cname + "=";
      var decodedCookie = decodeURIComponent(document.cookie);
@@ -60,7 +59,7 @@ fluid.theme = function(theme, dontSave) {
   $("body").removeClass("midnight");
   $("body").removeClass("nitro");
   $("body").removeClass("aquatic");
-  if (theme == "toggle") { $("body").toggleClass("dark"); }
+  if (theme == "toggle") { $("body").toggleClass("dark"); if ($("body").hasClass("dark")) { var theme = "dark"; } else { var theme = "light"; } }
   if (theme == "dark") { $("body").addClass("dark"); }
   if (theme == "light") { $("body").removeClass("dark"); }
   if (theme == "midnight") { $("body").addClass("dark"); $("body").addClass("midnight"); }
@@ -540,4 +539,3 @@ document.addEventListener('keydown', function(e) {
     midnightOverridePosition = 0;
   }
 });
-} catch(e) { window.alert(e); throw e; }
