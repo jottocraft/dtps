@@ -709,8 +709,7 @@ dtps.render = function() {
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <br />
-    <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">brightness_3</i> Use dark theme</div>
+    <div class="btns row themeSelector"></div>
 <br /><br />
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
