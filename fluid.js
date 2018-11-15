@@ -153,7 +153,7 @@ fluid.init = function() {
     <div onclick="fluid.theme('midnight')" class="btn midnight"><i class="material-icons">brightness_3</i> Midnight Black</div>
     `);
 
-  if (window.localStorage.fluidTheme !== "") {
+  if (window.localStorage.fluidTheme) {
     fluid.theme(window.localStorage.fluidTheme, true)
   } else {
     if (fluid.theme(undefined, "unsetStat") == "unset") fluid.theme("auto", true);
