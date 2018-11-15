@@ -626,7 +626,7 @@ dtps.render = function() {
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
-	if (window.localStorage.fluidIsDark == "true") { var dark = " active" } else { var dark = "" }
+	if (window.localStorage.fluidTheme == "dark") { var dark = " active" } else { var dark = "" }
 	var relDom = "";
 	if (dtps.trackSuffix !== "") {
 	   relDom = dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`);
@@ -682,7 +682,7 @@ dtps.render = function() {
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <br />
-    <div onclick="fluid.dark();" class="switch` + dark + `"><span class="head"></span></div>
+    <div onclick="fluid.theme('toggle');" class="switch` + dark + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">brightness_3</i> Use dark theme</div>
 <br /><br />
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
