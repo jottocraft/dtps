@@ -122,7 +122,7 @@ fluid.theme = function(theme, dontSave) {
   if (theme !== undefined) {
   if ($("#activecontextmenu").children(".btn").hasClass("active")) {$("#activecontextmenu").children(".btn").css("background-color", "#207bdf") } else {
   if ($("#activecontextmenu").length) { if ($("#activecontextmenu").children().length == 2) { if ($("body").hasClass("dark")) { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #16181a);" } else { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #dddddd);" } } } }
-  if (dontSave !== true) document.cookie = "fluidTheme=" + theme;
+  if (dontSave !== true) localStorage.setItem("fluidTheme", theme);
 }
 }
 fluid.isOutlined = function() {
@@ -205,8 +205,8 @@ fluid.init = function() {
     }
   }
 
-  if (getCookie("fluidTheme") !== "") {
-    fluid.theme(getCookie("fluidTheme"), true)
+  if (window.localStorage.fluidTheme !== "") {
+    fluid.theme(window.localStorage.fluidTheme, true)
   } else {
     if (fluid.theme(undefined, "unsetStat") == "unset") fluid.theme("auto", true);
   }
