@@ -714,6 +714,9 @@ dtps.render = function() {
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
+<div onclick="jQuery('body').toggleClass('compact')" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">view_compact</i> Compact class view</div>
+    <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
     <br /><br />
