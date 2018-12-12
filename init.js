@@ -143,6 +143,7 @@ window.dataLayer = window.dataLayer || [];
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
+	  jQuery("body").addClass("notwemoji");
       jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
       dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
