@@ -13,6 +13,23 @@
 	margin: 10px 0;
 	transition: background-color 0.5s;
 }
+body.compact .class {
+	border: none;
+	opacity: 0.95;
+	display: inline-block;
+	border-radius: 15px;
+	padding-right: 0px;
+	padding-left: 10px;
+	overflow: hidden;
+	color: white;
+	font-size: 18px;
+	cursor: pointer;
+	line-height: 50px;
+	width: 250px;
+	height: 50px;
+	margin: 10px 0;
+	transition: background-color 0.5s;
+}
 .class .grade:not(:hover) .points, .class .grade:hover .letter {
 	display: none;
 }
@@ -102,6 +119,9 @@ body.dark .card .dot {
 .class.active {
 	border: 2px solid #a3a3a3;
 	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+}
+body.compact .class.active {
+	border: none;
 }
 .class .name {
 	width: 156px;
