@@ -144,6 +144,7 @@ window.dataLayer = window.dataLayer || [];
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
+	    fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
       jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
       dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
