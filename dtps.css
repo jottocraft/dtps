@@ -15,6 +15,7 @@
 }
 body.compact .class {
 	border: none;
+	padding: 0px;
 	opacity: 0.95;
 	display: inline-block;
 	border-radius: 15px;
@@ -46,6 +47,9 @@ body.compact .class {
 	vertical-align: middle;
 	border-radius: 50%;
 	opacity: 0.9;
+}
+body.compact .class .grade {
+	border-radius: 10px;
 }
 .class .dot {
     position: absolute;
