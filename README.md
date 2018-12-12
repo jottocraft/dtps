@@ -14,4 +14,4 @@ or
 
 <br /><br /><br /><br /><br /><br />
 
-made by jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
+(c) 2018 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
