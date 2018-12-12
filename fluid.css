@@ -1,6 +1,5 @@
 /*!
-Fluid UI Elements v2.9.4-9.5 [INTERNAL DEVELOPMENT VERSION. FOR DEMONSTRATION PURPOSES ONLY]
-!!!THIS VERSION OF FLUID UI SHOULD *NOT* BE DEPLOYED ON ANY EXTERNAL SITE FOR ANY REASON!!!
+Fluid UI Elements v3.0.0 Beta 5
 
 Copyright (c) 2017-2018 jottocraft
 
@@ -60,6 +59,9 @@ body.nitro.dark {
   --flex-layer1: rgb(129, 7, 7);
   --flex-layer2: rgb(104, 0, 0);
   --flex-layer3: #5c0101;
+  --theme-color: rgb(243, 110, 110);
+--theme-color-outline: rgb(243, 110, 110, 0.75);
+--theme-text-color: rgb(104, 0, 0);
 }
 body.aquatic.dark {
   --flex-light: rgb(14, 149, 139);
@@ -76,29 +78,98 @@ body.midnight.dark {
   --flex-light: #0c0c0d;
 --flex-bg: #09090b;
 --flex-text: #c0c0c0;
---flex-layer1: #020202;
+--flex-layer1: #0c0c0c;
 --flex-layer2: #050606;
 --flex-layer3: #000000;
 --theme-color: #171717;
 --theme-color-outline: #171717c0;
 --theme-text-color: #c0c0c0;
 }
+body.darkRed {
+        --flex-light: #da191e;
+        --flex-bg: #ce0d12;
+        --flex-text: white;
+        --flex-layer1: #a70004;
+        --flex-layer2: #8e0004;
+        --flex-layer3: #740003;
+        --theme-color: white;
+        --theme-color-outline: #ffffffc0;
+        --theme-text-color: #da191e;
+    }
+    body.darkOrange {
+          --flex-light: #da7f19;
+          --flex-bg: #ce730d;
+          --flex-text: white;
+          --flex-layer1: #a75900;
+          --flex-layer2: #8e4b00;
+          --flex-layer3: #743e00;
+          --theme-color: white;
+          --theme-color-outline: #ffffffc0;
+          --theme-text-color: #da7f19;
+      }
+      body.darkYellow {
+              --flex-light: #b69f19;
+              --flex-bg: #aa930d;
+              --flex-text: white;
+              --flex-layer1: #837000;
+              --flex-layer2: #6a5a00;
+              --flex-layer3: #504500;
+              --theme-color: white;
+              --theme-color-outline: #ffffffc0;
+              --theme-text-color: #b69f19;
+          }
+          body.darkGreen {
+                  --flex-light: #4fbf19;
+                  --flex-bg: #43b30d;
+                  --flex-text: white;
+                  --flex-layer1: #2e8c00;
+                  --flex-layer2: #257300;
+                  --flex-layer3: #1d5900;
+                  --theme-color: white;
+                  --theme-color-outline: #ffffffc0;
+                  --theme-text-color: #4fbf19;
+              }
+              body.darkBlue {
+                      --flex-light: #196eff;
+                      --flex-bg: #0d62ff;
+                      --flex-text: white;
+                      --flex-layer1: #004cd8;
+                      --flex-layer2: #0043bf;
+                      --flex-layer3: #003aa5;
+                      --theme-color: white;
+                      --theme-color-outline: #ffffffc0;
+                      --theme-text-color: #196eff;
+                  }
+                  body.darkPurple {
+                          --flex-light: #be19ff;
+                          --flex-bg: #b20df9;
+                          --flex-text: white;
+                          --flex-layer1: #9300d2;
+                          --flex-layer2: #8100b9;
+                          --flex-layer3: #6f009f;
+                          --theme-color: white;
+                          --theme-color-outline: #ffffffc0;
+                          --theme-text-color: #be19ff;
+                      }
+
 
 /* Product Sans */
 @font-face {
   font-family: 'Product sans';
+  font-display: auto;
   font-style: normal;
   font-weight: 400;
   src: url(https://fluid.js.org/product-sans.ttf) format('truetype');
 }
 @font-face {
   font-family: 'Google sans';
+  font-display: auto;
   font-style: normal;
   font-weight: 400;
   src: url(https://fluid.js.org/gsans.ttf) format('truetype');
 }
 html {
-    font-family: "Roboto", sans-serif;
+    font-family: "Google sans", sans-serif;
     font-weight: normal;
 }
 /* Little Caesar */
