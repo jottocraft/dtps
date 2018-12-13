@@ -619,7 +619,11 @@ dtps.calendar = function() {
     }
   }
 	$('#calendar').fullCalendar({
-  events: calEvents
+  events: calEvents,
+  header: {
+      left: 'title',
+      right: 'prev,next today month,agendaWeek,agendaDay'
+  }
 });
 }
 dtps.showClasses = function() {
