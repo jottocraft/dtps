@@ -742,7 +742,7 @@ dtps.render = function() {
     Gradebook
     </button>
     </div>
-<div class="btns row master sudo">
+<div class="btns row master">
     <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn stream active">
     <i class="material-icons">view_stream</i>
     List
