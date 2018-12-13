@@ -611,7 +611,8 @@ dtps.calendar = function() {
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
 		  start: dtps.classes[i].stream[ii].dueDate,
-		  allDay: false
+		  allDay: false,
+			    color: dtps.classes[i].col
 		})
 		    }
 	    }
