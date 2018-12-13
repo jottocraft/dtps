@@ -324,13 +324,19 @@ dtps.classStream = function(num, renderOv) {
     for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
       var due = "<h5>Due " + assignment.children("td:nth-child(3)").text().slice(0,-1) + "</h5>"
-    	if (due.includes("n/a")) var due = "";
-	    var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
+    	if (due.includes("n/a")) {
+		var due = "";
+		var dueDateString = null;
+	} else {
+		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
+	    dueDate.setFullYear(2018);
+		var dueDateString = dueDate.toISOString();
+	}
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
-	      dateDue: new Date(dueDate.setFullYear(2018)),
+	      dueDate: dueDateString,
     		col: dtps.classes[num].col,
 	      loc: dtps.classes[num].loc,
 	      turnedIn: Boolean(assignment.children("td:nth-child(5)").children("i").length),
@@ -601,11 +607,13 @@ dtps.calendar = function() {
     if (dtps.classes[i].stream) {
   		dtps.log("BUILDING CAL: " + i)
 	    for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
+		    if (dtps.classes[i].stream[ii].dueDate) {
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
-		  start: dtps.classes[i].stream[ii].dueDate.toISOString(),
+		  start: dtps.classes[i].stream[ii].dueDate,
 		  allDay: false
 		})
+		    }
 	    }
     }
   }
