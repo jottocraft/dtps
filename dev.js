@@ -592,6 +592,10 @@ dtps.announcements = function() {
   jQuery(".classContent").html(announcements.join("")); }
 	});
 };
+dtps.calendar = function() {
+	$(".classContent").html(`<div id='calendar'></div>`)
+	$('#calendar').fullCalendar({});
+}
 dtps.showClasses = function() {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
@@ -689,7 +693,7 @@ dtps.render = function() {
     <i class="material-icons">view_stream</i>
     List
     </button>
-    <button onclick="dtps.masterContent = 'cal';" class="btn cal sudo">
+    <button onclick="dtps.masterContent = 'cal'; dtps.calendar();" class="btn cal sudo">
     <i class="material-icons">experiment</i>
     Calendar
     </button>
