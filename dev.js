@@ -603,7 +603,7 @@ dtps.calendar = function() {
 	    for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
-		  start: dtps.classes[i].stream[ii].dueDate,
+		  start: dtps.classes[i].stream[ii].dueDate.toISOString(),
 		  allDay: false
 		})
 	    }
