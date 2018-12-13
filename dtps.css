@@ -4,6 +4,9 @@ body.dark .fc-today {
 .fc-event {
 	cursor: pointer !important;
 }
+#calendar h2 {
+	font-size: 40px;
+}
 .class {
 	opacity: 0.9;
 	display: inline-block;
