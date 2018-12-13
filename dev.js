@@ -596,7 +596,7 @@ dtps.announcements = function() {
 };
 dtps.calendar = function() {
 	$(".classContent").html(`<div id='calendar' class="card"></div>`)
-	var calEvents = [];
+	calEvents = [];
 	for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
   		dtps.log("BUILDING CAL: " + i)
