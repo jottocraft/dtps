@@ -431,7 +431,10 @@ dtps.renderStream = function(stream) {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
-	if (dtps.selectedClass == "stream") {
+	if (dtps.masterContent == "calendar") {
+		dtps.calendar(doneLoading);
+	}
+	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "list")) {
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -455,7 +458,7 @@ dtps.masterStream = function(doneLoading) {
     <div class="bounce3"></div>
     </div>`;
 	}
-	if (dtps.selectedClass == "stream") {
+	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "list")) {
 	jQuery(".classContent").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
@@ -600,8 +603,17 @@ dtps.announcements = function() {
   jQuery(".classContent").html(announcements.join("")); }
 	});
 };
-dtps.calendar = function() {
-	$(".classContent").html(`<div id='calendar' class="card"></div>`)
+dtps.calendar = function(doneLoading) {
+	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "calendar")) {
+		var loadingDom = "";
+	if (!doneLoading) {
+		loadingDom = `<div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+    </div>`;
+	}
+	$(".classContent").html(loadingDom + `<div id='calendar' class="card"></div>`)
 	calEvents = [];
 	for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
@@ -612,7 +624,9 @@ dtps.calendar = function() {
 		  title: dtps.classes[i].stream[ii].title,
 		  start: dtps.classes[i].stream[ii].dueDate,
 		  allDay: false,
-			    color: $(".class." + i).css("background-color")
+	          color: $(".class." + i).css("background-color"),
+			    classNum: i,
+			    streamNum: ii
 		})
 		    }
 	    }
@@ -623,8 +637,12 @@ dtps.calendar = function() {
   header: {
       left: 'title',
       right: 'prev,next today month,agendaWeek,agendaDay'
+  },
+  eventClick: function(calEvent, jsEvent, view) {
+dtps.assignment(calEvent.classNum, calEvent.streamNum);
   }
 });
+	}
 }
 dtps.showClasses = function() {
   var streamClass = "active"
@@ -719,7 +737,7 @@ dtps.render = function() {
     </button>
     </div>
 <div class="btns row master sudo">
-    <button onclick="dtps.masterContent = 'list';" class="btn stream active">
+    <button onclick="dtps.masterContent = 'list'; dtps.masterStream();" class="btn stream active">
     <i class="material-icons">view_stream</i>
     List
     </button>
