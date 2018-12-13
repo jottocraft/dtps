@@ -593,7 +593,7 @@ dtps.announcements = function() {
 	});
 };
 dtps.calendar = function() {
-	$(".classContent").html(`<div id='calendar'></div>`)
+	$(".classContent").html(`<div id='calendar' class="card"></div>`)
 	$('#calendar').fullCalendar({});
 }
 dtps.showClasses = function() {
