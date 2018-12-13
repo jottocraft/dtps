@@ -431,7 +431,7 @@ dtps.renderStream = function(stream) {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
-	if (dtps.masterContent == "calendar") {
+	if (dtps.masterContent == "cal") {
 		dtps.calendar(doneLoading);
 	}
 	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "list")) {
@@ -604,7 +604,7 @@ dtps.announcements = function() {
 	});
 };
 dtps.calendar = function(doneLoading) {
-	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "calendar")) {
+	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "cal")) {
 		var loadingDom = "";
 	if (!doneLoading) {
 		loadingDom = `<div class="spinner">
@@ -741,7 +741,7 @@ dtps.render = function() {
     <i class="material-icons">view_stream</i>
     List
     </button>
-    <button onclick="dtps.masterContent = 'cal'; dtps.calendar();" class="btn cal sudo">
+    <button onclick="dtps.masterContent = 'cal'; dtps.masterStream();" class="btn cal sudo">
     <i class="material-icons">experiment</i>
     Calendar
     </button>
