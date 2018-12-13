@@ -1,12 +1,13 @@
 var dtps = {
-  ver: 110,
-  readableVer: "v1.1.0",
+  ver: 120,
+  readableVer: "v1.2.0",
   trackSuffix: "",
-  showLetters: false
+  showLetters: false,
+  unreadAnn: 0
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
-  fluid.cards(".card.changelog");
+  fluid.modal(".card.changelog");
 };
 dtps.log = function(msg) {
   console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
@@ -132,8 +133,10 @@ window.dataLayer = window.dataLayer || [];
   'page_path': '/portal',
   'anonymize_ip': true
   });
-  gtag('js', new Date());
+	
 });
+	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
+	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js")
   if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
@@ -143,7 +146,8 @@ window.dataLayer = window.dataLayer || [];
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
-	  jQuery("body").addClass("notwemoji");
+	    jQuery("body").addClass("notwemoji");
+	    fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
       jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
       dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
@@ -320,15 +324,29 @@ dtps.classStream = function(num, renderOv) {
     for (var i = 0; i < data.length; i++) {
       var assignment = jQuery(data[i])
       var due = "<h5>Due " + assignment.children("td:nth-child(3)").text().slice(0,-1) + "</h5>"
-    	if (due.includes("n/a")) var due = "";
+    	if (due.includes("n/a")) {
+		var due = "";
+		var dueDateString = null;
+	} else {
+		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
+	    dueDate.setFullYear(2018);
+		var dueDateString = dueDate.toISOString();
+	}
       dtps.classes[num].stream.push({
         id: assignment.find("a").attr("onclick").split("/")[5].replace("')", ""),
         title: assignment.children("td:nth-child(1)").text(),
         due: assignment.children("td:nth-child(3)").text().slice(0,-1),
+	      dueDate: dueDateString,
     		col: dtps.classes[num].col,
-	      loc: dtps.classes[num].loc
+	      loc: dtps.classes[num].loc,
+	      turnedIn: Boolean(assignment.children("td:nth-child(5)").children("i").length),
+	      class: num
       });
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
+	    var turnInDom = "";
+		if (Boolean(assignment.children("td:nth-child(5)").children("i").length)) {
+		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
+	    }
         dtps.classes[num].streamlist.push(`
           <div class="card assignment">
           <div class="spinner points">
@@ -337,11 +355,12 @@ dtps.classStream = function(num, renderOv) {
           <div class="bounce3"></div>
           </div>
           <h4>` + assignment.children("td:nth-child(1)").text() + `</h4>
-          ` + due + `
+          ` + due + turnInDom +  `
           </div>
       `);
     }
-    if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
+	  if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
+    if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join("")); }
 
     dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/grades", function(resp) {
 	    data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow)").toArray();
@@ -376,6 +395,10 @@ dtps.renderStream = function(stream) {
 	for (var i = 0; i < stream.length; i++) {
 		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
+		var turnInDom = "";
+		if (stream[i].turnedIn) {
+		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
+	    }
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
   		if ("ABC".includes(stream[i].letter.toArray()[0])) {
   			var earnedTmp = stream[i].grade.split("/")[0];
@@ -387,20 +410,20 @@ dtps.renderStream = function(stream) {
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
 		  streamlist.push(`
-        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card graded assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment(` + stream[i].class + `, ` + i + `)" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div class="earned">` + earnedTmp + `</div>
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>` + due + ` <span class="weighted">` + wFormat + `</span></h5>
+      	<h5>` + due + ` <span class="weighted">` + wFormat + `</span>` + turnInDom + `</h5>
         </div>
       `);
     } else {
       streamlist.push(`
-        <div onclick="dtps.assignment('` + stream[i].loc + `','` + stream[i].id + `')" class="card assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment(` + stream[i].class + `, ` + i + `)" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
-	       <h5>` + due + `</h5>
+	       <h5>` + due + turnInDom +  `</h5>
          </div>
        `);
     }
@@ -409,7 +432,10 @@ dtps.renderStream = function(stream) {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
-	if (dtps.selectedClass == "stream") {
+	if (dtps.masterContent == "cal") {
+		dtps.calendar(doneLoading);
+	}
+	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "list")) {
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -433,7 +459,7 @@ dtps.masterStream = function(doneLoading) {
     <div class="bounce3"></div>
     </div>`;
 	}
-	if (dtps.selectedClass == "stream") {
+	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "list")) {
 	jQuery(".classContent").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
@@ -516,17 +542,20 @@ dtps.gradebook = function(num) {
 }
 	}
 }
-dtps.assignment = function(loc, id) {
+dtps.assignment = function(classNum, streamNum) {
+	var assignment = dtps.classes[classNum].stream[streamNum];
 	 $(".card.details").html(`
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <h3>Loading...</h3>
 `);
 	fluid.cards.close(".card.focus");
-          fluid.cards(".card.details");
-	dtps.webReq("assignGET", "/" + loc + "/assignment/view/" + id, function(data) {
+          fluid.modal(".card.details");
+	var handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment</i> Hand In</div>`
+	if (assignment.turnedIn) handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment_returned</i> Resubmit</div>`
+	dtps.webReq("assignGET", "/" + assignment.loc + "/assignment/view/" + assignment.id, function(data) {
 	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + `
-<div class="btn" onclick="window.location.href = '/` + loc + `/dropbox/assignment/` + id + `#/'"><i class="material-icons">assignment</i> Hand In</div>
-<div class="btn sudo" onclick="dtps.myWork('` + loc + `', ` + id + `)"><i class="material-icons">experiment</i> View Work</div>
+` + handInDom + `
+<div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons">experiment</i> View Work</div>
 `);
 	});
 }
@@ -548,6 +577,17 @@ dtps.announcements = function() {
 		dtps.raw = resp;
 		var ann = jQuery(resp).children("tbody").children("tr").toArray();
 		var announcements = [];
+		if (window.localStorage.unreadAnn) {
+		if (window.localStorage.unreadAnn < ann.length) {
+		dtps.unreadAnn = ann.length - window.localStorage.unreadAnn;
+		localStorage.setItem('unreadAnn', ann.length);
+		$("#annLabel").html("Announcements (" + dtps.unreadAnn + ")");
+	} else {
+		if (window.localStorage.unreadAnn > ann.length) localStorage.setItem('unreadAnn', ann.length);
+	}
+	} else {
+		localStorage.setItem('unreadAnn', ann.length);
+	}
 		for (var i = 0; i < ann.length; i++) {
 			if (jQuery(ann[i]).children("td")[1] !== undefined) {
 				var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
@@ -564,10 +604,53 @@ dtps.announcements = function() {
   jQuery(".classContent").html(announcements.join("")); }
 	});
 };
+dtps.calendar = function(doneLoading) {
+	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "cal")) {
+		var loadingDom = "";
+	if (!doneLoading) {
+		loadingDom = `<div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+    </div>`;
+	}
+	$(".classContent").html(loadingDom + `<div id='calendar' class="card"></div>`)
+	calEvents = [];
+	for (var i = 0; i < dtps.classes.length; i++) {
+    if (dtps.classes[i].stream) {
+  		dtps.log("BUILDING CAL: " + i)
+	    for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
+		    if (dtps.classes[i].stream[ii].dueDate) {
+		    calEvents.push({
+		  title: dtps.classes[i].stream[ii].title,
+		  start: dtps.classes[i].stream[ii].dueDate,
+		  allDay: false,
+	          color: $(".class." + i).css("background-color"),
+			    classNum: i,
+			    streamNum: ii
+		})
+		    }
+	    }
+    }
+  }
+	$('#calendar').fullCalendar({
+  events: calEvents,
+  header: {
+      left: 'title',
+      right: 'prev,next today month,agendaWeek,agendaDay'
+  },
+  eventClick: function(calEvent, jsEvent, view) {
+dtps.assignment(calEvent.classNum, calEvent.streamNum);
+  }
+});
+	}
+}
 dtps.showClasses = function() {
   var streamClass = "active"
   if (dtps.selectedClass !== "stream") var streamClass = "";
 	dtps.classlist = [];
+	var unreadAnn = "";
+	if (dtps.unreadAnn) unreadAnn = "&nbsp;&nsbp;(" + dtps.unreadAnn + ")";
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
@@ -582,7 +665,7 @@ dtps.showClasses = function() {
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
    <div onclick="dtps.selectedClass = 'announcements';" class="class">
-    <div class="name">Announcements</div>
+    <div class="name" id="annLabel">Announcements ` + unreadAnn + `</div>
     <div class="grade"><i class="material-icons">announcement</i></div>
     </div>
     <div class="classDivider"></div>
@@ -627,7 +710,9 @@ dtps.render = function() {
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
-	if (window.localStorage.fluidTheme == "dark") { var dark = " active" } else { var dark = "" }
+  dtps.masterContent = "list";
+	var compactActive = "";
+	if (window.localStorage.dtpsCompact == "true") { jQuery("body").addClass("compact"); compactActive = " active" }
 	var relDom = "";
 	if (dtps.trackSuffix !== "") {
 	   relDom = dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`);
@@ -655,12 +740,12 @@ dtps.render = function() {
     </button>
     </div>
 <div class="btns row master sudo">
-    <button onclick="dtps.masterContent = 'list';" class="btn stream active">
+    <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn stream active">
     <i class="material-icons">view_stream</i>
     List
     </button>
-    <button onclick="dtps.masterContent = 'cal';" class="btn cal sudo">
-    <i class="material-icons">experiment</i>
+    <button onclick="dtps.masterContent = 'cal'; dtps.masterStream(true);" class="btn cal">
+    <i class="material-icons">calendar_today</i>
     Calendar
     </button>
     </div>
@@ -683,11 +768,13 @@ dtps.render = function() {
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <br />
-    <div onclick="fluid.theme('toggle');" class="switch` + dark + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">brightness_3</i> Use dark theme</div>
+    <div class="btns row themeSelector"></div>
 <br /><br />
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
+    <br /><br />
+<div onclick="jQuery('body').toggleClass('compact'); if (jQuery('body').hasClass('compact')) { localStorage.setItem('dtpsCompact', true); } else { localStorage.setItem('dtpsCompact', false); }" class="switch` + compactActive + `"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">view_compact</i> Compact class view</div>
     <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
@@ -698,8 +785,8 @@ dtps.render = function() {
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
-    <i onclick="fluid.cards('.abt')" class="material-icons">info_outline</i>
-    <i onclick="fluid.cards('.console')" class="material-icons dev">code</i>
+    <i onclick="fluid.modal('.abt')" class="material-icons">info_outline</i>
+    <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
@@ -731,7 +818,7 @@ dtps.render = function() {
 				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
 		 }
-			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.cards(".card.script"); }
+			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.modal(".card.script"); }
 			 $(".btn.changelog").show();
         });
   });	
@@ -749,6 +836,11 @@ dtps.render = function() {
     rel: "stylesheet",
     type: "text/css",
     href: "https://dtps.js.org/fluid.css"
+  }).appendTo("head");
+  jQuery("<link/>", {
+    rel: "stylesheet",
+    type: "text/css",
+    href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
   }).appendTo("head");
   jQuery("<link/>", {
     rel: "stylesheet",
