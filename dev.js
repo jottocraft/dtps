@@ -739,11 +739,11 @@ dtps.render = function() {
     </button>
     </div>
 <div class="btns row master sudo">
-    <button onclick="dtps.masterContent = 'list'; dtps.masterStream();" class="btn stream active">
+    <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn stream active">
     <i class="material-icons">view_stream</i>
     List
     </button>
-    <button onclick="dtps.masterContent = 'cal'; dtps.masterStream();" class="btn cal">
+    <button onclick="dtps.masterContent = 'cal'; dtps.masterStream(true);" class="btn cal">
     <i class="material-icons">calendar_today</i>
     Calendar
     </button>
