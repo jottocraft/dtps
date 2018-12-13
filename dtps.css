@@ -1,6 +1,9 @@
 body.dark .fc-today {
 	background-color: #181b1d !important;
 }
+.fc-event {
+	cursor: pointer !important;
+}
 .class {
 	opacity: 0.9;
 	display: inline-block;
