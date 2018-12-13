@@ -612,7 +612,7 @@ dtps.calendar = function() {
 		  title: dtps.classes[i].stream[ii].title,
 		  start: dtps.classes[i].stream[ii].dueDate,
 		  allDay: false,
-			    color: dtps.classes[i].col
+			    color: $(".class." + i).css("background-color")
 		})
 		    }
 	    }
