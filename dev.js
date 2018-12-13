@@ -710,7 +710,8 @@ dtps.render = function() {
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.masterContent = "list";
-	if (window.localStorage.dtpsCompact == "true") { jQuery("body").addClass("compact") }
+	var compactActive = "";
+	if (window.localStorage.dtpsCompact == "true") { jQuery("body").addClass("compact"); compactActive = " active" }
 	var relDom = "";
 	if (dtps.trackSuffix !== "") {
 	   relDom = dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`);
@@ -771,7 +772,7 @@ dtps.render = function() {
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-<div onclick="jQuery('body').toggleClass('compact') if (jQuery('body').hasClass('compact')) {localStorage.setItem('dtpsCompact', true); } else { localStorage.setItem('dtpsCompact', false); }" class="switch"><span class="head"></span></div>
+<div onclick="jQuery('body').toggleClass('compact'); if (jQuery('body').hasClass('compact')) { localStorage.setItem('dtpsCompact', true); } else { localStorage.setItem('dtpsCompact', false); }" class="switch` + compactActive + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">view_compact</i> Compact class view</div>
     <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
