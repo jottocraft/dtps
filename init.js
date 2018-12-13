@@ -1,3 +1,5 @@
+window.alert("doing some debugging right now, sorry if you see a bunch of random alerts. it'll be over once I resolve the issue")
+try {
 var dtps = {
   ver: 120,
   readableVer: "v1.2.0",
@@ -855,3 +857,6 @@ dtps.render = function() {
   fluid.init();
 }
 dtps.init();
+} catch(e) {
+	window.alert(e)
+}
