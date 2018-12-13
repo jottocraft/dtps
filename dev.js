@@ -359,7 +359,8 @@ dtps.classStream = function(num, renderOv) {
           </div>
       `);
     }
-    if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join(""));
+	  if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
+    if (!renderOv) jQuery(".classContent").html(dtps.classes[num].streamlist.join("")); }
 
     dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/grades", function(resp) {
 	    data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.noglow)").toArray();
