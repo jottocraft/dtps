@@ -1,7 +1,7 @@
 var dtps = {
   ver: 120,
-  readableVer: "v1.2.0 (dev)",
-  trackSuffix: " (dev)",
+  readableVer: "v1.2.0 (GM)",
+  trackSuffix: " (GM)",
   showLetters: false,
   unreadAnn: 0
 };
@@ -741,8 +741,8 @@ dtps.render = function() {
     <i class="material-icons">view_stream</i>
     List
     </button>
-    <button onclick="dtps.masterContent = 'cal'; dtps.masterStream();" class="btn cal sudo">
-    <i class="material-icons">experiment</i>
+    <button onclick="dtps.masterContent = 'cal'; dtps.masterStream();" class="btn cal">
+    <i class="material-icons">calendar_today</i>
     Calendar
     </button>
     </div>
