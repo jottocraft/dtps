@@ -1,7 +1,7 @@
 var dtps = {
-  ver: 120,
-  readableVer: "v1.2.0 (GM)",
-  trackSuffix: " (GM)",
+  ver: 140,
+  readableVer: "v1.4.0 (Dev Alpha)",
+  trackSuffix: " (Dev Alpha)",
   showLetters: false,
   unreadAnn: 0
 };
@@ -749,12 +749,12 @@ dtps.render = function() {
     Calendar
     </button>
     </div>
-    <div class="classContent">
+    </div>
+	<div class="classContent">
     <div class="spinner">
       <div class="bounce1"></div>
       <div class="bounce2"></div>
       <div class="bounce3"></div>
-    </div>
     </div>
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
