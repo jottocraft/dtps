@@ -672,7 +672,7 @@ dtps.showClasses = function() {
 		}
   jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
 ` + streamDom + `
-   <div onclick="dtps.selectedClass = 'announcements';" class="class">
+   <div style="display: none;" onclick="dtps.selectedClass = 'announcements';" class="class">
     <div class="name" id="annLabel">Announcements ` + unreadAnn + `</div>
     <div class="grade"><i class="material-icons">announcement</i></div>
     </div>
@@ -735,7 +735,7 @@ dtps.render = function() {
     </div>
     <div class="background trans"></div>
 <div class="header">
-    <h1 id="headText">Stream</h1>
+    <h1 id="headText">Dashboard</h1>
     <div style="display: none;" class="btns row">
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
     <i class="material-icons">view_stream</i>
@@ -752,12 +752,16 @@ dtps.render = function() {
     </div>
 <div class="btns row master sudo">
     <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn stream active">
-    <i class="material-icons">view_stream</i>
-    List
+    <i class="material-icons">dashboard</i>
+    Dashboard
     </button>
     <button onclick="dtps.masterContent = 'cal'; dtps.masterStream(true);" class="btn cal">
-    <i class="material-icons">calendar_today</i>
-    Calendar
+    <i class="material-icons">assignment</i>
+    Assignments
+    </button>
+    <button onclick="dtps.masterContent = 'ann'; dtps.masterStream(true);" class="btn ann">
+    <i class="material-icons">announcement</i>
+    Announcements
     </button>
     </div>
     </div>
