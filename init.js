@@ -147,7 +147,6 @@ window.dataLayer = window.dataLayer || [];
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
-	    jQuery("body").addClass("notwemoji");
 	    fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
       jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
@@ -708,7 +707,7 @@ dtps.showClasses = function() {
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
-  if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
+  if (!dtps.showChangelog){ fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ]; jQuery.getScript('https://dtps.js.org/fluid.js'); }
   dtps.selectedClass = "stream";
   dtps.selectedContent = "stream";
   dtps.masterContent = "list";
