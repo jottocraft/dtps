@@ -308,7 +308,7 @@ dtps.loadPages = function(num) {
 }
 dtps.classStream = function(num, renderOv) {
 	dtps.log("rendering stream for " + num)
-  dtps.showClasses();
+ if (!renderOv) dtps.showClasses();
   if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
