@@ -177,9 +177,6 @@ window.dataLayer = window.dataLayer || [];
       dtps.shouldRender = false;
 	    dtps.first = true;
     }
-	  
-	  dtps.shouldRender = false;
-    dtps.alert("Power+ is offline", "With the release of Power+ v1.2.0 earlier today, Power+ experienced unexpected bugs not present in the v1.2.0 release candidate. I'm sorry for the issues and expect to fix Power+ by the end of the day. For more information about Power+ v1.2.0, check out the changelog at https://github.com/jottocraft/dtps/releases.<br /><br />-Jackson");
   }
  dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc");
 	var eClassList = jQuery(".eclass_list ul").children().toArray();
