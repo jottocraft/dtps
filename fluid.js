@@ -210,9 +210,6 @@ fluid.init = function() {
   } else {
     if (fluid.theme(undefined, "unsetStat") == "unset") fluid.theme("auto", true);
   }
-  if (!$("body").hasClass("notwemoji")) {
-  twemoji.parse(document.body);
-}
 
   $( ".btns:not(.themeSelector) .btn, .list.select .item, .sidenav .item" ).click(function(event) {
   if ($(event.target).parent().hasClass("multiple")) {
