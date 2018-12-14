@@ -174,7 +174,7 @@ fluid.init = function() {
     fluid.themePage = 0;
     fluid.themePageList = [];
   $( ".btns.row.themeSelector" ).html(`
-    <div style="display: none;" onclick="fluid.themePages(this, -1);" class="btn"><i class="material-icons">keyboard_arrow_left</i></div>
+    <div style="display: none;" onclick="fluid.themePages(this, -1);" class="btn sudo"><i class="material-icons">keyboard_arrow_left</i></div>
     <span class="s0">
     <div onclick="fluid.theme('auto')" class="btn auto"><i class="material-icons">brightness_auto</i> Auto</div>
     <div onclick="fluid.theme('light')" class="btn light"><i class="material-icons">brightness_high</i> Light</div>
@@ -198,7 +198,7 @@ fluid.init = function() {
       <div onclick="fluid.theme('darkPurple')" class="btn darkPurple"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #8100b9;" class="material-icons"></i></div>`
     ) : ("") ) + `
     </span>
-    <div onclick="fluid.themePages(this, +1);" class="btn"><i class="material-icons">keyboard_arrow_right</i></div>
+    <div onclick="fluid.themePages(this, +1);" class="btn sudo"><i class="material-icons">keyboard_arrow_right</i></div>
     `);
     for (var i = 0; i < ($('.themeSelector').children().length - 2); i++) {
       if ($('.themeSelector .s' + i).children().length) fluid.themePageList.push(i);
