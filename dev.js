@@ -647,6 +647,7 @@ dtps.assignment(calEvent.classNum, calEvent.streamNum);
 }
 dtps.showClasses = function() {
   var streamClass = "active"
+  document.title = document.title + "*"
   if (dtps.selectedClass !== "stream") var streamClass = "";
 	dtps.classlist = [];
 	var unreadAnn = "";
