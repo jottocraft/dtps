@@ -660,7 +660,8 @@ dtps.showClasses = function() {
     `);
   }
 	if (!Boolean(jQuery(".sidebar .class.masterStream")[0])) {
-  jQuery(".sidebar").html(`<div onclick="dtps.selectedClass = 'stream';" class="class masterStream ` + streamClass + `">
+  jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
+<div onclick="dtps.selectedClass = 'stream';" class="class masterStream ` + streamClass + `">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>
@@ -845,7 +846,7 @@ dtps.render = function() {
   jQuery("<link/>", {
     rel: "stylesheet",
     type: "text/css",
-    href: "https://dtps.js.org/dtps.css"
+    href: "https://dtps.js.org/dev.css"
   }).appendTo("head");
   jQuery("<link/>", {
     rel: "stylesheet",
