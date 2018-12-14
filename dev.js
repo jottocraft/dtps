@@ -686,6 +686,9 @@ dtps.showClasses = function() {
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
+	  $(".header").removeClass(jQuery.grep($(".header").attr("class").split(" "), function (item, index) {
+      return item.trim().match(/^filter_/);
+    })[0]);
 	  if (dtps.classes[dtps.selectedClass]) { $(".background").addClass(dtps.classes[dtps.selectedClass].col); $(".header").addClass(dtps.classes[dtps.selectedClass].col) }
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
