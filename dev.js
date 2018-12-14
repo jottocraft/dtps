@@ -308,7 +308,7 @@ dtps.loadPages = function(num) {
 }
 dtps.classStream = function(num, renderOv) {
 	dtps.log("rendering stream for " + num)
-  dtps.showClasses();
+  if (!renderOv) dtps.showClasses();
   if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -647,7 +647,6 @@ dtps.assignment(calEvent.classNum, calEvent.streamNum);
 }
 dtps.showClasses = function() {
   var streamClass = "active"
-  document.title = document.title + "*"
   if (dtps.selectedClass !== "stream") var streamClass = "";
 	dtps.classlist = [];
 	var unreadAnn = "";
