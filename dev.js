@@ -753,7 +753,7 @@ dtps.render = function() {
 <div class="btns row master sudo">
     <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn stream active">
     <i class="material-icons">dashboard</i>
-    Dashboard
+    Overview
     </button>
     <button onclick="dtps.masterContent = 'cal'; dtps.masterStream(true);" class="btn cal">
     <i class="material-icons">assignment</i>
