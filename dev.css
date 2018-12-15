@@ -366,7 +366,12 @@ body.dark .classContent .card {
 }
 .beta.notice.turnin {
 	color: #0bb75b;
+	color: white;
 	border-color: #0bb75b;
+	background-color: #0bb75b;
+}
+.dash.stream .card {
+	margin-right: 25px;
 }
 .beta.notice.missing {
 	color: #b7630a;
