@@ -463,7 +463,13 @@ dtps.masterStream = function(doneLoading) {
     </div>`;
 	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-	jQuery(".classContent").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
+		jQuery(".classContent").html(`
+<div class="dash left card cal" style="height: 100px;">
+</div>
+<div class="dash right stream">
+</div>
+`)
+	jQuery(".classContent .stream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
     var keyA = new Date(a.due.replace("Today", today).replace(year + " at", "")).setYear(year),
