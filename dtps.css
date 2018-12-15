@@ -294,8 +294,9 @@ body.dark .header .card {
 	vertical-align: middle;
 }
 .beta.notice.turnin {
-	color: #0bb75b;
+	color: white;
 	border-color: #0bb75b;
+	background-color: #0bb75b;
 }
 .beta.notice.missing {
 	color: #b7630a;
