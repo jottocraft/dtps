@@ -345,7 +345,7 @@ dtps.classStream = function(num, renderOv) {
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
 	    var turnInDom = "";
 		if (Boolean(assignment.children("td:nth-child(5)").children("i").length)) {
-		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
+		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i></div>`
 	    }
         dtps.classes[num].streamlist.push(`
           <div class="card assignment">
@@ -397,7 +397,7 @@ dtps.renderStream = function(stream) {
     	    if (due.includes("n/a")) var due = "";
 		var turnInDom = "";
 		if (stream[i].turnedIn) {
-		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i> Turned in</div>`
+		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i></div>`
 	    }
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
   		if ("ABC".includes(stream[i].letter.toArray()[0])) {
