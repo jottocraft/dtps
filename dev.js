@@ -461,8 +461,8 @@ dtps.masterStream = function(doneLoading) {
 	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
-<div id="calendar" class="dash left cal" style="width: 40%;">
-<div class="card" style="height: 100px; width: 100%;margin: 25px;">
+<div class="dash left cal" style="width: 40%;">
+<div id="calendar" class="card" style="width: 100%;margin: 25px;">
 </div>
 </div>
 <div style="width: 60%" class="dash right stream">
