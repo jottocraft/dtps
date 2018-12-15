@@ -7,6 +7,9 @@ body.dark .fc-today {
 #calendar h2 {
 	font-size: 40px;
 }
+.dash.stream .card {
+	margin-right: 25px;
+}
 .class {
 	opacity: 0.9;
 	display: inline-block;
