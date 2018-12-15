@@ -432,9 +432,6 @@ dtps.renderStream = function(stream) {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
-	if (dtps.masterContent == "assignments") {
-		//dtps.calendar(doneLoading);
-	}
 	if (dtps.masterContent == "ann") {
 		dtps.announcements();
 	}
@@ -464,13 +461,14 @@ dtps.masterStream = function(doneLoading) {
 	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
-<div class="dash left cal" style="width: 40%;">
+<div id="calendar" class="dash left cal" style="width: 40%;">
 <div class="card" style="height: 100px; width: 100%;margin: 25px;">
 </div>
 </div>
 <div style="width: 60%" class="dash right stream">
 </div>
 `)
+		dtps.calendar(doneLoading);
 	jQuery(".classContent .stream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
@@ -617,15 +615,6 @@ dtps.announcements = function() {
 };
 dtps.calendar = function(doneLoading) {
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "cal")) {
-		var loadingDom = "";
-	if (!doneLoading) {
-		loadingDom = `<div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-    </div>`;
-	}
-	$(".classContent").html(loadingDom + `<div id='calendar' class="card"></div>`)
 	calEvents = [];
 	for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
