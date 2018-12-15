@@ -614,7 +614,7 @@ dtps.announcements = function() {
 	});
 };
 dtps.calendar = function(doneLoading) {
-	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "cal")) {
+	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 	calEvents = [];
 	for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
