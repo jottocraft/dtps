@@ -560,7 +560,7 @@ body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contrib
 }
 
 body.titlebar .items {
-	position: fixed;
+	display: none !important;
 }
 .items {
 	position: absolute;
