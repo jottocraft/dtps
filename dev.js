@@ -637,7 +637,7 @@ dtps.calendar = function(doneLoading) {
   events: calEvents,
   header: {
       left: 'title',
-      right: 'prev,next today month,agendaWeek,agendaDay'
+      right: 'prev,next'
   },
   eventClick: function(calEvent, jsEvent, view) {
 dtps.assignment(calEvent.classNum, calEvent.streamNum);
