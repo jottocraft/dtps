@@ -248,11 +248,11 @@ window.dataLayer = window.dataLayer || [];
 }
 dtps.checkReady = function(num) {
   //dtps.log(num + " reporting as READY total of " + dtps.classesReady);
-  if ((dtps.selectedClass == "stream") && (dtps.classesReady == dtps.classes.length)) {
+  if ((dtps.selectedClass == "dash") && (dtps.classesReady == dtps.classes.length)) {
     dtps.log("All classes ready, loading master stream");
     dtps.masterStream(true);
   } else {
-  if ((dtps.selectedClass == "stream") && (dtps.classesReady < dtps.classes.length)) {
+  if ((dtps.selectedClass == "dash") && (dtps.classesReady < dtps.classes.length)) {
 	  dtps.masterStream();
   }
   }
@@ -432,10 +432,13 @@ dtps.renderStream = function(stream) {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
-	if (dtps.masterContent == "cal") {
-		dtps.calendar(doneLoading);
+	if (dtps.masterContent == "assignments") {
+		//dtps.calendar(doneLoading);
 	}
-	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "list")) {
+	if (dtps.masterContent == "ann") {
+		dtps.announcements();
+	}
+	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -459,7 +462,7 @@ dtps.masterStream = function(doneLoading) {
     <div class="bounce3"></div>
     </div>`;
 	}
-	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "list")) {
+	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 	jQuery(".classContent").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
@@ -565,7 +568,7 @@ dtps.myWork = function(loc, id) {
 	});
 }
 dtps.announcements = function() {
-	if (dtps.selectedClass == "announcements") {
+	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "ann")) {
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -600,12 +603,12 @@ dtps.announcements = function() {
 `);
 		}
 		}
-		if (dtps.selectedClass == "announcements") {
+		if ((dtps.selectedClass == "dash") && (dtps.masterContent == "ann")) {
   jQuery(".classContent").html(announcements.join("")); }
 	});
 };
 dtps.calendar = function(doneLoading) {
-	if ((dtps.selectedClass == "stream") && (dtps.masterContent == "cal")) {
+	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "cal")) {
 		var loadingDom = "";
 	if (!doneLoading) {
 		loadingDom = `<div class="spinner">
@@ -647,7 +650,7 @@ dtps.assignment(calEvent.classNum, calEvent.streamNum);
 }
 dtps.showClasses = function() {
   var streamClass = "active"
-  if (dtps.selectedClass !== "stream") var streamClass = "";
+  if (dtps.selectedClass !== "dash") var streamClass = "";
 	dtps.classlist = [];
 	var unreadAnn = "";
 	if (dtps.unreadAnn) unreadAnn = "&nbsp;&nsbp;(" + dtps.unreadAnn + ")";
@@ -660,12 +663,12 @@ dtps.showClasses = function() {
     `);
   }
 	if (!Boolean(jQuery(".sidebar .class.masterStream")[0])) {
-		var streamDom = `<div onclick="dtps.selectedClass = 'stream';" class="class masterStream ` + streamClass + `">
+		var streamDom = `<div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
     </div>`;
 		if (sudoers.includes(HaikuContext.user.login)) {
-			streamDom = `<div onclick="dtps.selectedClass = 'stream';" class="class sudo masterStream ` + streamClass + `">
+			streamDom = `<div onclick="dtps.selectedClass = 'dash';" class="class sudo masterStream ` + streamClass + `">
     <div class="name">Dashboard</div>
     <div class="grade"><i class="material-icons">dashboard</i></div>
     </div>`
@@ -678,7 +681,7 @@ dtps.showClasses = function() {
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
-  if (dtps.selectedClass !== "stream") $(".class." + dtps.selectedClass).addClass("active");
+  if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class" ).click(function(event) {
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
@@ -702,14 +705,14 @@ dtps.showClasses = function() {
     $(".header h1").html($(this).children(".name").text())
     if (!dtps.classes[dtps.selectedClass]) {
       $(".header .btns").hide();
-      if (dtps.selectedClass == "stream") $(".header .btns.master").show();
+      if (dtps.selectedClass == "dash") $(".header .btns.master").show();
     } else {
       $(".header .btns:not(.master)").show();
       $(".header .btns.master").hide();
     }
     if ((dtps.selectedContent == "stream") && (dtps.classes[dtps.selectedClass])) dtps.classStream(dtps.selectedClass)
     if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
-    if (dtps.selectedClass == "stream") dtps.masterStream(true);
+    if (dtps.selectedClass == "dash") dtps.masterStream(true);
     if (dtps.selectedClass == "announcements") dtps.announcements();
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
@@ -751,11 +754,11 @@ dtps.render = function() {
     </button>
     </div>
 <div class="btns row master sudo">
-    <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn stream active">
+    <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn dash active">
     <i class="material-icons">dashboard</i>
     Overview
     </button>
-    <button onclick="dtps.masterContent = 'cal'; dtps.masterStream(true);" class="btn cal">
+    <button onclick="dtps.masterContent = 'assignments'; dtps.masterStream(true);" class="btn assignments">
     <i class="material-icons">assignment</i>
     Assignments
     </button>
