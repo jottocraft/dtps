@@ -7,6 +7,16 @@ body.dark .fc-today {
 #calendar h2 {
 	font-size: 40px;
 }
+.fc .fc-button-group>* {
+	background: none;
+}
+body:not(.dark) .fc .fc-button-group>* {
+	border-color: #e6e6e6;
+}
+body.dark .fc .fc-button-group>* {
+	border-color: #484848;
+	color: white;
+}
 .class {
 	border: none;
 	padding: 0px;
