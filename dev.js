@@ -862,6 +862,9 @@ dtps.render = function() {
     type: "text/css",
     href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
   }).appendTo("head");
+  jQuery('.classContent').bind('heightChange', function(){
+   	jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0,-2)))
+    });
   fluid.init();
 }
 dtps.init();
