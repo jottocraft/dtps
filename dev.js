@@ -722,11 +722,9 @@ dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
-  dtps.selectedClass = "stream";
+  dtps.selectedClass = "dash";
   dtps.selectedContent = "stream";
-  dtps.masterContent = "list";
-	var compactActive = "";
-	if (window.localStorage.dtpsCompact == "true") { jQuery("body").addClass("compact"); compactActive = " active" }
+  dtps.masterContent = "dash";
 	var relDom = "";
 	if (dtps.trackSuffix !== "") {
 	   relDom = dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`);
@@ -754,7 +752,7 @@ dtps.render = function() {
     </button>
     </div>
 <div class="btns row master sudo">
-    <button onclick="dtps.masterContent = 'list'; dtps.masterStream(true);" class="btn dash active">
+    <button onclick="dtps.masterContent = 'dash'; dtps.masterStream(true);" class="btn dash active">
     <i class="material-icons">dashboard</i>
     Overview
     </button>
@@ -790,9 +788,6 @@ dtps.render = function() {
 <br /><br />
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
-    <br /><br />
-<div onclick="jQuery('body').toggleClass('compact'); if (jQuery('body').hasClass('compact')) { localStorage.setItem('dtpsCompact', true); } else { localStorage.setItem('dtpsCompact', false); }" class="switch` + compactActive + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">view_compact</i> Compact class view</div>
     <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
