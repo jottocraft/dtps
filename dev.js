@@ -464,7 +464,7 @@ dtps.masterStream = function(doneLoading) {
 	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
-<div class="dash left card cal" style="height: 100px;">
+<div class="dash left cal" style="height: 100px;">
 </div>
 <div class="dash right stream">
 </div>
