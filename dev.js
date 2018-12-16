@@ -342,7 +342,8 @@ dtps.classStream = function(num, renderOv) {
     		col: dtps.classes[num].col,
 	      loc: dtps.classes[num].loc,
 	      turnedIn: Boolean(assignment.children("td:nth-child(5)").children("i").length),
-	      class: num
+	      class: num,
+	      subject: dtps.classes[num].subject
       });
       dtps.classes[num].streamitems.push(assignment.find("a").attr("onclick").split("/")[5].replace("')", ""));
 	    var turnInDom = "";
@@ -431,7 +432,12 @@ dtps.renderStream = function(stream) {
        `);
     }
   }
-  return `<div style="text-align: right;"><input placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
+ dtps.fuse = new Fuse(stream,  {
+  shouldSort: true,
+  threshold: 0.6,
+  keys: [ "title", "id", "due", "subject" ]
+});
+  return `<div style="text-align: right;"><input class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
@@ -481,7 +487,11 @@ dtps.masterStream = function(doneLoading) {
     if(keyA < keyB) return 1;
     if(keyA > keyB) return -1;
     return 0;
-  }))); }
+  }))); 
+		$( "input.search" ).change(function() {
+  dtps.log(dtps.fuse.search($("input.search").val()))
+});
+	}
 	$(".card.assignment").addClass("color");
 }
 dtps.getPage = function(loc, id) {
