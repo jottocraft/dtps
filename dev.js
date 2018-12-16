@@ -428,7 +428,7 @@ dtps.renderStream = function(stream) {
        `);
     }
   }
-  return streamlist.join("");
+  return `<div style="text-align: right;"><input placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
