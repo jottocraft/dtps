@@ -393,8 +393,7 @@ dtps.classStream = function(num, renderOv) {
     });
   });
 }
-dtps.renderStream = function(stream) {
-	dtps.latestStream = stream;
+dtps.renderStream = function(stream, searchRes) {
 	var streamlist = [];
 	for (var i = 0; i < stream.length; i++) {
 		var due = "Due " + stream[i].due;
@@ -432,11 +431,14 @@ dtps.renderStream = function(stream) {
        `);
     }
   }
+	if (!searchRes) {
+ dtps.latestStream = stream;
  dtps.fuse = new Fuse(stream,  {
   shouldSort: true,
   threshold: 0.6,
   keys: [ "title", "id", "due", "subject" ]
 });
+}
   return `<div style="text-align: right;"><input class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
 }
 dtps.masterStream = function(doneLoading) {
@@ -489,7 +491,11 @@ dtps.masterStream = function(doneLoading) {
     return 0;
   }))); 
 		$( "input.search" ).change(function() {
-  dtps.log(dtps.fuse.search($("input.search").val()))
+			if ($("input.search").val() == "") {
+			    jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search(dtps.latestStream, true)) 
+			    } else {
+			jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), true))
+		}
 });
 	}
 	$(".card.assignment").addClass("color");
