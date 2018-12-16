@@ -492,7 +492,7 @@ dtps.masterStream = function(doneLoading) {
   }))); 
 		$( "input.search" ).change(function() {
 			if ($("input.search").val() == "") {
-			    jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search(dtps.latestStream, true)) 
+			    jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search(dtps.latestStream), true)) 
 			    } else {
 			jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), true))
 		}
