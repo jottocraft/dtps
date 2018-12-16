@@ -13,6 +13,8 @@ or
 
 [dev bookmark script (unstable)](https://dtps.js.org/devbookmark.txt)
 
+[firefox script (unsupported)](https://pastebin.com/raw/6Nh6sABu)
+
 <br /><br /><br /><br /><br /><br />
 
 (c) 2018 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
