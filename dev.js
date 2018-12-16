@@ -3,7 +3,8 @@ var dtps = {
   readableVer: "v1.4.0 (dev)",
   trackSuffix: " (dev)",
   showLetters: false,
-  unreadAnn: 0
+  unreadAnn: 0,
+  latestStream: []
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -137,6 +138,7 @@ window.dataLayer = window.dataLayer || [];
 });
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js")
+	jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
   if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
     dtps.shouldRender = false;
     dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
@@ -391,6 +393,7 @@ dtps.classStream = function(num, renderOv) {
   });
 }
 dtps.renderStream = function(stream) {
+	dtps.latestStream = stream;
 	var streamlist = [];
 	for (var i = 0; i < stream.length; i++) {
 		var due = "Due " + stream[i].due;
