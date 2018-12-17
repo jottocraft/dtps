@@ -638,9 +638,9 @@ dtps.calendar = function(doneLoading) {
 	for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
   		dtps.log("BUILDING CAL: " + i)
-	    $(".class").removeClass("active")
 	    for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
 		    if (dtps.classes[i].stream[ii].dueDate) {
+			    $(".class." + i).removeClass("active")
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
 		  start: dtps.classes[i].stream[ii].dueDate,
