@@ -665,7 +665,7 @@ dtps.assignment(calEvent.classNum, calEvent.streamNum);
 });
 	}
 }
-dtps.showClasses = function() {
+dtps.showClasses = function(override) {
   var streamClass = "active"
   if (dtps.selectedClass !== "dash") var streamClass = "";
 	dtps.classlist = [];
@@ -679,7 +679,7 @@ dtps.showClasses = function() {
       </div>
     `);
   }
-	if (!Boolean(jQuery(".sidebar .class.masterStream")[0])) {
+	if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
 		var streamDom = `<div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
     <div class="name">Stream</div>
     <div class="grade"><i class="material-icons">view_stream</i></div>
@@ -767,7 +767,7 @@ dtps.render = function() {
     <i class="material-icons">book</i>
     Gradebook
     </button>
-    <button onclick="alert('The grade editor is just for fun. Does not change your actual grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');$(this).removeClass('active');dtps.showClasses();" class="btn sudo">
+    <button onclick="alert('The grade editor is just for fun. Does not change your actual grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');dtps.showClasses(true);" class="btn sudo gradeEditor" style="display: none;">
     <i class="material-icons">edit</i>
     Grade Editor
     </button>
@@ -812,6 +812,9 @@ dtps.render = function() {
     <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
+<br /><br />
+<div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
+    <div class="label sudo"><i class="material-icons">edit</i> Show grade editor</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
 <button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
