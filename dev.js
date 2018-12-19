@@ -767,7 +767,7 @@ dtps.render = function() {
     <i class="material-icons">book</i>
     Gradebook
     </button>
-    <button onclick="alert('The Grade editor is just for fun. This will not change your actual PowerSchool grades; it just changes what Power+ displayes as your grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');" class="btn sudo">
+    <button onclick="alert('The grade editor is just for fun. Does not change your actual grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');$(this).removeClass('active');dtps.showClasses();" class="btn sudo">
     <i class="material-icons">edit</i>
     Grade Editor
     </button>
