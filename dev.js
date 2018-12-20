@@ -706,6 +706,16 @@ dtps.showClasses = function(override) {
     <div class="grade"><i class="material-icons">dashboard</i></div>
     </div>`
 		}
+		var googleClassDom = ""
+		if (dtps.googleClasses) {
+		dtps.classlist.push(`<div class="classDivider"></div>`)
+		for (var i = 0; i < dtps.googleClasses.length; i++) {
+		dtps.classlist.push(`<div onclick="window.open(` + dtps.googleClasses[i].alternateLink + `)" class="class google ` + i + `">
+      <div class="name">` + dtps.googleClasses[i].name + `</div>
+      <div class="grade val"><span class="letter">google_G</span><span class="points">google_G</span></div>
+      </div>`)	
+		}
+		}
   jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
 ` + streamDom + `
    <div style="display: none;" onclick="dtps.selectedClass = 'announcements';" class="class">
@@ -713,10 +723,10 @@ dtps.showClasses = function(override) {
     <div class="grade"><i class="material-icons">announcement</i></div>
     </div>
     <div class="classDivider"></div>
-  ` + dtps.classlist.join(""));
+  ` + dtps.classlist.join("") + googleClassDom);
   if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
-  $( ".class" ).click(function(event) {
+  $( ".class:not(.google)" ).click(function(event) {
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	  $(".background").css("background", prev)
 		  $(".background").addClass("trans");
@@ -756,7 +766,12 @@ dtps.googleAuth = function() {
 	firebase.auth().signInWithPopup(dtps.authProvider).then(function(result) {
   var token = result.credential.accessToken;
   var user = result.user;
+  dtps.classroomAuth = "?access_token=" + token;
   console.log(result);
+  jQuery.getJSON("https://classroom.googleapis.com/v1/courses" + dtps.classroomAuth, function(resp) {
+	  dtps.googleClasses = resp.courses;
+	  dtps.showClasses(true);
+  });
 })
 }
 dtps.render = function() {
