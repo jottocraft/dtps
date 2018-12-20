@@ -770,7 +770,9 @@ dtps.googleAuth = function() {
 	window.alert("EXPERIMENTAL FEATURE\n Your name and email will be logged in the Power+ database if you continute. Do not send feedback or bug reports about this feature yet.")
 	firebase.auth().signInWithPopup(dtps.authProvider).then(function(result) {
   var token = result.credential.accessToken;
-  var user = result.user;
+  dtps.user.google = result.user;
+  $(".items img").attr("src", "https://tp.js.org/icons/icon.png")
+  $(".items img").show();
   dtps.classroomAuth = "?access_token=" + token;
   console.log(result);
   jQuery.getJSON("https://classroom.googleapis.com/v1/courses" + dtps.classroomAuth, function(resp) {
@@ -905,6 +907,7 @@ dtps.render = function() {
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
+    <img style="display: none;" src="https://tp.js.org/icons/icon.png" style="width: 50px; height: 50px; margin: 0px 5px;" />
     <i onclick="fluid.modal('.abt')" class="material-icons">info_outline</i>
     <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
