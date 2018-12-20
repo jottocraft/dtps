@@ -710,9 +710,9 @@ dtps.showClasses = function(override) {
 		if (dtps.googleClasses) {
 		dtps.classlist.push(`<div class="classDivider"></div>`)
 		for (var i = 0; i < dtps.googleClasses.length; i++) {
-		dtps.classlist.push(`<div onclick="window.open(` + dtps.googleClasses[i].alternateLink + `)" class="class google ` + i + `">
+		dtps.classlist.push(`<div onclick="window.open('` + dtps.googleClasses[i].alternateLink + `')" class="class google ` + i + `">
       <div class="name">` + dtps.googleClasses[i].name + `</div>
-      <div class="grade val"><span class="letter">google_G</span><span class="points">google_G</span></div>
+      <div class="grade val"><span class="letter">google_G</span><span style="font-size: 24px;" class="points">google_G</span></div>
       </div>`)	
 		}
 		}
@@ -856,7 +856,7 @@ dtps.render = function() {
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="dtps.googleAuth();" class="btn contributor sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+    <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
