@@ -907,7 +907,7 @@ dtps.render = function() {
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
-    <img style="display: none; width: 50px; height: 50px; margin: 0px 5px;" src="https://tp.js.org/icons/icon.png" />
+    <img style="display: none; width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
     <i onclick="fluid.modal('.abt')" class="material-icons">info_outline</i>
     <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
