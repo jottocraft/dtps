@@ -754,6 +754,30 @@ dtps.showClasses = function(override) {
   });
 }
 }
+dtps.googleStream = function() {
+	function googleStream(i) {
+		if (dtps.classes[i].google) {
+	jQuery.getJSON("https://classroom.googleapis.com/v1/courses/" + dtps.classes[i].google.id + "/courseWork" + dtps.classroomAuth, function(resp) {
+		dtps.classes[i].google.stream = [];
+		for (var ii = 0; ii < resp.courseWork.length; ii++) {
+			var due = new Date();
+			due.setMonth(resp.courseWork[ii].month)
+			due.setFullYear(resp.courseWork[ii].year)
+			due.setDay(resp.courseWork[ii].day)
+			dtps.classes[i].google.stream.push({
+				title: resp.courseWork[ii].title,
+				due: due.toHumanString(),
+				dueDate: due.toISOString(),
+				class: i,
+				subject: dtps.classes[i].subject,
+				turnedIn: false
+			})
+		}
+		if (i < dtps.classes[i].length) googleStream(i + 1);
+	});
+		}
+	}
+}
 dtps.googleAuth = function() {
 	window.alert("EXPERIMENTAL FEATURE\n Your name and email will be logged in the Power+ database if you continute. Do not send feedback or bug reports about this feature yet.")
 	firebase.auth().signInWithPopup(dtps.authProvider).then(function(result) {
@@ -813,6 +837,7 @@ dtps.googleAuth = function() {
 		  }
 	  }
 	  dtps.showClasses(true);
+	  dtps.googleStream();
   });
 })
 }
