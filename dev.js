@@ -761,18 +761,15 @@ dtps.googleStream = function() {
 		dtps.classes[i].google.rawData = resp;
 		dtps.classes[i].google.stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
-			/*if (resp.courseWork[ii].dueDate) {
-			var due = new Date();
-			due.setMonth(resp.courseWork[ii].dueDate.month)
-			due.setFullYear(resp.courseWork[ii].dueDate.year)
-			due.setDay(resp.courseWork[ii].dueDate.day)
+			if (resp.courseWork[ii].dueDate) {
+			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month, resp.courseWork[ii].dueDate.day);
 			} else {
 			var due = new Date();
-			}*/
+			}
 			dtps.classes[i].google.stream.push({
 				title: resp.courseWork[ii].title,
-				/*due: due.toHumanString(),
-				dueDate: due.toISOString(),*/
+				due: due.toHumanString(),
+				dueDate: due.toISOString(),
 				class: i,
 				subject: dtps.classes[i].subject,
 				turnedIn: false
