@@ -758,6 +758,7 @@ dtps.googleStream = function() {
 	function googleStream(i) {
 		if (dtps.classes[i].google) {
 	jQuery.getJSON("https://classroom.googleapis.com/v1/courses/" + dtps.classes[i].google.id + "/courseWork" + dtps.classroomAuth, function(resp) {
+		dtps.classes[i].google.rawData = resp;
 		dtps.classes[i].google.stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
 			if (resp.courseWork[ii].dueDate) {
