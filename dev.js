@@ -760,7 +760,7 @@ dtps.googleStream = function() {
 				grade: "--/" + resp.courseWork[ii].maxPoints
 			})
 		}
-		if (i < (dtps.classes[i].length - 1)) googleStream(i + 1);
+		if (i < (dtps.classes.length - 1)) googleStream(i + 1);
 	});
 		}
 	}
