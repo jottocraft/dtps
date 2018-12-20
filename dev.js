@@ -1,15 +1,3 @@
-<script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
-    authDomain: "project-dtps.firebaseapp.com",
-    databaseURL: "https://project-dtps.firebaseio.com",
-    projectId: "project-dtps",
-    storageBucket: "project-dtps.appspot.com",
-    messagingSenderId: "117676227556"
-  };
-  firebase.initializeApp(config);
-</script>
 var dtps = {
   ver: 140,
   readableVer: "v1.4.0 (dev)",
