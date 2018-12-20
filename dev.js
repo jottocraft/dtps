@@ -766,7 +766,7 @@ dtps.googleStream = function() {
 		dtps.classes[i].google.stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
 			if (resp.courseWork[ii].dueDate) {
-			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month - 1, resp.courseWork[ii].dueDate.day);
+			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month - 1, resp.courseWork[ii].dueDate.day - 1);
 			} else {
 			var due = new Date();
 			}
