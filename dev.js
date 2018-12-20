@@ -428,8 +428,12 @@ dtps.renderStream = function(stream, searchRes) {
 	    var wFormat = "";
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") wFormat = "";
+	    var onclick = `dtps.assignment(` + stream[i].class + `, ` + i + `)`
+	    if (stream[i].google) {
+	    var onclick = `window.open('` + stream[i].url + `')`
+	    }
 		  streamlist.push(`
-        <div onclick="dtps.assignment(` + stream[i].class + `, ` + i + `)" class="card graded assignment ` + stream[i].col + `">
+        <div onclick="` + onclick + `" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div class="earned">` + earnedTmp + `</div>
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
@@ -762,7 +766,7 @@ dtps.googleStream = function() {
 		dtps.classes[i].google.stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
 			if (resp.courseWork[ii].dueDate) {
-			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month, resp.courseWork[ii].dueDate.day);
+			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month - 1, resp.courseWork[ii].dueDate.day);
 			} else {
 			var due = new Date();
 			}
@@ -772,7 +776,11 @@ dtps.googleStream = function() {
 				dueDate: due.toISOString(),
 				class: i,
 				subject: dtps.classes[i].subject,
-				turnedIn: false
+				turnedIn: false,
+				google: true,
+				url: resp.courseWork[ii].alternateLink,
+				letter: "--",
+				grade: "--/" + resp.courseWork[ii].maxPoints
 			})
 		}
 		if (i < (dtps.classes[i].length - 1)) googleStream(i + 1);
@@ -868,7 +876,7 @@ dtps.render = function() {
     <i class="material-icons">view_stream</i>
     Stream
     </button>
-    <button onclick="dtps.selectedContent = 'google'; window.open(dtps.classes[dtps.selectedClass].google.alternateLink)" class="btn google">
+    <button onclick="dtps.selectedContent = 'google'; $('.classContent').html(dtps.renderStream(dtps.classes[dtps.selectedClass].google.stream))" class="btn google">
     <i class="material-icons">experiment</i>
     google_logo Classroom
     </button>
