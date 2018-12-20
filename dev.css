@@ -194,7 +194,7 @@ body.titlebar .header h1 {
 body.titlebar .header .btns {
 	margin-top: 30px;
 	position: fixed;
-	margin-left: calc(50% - 225px)
+	margin-left: calc(50% - 175px)
 }
 body.titlebar:not(.noSidebar) .header .btns {
 	margin-left: calc(50% - 525px);
