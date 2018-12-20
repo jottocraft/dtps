@@ -688,9 +688,11 @@ dtps.showClasses = function(override) {
 	var unreadAnn = "";
 	if (dtps.unreadAnn) unreadAnn = "&nbsp;&nsbp;(" + dtps.unreadAnn + ")";
   for (var i = 0; i < dtps.classes.length; i++) {
+	  var googleDom = "";
+	  if (dtps.classes[i].google) var googleDom = "&nbsp;&nbsp;google_G";
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + dtps.classes[i].subject + `</div>
+      <div class="name">` + dtps.classes[i].subject + googleDom + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
@@ -706,16 +708,6 @@ dtps.showClasses = function(override) {
     <div class="grade"><i class="material-icons">dashboard</i></div>
     </div>`
 		}
-		var googleClassDom = ""
-		if (dtps.googleClasses) {
-		dtps.classlist.push(`<div class="classDivider"></div>`)
-		for (var i = 0; i < dtps.googleClasses.length; i++) {
-		dtps.classlist.push(`<div onclick="window.open('` + dtps.googleClasses[i].alternateLink + `')" class="class google ` + i + `">
-      <div class="name">` + dtps.googleClasses[i].name + `</div>
-      <div class="grade val"><span class="letter">google_G</span><span style="font-size: 24px;" class="points">google_G</span></div>
-      </div>`)	
-		}
-		}
   jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
 ` + streamDom + `
    <div style="display: none;" onclick="dtps.selectedClass = 'announcements';" class="class">
@@ -723,7 +715,7 @@ dtps.showClasses = function(override) {
     <div class="grade"><i class="material-icons">announcement</i></div>
     </div>
     <div class="classDivider"></div>
-  ` + dtps.classlist.join("") + googleClassDom);
+  ` + dtps.classlist.join(""));
   if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class:not(.google)" ).click(function(event) {
@@ -770,6 +762,55 @@ dtps.googleAuth = function() {
   console.log(result);
   jQuery.getJSON("https://classroom.googleapis.com/v1/courses" + dtps.classroomAuth, function(resp) {
 	  dtps.googleClasses = resp.courses;
+	  function editDistance(s1, s2) {
+      s1 = s1.toLowerCase();
+      s2 = s2.toLowerCase();
+
+      var costs = new Array();
+      for (var i = 0; i <= s1.length; i++) {
+        var lastValue = i;
+        for (var j = 0; j <= s2.length; j++) {
+          if (i == 0)
+            costs[j] = j;
+          else {
+            if (j > 0) {
+              var newValue = costs[j - 1];
+              if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                newValue = Math.min(Math.min(newValue, lastValue),
+                  costs[j]) + 1;
+              costs[j - 1] = lastValue;
+              lastValue = newValue;
+            }
+          }
+        }
+        if (i > 0)
+          costs[s2.length] = lastValue;
+      }
+      return costs[s2.length];
+    }
+	  function similarity(s1, s2) {
+      var longer = s1;
+      var shorter = s2;
+      if (s1.length < s2.length) {
+        longer = s2;
+        shorter = s1;
+      }
+      var longerLength = longer.length;
+      if (longerLength == 0) {
+        return 1.0;
+      }
+      return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+    }
+	  for (var i = 0; i < dtps.googleClasses.length; i++) {
+		  var highest = {stat: 0, class: null};
+		  for (var ii = 0; ii < dtps.classes.length; ii++) {
+			  var stat = similarity(dtps.googleClasses[i].name, dtps.classes[ii].subject)
+			  if ((stat > highest.stat) && (stat > 0.2)) highest = {stat: stat, class: ii}
+		  }
+		  if (highest.class !== null) {
+		  dtps.classes[highest.class].google = dtps.googleClasses[i]
+		  }
+	  }
 	  dtps.showClasses(true);
   });
 })
