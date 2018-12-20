@@ -463,10 +463,8 @@ dtps.renderStream = function(stream, searchRes) {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
-	if (dtps.masterContent == "ann") {
-		dtps.announcements();
-	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
+		dtps.announcements();
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -613,7 +611,7 @@ dtps.myWork = function(loc, id) {
 	});
 }
 dtps.announcements = function() {
-	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "ann")) {
+	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -648,8 +646,8 @@ dtps.announcements = function() {
 `);
 		}
 		}
-		if ((dtps.selectedClass == "dash") && (dtps.masterContent == "ann")) {
-  jQuery(".classContent").html(announcements.join("")); }
+		if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
+  jQuery(".dash.left").append("<br />" + announcements.join("")); }
 	});
 };
 dtps.calendar = function(doneLoading) {
@@ -745,10 +743,8 @@ dtps.showClasses = function(override) {
     $(".header h1").html($(this).children(".name").text())
     if (!dtps.classes[dtps.selectedClass]) {
       $(".header .btns").hide();
-      if (dtps.selectedClass == "dash") $(".header .btns.master").show();
     } else {
       $(".header .btns:not(.master)").show();
-      $(".header .btns.master").hide();
     }
     if ((dtps.selectedContent == "stream") && (dtps.classes[dtps.selectedClass])) dtps.classStream(dtps.selectedClass)
     if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
@@ -858,7 +854,7 @@ dtps.render = function() {
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "dash";
   dtps.selectedContent = "stream";
-  dtps.masterContent = "dash";
+  dtps.masterContent = "assignments";
 	var relDom = "";
 	if (dtps.trackSuffix !== "") {
 	   relDom = dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`);
@@ -891,20 +887,6 @@ dtps.render = function() {
     <button onclick="alert('The grade editor is just for fun. Does not change your actual grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');dtps.showClasses(true);" class="btn sudo gradeEditor" style="display: none;">
     <i class="material-icons">edit</i>
     Grade Editor
-    </button>
-    </div>
-<div class="btns row master sudo">
-    <button onclick="dtps.masterContent = 'dash'; dtps.masterStream(true);" class="btn dash active">
-    <i class="material-icons">dashboard</i>
-    Overview
-    </button>
-    <button onclick="dtps.masterContent = 'assignments'; dtps.masterStream(true);" class="btn assignments">
-    <i class="material-icons">assignment</i>
-    Assignments
-    </button>
-    <button onclick="dtps.masterContent = 'ann'; dtps.masterStream(true);" class="btn ann">
-    <i class="material-icons">announcement</i>
-    Announcements
     </button>
     </div>
     </div>
