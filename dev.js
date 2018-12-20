@@ -464,7 +464,6 @@ dtps.renderStream = function(stream, searchRes) {
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-		dtps.announcements();
   jQuery(".classContent").html(`
     <div class="spinner">
     <div class="bounce1"></div>
@@ -498,6 +497,7 @@ dtps.masterStream = function(doneLoading) {
 </div>
 `)
 		dtps.calendar(doneLoading);
+		dtps.announcements();
 	jQuery(".classContent .stream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
     var today = new Date().toHumanString();
