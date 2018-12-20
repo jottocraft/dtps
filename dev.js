@@ -777,6 +777,7 @@ dtps.googleStream = function() {
 	});
 		}
 	}
+	googleStream(0);
 }
 dtps.googleAuth = function() {
 	window.alert("EXPERIMENTAL FEATURE\n Your name and email will be logged in the Power+ database if you continute. Do not send feedback or bug reports about this feature yet.")
