@@ -720,6 +720,7 @@ dtps.showClasses = function(override) {
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class:not(.google)" ).click(function(event) {
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	  $(".btn.google").hide();
 	  $(".background").css("background", prev)
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
@@ -734,7 +735,7 @@ dtps.showClasses = function(override) {
 	  $(".header").removeClass(jQuery.grep($(".header").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
-	  if (dtps.classes[dtps.selectedClass]) { $(".background").addClass(dtps.classes[dtps.selectedClass].col); $(".header").addClass(dtps.classes[dtps.selectedClass].col) }
+	  if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].google) { $(".btn.google").show(); }; $(".background").addClass(dtps.classes[dtps.selectedClass].col); $(".header").addClass(dtps.classes[dtps.selectedClass].col) }
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
     $(".header h1").html($(this).children(".name").text())
@@ -838,6 +839,10 @@ dtps.render = function() {
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
     <i class="material-icons">view_stream</i>
     Stream
+    </button>
+    <button onclick="dtps.selectedContent = 'google'; window.open(dtps.classes[dtps.selectedClass].google.alternateLink)" class="btn google">
+    <i class="material-icons">experiment</i>
+    google_logo Classroom
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
     <i class="material-icons">list</i>
