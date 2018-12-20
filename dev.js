@@ -864,8 +864,8 @@ dtps.render = function() {
     Pages
     </button>
     <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades">
-    <i class="material-icons">book</i>
-    Gradebook
+    <i class="material-icons">assessment</i>
+    Grades
     </button>
     <button onclick="alert('The grade editor is just for fun. Does not change your actual grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');dtps.showClasses(true);" class="btn sudo gradeEditor" style="display: none;">
     <i class="material-icons">edit</i>
