@@ -611,29 +611,10 @@ dtps.myWork = function(loc, id) {
 	});
 }
 dtps.announcements = function() {
-	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-  jQuery(".classContent").html(`
-    <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-    </div>
-  `); }
 	dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc", function(resp) {
 		dtps.raw = resp;
 		var ann = jQuery(resp).children("tbody").children("tr").toArray();
 		var announcements = [];
-		if (window.localStorage.unreadAnn) {
-		if (window.localStorage.unreadAnn < ann.length) {
-		dtps.unreadAnn = ann.length - window.localStorage.unreadAnn;
-		localStorage.setItem('unreadAnn', ann.length);
-		$("#annLabel").html("Announcements (" + dtps.unreadAnn + ")");
-	} else {
-		if (window.localStorage.unreadAnn > ann.length) localStorage.setItem('unreadAnn', ann.length);
-	}
-	} else {
-		localStorage.setItem('unreadAnn', ann.length);
-	}
 		for (var i = 0; i < ann.length; i++) {
 			if (jQuery(ann[i]).children("td")[1] !== undefined) {
 				var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
