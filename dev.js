@@ -1,3 +1,15 @@
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
+    authDomain: "project-dtps.firebaseapp.com",
+    databaseURL: "https://project-dtps.firebaseio.com",
+    projectId: "project-dtps",
+    storageBucket: "project-dtps.appspot.com",
+    messagingSenderId: "117676227556"
+  };
+  firebase.initializeApp(config);
+</script>
 var dtps = {
   ver: 140,
   readableVer: "v1.4.0 (dev)",
@@ -135,6 +147,22 @@ window.dataLayer = window.dataLayer || [];
   'anonymize_ip': true
   });
 	
+});
+	jQuery.getScript("https://www.gstatic.com/firebasejs/5.7.0/firebase.js", function() {
+// Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
+    authDomain: "project-dtps.firebaseapp.com",
+    databaseURL: "https://project-dtps.firebaseio.com",
+    projectId: "project-dtps",
+    storageBucket: "project-dtps.appspot.com",
+    messagingSenderId: "117676227556"
+  };
+  firebase.initializeApp(config);
+  dtps.authProvider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().useDeviceLanguage();
+  dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.courses.readonly');
+  dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.coursework.me.readonly');
 });
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js")
@@ -735,6 +763,14 @@ dtps.showClasses = function(override) {
   });
 }
 }
+dtps.googleAuth = function() {
+	window.alert("EXPERIMENTAL FEATURE\n Your name and email will be logged in the Power+ database if you continute. Do not send feedback or bug reports about this feature yet.")
+	firebase.auth().signInWithPopup(dtps.authProvider).then(function(result) {
+  var token = result.credential.accessToken;
+  var user = result.user;
+  console.log(result);
+})
+}
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
@@ -817,8 +853,7 @@ dtps.render = function() {
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor</div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-<button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
-    <button id="authorize_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+    <button onclick="dtps.googleAuth();" class="btn contributor sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
