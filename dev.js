@@ -760,10 +760,14 @@ dtps.googleStream = function() {
 	jQuery.getJSON("https://classroom.googleapis.com/v1/courses/" + dtps.classes[i].google.id + "/courseWork" + dtps.classroomAuth, function(resp) {
 		dtps.classes[i].google.stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
+			if (resp.courseWork[ii].dueDate) {
 			var due = new Date();
-			due.setMonth(resp.courseWork[ii].month)
-			due.setFullYear(resp.courseWork[ii].year)
-			due.setDay(resp.courseWork[ii].day)
+			due.setMonth(resp.courseWork[ii].dueDate.month)
+			due.setFullYear(resp.courseWork[ii].dueDate.year)
+			due.setDay(resp.courseWork[ii].dueDate.day)
+			} else {
+			var due = new Date();
+			}
 			dtps.classes[i].google.stream.push({
 				title: resp.courseWork[ii].title,
 				due: due.toHumanString(),
@@ -773,7 +777,7 @@ dtps.googleStream = function() {
 				turnedIn: false
 			})
 		}
-		if (i < dtps.classes[i].length) googleStream(i + 1);
+		if (i < (dtps.classes[i].length - 1)) googleStream(i + 1);
 	});
 		}
 	}
