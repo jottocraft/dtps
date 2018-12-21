@@ -564,9 +564,9 @@ dtps.gradebook = function(num) {
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
 			assignTmp.push(`<p>` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
 			if (!((dtps.classes[num].weights[i].weight.includes("Success")) || (dtps.classes[num].weights[i].weight.includes("SS")))) {
-				if (dtps.classes[num].weights[i].assignments[ii].includes("DV")) DVs++;
-				if (dtps.classes[num].weights[i].assignments[ii].includes("M")) DVs++;
-				if (dtps.classes[num].weights[i].assignments[ii].includes("INC")) DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].split(":")[1].includes("DV")) DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].split(":")[1].includes("M")) DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].split(":")[1].includes("INC")) DVs++;
 			}
 		}
 		if (Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) < 10) {
