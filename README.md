@@ -1,5 +1,5 @@
-![Power+ Logo](https://dtps.js.org/dtps.png)
 ## power+
+[![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
 
 <br />
 
@@ -18,3 +18,5 @@ or
 <br /><br /><br /><br /><br /><br />
 
 (c) 2018 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
+
+![Power+ Logo](https://dtps.js.org/dtps.png)
