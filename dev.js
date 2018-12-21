@@ -762,6 +762,8 @@ dtps.googleStream = function() {
 		}
 		if (i < (dtps.classes.length - 1)) googleStream(i + 1);
 	});
+		} else {
+			if (i < (dtps.classes.length - 1)) googleStream(i + 1);
 		}
 	}
 	googleStream(0);
