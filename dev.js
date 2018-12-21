@@ -553,10 +553,16 @@ dtps.gradebook = function(num) {
 	if (dtps.classes[num].weights.length) {
 		$(".btns .btn.grades").show();
 		var weightsTmp = [];
+		var DVs = 0;
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
 			assignTmp.push(`<p>` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
+			if (!((dtps.classes[num].weights[i].weight.includes("Success")) || (dtps.classes[num].weights[i].weight.includes("SS")))) {
+				if (dtps.classes[num].weights[i].assignments[ii].letter == "DV") DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].letter == "M") DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].letter == "INC") DVs++;
+			}
 		}
 		if (Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) < 10) {
 		weightsTmp.push(`<div style="height: 40px;" class="weight card">
@@ -575,7 +581,11 @@ dtps.gradebook = function(num) {
 </div>`);
 	}
 	}
-	jQuery(".classContent").html(`
+	var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">check_circle_outline</i><div style="display: inline-block;"><h5>On track to pass</h5><p>Power+ didn't detect any DVs in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
+	if (DVs > 0) {
+        var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">cancel</i><div style="display: inline-block;"><h5>You're at risk of failing this class</h5><p>Power+ detected ` + DVs + ` DV(s) in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
+	}
+	jQuery(".classContent").html(headsUp + `
     <div style="height: 1000px;" class="weight parent">
     ` + weightsTmp.join("") + `
     </div>
