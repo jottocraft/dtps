@@ -459,7 +459,8 @@ dtps.renderStream = function(stream, searchRes) {
   keys: [ "title", "id", "due", "subject" ]
 });
 }
-  return `<div style="text-align: right;"><input class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
+  //return `<div style="text-align: right;"><input class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
+  return streamlist.join("");
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
