@@ -396,7 +396,12 @@ dtps.classStream = function(num, renderOv) {
       	    dtps.classes[num].stream[id].grade = jQuery(data[i]).children("td:nth-child(4)").text().replace(/\s/g, "");
       	    dtps.classes[num].stream[id].letter = jQuery(data[i]).children("td:nth-child(6)").text().replace(/\s/g, "");
             if (prevWeight !== -1) dtps.classes[num].stream[id].weight = dtps.classes[num].weights[prevWeight].weight;
-	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push(dtps.classes[num].stream[id].title + ": " + dtps.classes[num].stream[id].grade);
+		    if ("ABC".includes(dtps.classes[num].stream[id].letter.toArray()[0])) {
+  			var earnedTmp = dtps.classes[num].stream[id].grade.split("/")[0];
+	    } else {
+    		var earnedTmp = dtps.classes[num].stream[id].letter;
+    	}
+	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push(dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1]);
     	    }
   	    }
 	    }
@@ -559,9 +564,9 @@ dtps.gradebook = function(num) {
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
 			assignTmp.push(`<p>` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
 			if (!((dtps.classes[num].weights[i].weight.includes("Success")) || (dtps.classes[num].weights[i].weight.includes("SS")))) {
-				if (dtps.classes[num].weights[i].assignments[ii].letter == "DV") DVs++;
-				if (dtps.classes[num].weights[i].assignments[ii].letter == "M") DVs++;
-				if (dtps.classes[num].weights[i].assignments[ii].letter == "INC") DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].includes("DV")) DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].includes("M")) DVs++;
+				if (dtps.classes[num].weights[i].assignments[ii].includes("INC")) DVs++;
 			}
 		}
 		if (Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) < 10) {
