@@ -942,6 +942,7 @@ dtps.render = function() {
 		jQuery(".buildInfo").click(function() {
 			window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
 		});
+		jQuery(".buildInfo").show();
 	})
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
