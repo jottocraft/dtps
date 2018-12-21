@@ -1,0 +1,19 @@
+site_name: Power+ Docs
+site_url: https://dtps.js.org
+site_description: PowerSchool LMS improvements project
+site_author: jottocraft
+
+repo_url: https://github.com/jottocraft/dtps/
+
+theme:
+    name: readthedocs
+    highlightjs: true
+
+markdown_extensions:
+    - def_list
+    - mdx_gh_links:
+        user: jottocraft
+        repo: dtps
+
+plugins:
+    - search
