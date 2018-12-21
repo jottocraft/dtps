@@ -885,7 +885,7 @@ dtps.render = function() {
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
     <h3>About</h3>
-    <h5>Power+ ` + relDom + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;display: none;cursor: pointer;"></div></h5>
+    <h5>Power+ ` + relDom + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
@@ -942,7 +942,6 @@ dtps.render = function() {
 		jQuery(".buildInfo").click(function() {
 			window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
 		});
-		jQuery(".buildInfo").show();
 	})
 	 jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function() {
 	  markdown = new showdown.Converter();
