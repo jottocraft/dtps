@@ -1,3 +1,5 @@
+**These docs are still being written. Help out by making a PR on [GitHub](https://github.com/jottocraft/dtps)**
+
 ### dtps.changelog()
 Displays the changelog modal. This function does not fetch changelog data.
 
@@ -88,6 +90,25 @@ Displays the work submitted for an assignment
   * String: location of the class
 * id
   * Number: ID of the assignment
- 
- ### more coming soon
- **i'm out of time right now. more will be added soon**
+
+### dtps.announcements()
+Loads announcements into the dashboard (should only be called by dtps.masterStream)
+
+### dtps.calendar(doneLoading)
+Loads the calendar into the dashboard (should only be called by dtps.masterStream)
+* doneLoading
+  * Boolean: indicates if the masterStream is done loading. Since v1.4.0 replacing the masterStream with dashboard this doesn't do anything.
+  
+### dtps.showClasses(override)
+Loads classes from dtps.classes into the sidebar
+* override
+  * Boolean: Setting to true forces a re-render even if the sidebar already has been loaded
+
+### dtps.googleStream()
+Loads assignments from all classes with a linked google classroom into a DTPS stream array
+
+### dtps.googleAuth()
+Shows a Google login screen, fetches classes from Google, links with PowerSchool classes, then calls dtps.googleStream
+
+### dtps.render()
+Called by dtps.init when all checks have passed, erases all PowerSchool HTML & CSS and injects the DTPS UI. Also used to do other startup things like fetch scripts and changelog info.
