@@ -717,11 +717,12 @@ dtps.render = function() {
 		document.addEventListener('extensionData', function(e) {
    if (e.detail == "extensionInstalled") {
 	        var extensionDom = "";
-	   jQuery(".extensionDom").html(`<br /><br />
+	   jQuery(".extensionDom").html(`<br />
 <div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
+<br /><br />
 <div id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad) {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`)
+    <div class="label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
 	   if (window.localStorage.disableAutoLoad) jQuery("#extensionAutoLoad").removeClass("active");
 	   if (window.localStorage.devAutoLoad) jQuery("#extensionDevMode").addClass("active");
    }
