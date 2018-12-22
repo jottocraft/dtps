@@ -125,6 +125,7 @@ dtps.init = function () {
 	dtps.showChangelog = false;
 	dtps.updateScript = false;
   dtps.user = HaikuContext.user;
+  dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
@@ -898,9 +899,10 @@ dtps.render = function() {
       <div class="bounce3"></div>
     </div>
     </div>
-    <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
+    <div style="width: calc(80%);border-radius: 30px;padding: 0px;" class="card focus close abt">
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
-    <h3>About</h3>
+<div class="abtheader" style="padding: 40px 30px 20px 30px;">
+    <h3 style="margin-top: 0px">About</h3>
     <h5>Power+ ` + relDom + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
@@ -908,7 +910,8 @@ dtps.render = function() {
 <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
-    <br />
+</div>
+<div style="padding: 30px;">
     <div class="btns row themeSelector"></div>
 <br /><br />
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
@@ -922,10 +925,11 @@ dtps.render = function() {
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+</div>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
-    <img style="display: none; width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
+    <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
     <i onclick="fluid.modal('.abt')" class="material-icons">info_outline</i>
     <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
