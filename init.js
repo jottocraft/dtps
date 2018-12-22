@@ -723,8 +723,8 @@ dtps.render = function() {
 <br /><br />
 <div class="extensionDevMode" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}" class="switch"><span class="head"></span></div>
     <div class="extensionDevMode" class="label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
-	   if (window.localStorage.disableAutoLoad == "true") jQuery("#extensionAutoLoad").removeClass("active"); jQuery(".extensionDevMode").hide();
-	   if (window.localStorage.devAutoLoad == "true") jQuery("#extensionDevMode").addClass("active");
+	   if (window.localStorage.disableAutoLoad == "true") { jQuery("#extensionAutoLoad").removeClass("active"); jQuery(".extensionDevMode").hide(); }
+	   if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
    }
 });
   jQuery("body").html(`
