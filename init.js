@@ -727,9 +727,6 @@ dtps.render = function() {
 	   if (window.localStorage.devAutoLoad == "true") jQuery("#extensionDevMode").addClass("active");
    }
 });
-	document.dispatchEvent(new CustomEvent('extensionData', {
-        detail: "extensionStatus"
-    }));
   jQuery("body").html(`
     <div class="sidebar">
     </div>
@@ -797,7 +794,7 @@ dtps.render = function() {
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
-    <i onclick="fluid.modal('.abt')" class="material-icons">info_outline</i>
+    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt');" class="material-icons">info_outline</i>
     <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
