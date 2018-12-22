@@ -114,7 +114,21 @@ dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
 	document.addEventListener('extensionData', function(e) {
    if (e.detail == "extensionInstalled") {
-	   dtpsExtension = true;
+	   var extensionDom = "";
+	if (typeof dtpsExtension !== "undefined") {
+		if (dtpsExtension) {
+			if (window.localStorage.disableAutoLoad) {
+				extensionDom = `<br /><br />
+<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
+			} else {
+				extensionDom = `<br /><br />
+<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch active"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
+			}
+		}
+	}
+	   jQuery(".extensionDom").html(extensionDom)
    }
 });
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
@@ -719,20 +733,6 @@ dtps.render = function() {
 	    } else {
 		  relDom = dtps.readableVer;
 	    }
-	var extensionDom = "";
-	if (typeof dtpsExtension !== "undefined") {
-		if (dtpsExtension) {
-			if (window.localStorage.disableAutoLoad) {
-				extensionDom = `<br /><br />
-<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
-			} else {
-				extensionDom = `<br /><br />
-<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch active"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
-			}
-		}
-	}
   jQuery("body").html(`
     <div class="sidebar">
     </div>
@@ -792,7 +792,7 @@ dtps.render = function() {
     <br /><br />
 <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">experiment</i> Show letter grades instead of points earned</div>
-` + extensionDom + `
+<div class="extensionDom" ></div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
 <button id="signout_button" style="display:none;" class="btn sudo"><i class="material-icons">experiment</i>google_logo Signout</button>
