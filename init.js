@@ -727,6 +727,9 @@ dtps.render = function() {
 	   if (window.localStorage.devAutoLoad == "true") jQuery("#extensionDevMode").addClass("active");
    }
 });
+	document.dispatchEvent(new CustomEvent('extensionData', {
+        detail: "extensionStatus"
+    }));
   jQuery("body").html(`
     <div class="sidebar">
     </div>
