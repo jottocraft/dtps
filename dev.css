@@ -137,7 +137,6 @@ body.titlebar .sidebar {
 	text-overflow: ellipsis;
 }
 .sidebar {
-	background-color: #f1f1f1;
 	visibility: visible;
 	height: 100%;
 	width: 275px;
@@ -147,7 +146,10 @@ body.titlebar .sidebar {
 	position: absolute;
 	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.17);
 }
-body.dark .sidebar {
+body:not(.dark) .sidebar, body:not(.dark) .abtheader {
+	background-color: #f1f1f1;
+}
+body.dark .sidebar, body.dark .abtheader {
 	background-color: #2d2d2d;
 }
 body.noSidebar .sidebar {
