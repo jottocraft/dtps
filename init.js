@@ -112,25 +112,6 @@ if (req == "assignGET") {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-	document.addEventListener('extensionData', function(e) {
-   if (e.detail == "extensionInstalled") {
-	   var extensionDom = "";
-	if (typeof dtpsExtension !== "undefined") {
-		if (dtpsExtension) {
-			if (window.localStorage.disableAutoLoad) {
-				extensionDom = `<br /><br />
-<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
-			} else {
-				extensionDom = `<br /><br />
-<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch active"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
-			}
-		}
-	}
-	   jQuery(".extensionDom").html(extensionDom)
-   }
-});
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719", "10838212"]
@@ -733,6 +714,22 @@ dtps.render = function() {
 	    } else {
 		  relDom = dtps.readableVer;
 	    }
+		document.addEventListener('extensionData', function(e) {
+   if (e.detail == "extensionInstalled") {
+	        var extensionDom = "";
+			if (window.localStorage.disableAutoLoad) {
+				extensionDom = `<br /><br />
+<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
+			} else {
+				extensionDom = `<br /><br />
+<div onclick="if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch active"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`;
+			}
+	
+	   jQuery(".extensionDom").html(extensionDom)
+   }
+});
   jQuery("body").html(`
     <div class="sidebar">
     </div>
