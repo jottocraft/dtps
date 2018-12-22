@@ -718,12 +718,12 @@ dtps.render = function() {
    if (e.detail == "extensionInstalled") {
 	        var extensionDom = "";
 	   jQuery(".extensionDom").html(`<br />
-<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false); jQuery('#extensionDevMode').show();} else {localStorage.setItem('disableAutoLoad', true); jQuery('#extensionDevMode').hide();}" class="switch active"><span class="head"></span></div>
+<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false); jQuery('.extensionDevMode').show();} else {localStorage.setItem('disableAutoLoad', true); jQuery('.extensionDevMode').hide(); window.alert('To re-enable auto load, click on your profile picture at the top right corner of PowerSchool Learning and select the option to enable Power+')}" class="switch active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
 <br /><br />
-<div id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad) {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
-	   if (window.localStorage.disableAutoLoad == "true") jQuery("#extensionAutoLoad").removeClass("active"); jQuery("#extensionDevMode").hide();
+<div class="extensionDevMode" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}" class="switch"><span class="head"></span></div>
+    <div class="extensionDevMode" class="label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
+	   if (window.localStorage.disableAutoLoad == "true") jQuery("#extensionAutoLoad").removeClass("active"); jQuery(".extensionDevMode").hide();
 	   if (window.localStorage.devAutoLoad == "true") jQuery("#extensionDevMode").addClass("active");
    }
 });
