@@ -863,6 +863,19 @@ dtps.render = function() {
 	    } else {
 		  relDom = dtps.readableVer;
 	    }
+	document.addEventListener('extensionData', function(e) {
+   if (e.detail == "extensionInstalled") {
+	        var extensionDom = "";
+	   jQuery(".extensionDom").html(`<br />
+<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false); jQuery('.extensionDevMode').show();} else {localStorage.setItem('disableAutoLoad', true); jQuery('.extensionDevMode').hide(); window.alert('To re-enable auto load, click on your profile picture at the top right corner of PowerSchool Learning and select the option to enable Power+')}" class="switch active"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
+<br /><br />
+<div class="extensionDevMode" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}" class="switch"><span class="head"></span></div>
+    <div class="extensionDevMode" class="label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
+	   if (window.localStorage.disableAutoLoad == "true") { jQuery("#extensionAutoLoad").removeClass("active"); jQuery(".extensionDevMode").hide(); }
+	   if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
+   }
+});
   jQuery("body").html(`
     <div class="sidebar">
     </div>
@@ -922,6 +935,7 @@ dtps.render = function() {
 <br /><br />
 <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor</div>
+<div class="extensionDom" ></div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
@@ -930,7 +944,7 @@ dtps.render = function() {
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
-    <i onclick="fluid.modal('.abt')" class="material-icons">info_outline</i>
+    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt')" class="material-icons">info_outline</i>
     <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     </div>
