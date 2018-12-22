@@ -870,8 +870,8 @@ dtps.render = function() {
 <div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false); jQuery('.extensionDevMode').show();} else {localStorage.setItem('disableAutoLoad', true); jQuery('.extensionDevMode').hide(); window.alert('To re-enable auto load, click on your profile picture at the top right corner of PowerSchool Learning and select the option to enable Power+')}" class="switch active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
 <br /><br />
-<div class="extensionDevMode" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}" class="switch"><span class="head"></span></div>
-    <div class="extensionDevMode" class="label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
+<div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}"><span class="head"></span></div>
+    <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
 	   if (window.localStorage.disableAutoLoad == "true") { jQuery("#extensionAutoLoad").removeClass("active"); jQuery(".extensionDevMode").hide(); }
 	   if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
    }
@@ -912,10 +912,9 @@ dtps.render = function() {
       <div class="bounce3"></div>
     </div>
     </div>
-    <div style="width: calc(80%);border-radius: 30px;padding: 0px;" class="card focus close abt">
+    <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
-<div class="abtheader" style="padding: 40px 30px 20px 30px;">
-    <h3 style="margin-top: 0px">About</h3>
+    <h3>About</h3>
     <h5>Power+ ` + relDom + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
@@ -923,8 +922,6 @@ dtps.render = function() {
 <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
-</div>
-<div style="padding: 30px;">
     <div class="btns row themeSelector"></div>
 <br /><br />
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
@@ -939,7 +936,6 @@ dtps.render = function() {
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
-</div>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
