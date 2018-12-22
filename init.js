@@ -718,7 +718,7 @@ dtps.render = function() {
    if (e.detail == "extensionInstalled") {
 	        var extensionDom = "";
 	   jQuery(".extensionDom").html(`<br />
-<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch active"><span class="head"></span></div>
+<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad) {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true); window.alert('Power+ Auto Load has been disabled. To re-enable, click on your profile picture at the top-right corner of PowerSchool and select \'Automatically load Power+\'')}" class="switch active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
 <br /><br />
 <div id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad) {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}" class="switch"><span class="head"></span></div>
