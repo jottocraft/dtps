@@ -112,13 +112,11 @@ if (req == "assignGET") {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-	if (chrome) {
-	chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-    if (request.type == 'extensionInstalled') {
-	    dtpsExtension = true;
-    }
+	document.addEventListener('extensionData', function(e) {
+   if (e.detail == "extensionInstalled") {
+	   dtpsExtension = true;
+   }
 });
-	}
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719", "10838212"]
