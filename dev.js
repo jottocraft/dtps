@@ -210,7 +210,7 @@ window.dataLayer = window.dataLayer || [];
     })[1].replace("eclass_", "");
 	  var loc = eclass.children("div.eclass_filter").attr("onclick").split("/");
 	  dtps.classColors.push({id: id, col: col, loc: loc});
-	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/assignment");
+	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/assignment?page=1");
 	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/cms_page/view");
 	  dtps.webReq("psGET", "/" + loc[1] + "/" + loc[2] + "/grades", function(resp, q) {
 		  var iTmp = null;
@@ -335,8 +335,18 @@ dtps.classStream = function(num, renderOv) {
     <div class="bounce3"></div>
     </div>
   `); } }
-  dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/assignment", function(resp) {
+  var allData = [];
+  var total = null;
+ function call(num) {
+  dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/assignment?page=" + num, function(resp) {
     var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
+    allData.concat(data);
+    if (total == null) total = jQuery(resp).find(".pagination.right").children("ul").toArray().length - 2;
+    if (num < total) { call(num + 1) } else { step2(allData) }
+	    });
+  }
+	      call(1)
+	    function step2(data) {
     dtps.classes[num].stream = [];
     dtps.classes[num].streamlist = [];
     dtps.classes[num].streamitems = [];
@@ -413,7 +423,7 @@ dtps.classStream = function(num, renderOv) {
       dtps.classesReady++;
       dtps.checkReady(num);
     });
-  });
+  }
 }
 dtps.renderStream = function(stream, searchRes) {
 	var streamlist = [];
