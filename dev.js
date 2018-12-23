@@ -591,9 +591,9 @@ dtps.gradebook = function(num) {
        ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
     </div>`);
 	}
-	var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">check_circle_outline</i><div style="display: inline-block;"><h5>On track to pass</h5><p>Power+ didn't detect any DVs in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
+	var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">check_circle_outline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">On track to pass&nbsp;&nbsp;<span style="font-size: 18px;">Power+ didn't detect any DVs in any of your CCs or PTs</span></h5></div>`
 	if (DVs > 0) {
-        var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">cancel</i><div style="display: inline-block;"><h5>You're at risk of failing this class</h5><p>Power+ detected ` + DVs + ` DV(s) in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
+        var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
 	}
 	jQuery(".classContent").html(headsUp + `
 <div style="height: 700px;" class="card withnav">
