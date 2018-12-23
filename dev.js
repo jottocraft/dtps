@@ -340,8 +340,8 @@ dtps.classStream = function(num, renderOv) {
  function call(num) {
   dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/assignment?page=" + num, function(resp) {
     var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
-    allData.concat(data);
-    if (total == null) total = jQuery(resp).find(".pagination.right").children("ul").toArray().length - 2;
+    allData = allData.concat(data);
+    if (total == null) total = jQuery(resp).find(".padtb").children(".pagination.right").children("ul").children("li").length / 2;
     if (num < total) { call(num + 1) } else { step2(allData) }
 	    });
   }
