@@ -651,7 +651,7 @@ dtps.announcements = function() {
 				var psClass = dtps.classLocs.indexOf(loc[1] + "/" + loc[2]);
 				var col = "";
 				if (psClass !== -1) col = dtps.classes[psClass].col
-			announcements.push(`<div class="card color ` + col + `">
+			announcements.push(`<div style="margin: 25px; margin-right: 0px; width: 100%;" class="card color ` + col + `">
 ` + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
