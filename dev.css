@@ -17,6 +17,10 @@ body.dark .fc .fc-button-group>* {
 	border-color: #484848;
 	color: white;
 }
+body {
+	position: relative;
+	height: 100%;
+}
 .class {
 	border: none;
 	padding: 0px;
@@ -139,6 +143,7 @@ body.titlebar .sidebar {
 .sidebar {
 	visibility: visible;
 	height: 100%;
+	min-height: 100vh;
 	width: 275px;
 	padding-left: 10px;
 	padding-top: 25px;
@@ -150,7 +155,7 @@ body:not(.dark) .sidebar, body:not(.dark) .abtheader {
 	background-color: #f1f1f1;
 }
 body.dark .sidebar, body.dark .abtheader {
-	background-color: #2d2d2d;
+	background-color: #232323;
 }
 body.noSidebar .sidebar {
 	display: none;
@@ -205,7 +210,6 @@ body.titlebar:not(.noSidebar) .header .btns {
 	margin-left: 260px;
     padding-top: 300px;
     z-index: 100;
-    position: absolute;
     top: 0;
     width: calc(100% - 250px);
 }
@@ -530,7 +534,7 @@ body.dark .card.details * {
 }
 .background {
   background-size: 100%;
-  position: relative;
+  position: absolute;
   z-index: -90;
 }
 .background:before {
