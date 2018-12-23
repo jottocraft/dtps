@@ -372,12 +372,15 @@ body.dark .classContent .card {
 .badge, .beta.notice {
 	display: inline-block;
 	margin: 0 10px;
+	border: none;
+	padding: 3px 6px;
+	color: white !important;
+	background-color: #ff7e00;
 }
 .badge i, .beta.notice i {
 	vertical-align: middle;
 }
 .beta.notice.turnin {
-	color: #0bb75b;
 	color: white;
 	border-color: #0bb75b;
 	background-color: #0bb75b;
@@ -390,20 +393,16 @@ body.dark .classContent .card {
 	border-color: #b7630a;
 }
 .badge.dev {
-	color: #0090ff;
-	border-color: #0090ff;
+	background-color: #0090ff;
 }
 .badge.sudo {
-	color: #d64c0c;
-	border-color: #d64c0c;
+	background-color: #d64c0c;
 }
 .badge.og {
-	color: #daa520;
-	border-color: #daa520;
+	background-color: #daa520;
 }
 .badge.contributor {
-	color: #20da61;
-	border-color: #20da61;
+	background-color: #20da61;
 }
 .weight.parent {
 	padding: 0px !important;
