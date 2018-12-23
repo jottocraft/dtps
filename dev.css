@@ -330,18 +330,18 @@ body.dark .classContent .card {
 	margin-top: 0px;
 }
 .classContent .card .points .earned {
-	font-size: 32px;
+	font-size: 24px;
 	display: inline-block;
 }
 .classContent .card .points .total {
-	font-size: 18px;
+	font-size: 14px;
 	margin-top: 15px;
 	display: inline-block;
 	color: #8e8e8e;
 }
 .assignment .weighted {
 	color: #8e8e8e;
-	font-size: 18px;
+	font-size: 0.9rem;
 	margin-left: 10px;
 }
 .weight.parent .weight {
@@ -430,11 +430,14 @@ body.dark .card.details * {
 }
 .card.assignment {
 	cursor: pointer;
+	padding: 20px 30px;
 }
 .classContent .card.assignment h5 {
-	font-size: 1.5rem !important;
+	font-size: 1rem !important;
 }
 .classContent .card.assignment h4 {
+	margin-bottom: 5px;
+	font-size: 1.25rem;
 	margin-top: 0px !important;
     white-space: nowrap;
     text-overflow: ellipsis;
