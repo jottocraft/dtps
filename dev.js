@@ -919,6 +919,7 @@ dtps.render = function() {
     <h4 style="margin: 0px">Power+ ` + trackDom + `</h4>
     <h5 style="display: inline-block; margin: 0px; margin-top: 5px; font-size: 1.5rem;">` + dtps.readableVer.replace(dtps.trackSuffix, "") + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
 </div>
+<br /><br />
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
