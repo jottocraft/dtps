@@ -669,12 +669,12 @@ dtps.calendar = function(doneLoading) {
   		dtps.log("BUILDING CAL: " + i)
 	    for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
 		    if (dtps.classes[i].stream[ii].dueDate) {
-			    $(".class." + i).removeClass("active")
+		    var styles = window.getComputedStyle($(".class." + i)[0]);
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
 		  start: dtps.classes[i].stream[ii].dueDate,
 		  allDay: false,
-	          color: $(".class." + i).css("background-color"),
+	          color: styles.getPropertyValue('--norm'),
 			    classNum: i,
 			    streamNum: ii
 		})
