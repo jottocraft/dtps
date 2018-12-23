@@ -915,7 +915,7 @@ dtps.render = function() {
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
 <img src="https://dtps.js.org/dtps.png" style="vertical-align: middle;width: 100px;margin-right: 10px;">
-    <div style="display:inlin-block; vertical-align: middle;">
+    <div style="display:inline-block; vertical-align: middle;">
     <h4 style="margin: 0px">Power+ ` + trackDom + `</h4>
     <h5 style="display: inline-block; margin: 0px; margin-top: 5px; font-size: 1.5rem;">` + dtps.readableVer.replace(dtps.trackSuffix, "") + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
 </div>
