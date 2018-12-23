@@ -21,6 +21,14 @@ body {
 	position: relative;
 	height: 100%;
 }
+.sidenav .item {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.sidenav .item i {
+	margin-right: 10px;
+}
 .class {
 	border: none;
 	padding: 0px;
