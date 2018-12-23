@@ -596,7 +596,7 @@ dtps.gradebook = function(num) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">cancel</i><div style="display: inline-block;"><h5>You're at risk of failing this class</h5><p>Power+ detected ` + DVs + ` DV(s) in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
 	}
 	jQuery(".classContent").html(headsUp + `
-<div style="height: 650px;" class="card withnav">
+<div style="height: 700px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
       <h5>Gradebook</h5>
