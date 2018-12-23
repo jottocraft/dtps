@@ -341,7 +341,7 @@ dtps.classStream = function(num, renderOv) {
   dtps.webReq("psGET", "/" + dtps.classes[num].loc + "/assignment?page=" + pag, function(resp) {
     var data = jQuery(resp).find("table.list.hover_glow tbody").children("tr:not(.head)").toArray();
     allData = allData.concat(data);
-    if (total == null) total = jQuery(resp).find(".padtb").children(".pagination.right").children("ul").children("li").length / 2;
+    if (total == null) total = (jQuery(resp).find(".padtb").children(".pagination.right").children("ul").children("li").length / 2) - 2;
     if (pag < total) { call(pag + 1) } else { step2(allData) }
 	    });
   }
