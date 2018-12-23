@@ -559,6 +559,7 @@ dtps.gradebook = function(num) {
 	if (dtps.classes[num].weights.length) {
 		$(".btns .btn.grades").show();
 		var weightsTmp = [];
+		var sidebarTmp = [];
 		var DVs = 0;
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
@@ -571,31 +572,32 @@ dtps.gradebook = function(num) {
 				if (parts[parts.length - 1].includes("INC")) DVs++;
 			}
 		}
-		if (Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) < 10) {
-		weightsTmp.push(`<div style="height: 40px;" class="weight card">
-<div class="open">
-<h4 onclick="if (Number($(this).parent().parent().css('height').slice(0,-2)) <= 400) {$(this).parent().parent().toggleClass('open')}">` + dtps.classes[num].weights[i].weight + `</h4>
-` + assignTmp.join("") + `
-</div>
-<div class="close">
-<p  onclick="if (Number($(this).parent().parent().css('height').slice(0,-2)) <= 400) {$(this).parent().parent().toggleClass('open')}">` + dtps.classes[num].weights[i].weight + ` (click to expand)</p>
-</div>
-</div>`);
-	} else {
-		weightsTmp.push(`<div style="height: calc(` + Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0,-1)) + `% - 40px);" class="weight card">
-<h4 onclick="if (Number($(this).parent().css('height').slice(0,-2)) <= 400) {$(this).parent().toggleClass('open')}">` + dtps.classes[num].weights[i].weight + `</h4>
-` + assignTmp.join("") + `
-</div>`);
-	}
+		dtps.classes[num].weights[i].icon = "";
+		if (dtps.classes[num].weights[i].weight.includes("Success") || dtps.classes[num].weights[i].weight.includes("SS")) dtps.classes[num].weights[i].icon = `<i class="material-icons">star</i> `
+	        if (dtps.classes[num].weights[i].weight.includes("Comprehension") || dtps.classes[num].weights[i].weight.includes("CC")) dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `
+		if (dtps.classes[num].weights[i].weight.includes("Performance") || dtps.classes[num].weights[i].weight.includes("PT"))dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `
+		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `</h4>` + assignTmp.join("") + `</div>` );
+		sidebarTmp.push(`<div class="item">
+       ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight + `
+    </div>`);
 	}
 	var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">check_circle_outline</i><div style="display: inline-block;"><h5>On track to pass</h5><p>Power+ didn't detect any DVs in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
 	if (DVs > 0) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">cancel</i><div style="display: inline-block;"><h5>You're at risk of failing this class</h5><p>Power+ detected ` + DVs + ` DV(s) in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
 	}
 	jQuery(".classContent").html(headsUp + `
-    <div style="height: 1000px;" class="weight parent">
-    ` + weightsTmp.join("") + `
+<div style="height: 650px;" class="card withnav">
+  <div class="sidenav">
+    <div class="title">
+      <h5>Gradebook</h5>
+      <p>` + dtps.classes[num].name + `</p>
     </div>
+    ` + sidebarTmp.join("") `
+  </div>
+  <div class="content">
+    ` + weightsTmp.join("") + `
+  </div>
+</div>
   `);
 	    } else {
 	$(".btns .btn.grades").hide();
