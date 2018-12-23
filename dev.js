@@ -857,11 +857,11 @@ dtps.render = function() {
   dtps.selectedClass = "dash";
   dtps.selectedContent = "stream";
   dtps.masterContent = "assignments";
-	var relDom = "";
+	var trackDom = "";
 	if (dtps.trackSuffix !== "") {
-	   relDom = dtps.readableVer.replace(dtps.trackSuffix, `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`);
+	   trackDom = `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`
 	    } else {
-		  relDom = dtps.readableVer;
+		  trackDom = ``;
 	    }
 	document.addEventListener('extensionData', function(e) {
    if (e.detail == "extensionInstalled") {
@@ -914,8 +914,11 @@ dtps.render = function() {
     </div>
     <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
 <i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
-    <h3>About</h3>
-    <h5>Power+ ` + relDom + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
+<img src="https://dtps.js.org/dtps.png" style="vertical-align: middle;width: 100px;margin-right: 10px;">
+    <div style="display:inlin-block; vertical-align: middle;">
+    <h4 style="margin: 0px">Power+ ` + trackDom + `</h4>
+    <h5 style="display: inline-block; margin: 0px; margin-top: 5px; font-size: 1.5rem;">` + dtps.readableVer.replace(dtps.trackSuffix, "") + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
+</div>
     Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
