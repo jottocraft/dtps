@@ -658,7 +658,7 @@ dtps.announcements = function() {
 		}
 		}
 		if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-  jQuery(".dash.left").append("<br />" + announcements.join("")); }
+  jQuery(".dash.cal").append("<br />" + announcements.join("")); }
 	});
 };
 dtps.calendar = function(doneLoading) {
