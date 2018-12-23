@@ -422,7 +422,7 @@ body.dark .classContent .card {
 	margin-bottom: 100px;
 }
 .card .weight p {
-	color: var(--dark) !important;
+	color: #5f5f5f !important;
 }
 .card.gb {
 	padding: 0 !important;
