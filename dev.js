@@ -884,8 +884,8 @@ dtps.render = function() {
     <h1 id="headText">Dashboard</h1>
     <div style="display: none;" class="btns row">
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
-    <i class="material-icons">view_stream</i>
-    Stream
+    <i class="material-icons">assignment</i>
+    Assignments
     </button>
     <button onclick="dtps.selectedContent = 'google'; $('.classContent').html(dtps.renderStream(dtps.classes[dtps.selectedClass].google.stream))" class="btn google">
     <i class="material-icons">experiment</i>
