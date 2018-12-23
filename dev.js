@@ -592,7 +592,7 @@ dtps.gradebook = function(num) {
       <h5>Gradebook</h5>
       <p>` + dtps.classes[num].name + `</p>
     </div>
-    ` + sidebarTmp.join("") `
+    ` + sidebarTmp.join("") + `
   </div>
   <div class="content">
     ` + weightsTmp.join("") + `
