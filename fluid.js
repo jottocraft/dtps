@@ -62,8 +62,8 @@ fluid.theme = function(theme, dontSave) {
   if (String(theme).startsWith("dark")) { $("body").addClass("dark"); $("body").addClass(theme); }
   if (theme == "auto") {
     var hours = new Date().getHours()
-    // Light: 6AM - 5PM Dark: 6PM - 5AM
-    if (hours > 5 && hours < 18) {
+    // Light: 6AM - 4PM Dark: 5PM - 5AM
+    if (hours > 5 && hours < 17) {
       $("body").removeClass("dark");
     } else {
       $("body").addClass("dark");
