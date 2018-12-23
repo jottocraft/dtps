@@ -577,7 +577,7 @@ dtps.gradebook = function(num) {
 	        if (dtps.classes[num].weights[i].weight.includes("Comprehension") || dtps.classes[num].weights[i].weight.includes("CC")) dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `
 		if (dtps.classes[num].weights[i].weight.includes("Performance") || dtps.classes[num].weights[i].weight.includes("PT"))dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `
 		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `</h4>` + assignTmp.join("") + `</div>` );
-		sidebarTmp.push(`<div class="item">
+		sidebarTmp.push(`<div onclick="$('.sidenav .item').removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
        ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
     </div>`);
 	}
