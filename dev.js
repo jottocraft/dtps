@@ -578,7 +578,7 @@ dtps.gradebook = function(num) {
 		if (dtps.classes[num].weights[i].weight.includes("Performance") || dtps.classes[num].weights[i].weight.includes("PT"))dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `
 		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `</h4>` + assignTmp.join("") + `</div>` );
 		sidebarTmp.push(`<div class="item">
-       ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight + `
+       ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
     </div>`);
 	}
 	var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;"><i class="material-icons" style="font-size: 32px;display: inline-block;">check_circle_outline</i><div style="display: inline-block;"><h5>On track to pass</h5><p>Power+ didn't detect any DVs in CCs or PTs. Don't rely on this check as it may be inaccurate (will be fixed soon this is dev stuff)</p></div></div>`
