@@ -126,3 +126,6 @@ Shows a Google login screen, fetches classes from Google, links with PowerSchool
 
 ### dtps.render()
 Called by dtps.init when all checks have passed, erases all PowerSchool HTML & CSS and injects the DTPS UI. Also used to do other startup things like fetch scripts and changelog info.
+
+### dtps.logGrades()
+Called when [dtps.masterStream](https://dtps.readthedocs.io/en/latest/refrence/functions/#dtpsmasterstreamdoneloading) is done loading and grade trend is enabled. Fetches stored grade trend data, adds grades from the current day if not included already.
