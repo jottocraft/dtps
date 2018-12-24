@@ -622,7 +622,7 @@ dtps.gradebook = function(num) {
 		var dataPoints = [];
 		for (var i = 0; i < Object.keys(gradeData).length; i++) {
 			dataPoints.push({
-				y: gradeData[i][dtps.classes[num].id]
+				y: gradeData[i][dtps.classes[num].id],
 				x: Object.keys(gradeData)[i]
 			})
 		}
