@@ -505,11 +505,19 @@ dtps.masterStream = function(doneLoading) {
 	} else {
 		dtps.logGrades();
 	}
+	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
+	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
+	    var gradeTrendDom = `<div class="card" style="padding: 5px;"><canvas id="gradeTrendChart"></canvas></div>`
+	    } else {
+	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data</h5></div>`
+	    }
+	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
 <div id="calendar" class="card" style="width: 100%;margin: 25px;">
 </div>
+` + gradeTrendDom + `
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
 </div>
