@@ -622,8 +622,8 @@ dtps.gradebook = function(num) {
 		var dataPoints = [];
 		for (var i = 0; i < Object.keys(gradeData).length; i++) {
 			dataPoints.push({
-				y: gradeData[Object.keys(gradeData)[i]][dtps.classes[num].id],
-				x: Object.keys(gradeData)[i]
+				y: Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[num].id]),
+				x: Number(Object.keys(gradeData)[i])
 			})
 		}
 		var theme = "dark1"
