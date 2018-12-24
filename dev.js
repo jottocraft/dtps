@@ -152,6 +152,7 @@ window.dataLayer = window.dataLayer || [];
   dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.coursework.me.readonly');
 });
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
+	jQuery.getScript("https://canvasjs.com/assets/script/canvasjs.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js")
 	jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
   if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
@@ -593,8 +594,11 @@ dtps.gradebook = function(num) {
 	if (DVs > 0) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
 	}
-	jQuery(".classContent").html(headsUp + `
-<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>
+	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>`
+	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
+	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data&nbsp;&nbsp;<span style="font-size: 18px;">Power+ doesn't have enough grade data to show a graph yet</span></h5></div>`
+	}
+	jQuery(".classContent").html(headsUp + gradeTrendDom + `
 <div style="height: 700px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
@@ -862,6 +866,26 @@ dtps.googleAuth = function() {
   });
 })
 }
+dtps.logGrades = function() {
+	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
+		dtps.log("Grade trend enabled; checking grade data")
+		var now = new Date();
+		var start = new Date(now.getFullYear(), 0, 0);
+		var diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+		var oneDay = 1000 * 60 * 60 * 24;
+		var day = Math.floor(diff / oneDay);
+		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend);
+		if (!gradeData.day) {
+			dtps.log("Grade trend enabled; check passed; storing grades for today")
+			var gradesNow = {};
+			for (var i = 0; i < dtps.classes.length; i++) {
+				gradesNow[dtps.classes[i].id] = dtps.classes[i].grade
+			}
+			gradeData[day] = gradesNow;
+			localStorage.setItem('dtpsGradeTrend', JSON.stringify(gradeData));
+		}
+	}
+}
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
@@ -983,11 +1007,11 @@ dtps.render = function() {
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus trend close">
 <i onclick="fluid.cards.close('.card.trend')" class="material-icons close">close</i>
-<h3>Enable Grade Trend</h3>
-<p>Grade trend lets you keep track of your grades over time. When you enable grade trend, Power+ will store a copy of your class grades locally on your computer every day you use Power+. When you click on the grades tab, Power+ will show you a graph of how your class grades have changed over time.</p>
-<p>It will take a few days after enabling grade trend for the graph to appear.</p>
-<p><b>You can always disable grade trend by clicking the turn off button on the grade trend graph. Disabling grade trend permanatly erases all of your grade data off of your computer.</b></p>
-<button onclick="window.alert('coming soon')" class="btn"><i class="material-icons">timeline</i> Enable grade trend</button><button onclick="fluid.cards.close('.card.trend')" class="btn"><i class="material-icons">cancel</i> Not now</button>
+<h3>Grade Trend</h3>
+<p>Grade trend lets you keep track of your grades over time. When you enable grade trend, Power+ will store a copy of your class grades locally on your computer every day you use Power+. Then, when you click on the grades tab with grade trend enabled, Power+ will show you a graph of how your class grades have changed over time.</p>
+<p>The grade trend setting applies to all classes. It may take a few days after enabling grade trend for the graph to appear.</p>
+<p><b>You can always disable grade trend by clicking the turn off button on the grade trend graph. Disabling grade trend permanently erases all of your grade data off of your computer.</b></p>
+<button onclick="localStorage.setItem('dtpsGradeTrend', JSON.stringify({})); window.alert('Grade trend enabled'); dtps.logGrades();" class="btn"><i class="material-icons">timeline</i> Enable grade trend</button><button onclick="fluid.cards.close('.card.trend')" class="btn"><i class="material-icons">cancel</i> Not now</button>
 </div>
   `);
 	var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
