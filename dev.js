@@ -522,7 +522,6 @@ dtps.masterStream = function(doneLoading) {
 <div style="width: 59%; display: inline-block;" class="dash stream">
 </div>
 `)
-		dtps.calendar(doneLoading);
 		dtps.announcements();
 	jQuery(".classContent .stream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
@@ -543,6 +542,7 @@ dtps.masterStream = function(doneLoading) {
 });
 	}
 	$(".card.assignment").addClass("color");
+	dtps.calendar(doneLoading);
 }
 dtps.getPage = function(loc, id) {
   if (id == undefined) var id = dtps.selectedPage;
