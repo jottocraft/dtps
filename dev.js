@@ -596,7 +596,11 @@ dtps.gradebook = function(num) {
 	}
 	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>`
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
+	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
+	    var gradeTrendDom = `<div id="chartContainer" class="card" style="height: 370px; width: 100%;"></div>`
+	    } else {
 	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data&nbsp;&nbsp;<span style="font-size: 18px;">Power+ doesn't have enough grade data to show a graph yet</span></h5></div>`
+	    }
 	}
 	jQuery(".classContent").html(headsUp + gradeTrendDom + `
 <div style="height: 700px;" class="card withnav">
@@ -612,6 +616,28 @@ dtps.gradebook = function(num) {
   </div>
 </div>
   `);
+		if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
+	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
+		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend)
+		var dataPoints = [];
+		for (var i = 0; i < Object.keys(gradeData).length; i++) {
+			dataPoints.push({
+				y: gradeData[i][dtps.classes[num].id]
+				x: Object.keys(gradeData)[i]
+			})
+		}
+		var theme = "dark1"
+		if (!jQuery("body").hasClass("dark")) var theme = "light1";
+		var chart = new CanvasJS.Chart("chartContainer", {
+	animationEnabled: true, theme: theme, title:{ text: "Grade Trend" }, axisY:{ includeZero: false },
+	data: [{        
+		type: "line",       
+		dataPoints: dataPoints
+	}]
+});
+chart.render();
+	}
+		}
 	    } else {
 	$(".btns .btn.grades").hide();
         $(".btns .btn").removeClass("active");
