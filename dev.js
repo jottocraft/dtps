@@ -502,6 +502,8 @@ dtps.masterStream = function(doneLoading) {
     <div class="bounce2"></div>
     <div class="bounce3"></div>
     </div>`;
+	} else {
+		dtps.logGrades();
 	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
