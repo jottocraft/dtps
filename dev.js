@@ -594,7 +594,7 @@ dtps.gradebook = function(num) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
 	}
 	jQuery(".classContent").html(headsUp + `
-<div onclick="window.alert('Grade trend is coming soon')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>
+<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>
 <div style="height: 700px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
@@ -980,6 +980,14 @@ dtps.render = function() {
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus details close">
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <p>An error occured</p>
+</div>
+<div  style="width: calc(80%);border-radius: 30px;" class="card focus trend close">
+<i onclick="fluid.cards.close('.card.trend')" class="material-icons close">close</i>
+<h3>Enable Grade Trend</h3>
+<p>Grade trend lets you keep track of your grades over time. When you enable grade trend, Power+ will store a copy of your class grades locally on your computer every day you use Power+. When you click on the grades tab, Power+ will show you a graph of how your class grades have changed over time.</p>
+<p>It will take a few days after enabling grade trend for the graph to appear.</p>
+<p><b>You can always disable grade trend by clicking the turn off button on the grade trend graph. Disabling grade trend permanatly erases all of your grade data off of your computer.</b></p>
+<button onclick="window.alert('coming soon')" class="btn"><i class="material-icons">timeline</i> Enable grade trend</button><button onclick="fluid.cards.close('.card.trend')" class="btn"><i class="material-icons">cancel</i> Not now</button>
 </div>
   `);
 	var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
