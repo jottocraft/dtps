@@ -152,7 +152,7 @@ window.dataLayer = window.dataLayer || [];
   dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.coursework.me.readonly');
 });
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
-	jQuery.getScript("https://canvasjs.com/assets/script/canvasjs.min.js")
+	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js")
 	jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
   if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
@@ -597,7 +597,7 @@ dtps.gradebook = function(num) {
 	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>`
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
 	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-	    var gradeTrendDom = `<div id="chartContainer" class="card" style="height: 370px; width: 100%;"></div>`
+	    var gradeTrendDom = `<div class="card" style="padding: 5px;"><canvas id="gradeTrendChart"></canvas></div>`
 	    } else {
 	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data&nbsp;&nbsp;<span style="font-size: 18px;">Power+ doesn't have enough grade data to show a graph yet</span></h5></div>`
 	    }
@@ -620,22 +620,13 @@ dtps.gradebook = function(num) {
 	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
 		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend)
 		var dataPoints = [];
-		for (var i = 0; i < Object.keys(gradeData).length; i++) {
-			dataPoints.push({
-				y: Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[num].id]),
-				x: Number(Object.keys(gradeData)[i])
-			})
-		}
-		var theme = "dark1"
-		if (!jQuery("body").hasClass("dark")) var theme = "light1";
-		var chart = new CanvasJS.Chart("chartContainer", {
-	animationEnabled: true, theme: theme, title:{ text: "Grade Trend" }, axisY:{ includeZero: false },
-	data: [{        
-		type: "line",       
-		dataPoints: dataPoints
-	}]
+		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[num].id]))
+		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
+		var styles = window.getComputedStyle($(".class." + num)[0]); 
+var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
+        datasets: [{ label: "Grade trend", backgroundColor: styles.getPropertyValue('--norm'), borderColor: styles.getPropertyValue('--light'), data: dataPoints}]
+    },  options: {}
 });
-chart.render();
 	}
 		}
 	    } else {
