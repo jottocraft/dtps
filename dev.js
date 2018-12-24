@@ -523,6 +523,25 @@ dtps.masterStream = function(doneLoading) {
 <div style="width: 59%; display: inline-block;" class="dash stream">
 </div>
 `)
+		if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
+	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
+		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend)
+		var dataSets = [];
+		for (var ii = 0; ii < dtps.classes.length; ii++) {
+		var dataPoints = [];
+		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[ii].id]))
+		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
+		var styles = window.getComputedStyle($(".class." + ii)[0]); 
+		dataSets.push({ label: dtps.classes[ii].subject, backgroundColor: styles.getPropertyValue('--norm'), borderColor: styles.getPropertyValue('--light'), data: dataPoints})
+		}
+		
+var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
+        datasets: dataSets
+    },  options: {}
+});
+	}
+		}
+		
 		dtps.announcements();
 	jQuery(".classContent .stream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
     var year = new Date().getFullYear();
