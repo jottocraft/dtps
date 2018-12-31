@@ -536,7 +536,14 @@ dtps.masterStream = function(doneLoading) {
 		}
 		
 var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
-        datasets: dataSets
+        datasets: dataSets.sort(function(a, b){
+    var keyA = a.data[a.data.length - 1],
+    keyB = b.data[b.data.length - 1];
+    // Compare the 2 dates
+    if(keyA < keyB) return 1;
+    if(keyA > keyB) return -1;
+    return 0;
+  })
     },  options: {}
 });
 	}
