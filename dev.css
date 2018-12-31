@@ -398,6 +398,9 @@ body.dark .classContent .card {
 	border-color: #0bb75b;
 	background-color: #0bb75b;
 }
+.beta.notice.turnin i {
+	font-size: 18px;
+}
 .dash.stream .card {
 	margin-right: 25px;
 }
