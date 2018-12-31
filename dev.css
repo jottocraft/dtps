@@ -227,20 +227,20 @@ body.titlebar .classContent {
 	top: 0;
 	margin-top: 321px;
 }
-.header .btns {
+.tabs.btns {
 	padding: 0px;
 	background-color: transparent !important;
 }
-.header .btns .btn {
+.tabs.btns .btn {
 	background-color: transparent !important;
 	box-shadow: none !important;
 	color: #cacaca;
 	border-radius: 0px !important;
 }
-.header .btns .btn:not(.active) {
+.tabs.btns .btn:not(.active) {
 	color: var(--light, #cacaca) !important;
 }
-.header .btns .btn.active {
+.tabs.btns .btn.active {
 	color: white;
 	border-bottom: 1px solid white;
 }
