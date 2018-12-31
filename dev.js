@@ -442,7 +442,7 @@ dtps.renderStream = function(stream, searchRes) {
 	    if (dtps.showLetters) earnedTmp = stream[i].letter;
 	    var wFormat = "";
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
-	    if (wFormat == "undefined") wFormat = "";
+	    if (wFormat == "undefined") { wFormat = "" } else { wFormat = `<span class="weighted">` + wFormat + `</span>`} ;
 	    var onclick = `dtps.assignment(` + stream[i].class + `, ` + i + `)`
 	    if (stream[i].google) {
 	    var onclick = `window.open('` + stream[i].url + `')`
@@ -454,7 +454,7 @@ dtps.renderStream = function(stream, searchRes) {
         <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>` + due + ` <span class="weighted">` + wFormat + `</span>` + turnInDom + `</h5>
+      	<h5>` + due + ` ` + wFormat + turnInDom + `</h5>
         </div>
       `);
     } else {
