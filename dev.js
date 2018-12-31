@@ -843,6 +843,7 @@ classOrder.push(dtps.classes[Number(jQuery(classes[i]).attr("class").replace(/^\
 }
 }
 localStorage.setItem("dtpsClassOrder", JSON.stringify(classOrder));
+dtps.sorting = false;
 window.alert("Class order saved");
 }
 dtps.googleStream = function() {
@@ -1053,7 +1054,7 @@ dtps.render = function() {
 <div class="extensionDom" ></div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="if (!dtps.sorting) { $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Reorder classes</button>
+    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Reorder classes</button>
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
