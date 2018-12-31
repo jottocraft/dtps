@@ -750,6 +750,23 @@ dtps.showClasses = function(override) {
 	dtps.classlist = [];
 	var unreadAnn = "";
 	if (dtps.unreadAnn) unreadAnn = "&nbsp;&nsbp;(" + dtps.unreadAnn + ")";
+	if (window.localStorage.dtpsClassOrder !== undefined) {
+		var classOrder = JSON.parse(window.localStorage.dtpsClassOrder)
+		for (var i = 0; i < classOrder.length; i++) {
+		var num = 0;
+		for (var ii = 0; ii < dtps.classes.length; ii++) {
+			if (dtps.classes[ii].id == classOrder[i]) { var num = ii; }
+		}
+	  var googleDom = "";
+	  if (dtps.classes[num].google) var googleDom = "&nbsp;&nbsp;google_G";
+    dtps.classlist.push(`
+      <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + dtps.classes[num].col + `">
+      <div class="name">` + dtps.classes[num].subject + googleDom + `</div>
+      <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + dtps.classes[num].grade + `%</span></div>
+      </div>
+    `);
+  }
+	} else {
   for (var i = 0; i < dtps.classes.length; i++) {
 	  var googleDom = "";
 	  if (dtps.classes[i].google) var googleDom = "&nbsp;&nbsp;google_G";
@@ -760,6 +777,7 @@ dtps.showClasses = function(override) {
       </div>
     `);
   }
+	}
 	if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
 		var streamDom = `<div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
     <div class="name">Stream</div>
@@ -814,6 +832,18 @@ dtps.showClasses = function(override) {
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
 }
+}
+dtps.saveClassOrder = function() {
+$(".sidebar").sortable("destroy");
+var classes = $(".sidebar").children(".class")
+var classOrder = [];
+for (var i = 0; i < classes.length; i++) {
+if (/\d/.test(jQuery(classes[i]).attr("class"))) {
+classOrder.push(dtps.classes[Number(jQuery(classes[i]).attr("class").replace(/^\D+|\D.*$/g, ""))].id)
+}
+}
+localStorage.setItem("dtpsClassOrder", JSON.stringify(classOrder));
+window.alert("Class order saved");
 }
 dtps.googleStream = function() {
 	function googleStream(i) {
@@ -938,6 +968,7 @@ dtps.render = function() {
   $ = jQuery;
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "dash";
+  dtps.sorting = false;
   dtps.selectedContent = "stream";
   dtps.masterContent = "assignments";
 	var trackDom = "";
@@ -1022,7 +1053,7 @@ dtps.render = function() {
 <div class="extensionDom" ></div>
     <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="$('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.')" class="btn"><i class="material-icons">list</i>Reorder classes</button>
+    <button onclick="if (!dtps.sorting) { $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Reorder classes</button>
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     </div>
     <div class="items">
