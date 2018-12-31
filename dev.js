@@ -744,6 +744,12 @@ dtps.assignment(calEvent.classNum, calEvent.streamNum);
 });
 	}
 }
+dtps.clearData = function() {
+if (window.confirm("Clearing Power+ data will clear all local user data stored by Power+. This should be done if it is a new semester / school year or if you are having issues with Power+. Are you sure you want to clear all your Power+ data?")) {
+ window.localStorage.clear()
+ window.alert("Power+ data cleared. Reload the page to begin repopulating your userdata.")
+}
+}
 dtps.showClasses = function(override) {
   var streamClass = "active"
   if (dtps.selectedClass !== "dash") var streamClass = "";
@@ -1053,9 +1059,11 @@ dtps.render = function() {
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor</div>
 <div class="extensionDom" ></div>
     <br /><br />
-    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Reorder classes</button>
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+    <br /><br />
+    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
+    <button onclick="dtps.clearData();" class="btn"><i class="material-icons">delete_outline</i>Reset Power+</button>
     </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
