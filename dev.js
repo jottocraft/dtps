@@ -991,9 +991,15 @@ dtps.render = function() {
   dtps.masterContent = "assignments";
 	var trackDom = "";
 	if (dtps.trackSuffix !== "") {
-	   trackDom = `<div style="display:inline-block;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`
+	   trackDom = `<div style="display:inline-block;font-size: 16px; padding: 3px 4px;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`
 	    } else {
 		  trackDom = ``;
+	    }
+	var verDom =  dtps.readableVer.replace(dtps.trackSuffix, "");
+	if (dtps.trackSuffix !== "") {
+	   verDom = `<div class="buildInfo" style="display: inline-block;font-size: 12px;cursor: pointer;"></div>`
+	    } else {
+		  verDom = dtps.readableVer.replace(dtps.trackSuffix, "");
 	    }
 	document.addEventListener('extensionData', function(e) {
    if (e.detail == "extensionInstalled") {
@@ -1081,8 +1087,8 @@ dtps.render = function() {
     <div class="title">
 	  <img src="https://dtps.js.org/dtps.png" style="width: 50px;vertical-align: middle;margin-right: 10px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
-      <h5 style="font-weight: bold;">Power+</h5>
-      <p style="font-weight: bold;">` + dtps.readableVer/*.replace(dtps.trackSuffix, "")*/ + `</p>
+      <h5 style="font-weight: bold;display: inline-block;">Power+</h5>` + trackDom + `
+      <p style="font-weight: bold;">` + verDom + `</p>
 	  </div>
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.display').show();" class="item active">
