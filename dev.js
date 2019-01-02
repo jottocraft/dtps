@@ -1138,7 +1138,11 @@ dtps.render = function() {
 </ul>
     <br />
     <h5>Credits</h5>
+<ul>
+    <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
+    <li>Grade trend graphs made with <a href="https://www.chartjs.org/">Chart.js</a></li>
     <li>Logo made with logomakr.com</li>
+</ul>
 <br />
 <p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
