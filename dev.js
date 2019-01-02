@@ -712,7 +712,7 @@ dtps.announcements = function() {
 					col = dtps.classes[psClass].col
 					subject = `<div class="label">` + dtps.classes[psClass].subject + `</div>`;
 				}
-			announcements.push(`<div onclick="$(this).toggleClass('.open');" style="margin: 25px; margin-right: 0px; width: 100%;" class="announcement card color ` + col + `">
+			announcements.push(`<div onclick="$(this).toggleClass('open');" style="margin: 25px; margin-right: 0px; width: 100%;cursor: pointer;" class="announcement card color ` + col + `">
 ` + subject + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
