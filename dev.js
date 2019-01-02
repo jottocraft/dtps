@@ -1088,14 +1088,17 @@ dtps.render = function() {
     <div onclick="$('.abtpage').hide();$('.abtpage.display').show();" class="item active">
       <i class="material-icons">aspect_ratio</i> Display
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.account').show();" class="item">
-      <i class="material-icons">person</i> Account
+    <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
+      <i class="material-icons">book</i> Classes
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item">
       <i class="material-icons">extension</i> Extension
     </div>
-	<div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item sudo">
+    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item sudo">
       <i class="material-icons">experiment</i> Experiments
+    </div>
+    <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
+      <i class="material-icons">bug_report</i> Debugging
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.about').show();" class="item">
       <i class="material-icons">info</i> About
@@ -1113,17 +1116,22 @@ dtps.render = function() {
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
 </div>
-<div style="display: none;" class="abtpage account">
-    <h5>The new about page is still being developed</h5>
+<div style="display: none;" class="abtpage classes">
+    <h5>The new settings page is still being developed</h5>
     <p>Click the info button in the titlebar instead of the experiment button to use the old about page</p>
 </div>
 <div style="display: none;" class="abtpage extension">
-    <h5>The new about page is still being developed</h5>
+    <h5>The new settings page is still being developed</h5>
     <p>Click the info button in the titlebar instead of the experiment button to use the old about page</p>
 </div>
 <div style="display: none;" class="abtpage experiments">
 <div class="sudo">
     <h5>whats up gamers</h5>
+</div>
+</div>
+<div style="display: none;" class="abtpage debug">
+<div class="dev">
+    <h5>Debugging</h5>
 </div>
 </div>
 <div style="display: none;" class="abtpage about">
