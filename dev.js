@@ -1081,7 +1081,7 @@ dtps.render = function() {
     <div class="title">
 	  <img src="https://dtps.js.org/dtps.png" style="width: 50px;vertical-align: middle;margin-right: 10px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
-      <h5 style="font-weight: bold;">Power+<div style="display:inline-block;" class="beta badge notice">dev</div></h5>
+      <h5 style="font-weight: bold;">Power+</h5>
       <p style="font-weight: bold;">` + dtps.readableVer/*.replace(dtps.trackSuffix, "")*/ + `</p>
 	  </div>
     </div>
