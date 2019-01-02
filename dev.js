@@ -707,9 +707,13 @@ dtps.announcements = function() {
 				var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
 				var psClass = dtps.classLocs.indexOf(loc[1] + "/" + loc[2]);
 				var col = "";
-				if (psClass !== -1) col = dtps.classes[psClass].col
-			announcements.push(`<div style="margin: 25px; margin-right: 0px; width: 100%;" class="card color ` + col + `">
-` + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
+				var subject = "";
+				if (psClass !== -1) {
+					col = dtps.classes[psClass].col
+					subject = `<div class="label">` + dtps.classes[psClass].subject + `</div>`;
+				}
+			announcements.push(`<div onclick="$(this).toggleClass('.open');" style="margin: 25px; margin-right: 0px; width: 100%;" class="announcement card color ` + col + `">
+` + subject + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
 		}
