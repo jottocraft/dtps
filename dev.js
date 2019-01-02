@@ -1087,7 +1087,7 @@ dtps.render = function() {
     <div class="title">
 	  <img src="https://dtps.js.org/dtps.png" style="width: 50px;vertical-align: middle;margin-right: 10px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
-      <h5 style="font-weight: bold;display: inline-block;">Power+</h5>` + trackDom + `
+      <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>` + trackDom + `
       <p style="font-weight: bold;">` + verDom + `</p>
 	  </div>
     </div>
