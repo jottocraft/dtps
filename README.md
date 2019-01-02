@@ -1,7 +1,10 @@
 ## power+
 [![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
-
 <br />
+
+[developer docs](https://dtps.rtfd.io)
+
+<br /><br />
 
 [bookmark script](https://dtps.js.org/bookmark.txt)
 
@@ -17,4 +20,4 @@ or
 
 <br /><br /><br /><br /><br /><br />
 
-(c) 2018 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
+(c) 2018-2019 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
