@@ -4,6 +4,9 @@ body.dark .fc-today {
 .fc-event {
 	cursor: pointer !important;
 }
+.card.focus {
+	max-height: calc(100vh - 50px);
+}
 #calendar h2 {
 	font-size: 40px;
 }
