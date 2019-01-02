@@ -508,7 +508,7 @@ dtps.masterStream = function(doneLoading) {
 	var gradeTrendDom = ""
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
 	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-	     gradeTrendDom = `<div class="card" style="padding: 5px;margin:25px;margin-right:0px;"><canvas id="gradeTrendChart"></canvas></div>`
+	     gradeTrendDom = `<div class="card" style="padding: 5px;margin:25px;margin-right:0px;width: 100%;"><canvas id="gradeTrendChart"></canvas></div>`
 	    } else {
 	 gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="margin:25px; margin-right:0px;background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data</h5></div>`
 	    }
