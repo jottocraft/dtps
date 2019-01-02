@@ -17,6 +17,20 @@ body.dark .fc .fc-button-group>* {
 	border-color: #484848;
 	color: white;
 }
+.announcement .label {
+	position: absolute;
+  	right: 0;
+    	margin-right: 15px;
+    	margin-top: -10px;
+ 	background-color: var(--light);
+ 	color: var(--dark);
+ 	padding: 3px 6px;
+   	border-radius: 20px;
+}
+.announcement:not(.open) {
+	max-height: 200px;
+	overflow: hidden;
+}
 body {
 	position: relative;
 	height: 100%;
