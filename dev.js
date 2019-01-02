@@ -984,7 +984,8 @@ dtps.logGrades = function() {
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
-  if (window.localStorage.dtpsLetterGrades == "true") dtps.showLetters = true;
+  var letterGradesClass = "";
+  if (window.localStorage.dtpsLetterGrades == "true") { dtps.showLetters = true; letterGradesClass = " active"; }
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "dash";
   dtps.sorting = false;
@@ -1070,7 +1071,7 @@ dtps.render = function() {
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-<div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}; localStorage.setItem('dtpsLetterGrades', dtps.showLetters);" class="switch"><span class="head"></span></div>
+<div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}; localStorage.setItem('dtpsLetterGrades', dtps.showLetters);" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
 <br /><br />
 <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
@@ -1122,7 +1123,7 @@ dtps.render = function() {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}; localStorage.setItem('dtpsLetterGrades', dtps.showLetters);" class="switch"><span class="head"></span></div>
+    <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}; localStorage.setItem('dtpsLetterGrades', dtps.showLetters);" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
