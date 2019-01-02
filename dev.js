@@ -1107,11 +1107,16 @@ dtps.render = function() {
   <div class="content">
 <div class="abtpage display">
     <h5>Display</h5>
-    <p>Theme</p>
+    <br />
+    <p><b>Theme</b></p>
     <div class="btns row themeSelector"></div>
     <br /><br />
+    <p><b>Grades</b></p>
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
+    <br /><br />
+    <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
