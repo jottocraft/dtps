@@ -1085,25 +1085,63 @@ dtps.render = function() {
       <p style="font-weight: bold;">` + dtps.readableVer/*.replace(dtps.trackSuffix, "")*/ + `</p>
 	  </div>
     </div>
-    <div class="item active">
+    <div onclick="$('.abtpage').hide();$('.abtpage.display').show();" class="item active">
       <i class="material-icons">aspect_ratio</i> Display
     </div>
-    <div class="item">
+    <div onclick="$('.abtpage').hide();$('.abtpage.account').show();" class="item">
       <i class="material-icons">person</i> Account
     </div>
-    <div class="item">
+    <div onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item">
       <i class="material-icons">extension</i> Extension
     </div>
-	<div class="item">
+	<div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item sudo">
       <i class="material-icons">experiment</i> Experiments
     </div>
-    <div class="item">
+    <div onclick="$('.abtpage').hide();$('.abtpage.about').show();" class="item">
       <i class="material-icons">info</i> About
     </div>
   </div>
   <div class="content">
+<div class="abtpage display">
+    <h5>Display</h5>
+    <p>Theme</p>
+    <div class="btns row themeSelector"></div>
+    <br /><br />
+    <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
+    <br /><br />
+    <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
+    <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
+</div>
+<div style="display: none;" class="abtpage account">
     <h5>The new about page is still being developed</h5>
     <p>Click the info button in the titlebar instead of the experiment button to use the old about page</p>
+</div>
+<div style="display: none;" class="abtpage extension">
+    <h5>The new about page is still being developed</h5>
+    <p>Click the info button in the titlebar instead of the experiment button to use the old about page</p>
+</div>
+<div style="display: none;" class="abtpage experiments">
+<div class="sudo">
+    <h5>whats up gamers</h5>
+</div>
+</div>
+<div style="display: none;" class="abtpage about">
+    <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
+    <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
+    <br />
+    <h5>Resources</h5>
+    <ul>
+<li><a href="mailto:jotto3053@gmail.com">Contact me</a></li>
+<li><a href="https://dtps.js.org">Power+ website</a></li>
+<li><a href="https://github.com/jottocraft/dtps">Source code on GitHub</a> (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</li>
+</ul>
+    <br />
+    <h5>Credits</h5>
+    <li>Logo made with logomakr.com</li>
+<br />
+<p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
+</div>
   </div>
 </div>
     <div class="items">
