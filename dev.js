@@ -1075,11 +1075,43 @@ dtps.render = function() {
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo</button>
     <button onclick="dtps.clearData();" class="btn"><i class="material-icons">delete_outline</i>Reset Power+</button>
     </div>
+<div style="height: calc(100vh - 50px);width: 75%;" class="card withnav focus close abt-new">
+<i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
+  <div class="sidenav">
+    <div class="title">
+	  <img src="https://dtps.js.org/dtps.png" style="width: 50px;vertical-align: middle;margin-right: 10px;" />
+	  <div style="vertical-align: middle; display: inline-block;">
+      <h5 style="font-weight: bold;">Power+<div style="display:inline-block;" class="beta badge notice">dev</div></h5>
+      <p style="font-weight: bold;">` + dtps.readableVer/*.replace(dtps.trackSuffix, "")*/ + `</p>
+	  </div>
+    </div>
+    <div class="item active">
+      <i class="material-icons">aspect_ratio</i> Display
+    </div>
+    <div class="item">
+      <i class="material-icons">person</i> Account
+    </div>
+    <div class="item">
+      <i class="material-icons">extension</i> Extension
+    </div>
+	<div class="item">
+      <i class="material-icons">experiment</i> Experiments
+    </div>
+    <div class="item">
+      <i class="material-icons">info</i> About
+    </div>
+  </div>
+  <div class="content">
+    <h5>The new about page is still being developed</h5>
+    <p>Click the info button in the titlebar instead of the experiment button to use the old about page</p>
+  </div>
+</div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
+    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons sudo">experiment</i>
     <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt')" class="material-icons">more_horiz</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
