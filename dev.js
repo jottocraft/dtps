@@ -439,7 +439,6 @@ dtps.renderStream = function(stream, searchRes) {
 	    } else {
     		var earnedTmp = stream[i].letter;
     	}
-	    if (dtps.showLetters) earnedTmp = stream[i].letter;
 	    var wFormat = "";
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") { wFormat = "" } else { wFormat = `<span class="weighted">` + wFormat + `</span>`} ;
@@ -450,8 +449,10 @@ dtps.renderStream = function(stream, searchRes) {
 		  streamlist.push(`
         <div onclick="` + onclick + `" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
-        <div class="earned">` + earnedTmp + `</div>
-        <div class="total">/` + stream[i].grade.split("/")[1] + `</div>
+        <div class="earned numbers">` + earnedTmp + `</div>
+	<div class="earned letters">` + stream[i].letter + `</div>
+        <div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>
+	<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100) + `%</div>
         </div>
         <h4>` + stream[i].title + `</h4>
       	<h5>` + due + ` ` + wFormat + turnInDom + `</h5>
@@ -985,7 +986,7 @@ dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
   $ = jQuery;
   var letterGradesClass = "";
-  if (window.localStorage.dtpsLetterGrades == "true") { dtps.showLetters = true; letterGradesClass = " active"; }
+  if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); letterGradesClass = " active"; }
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "dash";
   dtps.sorting = false;
@@ -1071,7 +1072,7 @@ dtps.render = function() {
 <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-<div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}; localStorage.setItem('dtpsLetterGrades', dtps.showLetters);" class="switch` + letterGradesClass + `"><span class="head"></span></div>
+<div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
 <br /><br />
 <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
@@ -1123,7 +1124,7 @@ dtps.render = function() {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="if (dtps.showLetters) {dtps.showLetters = false;} else {dtps.showLetters = true;}; localStorage.setItem('dtpsLetterGrades', dtps.showLetters);" class="switch` + letterGradesClass + `"><span class="head"></span></div>
+    <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
