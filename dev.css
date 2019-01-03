@@ -122,10 +122,10 @@ body {
 	line-height: 35px;
 	font-size: 20px;
 }
-.points:hover .numbers {
+body:not(.letterGrades) .points:hover .numbers {
 	display: none !important;
 }
-.points:not(:hover) .letters {
+body:not(.letterGrades) .points:not(:hover) .letters {
 	display: none !important;
 }
 .points:not(:hover) .percentage {
