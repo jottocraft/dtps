@@ -183,6 +183,9 @@ body:not(.dark) .sidebar, body:not(.dark) .abtheader {
 body.dark .sidebar, body.dark .abtheader {
 	background-color: #232323;
 }
+body.dark.midnight .sidebar {
+	background-color: #080808;
+}
 body.noSidebar .sidebar {
 	display: none;
 	visibility: hidden;
