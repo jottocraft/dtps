@@ -1087,7 +1087,7 @@ dtps.render = function() {
 <i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
   <div class="sidenav">
     <div class="title">
-	  <img src="https://dtps.js.org/outline.png" style="width: 50px;vertical-align: middle;margin-right: 10px;" />
+	  <img src="https://dtps.js.org/outline.png" style="width: 50px;vertical-align: middle;margin-right: 5px;padding: 7px; padding-top: 14px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
       <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>` + trackDom + `
       <p style="font-weight: bold;">` + verDom + `</p>
