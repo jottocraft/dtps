@@ -122,6 +122,18 @@ body {
 	line-height: 35px;
 	font-size: 20px;
 }
+.points:hover .numbers {
+	display: none;
+}
+.points:not(:hover) .letters {
+	display: none;
+}
+body.letterGrades .points:not(:hover) .numbers {
+	display: none;
+}
+body.letterGrades .points:hover .letters {
+	display: none;
+}
 body.dark .card .dot {
 	background-color: #181b1d;
 }
