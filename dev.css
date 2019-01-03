@@ -131,6 +131,9 @@ body {
 .points:not(:hover) .percentage {
 	display: none;
 }
+.points:hover .possible {
+	display: none;
+}
 body.letterGrades .points:not(:hover) .numbers {
 	display: none;
 }
