@@ -1131,8 +1131,12 @@ dtps.render = function() {
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
 </div>
 <div style="display: none;" class="abtpage classes">
-    <h5>The new settings page is still being developed</h5>
-    <p>Click the info button in the titlebar instead of the experiment button to use the old about page</p>
+    <h5>Classes</h5>
+    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Sort classes</button>
+    <br />
+    <h5>Google Classes</h5>
+    <p>Classes listed below could not be associated with a PowerSchool class. Turn them on to show them in the sidebar.</p>
+    <p>Coming soon!</p>
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>The new settings page is still being developed</h5>
@@ -1140,7 +1144,10 @@ dtps.render = function() {
 </div>
 <div style="display: none;" class="abtpage experiments">
 <div class="sudo">
-    <h5>whats up gamers</h5>
+    <h5>Experiments</h5>
+    <p>Features listed below are in development and cannot be included in a bug report. Power+ testers only.</p>
+    <br />
+    <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
@@ -1151,6 +1158,7 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
+    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <br />
     <h5>Resources</h5>
     <ul>
