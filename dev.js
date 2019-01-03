@@ -1136,7 +1136,7 @@ dtps.render = function() {
     <br /><br />
     <h5>Google Classes</h5>
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
-    <p>Coming soon!</p>
+    <div class="otherGClasses"><p>Coming soon!</p></div>
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>The new settings page is still being developed</h5>
