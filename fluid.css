@@ -75,15 +75,15 @@ body.aquatic.dark {
   --theme-text-color: #0e958b;
 }
 body.midnight.dark {
-  --flex-light: #0c0c0d;
---flex-bg: #09090b;
---flex-text: #c0c0c0;
---flex-layer1: #0c0c0c;
---flex-layer2: #050606;
---flex-layer3: #000000;
---theme-color: #171717;
---theme-color-outline: #171717c0;
---theme-text-color: #c0c0c0;
+    --flex-light: #0c0c0d;
+    --flex-bg: #040404;
+    --flex-text: #bfbfbf;
+    --flex-layer1: #0c0c0c;
+    --flex-layer2: #050606;
+    --flex-layer3: #000000;
+    --theme-color: #232323;
+    --theme-color-outline: #171717c0;
+    --theme-text-color: #c0c0c0;
 }
 body.darkRed {
         --flex-light: #da191e;
