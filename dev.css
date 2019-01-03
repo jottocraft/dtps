@@ -123,22 +123,22 @@ body {
 	font-size: 20px;
 }
 .points:hover .numbers {
-	display: none;
+	display: none !important;
 }
 .points:not(:hover) .letters {
-	display: none;
+	display: none !important;
 }
 .points:not(:hover) .percentage {
-	display: none;
+	display: none !important;
 }
 .points:hover .possible {
-	display: none;
+	display: none !important;
 }
 body.letterGrades .points:not(:hover) .numbers {
-	display: none;
+	display: none !important;
 }
 body.letterGrades .points:hover .letters {
-	display: none;
+	display: none !important;
 }
 body.dark .card .dot {
 	background-color: #181b1d;
