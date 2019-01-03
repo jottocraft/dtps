@@ -1133,9 +1133,9 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
     <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Sort classes</button>
-    <br />
+    <br /><br />
     <h5>Google Classes</h5>
-    <p>Classes listed below could not be associated with a PowerSchool class. Turn them on to show them in the sidebar.</p>
+    <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
     <p>Coming soon!</p>
 </div>
 <div style="display: none;" class="abtpage extension">
