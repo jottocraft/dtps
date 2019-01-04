@@ -709,8 +709,8 @@ dtps.assignment = function(classNum, streamNum) {
 	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item">` + icon + "<b>" + prop[0] + "</b>:  " + prop[1] + `</div>`)
 	}
 	}
-		props.replaceWith(list.join(""))
-	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i><div style="background-color: #191919;" class="list">` + dom.html() + `</div>
+	dom.children("div").siblings("table").replaceWith(`<br /><div style="background-color: #191919;" class="list">` + list.join("") + `</div>`)
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + dom.html() + `
 ` + handInDom + `
 <br /><br />
 <div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons">experiment</i> View Work</div>
