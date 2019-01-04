@@ -82,6 +82,12 @@ body {
 	border-radius: 10px;
 	opacity: 0.9;
 }
+.search {
+	 margin: 10px 75px;
+}
+.dash.stream .search {
+	 margin: 10px 25px;
+}
 .class .dot {
     position: absolute;
 	height: 30px;
