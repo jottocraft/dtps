@@ -1,6 +1,19 @@
 ## power+
 [![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
 <br />
+#### Power+ v1.4.0 release checklist
+eta: january 11th ish?
+* Theme selector fix (fluid ui v3 beta 6? test in incognito)
+* Physics egg drop grade bugfix (assignment missing grade visible in PowerSchool)
+* Finish assignment search
+* Assignment details improvements
+
+#### Power+ v1.5.0 stuff?
+eta: march-ish maybe
+* Remember that submitted work screen exsist for testers
+* New settings / about menu thing and all the fun stuff planned to go with it
+
+<br />
 
 [developer docs](https://dtps.rtfd.io)
 
