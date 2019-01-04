@@ -474,6 +474,7 @@ dtps.renderStream = function(stream, searchRes) {
   threshold: 0.6,
   keys: [ "title", "id", "due", "subject" ]
 });
+	searchRes = "";
 }
   return `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
   //return streamlist.join("");
