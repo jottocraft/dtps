@@ -205,7 +205,7 @@ fluid.init = function() {
     }
   }
 
-  if (window.localStorage.fluidTheme !== "") {
+  if (window.localStorage.fluidTheme !== undefined) {
     fluid.theme(window.localStorage.fluidTheme, true)
   } else {
     if (fluid.theme(undefined, "unsetStat") == "unset") fluid.theme("auto", true);
