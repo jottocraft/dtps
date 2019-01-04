@@ -20,7 +20,6 @@ dtps.firstrun = function () {
 <h4>` + dtps.readableVer + `</h4>
 <li>Power+ can't fully replace PowerSchool yet. Many PowerSchool features are not included in Power+.</li>
 <li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
-<li>Learn about data Power+ collects at dtps.js.org</li>
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
