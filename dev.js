@@ -696,7 +696,15 @@ dtps.assignment = function(classNum, streamNum) {
 	var handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment</i> Hand In</div>`
 	if (assignment.turnedIn) handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment_returned</i> Resubmit</div>`
 	dtps.webReq("assignGET", "/" + assignment.loc + "/assignment/view/" + assignment.id, function(data) {
-	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data + `
+	var props = jQuery(data).siblings("table").children("tbody").children("tr");
+	var list = [];
+	for (var i = 0; i < props.length; i++) {
+	var prop = jQuery(props[i]).text().replace(/^\s+|\s+$/g, "").replace(/\r?\n|\r/g, "").split(":");
+	var icon = "";
+	if (prop[0].includes("star")) icon = `<i class="material-icons">star</i>`
+	list.push(`<div class="item">` + icon + "<b>" + prop[0] + "</b>:  " + prop[1] + `</div>`)
+	}
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i><div class="list">` + list + `</div>
 ` + handInDom + `
 <div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons">experiment</i> View Work</div>
 `);
