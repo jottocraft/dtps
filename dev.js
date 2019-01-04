@@ -111,6 +111,7 @@ if (req == "assignGET") {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
+  fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719", "10838212"]
@@ -165,7 +166,6 @@ window.dataLayer = window.dataLayer || [];
 	    //Load fluid JS modules early for changelogs
     $ = jQuery;
 	    jQuery("body").addClass("notwemoji");
-	    fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
       jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
       dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
