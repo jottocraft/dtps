@@ -702,9 +702,11 @@ dtps.assignment = function(classNum, streamNum) {
 	var prop = jQuery(props[i]).text().replace(/^\s+|\s+$/g, "").replace(/\r?\n|\r/g, "").split(":");
 	var icon = "";
 	if (prop[0].includes("star")) icon = `<i class="material-icons">star</i>`
+	if (prop[0] && prop[1]) {
 	list.push(`<div class="item">` + icon + "<b>" + prop[0] + "</b>:  " + prop[1] + `</div>`)
 	}
-	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i><div class="list">` + list + `</div>
+	}
+	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i><div style="background-color: #191919;" class="list">` + list.join("") + `</div>
 ` + handInDom + `
 <div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons">experiment</i> View Work</div>
 `);
