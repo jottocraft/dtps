@@ -417,7 +417,7 @@ dtps.classStream = function(num, renderOv) {
 	    }
 	    }
 	    dtps.classes[num].streamlist = [];
-      if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream, dtps.classes[num].col)); } }
+      if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream)); } }
 	   if (dtps.selectedClass == num) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } }
       dtps.classesReady++;
       dtps.checkReady(num);
