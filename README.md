@@ -4,7 +4,7 @@
 #### Power+ v1.4.0 release checklist
 eta: january 11th ish?
 * Theme selector fix (fluid ui v3 beta 6? test in incognito)
-* Physics egg drop grade bugfix (assignment missing grade visible in PowerSchool)
+* ~~Physics egg drop grade bugfix (assignment missing grade visible in PowerSchool)~~
 * Finish assignment search
 * Assignment details improvements
 
