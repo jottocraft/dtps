@@ -567,6 +567,7 @@ var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData
 			    } else {
 			jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), true))
 		}
+		$(".card.assignment").addClass("color");	
 });
 	}
 	$(".card.assignment").addClass("color");
