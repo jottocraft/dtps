@@ -475,8 +475,16 @@ dtps.renderStream = function(stream, searchRes) {
   keys: [ "title", "id", "due", "subject" ]
 });
 }
-  return `<div style="text-align: right;"><input class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
+  return `<div style="text-align: right;"><input onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
   //return streamlist.join("");
+}
+dtps.search = function() {
+if ($("input.search").val() == "") {
+	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, true)) 
+} else {
+	jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), true))
+}
+if (dtps.selectedClass == "dash") $(".card.assignment").addClass("color");	
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
@@ -561,14 +569,6 @@ var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData
     if(keyA > keyB) return -1;
     return 0;
   }))); 
-		$( "input.search" ).change(function() {
-			if ($("input.search").val() == "") {
-			    jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, true)) 
-			    } else {
-			jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), true))
-		}
-		$(".card.assignment").addClass("color");	
-});
 	}
 	$(".card.assignment").addClass("color");
 	dtps.calendar(doneLoading);
