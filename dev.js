@@ -480,12 +480,20 @@ dtps.renderStream = function(stream, searchRes) {
   //return streamlist.join("");
 }
 dtps.search = function() {
-if ($("input.search").val() == "") {
+if (dtps.selectedClass == "dash") {
+	if ($("input.search").val() == "") {
 	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, "")) 
-} else {
+	} else {
 	jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
-}
-if (dtps.selectedClass == "dash") $(".card.assignment").addClass("color");	
+	}
+	$(".card.assignment").addClass("color");
+} else {
+	if ($("input.search").val() == "") {
+	jQuery(".classContent").html(dtps.renderStream(dtps.latestStream, "")) 
+	} else {
+	jQuery(".classContent").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
+	}
+}	
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
