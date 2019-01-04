@@ -467,7 +467,7 @@ dtps.renderStream = function(stream, searchRes) {
        `);
     }
   }
-	if (!searchRes) {
+	if (searchRes == undefined) {
  dtps.latestStream = stream;
  dtps.fuse = new Fuse(stream,  {
   shouldSort: true,
@@ -475,14 +475,14 @@ dtps.renderStream = function(stream, searchRes) {
   keys: [ "title", "id", "due", "subject" ]
 });
 }
-  return `<div style="text-align: right;"><input onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
+  return `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
   //return streamlist.join("");
 }
 dtps.search = function() {
 if ($("input.search").val() == "") {
-	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, true)) 
+	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, "")) 
 } else {
-	jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), true))
+	jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
 }
 if (dtps.selectedClass == "dash") $(".card.assignment").addClass("color");	
 }
