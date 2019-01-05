@@ -672,7 +672,7 @@ dtps.gradebook = function(num) {
 		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
 		var styles = window.getComputedStyle($(".class." + num)[0]); 
 var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
-        datasets: [{ label: "Grade trend", borderColor: styles.getPropertyValue('--light'), data: dataPoints}]
+       datasets: [{ label: "Grade trend", backgroundColor: styles.getPropertyValue('--norm'), borderColor: styles.getPropertyValue('--light'), data: dataPoints}]
     },  options: {}
 });
 	}
