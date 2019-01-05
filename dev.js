@@ -697,7 +697,7 @@ dtps.assignment = function(classNum, streamNum) {
 	if (assignment.turnedIn) handInDom = `<div class="btn" onclick="window.location.href = '/` + assignment.loc + `/dropbox/assignment/` + assignment.id + `#/'"><i class="material-icons">assignment_returned</i> Resubmit</div>`
 	dtps.webReq("assignGET", "/" + assignment.loc + "/assignment/view/" + assignment.id, function(data) {
 	var dom = jQuery("<div />", {html: data});
-	var props = dom.children("div").siblings("table").children("tbody").children("tr");
+	var props = dom.children("div").siblings("table").children("tbody").children("tr:has(.label.right)");
 	var list = [];
 	for (var i = 0; i < props.length; i++) {
 	var prop = jQuery(props[i]).text().replace(/^\s+|\s+$/g, "").replace(/\r?\n|\r/g, "").split(":");
@@ -707,9 +707,10 @@ dtps.assignment = function(classNum, streamNum) {
 	if (prop[0].includes("Total")) icon = `<i class="material-icons">assessment</i>`
 	if (prop[0] && prop[1]) {
 	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item">` + icon + "<b>" + prop[0] + "</b>:  " + prop[1] + `</div>`)
+	jQuery(props[i]).remove();
 	}
 	}
-	dom.children("div").siblings("table").replaceWith(`<br /><div style="background-color: #191919;" class="list">` + list.join("") + `</div><br /><br />`)
+	dom.children("div").siblings("table").before(`<br /><div class="list">` + list.join("") + `</div><br /><br />`)
 	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + dom.html() + `
 ` + handInDom + `
 <div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons">experiment</i> View Work</div>
