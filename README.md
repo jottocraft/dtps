@@ -1,4 +1,5 @@
 ## power+
+[![Power+ Release](https://img.shields.io/github/release/jottocraft/dtps.svg)](https://github.com/jottocraft/dtps/releases)
 [![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
 <br />
 
