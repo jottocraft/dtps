@@ -1,12 +1,6 @@
 ## power+
 [![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
 <br />
-#### Power+ v1.4.0 release checklist
-eta: january 11th ish?
-* ~~Theme selector fix (almost fixed, move default from light to auto)~~
-* ~~Physics egg drop grade bugfix (assignment missing grade visible in PowerSchool)~~
-* Finish assignment search
-* Assignment details improvements
 
 #### Power+ v1.5.0 stuff?
 eta: march-ish maybe
