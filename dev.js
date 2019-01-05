@@ -441,7 +441,7 @@ dtps.renderStream = function(stream, searchRes) {
 	    var wFormat = "";
 	    if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
 	    if (wFormat == "undefined") { wFormat = "" } else { wFormat = `<span class="weighted">` + wFormat + `</span>`} ;
-	    var onclick = `dtps.assignment(` + stream[i].class + `, ` + i + `)`
+	    var onclick = `dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `)`
 	    if (stream[i].google) {
 	    var onclick = `window.open('` + stream[i].url + `')`
 	    }
