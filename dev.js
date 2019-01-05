@@ -1,7 +1,7 @@
 var dtps = {
-  ver: 140,
-  readableVer: "v1.4.0 (GM)",
-  trackSuffix: " (GM)",
+  ver: 150,
+  readableVer: "v1.5.0 (dev)",
+  trackSuffix: " (dev)",
   showLetters: false,
   unreadAnn: 0,
   latestStream: []
@@ -18,9 +18,11 @@ dtps.firstrun = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>Welcome to Power+` + dtps.trackSuffix + `</h2>
 <h4>` + dtps.readableVer + `</h4>
+<p>Things to keep in mind when using Power+</p>
 <li>Power+ can't fully replace PowerSchool yet. Many PowerSchool features are not included in Power+.</li>
-<li>Report bugs and send feedback by clicking the feedback button at the top right corner</li>
-<li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+ at your own risk.</b></li>
+<li>To use Power+, you have to visit PowerSchool, then run the bookmark script. You can choose stop using Power+ at any time by not using the bookmark script.</li>
+<li>Report bugs and send feedback by clicking the feedback button at the top right corner.</li>
+<li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
@@ -112,12 +114,12 @@ dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
   fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
-  //if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
+  if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719", "10838212"]
-  //if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
+  if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
   contributors = ["10837719", "10463823", "10894474"]
-  //if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
-  //if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+  if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
+  if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   dtps.shouldRender = false;
 	dtps.first = false;
 	dtps.showChangelog = false;
