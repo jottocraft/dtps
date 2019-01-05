@@ -1,5 +1,7 @@
 ## power+
 [![Power+ Release](https://img.shields.io/github/release/jottocraft/dtps.svg)](https://github.com/jottocraft/dtps/releases)
+[![Power+ Dev Release](https://img.shields.io/badge/dev-v1.5.0-red.svg)](https://dtps.js.org/devbookmark.txt)
+[![Power+ Chrome Web Store Rating](https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo/reviews)
 [![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
 <br />
 
