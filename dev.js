@@ -550,7 +550,7 @@ dtps.masterStream = function(doneLoading) {
 		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[ii].id]))
 		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
 		var styles = window.getComputedStyle($(".class." + ii)[0]); 
-		dataSets.push({ label: dtps.classes[ii].subject, backgroundColor: styles.getPropertyValue('--norm'), borderColor: styles.getPropertyValue('--light'), data: dataPoints})
+		dataSets.push({ label: dtps.classes[ii].subject, borderColor: styles.getPropertyValue('--light'), data: dataPoints})
 		}
 		
 var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
@@ -672,7 +672,7 @@ dtps.gradebook = function(num) {
 		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
 		var styles = window.getComputedStyle($(".class." + num)[0]); 
 var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
-        datasets: [{ label: "Grade trend", backgroundColor: styles.getPropertyValue('--norm'), borderColor: styles.getPropertyValue('--light'), data: dataPoints}]
+        datasets: [{ label: "Grade trend", borderColor: styles.getPropertyValue('--light'), data: dataPoints}]
     },  options: {}
 });
 	}
