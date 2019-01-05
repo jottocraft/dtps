@@ -686,7 +686,7 @@ var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData
 	}
 }
 dtps.assignment = function(id, classNum) {
-	var streamNum = dtps.classes[classNum].streamItems.indexOf(id);
+	var streamNum = dtps.classes[classNum].streamitems.indexOf(id);
 	var assignment = dtps.classes[classNum].stream[streamNum];
 	 $(".card.details").html(`
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
