@@ -1070,37 +1070,6 @@ dtps.render = function() {
       <div class="bounce3"></div>
     </div>
     </div>
-    <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
-<i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
-<img src="https://dtps.js.org/dtps.png" style="vertical-align: middle;width: 100px;margin-right: 10px;">
-    <div style="display:inline-block; vertical-align: middle;">
-    <h4 style="margin: 0px">Power+ ` + trackDom + `</h4>
-    <h5 style="display: inline-block; margin: 0px; margin-top: 5px; font-size: 1.5rem;">` + dtps.readableVer.replace(dtps.trackSuffix, "") + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
-</div>
-<br /><br />
-    Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
-<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
-<div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
-<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
-<div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
-    <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
-    <div class="btns row themeSelector"></div>
-<br /><br />
-<div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
-    <br /><br />
-<div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
-<br /><br />
-<div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">edit</i> Show grade editor</div>
-<div class="extensionDom" ></div>
-    <br /><br />
-    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Sort classes</button>
-    <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo</button>
-    <button onclick="dtps.clearData();" class="btn"><i class="material-icons">delete_outline</i>Reset Power+</button>
-    </div>
 <div style="height: calc(100vh - 50px);width: 75%;" class="card withnav focus close abt-new">
 <i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
   <div class="sidenav">
@@ -1207,8 +1176,7 @@ dtps.render = function() {
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
     <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
-    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons sudo">experiment</i>
-    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt')" class="material-icons">more_horiz</i>
+    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">more_horiz</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
