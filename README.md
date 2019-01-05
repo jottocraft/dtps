@@ -3,18 +3,14 @@
 [![Power+ Dev Release](https://img.shields.io/badge/dev-v1.5.0-red.svg)](https://dtps.js.org/devbookmark.txt)
 [![Power+ Chrome Web Store Rating](https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo/reviews)
 [![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
-<br />
-
-#### Power+ v1.5.0 stuff?
-eta: march-ish maybe
-* Remember that submitted work screen exsist for testers
-* New settings / about menu thing and all the fun stuff planned to go with it
 
 <br />
 
 [developer docs](https://dtps.rtfd.io)
 
 <br /><br />
+
+#### Loader scripts
 
 [bookmark script](https://dtps.js.org/bookmark.txt)
 
