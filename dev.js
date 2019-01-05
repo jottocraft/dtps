@@ -823,18 +823,11 @@ dtps.showClasses = function(override) {
   }
 	}
 	if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
-		var streamDom = `<div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
-    <div class="name">Stream</div>
-    <div class="grade"><i class="material-icons">view_stream</i></div>
-    </div>`;
-		if (sudoers.includes(HaikuContext.user.login)) {
-			streamDom = `<div onclick="dtps.selectedClass = 'dash';" class="class sudo masterStream ` + streamClass + `">
+  jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
+<div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
     <div class="name">Dashboard</div>
     <div class="grade"><i class="material-icons">dashboard</i></div>
-    </div>`
-		}
-  jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
-` + streamDom + `
+    </div>
    <div style="display: none;" onclick="dtps.selectedClass = 'announcements';" class="class">
     <div class="name" id="annLabel">Announcements ` + unreadAnn + `</div>
     <div class="grade"><i class="material-icons">announcement</i></div>
