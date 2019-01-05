@@ -176,11 +176,6 @@ window.dataLayer = window.dataLayer || [];
 		  dtps.shouldRender = false;
     dtps.alert("Unsupported Account", "Power+ only works on student accounts");
 	      } else {
-		      if (dtpsLoader < 2) {
-			      dtps.updateScript = true;
-			      dtps.shouldRender = true;
-			      dtps.alert("Loading...", "Make sure to update your bookmark script");
-			  } else {
 				 if (window.location.pathname.split("/")[3] !== "portal") {
 					 dtps.shouldRender = false;
       dtps.alert("Page error", 'Go to your <a href="/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
@@ -189,7 +184,7 @@ window.dataLayer = window.dataLayer || [];
       dtps.alert("Loading...");
 			  }
 		      
-	      }
+	      
     }
     }
 
