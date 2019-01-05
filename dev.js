@@ -1038,6 +1038,7 @@ dtps.render = function() {
 <br /><br />
 <div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}"><span class="head"></span></div>
     <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
+	   jQuery(".extTab").show();
 	   if (window.localStorage.disableAutoLoad == "true") { jQuery("#extensionAutoLoad").removeClass("active"); jQuery(".extensionDevMode").hide(); }
 	   if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
    }
@@ -1125,7 +1126,7 @@ dtps.render = function() {
     <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
       <i class="material-icons">book</i> Classes
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item">
+    <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item sudo">
@@ -1164,13 +1165,14 @@ dtps.render = function() {
     <div class="otherGClasses"><p>Coming soon!</p></div>
 </div>
 <div style="display: none;" class="abtpage extension">
-    <h5>The new settings page is still being developed</h5>
-    <p>Click the info button in the titlebar instead of the experiment button to use the old about page</p>
+    <h5>Extension</h5>
+    <div class="extensionDom" ></div>
 </div>
 <div style="display: none;" class="abtpage experiments">
 <div class="sudo">
     <h5>Experiments</h5>
-    <p>Features listed below are in development and cannot be included in a bug report. Power+ testers only.</p>
+    <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
+    <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
     <br />
     <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
 </div>
@@ -1184,7 +1186,8 @@ dtps.render = function() {
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <br />
+    <button onclick="dtps.clearData();" class="btn"><i class="material-icons">delete_outline</i>Reset Power+</button>
+    <br /><br />
     <h5>Resources</h5>
     <ul>
 <li><a href="mailto:jotto3053@gmail.com">Contact me</a></li>
