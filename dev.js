@@ -701,7 +701,7 @@ dtps.assignment = function(id, classNum) {
 	var props = dom.children("div").siblings("table").children("tbody").children("tr:has(.label.right)");
 	var list = [];
 	for (var i = 0; i < props.length; i++) {
-	var prop = jQuery(props[i]).text().replace(/^\s+|\s+$/g, "").replace(/\r?\n|\r/g, "").split(":");
+	var prop = jQuery(props[i]).text().replace(/^\s+|\s+$/g, "").replace(/\r?\n|\r/g, "").split(/:(.+)/);
 	var icon = "";
 	if (prop[0].includes("Posted")) icon = `<i class="material-icons">add_box</i>`
 	if (prop[0].includes("Due")) icon = `<i class="material-icons">access_time</i>`
