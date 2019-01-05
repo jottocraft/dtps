@@ -1,31 +1,59 @@
 body.dark .fc-today {
 	background-color: #181b1d !important;
 }
+body.dark .list {
+	background-color: #191919 !important;
+}
+body:not(.dark) .list {
+	background-color: #eaeaea !important;
+}
 .fc-event {
 	cursor: pointer !important;
+}
+.card.focus {
+	max-height: calc(100vh - 50px);
 }
 #calendar h2 {
 	font-size: 40px;
 }
-.dash.stream .card {
-	margin-right: 25px;
+.fc .fc-button-group>* {
+	background: none;
+}
+body:not(.dark) .fc .fc-button-group>* {
+	border-color: #e6e6e6;
+}
+body.dark .fc .fc-button-group>* {
+	border-color: #484848;
+	color: white;
+}
+.announcement .label {
+	position: absolute;
+  	right: 0;
+    	margin-right: 15px;
+    	margin-top: -10px;
+ 	background-color: var(--light);
+ 	color: var(--dark);
+ 	padding: 3px 6px;
+   	border-radius: 20px;
+}
+.announcement:not(.open) {
+	max-height: 200px;
+	overflow: hidden;
+}
+body {
+	position: relative;
+	height: 100%;
+	min-height: 100vh;
+}
+.sidenav .item {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.sidenav .item i {
+	margin-right: 10px;
 }
 .class {
-	opacity: 0.9;
-	display: inline-block;
-	border-radius: 30px;
-	padding: 5px 15px;
-	color: white;
-	font-size: 18px;
-	cursor: pointer;
-	border: 2px solid #424242;
-	line-height: 50px;
-	width: 250px;
-	height: 62px;
-	margin: 10px 0;
-	transition: background-color 0.5s;
-}
-body.compact .class {
 	border: none;
 	padding: 0px;
 	opacity: 0.95;
@@ -57,11 +85,14 @@ body.compact .class {
 	text-align: center;
 	margin-left: 10px;
 	vertical-align: middle;
-	border-radius: 50%;
+	border-radius: 10px;
 	opacity: 0.9;
 }
-body.compact .class .grade {
-	border-radius: 10px;
+.search {
+	 margin: 10px 75px;
+}
+.dash.stream .search {
+	 margin: 10px 25px;
 }
 .class .dot {
     position: absolute;
@@ -103,8 +134,30 @@ body.compact .class .grade {
 	line-height: 35px;
 	font-size: 20px;
 }
+body:not(.letterGrades) .points:hover .numbers {
+	display: none !important;
+}
+body:not(.letterGrades) .points:not(:hover) .letters {
+	display: none !important;
+}
+.points:not(:hover) .percentage {
+	display: none !important;
+}
+.points:hover .possible {
+	display: none !important;
+}
+body.letterGrades .points:not(:hover) .numbers {
+	display: none !important;
+}
+body.letterGrades .points:hover .letters {
+	display: none !important;
+}
 body.dark .card .dot {
 	background-color: #181b1d;
+}
+body.titlebar .sidebar {
+	position: fixed;
+	top: 75;
 }
 .class .grade .letter, .class .grade .points , .class .grade .material-icons {
 	line-height: 50px;
@@ -133,11 +186,8 @@ body.dark .card .dot {
 	font-size: 32px;
 }
 .class.active {
-	border: 2px solid #a3a3a3;
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
-}
-body.compact .class.active {
 	border: none;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
 }
 .class .name {
 	width: 156px;
@@ -147,38 +197,134 @@ body.compact .class.active {
 	text-overflow: ellipsis;
 }
 .sidebar {
-	width: 250px;
+	visibility: visible;
+	height: 100%;
+	min-height: 100vh;
+	width: 275px;
 	padding-left: 10px;
 	padding-top: 25px;
 	z-index: 5;
 	position: absolute;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.17);
+}
+body:not(.dark) .sidebar, body:not(.dark) .abtheader {
+	background-color: #f1f1f1;
+}
+body.dark .sidebar, body.dark .abtheader {
+	background-color: #232323;
+}
+body.dark.midnight .sidebar {
+	background-color: #080808;
+}
+body.noSidebar .sidebar {
+	display: none;
+	visibility: hidden;
+}
+body.noSidebar .header {
+	width: 100%;
+	margin-left: 0px;
+}
+body.titlebar .background {
+	position: fixed;
+	height: 75px;
+	z-index: 10;
+}
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+body.titlebar .header {
+	padding: 0px;
+	z-index: 10;
+	text-align: left;
+}
+body.titlebar .classContent {
+	z-index: 1;
+	padding-top: 100px;
+}
+body.noSidebar .classContent {
+	margin-left: 0px;
+	width: 100%;
+}
+body.titlebar .header h1 {
+	font-size: 40px;
+	line-height: 75px;
+	display: inline-block;
+	margin: 0px;
+	margin-left: 25px;
+	position: fixed;
+	left: 0px;
+	z-index: 200;
+}
+body.titlebar .header .btns {
+	margin-top: 30px;
+	position: fixed;
+	margin-left: calc(50% - 175px)
+}
+body.titlebar:not(.noSidebar) .header .btns {
+	margin-left: calc(50% - 525px);
+}
+.classContent {
+	margin-left: 260px;
+    padding-top: 300px;
+    z-index: 100;
+    top: 0;
+    width: calc(100% - 250px);
+}
+body.titlebar .classContent {
+	position: absolute;
+	top: 0;
+	margin-top: 321px;
+}
+.tabs.btns {
+	padding: 0px;
+	background-color: transparent !important;
+}
+.tabs.btns .btn {
+	background-color: transparent !important;
+	box-shadow: none !important;
+	color: #cacaca;
+	border-radius: 0px !important;
+}
+.tabs.btns .btn:not(.active) {
+	color: var(--light, #cacaca) !important;
+}
+.tabs.btns .btn.active {
+	color: white;
+	border-bottom: 1px solid white;
+}
+.sidebar, .header {
+	transition: all 0.5s;
+}
+.dot {
+	display: none;
 }
 .background {
 	position: absolute;
 	top: 0;
 	width: 100%;
 	height: 500px;
-	border-radius: 0px 0px 25px 25px;
 }
 .header {
 	margin-left: 260px;
 	text-align: center;
 	color: white;
 	padding-top: 100px;
-	z-index: 100;
+	z-index: 200;
 	position: absolute;
 	top: 0;
 	width: calc(100% - 250px);
 }
-.header .card {
+.classContent .card {
 	margin: 25px 75px;
 	text-align: left;
 	border-radius: 30px;
 }
-body:not(.dark) .header .card {
+body:not(.dark) .classContent .card {
 	color: black;
 }
-body.dark .header .card {
+body.dark .classContent .card {
 	color: white;
 }
 .card i.close {
@@ -236,29 +382,29 @@ body.dark .header .card {
     transform: scale(1.0);
   }
 }
-.header .card .points {
+.classContent .card .points {
 	float: right;
 	position: absolute;
 	display: inline-block;
 	right: 25px;
 }
-.header .card .points.spinner {
+.classContent .card .points.spinner {
 	top: 25px;
 	margin-top: 0px;
 }
-.header .card .points .earned {
-	font-size: 32px;
+.classContent .card .points .earned {
+	font-size: 24px;
 	display: inline-block;
 }
-.header .card .points .total {
-	font-size: 18px;
+.classContent .card .points .total {
+	font-size: 14px;
 	margin-top: 15px;
 	display: inline-block;
 	color: #8e8e8e;
 }
 .assignment .weighted {
 	color: #8e8e8e;
-	font-size: 18px;
+	font-size: 0.9rem;
 	margin-left: 10px;
 }
 .weight.parent .weight {
@@ -289,6 +435,10 @@ body.dark .header .card {
 .badge, .beta.notice {
 	display: inline-block;
 	margin: 0 10px;
+	border: none;
+	padding: 3px 6px;
+	color: white !important;
+	background-color: #ff7e00;
 }
 .badge i, .beta.notice i {
 	vertical-align: middle;
@@ -298,25 +448,27 @@ body.dark .header .card {
 	border-color: #0bb75b;
 	background-color: #0bb75b;
 }
+.beta.notice.turnin i {
+	font-size: 18px;
+}
+.dash.stream .card {
+	margin-right: 25px;
+}
 .beta.notice.missing {
 	color: #b7630a;
 	border-color: #b7630a;
 }
 .badge.dev {
-	color: #0090ff;
-	border-color: #0090ff;
+	background-color: #0090ff;
 }
 .badge.sudo {
-	color: #d64c0c;
-	border-color: #d64c0c;
+	background-color: #d64c0c;
 }
 .badge.og {
-	color: #daa520;
-	border-color: #daa520;
+	background-color: #daa520;
 }
 .badge.contributor {
-	color: #20da61;
-	border-color: #20da61;
+	background-color: #20da61;
 }
 .weight.parent {
 	padding: 0px !important;
@@ -324,7 +476,7 @@ body.dark .header .card {
 	margin-bottom: 100px;
 }
 .card .weight p {
-	color: var(--dark) !important;
+	color: #5f5f5f !important;
 }
 .card.gb {
 	padding: 0 !important;
@@ -333,7 +485,7 @@ body.dark .header .card {
 	vertical-align: middle;
 	font-size: 24px;
 }
-.header .card.color .points .total {
+.classContent .card.color .points .total {
 	color: var(--light);
 }
 .card.details fieldset, .card.details #tb_handin_link, .card.details div.p, .card.details label {
@@ -344,104 +496,119 @@ body.dark .card.details * {
 }
 .card.assignment {
 	cursor: pointer;
+	padding: 20px 30px;
 }
-.header .card.assignment h5 {
-	font-size: 1.5rem !important;
+.classContent .card.assignment h5 {
+	font-size: 1rem !important;
 }
-.header .card.assignment h4 {
+.classContent .card.assignment h4 {
+	margin-bottom: 5px;
+	font-size: 1.25rem;
 	margin-top: 0px !important;
     white-space: nowrap;
     text-overflow: ellipsis;
     margin-right: 0px;
     overflow: hidden;
 }
-.header .card.assignment.nograde h4 {
+.classContent .card.assignment.nograde h4 {
 	margin: 1.14rem 0 .912rem 0 !important;
 }
-.header .card.assignment.graded h4 {
+.classContent .card.assignment.graded h4 {
 	width: calc(100% - 125px);
 }
-.card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .card .weight:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
-	--light: #a3a3a3;
-	--norm: #777777;
-	--dark: #424242;
-	--grad: linear-gradient(to bottom right, #a3a3a3, #424242);
+.class.active .name {
+	font-weight: bold;
 }
-.background.filter_0, .class.filter_0, .card.filter_0, .card .weight.filter_0 {
-	--light: #FE4040;
-	--norm: #e34b4b;
-	--dark: #8A1010;
-	--grad: linear-gradient(to bottom right, #FE4040, #8A1010);
+body.dark .class .name {
+	color: #ececec;
 }
-.background.filter_1, .class.filter_1, .card.filter_1, .card .weight.filter_1 {
-	--light: #FD9920;
-	--norm: #f5904c;
-	--dark: #C45E19;
-	--grad: linear-gradient(to bottom right, #FD9920, #C45E19);
+body.dark .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .card .weight:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
+    --light: #7d7d7d;
+    --norm: #383838;
+    --dark: #101010;
+    --grad: linear-gradient(to bottom right, #7d7d7d, #101010);
 }
-.background.filter_2, .class.filter_2, .card.filter_2, .card .weight.filter_2 {
-	--light: #FAE52B;
-	--norm: #d1c134;
-	--dark: #A29417;
-	--grad: linear-gradient(to bottom right, #FAE52B, #A29417);
+body:not(.dark) .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .card .weight:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
+    --light: #d4d4d4;
+    --norm: #a7a7a7;
+    --dark: #676767;
+    --grad: linear-gradient(to bottom right, #d4d4d4, #676767);
 }
-.background.filter_3, .class.filter_3, .card.filter_3, .card .weight.filter_3 {
-	--light: #7CE57C;
-	--norm: #519951;
-	--dark: #165816;
-	--grad: linear-gradient(to bottom right, #7CE57C, #165816);
+.background.filter_0, .class.filter_0, .card.filter_0, .card .weight.filter_0, .header.filter_0 {
+    --light: #f34848;
+    --norm: #ab3030;
+    --dark: #650808;
+    --grad: linear-gradient(to bottom right, #f34848, #650808);
 }
-.background.filter_4, .class.filter_4, .card.filter_4, .card .weight.filter_4 {
-	--light: #45AFE6;
-	--norm: #517b91;
-	--dark: #184760;
-	--grad: linear-gradient(to bottom right, #45AFE6, #184760);
+.background.filter_1, .class.filter_1, .card.filter_1, .card .weight.filter_1, .header.filter_1 {
+    --light: #ff8e37;
+    --norm: #b95425;
+    --dark: #863109;
+    --grad: linear-gradient(to bottom right, #ff8e37, #863109);
 }
-.background.filter_5, .class.filter_5, .card.filter_5, .card .weight.filter_5 {
-	--light: #CF66E0;
-	--norm: #9442a1;
-	--dark: #62136E;
-	--grad: linear-gradient(to bottom right, #CF66E0, #62136E);
+.background.filter_2, .class.filter_2, .card.filter_2, .card .weight.filter_2, .header.filter_2 {
+    --light: #ffe672;
+    --norm: #c3a51c;
+    --dark: #675b0e;
+    --grad: linear-gradient(to bottom right, #ffe672, #716307);
 }
-.background.filter_6, .class.filter_6, .card.filter_6, .card .weight.filter_6 {
-	--light: #FA9CCA;
-	--norm: #d16f9e;
-	--dark: #A84273;
-	--grad: linear-gradient(to bottom right, #FA9CCA, #A84273);
+.background.filter_3, .class.filter_3, .card.filter_3, .card .weight.filter_3, .header.filter_3 {
+    --light: #70d070;
+    --norm: #136d2a;
+    --dark: #044013;
+    --grad: linear-gradient(to bottom right, #70d070, #044013);
 }
-.background.filter_7, .class.filter_7, .card.filter_7, .card .weight.filter_7 {
-	--light: #C4A18A;
-	--norm: #8c705e;
-	--dark: #6A4F3D;
-	--grad: linear-gradient(to bottom right, #C4A18A, #6A4F3D);
+.background.filter_4, .class.filter_4, .card.filter_4, .card .weight.filter_4, .header.filter_4 {
+    --light: #4cb4ea;
+    --norm: #0d6a9a;
+    --dark: #032f46;
+    --grad: linear-gradient(to bottom right, #4cb4ea, #032f46);
 }
-.background.filter_8, .class.filter_8, .card.filter_8, .card .weight.filter_8 {
-	--light: #F7C872;
-	--norm: #b8934d;
-	--dark: #896216;
-	--grad: linear-gradient(to bottom right, #F7C872, #896216);
+.background.filter_5, .class.filter_5, .card.filter_5, .card .weight.filter_5, .header.filter_5 {
+    --light: #f091ff;
+    --norm: #9446a0;
+    --dark: #44114c;
+    --grad: linear-gradient(to bottom right, #f091ff, #44114c);
 }
-.background.filter_9, .class.filter_9, .card.filter_9, .card .weight.filter_9 {
-	--light: #CDE9A7;
-	--norm: #8fab6a;
-	--dark: #6F7F5B;
-	--grad: linear-gradient(to bottom right, #CDE9A7, #6F7F5B);
+.background.filter_6, .class.filter_6, .card.filter_6, .card .weight.filter_6, .header.filter_6 {
+    --light: #ffa3d0;
+    --norm: #c15689;
+    --dark: #6b2044;
+    --grad: linear-gradient(to bottom right, #ffa3d0, #6b2044);
 }
-.background.filter_10, .class.filter_10, .card.filter_10, .card .weight.filter_10 {
-	--light: #CDE9F9;
-	--norm: #7da1b5;
-	--dark: #69808C;
-	--grad: linear-gradient(to bottom right, #CDE9F9, #69808C);
+.background.filter_7, .class.filter_7, .card.filter_7, .card .weight.filter_7, .header.filter_7 {
+    --light: #b59785;
+    --norm: #584a41;
+    --dark: #382c24;
+    --grad: linear-gradient(to bottom right, #b59785, #382c24);
 }
-.background.filter_11, .class.filter_11, .card.filter_11, .card .weight.filter_11 {
-	--light: #D3BCFE;
-	--norm: #887aa3;
-	--dark: #5D5373;
-	--grad: linear-gradient(to bottom right, #D3BCFE, #5D5373);
+.background.filter_8, .class.filter_8, .card.filter_8, .card .weight.filter_8, .header.filter_8 {
+    --light: #fbd287;
+    --norm: #94763d;
+    --dark: #5d410c;
+    --grad: linear-gradient(to bottom right, #fbd287, #5d410c);
+}
+.background.filter_9, .class.filter_9, .card.filter_9, .card .weight.filter_9, .header.filter_9 {
+    --light: #d3f1ac;
+    --norm: #81926a;
+    --dark: #434a39;
+    --grad: linear-gradient(to bottom right, #d3f1ac, #434a39);
+}
+.background.filter_10, .class.filter_10, .card.filter_10, .card .weight.filter_10, .header.filter_10 {
+    --light: #bfe8ff;
+    --norm: #768c98;
+    --dark: #435158;
+    --grad: linear-gradient(to bottom right, #bfe8ff, #435158);
+}
+.background.filter_11, .class.filter_11, .card.filter_11, .card .weight.filter_11, .header.filter_11 {
+    --light: #d9c5ff;
+    --norm: #7c748c;
+    --dark: #4a4554;
+    --grad: linear-gradient(to bottom right, #d9c5ff, #4a4554);
 }
 .background {
   background-size: 100%;
-  position: relative;
+  position: absolute;
   z-index: -90;
 }
 .background:before {
@@ -489,7 +656,9 @@ body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contrib
 	display: none !important;
 }
 
-
+body.titlebar .items {
+	display: none !important;
+}
 .items {
 	position: absolute;
 	right:0;
@@ -497,7 +666,7 @@ body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contrib
 	margin: 15px;
 	color: white;
 	padding-right: 10px;
-	z-index: 100;
+	z-index: 300;
 }
 .items h4 {
 	vertical-align: middle;
