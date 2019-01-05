@@ -459,7 +459,7 @@ dtps.renderStream = function(stream, searchRes) {
       `);
     } else {
       streamlist.push(`
-        <div onclick="dtps.assignment(` + stream[i].class + `, ` + i + `)" class="card assignment ` + stream[i].col + `">
+        <div onclick="dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `)" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
 	       <h5>` + due + turnInDom +  `</h5>
          </div>
@@ -475,7 +475,7 @@ dtps.renderStream = function(stream, searchRes) {
 });
 	searchRes = "";
 }
-  return `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" style=" margin: 10px 25px;" /></div>` + streamlist.join("");
+  return `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` + streamlist.join("");
   //return streamlist.join("");
 }
 dtps.search = function() {
@@ -685,7 +685,8 @@ var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData
 }
 	}
 }
-dtps.assignment = function(classNum, streamNum) {
+dtps.assignment = function(id, classNum) {
+	var streamNum = dtps.classes[classNum].streamItems.indexOf(id);
 	var assignment = dtps.classes[classNum].stream[streamNum];
 	 $(".card.details").html(`
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
