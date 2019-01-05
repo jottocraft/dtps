@@ -1,6 +1,12 @@
 body.dark .fc-today {
 	background-color: #181b1d !important;
 }
+body.dark .list {
+	background-color: #191919;
+}
+body:not(.dark) .list {
+	background-color: #eaeaea;
+}
 .fc-event {
 	cursor: pointer !important;
 }
