@@ -827,6 +827,7 @@ dtps.showClasses = function(override) {
       <div class="name">` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `</div>
       </div>`)	
 		}
+		}
 	if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
   jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
 <div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
