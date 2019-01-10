@@ -819,6 +819,14 @@ dtps.showClasses = function(override) {
     `);
   }
 	}
+	var googleClassDom = ""
+		if (dtps.isolatedGoogleClasses) {
+		dtps.classlist.push(`<div class="classDivider"></div>`)
+		for (var i = 0; i < dtps.isolatedGoogleClasses.length; i++) {
+		dtps.classlist.push(`<div onclick="$('.background').css('background', ''); $('.header .btns').hide(); $('.classContent').html(dtps.renderStream(dtps.googleClasses[`  + dtps.isolatedGoogleClasses[i] +`].stream)); $('.header h4').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]] + `">
+      <div class="name">` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `</div>
+      </div>`)	
+		}
 	if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
   jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
 <div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
@@ -971,8 +979,11 @@ dtps.googleAuth = function() {
 		  }
 		  if (highest.class !== null) {
 		  dtps.classes[highest.class].google = dtps.googleClasses[i]
+		  dtps.googleClasses[i].psClass = highest.class
 		  }
 	  }
+	  dtps.isolatedGoogleClasses = [];
+	  for (var i = 0; i < dtps.googleClasses.length; i++) { if (dtps.googleClasses[i].psClass == undefined) { dtps.isolatedGoogleClasses.push(i) } }
 	  dtps.showClasses(true);
 	  dtps.googleStream();
   });
