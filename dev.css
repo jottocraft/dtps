@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Material Icons Outline';
+  font-style: normal;
+  font-weight: 400;
+  src: url(outline.woff2) format('woff2');
+}
+.material-icons {
+  font-family: 'Material Icons Outline';
+}
 body.dark .fc-today {
 	background-color: #181b1d !important;
 }
