@@ -1062,7 +1062,7 @@ dtps.render = function() {
     google_logo Classroom
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
-    <i class="material-icons">list</i>
+    <i class="material-icons">insert_drive_file</i>
     Pages
     </button>
     <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades">
@@ -1130,7 +1130,7 @@ dtps.render = function() {
 </div>
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
-    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Sort classes</button>
+    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">sort</i>Sort classes</button>
     <br /><br />
     <h5>Google Classes</h5>
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
