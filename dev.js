@@ -627,7 +627,7 @@ dtps.gradebook = function(num) {
 			}
 		}
 		dtps.classes[num].weights[i].icon = "";
-		if (dtps.classes[num].weights[i].weight.includes("Success") || dtps.classes[num].weights[i].weight.includes("SS")) dtps.classes[num].weights[i].icon = `<i class="material-icons">star</i> `
+		if (dtps.classes[num].weights[i].weight.includes("Success") || dtps.classes[num].weights[i].weight.includes("SS")) dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `
 	        if (dtps.classes[num].weights[i].weight.includes("Comprehension") || dtps.classes[num].weights[i].weight.includes("CC")) dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `
 		if (dtps.classes[num].weights[i].weight.includes("Performance") || dtps.classes[num].weights[i].weight.includes("PT"))dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `
 		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `</h4>` + assignTmp.join("") + `</div>` );
@@ -1159,7 +1159,7 @@ dtps.render = function() {
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
-<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
+<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
 <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
