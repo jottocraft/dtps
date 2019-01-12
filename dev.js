@@ -935,57 +935,15 @@ dtps.googleAuth = function() {
   console.log(result);
   jQuery.getJSON("https://classroom.googleapis.com/v1/courses" + dtps.classroomAuth, function(resp) {
 	  dtps.googleClasses = resp.courses;
-	  function editDistance(s1, s2) {
-      s1 = s1.toLowerCase();
-      s2 = s2.toLowerCase();
-
-      var costs = new Array();
-      for (var i = 0; i <= s1.length; i++) {
-        var lastValue = i;
-        for (var j = 0; j <= s2.length; j++) {
-          if (i == 0)
-            costs[j] = j;
-          else {
-            if (j > 0) {
-              var newValue = costs[j - 1];
-              if (s1.charAt(i - 1) != s2.charAt(j - 1))
-                newValue = Math.min(Math.min(newValue, lastValue),
-                  costs[j]) + 1;
-              costs[j - 1] = lastValue;
-              lastValue = newValue;
-            }
-          }
-        }
-        if (i > 0)
-          costs[s2.length] = lastValue;
-      }
-      return costs[s2.length];
-    }
-	  function similarity(s1, s2) {
-      var longer = s1;
-      var shorter = s2;
-      if (s1.length < s2.length) {
-        longer = s2;
-        shorter = s1;
-      }
-      var longerLength = longer.length;
-      if (longerLength == 0) {
-        return 1.0;
-      }
-      return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
-    }
 	  for (var i = 0; i < dtps.googleClasses.length; i++) {
-		  var highest = {stat: 0, class: null};
-		   dtps.googleClasses[i].stats = [];
+		  var match = null;
 		  for (var ii = 0; ii < dtps.classes.length; ii++) {
-			  var stat = similarity(dtps.googleClasses[i].name, dtps.classes[ii].subject)
-			  dtps.googleClasses[i].stats.push({class: dtps.classes[ii].subject, stat: stat})
-			  if ((stat > highest.stat) && (stat > 0.2)) highest = {stat: stat, class: ii}
+			  if (dtps.googleClasses[i].name.includes(dtps.classes[ii].subject)) match = ii;
 		  }
-		  if (highest.class !== null) {
-			  if (dtps.classes[highest.class].google == undefined) {
-		  dtps.classes[highest.class].google = dtps.googleClasses[i]
-		  dtps.googleClasses[i].psClass = highest.class
+		  if (match !== null) {
+			  if (dtps.classes[match].google == undefined) {
+		  dtps.classes[match].google = dtps.googleClasses[i]
+		  dtps.googleClasses[i].psClass = match
 			      }
 		  }
 	  }
