@@ -1050,7 +1050,7 @@ dtps.render = function() {
     google_logo Classroom
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
-    <i class="material-icons">list</i>
+    <i class="material-icons">insert_drive_file</i>
     Pages
     </button>
     <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades">
