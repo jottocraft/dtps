@@ -798,22 +798,18 @@ dtps.showClasses = function(override) {
 		for (var ii = 0; ii < dtps.classes.length; ii++) {
 			if (dtps.classes[ii].id == classOrder[i]) { var num = ii; }
 		}
-	  var googleDom = "";
-	  if (dtps.classes[num].google) var googleDom = "&nbsp;&nbsp;google_G";
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + dtps.classes[num].col + `">
-      <div class="name">` + dtps.classes[num].subject + googleDom + `</div>
+      <div class="name">` + dtps.classes[num].subject + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + dtps.classes[num].grade + `%</span></div>
       </div>
     `);
   }
 	} else {
   for (var i = 0; i < dtps.classes.length; i++) {
-	  var googleDom = "";
-	  if (dtps.classes[i].google) var googleDom = "&nbsp;&nbsp;google_G";
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + dtps.classes[i].subject + googleDom + `</div>
+      <div class="name">` + dtps.classes[i].subject + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
