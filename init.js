@@ -1279,11 +1279,19 @@ dtps.render = function() {
     type: "text/css",
     href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
   }).appendTo("head");
-  jQuery("<link/>", {
+  if (dtps.trackSuffix !== "") {
+      jQuery("<link/>", {
     rel: "stylesheet",
     type: "text/css",
     href: "https://dtps.js.org/dev.css"
   }).appendTo("head");
+      } else {
+  jQuery("<link/>", {
+    rel: "stylesheet",
+    type: "text/css",
+    href: "https://dtps.js.org/dtps.css"
+  }).appendTo("head");
+}
   jQuery("<link/>", {
     rel: "stylesheet",
     type: "text/css",
