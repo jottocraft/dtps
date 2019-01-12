@@ -891,33 +891,35 @@ window.alert("Class order saved");
 }
 dtps.googleStream = function() {
 	function googleStream(i) {
-		if (dtps.classes[i].google) {
-	jQuery.getJSON("https://classroom.googleapis.com/v1/courses/" + dtps.classes[i].google.id + "/courseWork" + dtps.classroomAuth, function(resp) {
-		dtps.classes[i].google.rawData = resp;
-		dtps.classes[i].google.stream = [];
+		if (dtps.googleClasses[i]) {
+	jQuery.getJSON("https://classroom.googleapis.com/v1/courses/" + dtps.googleClasses[i].id + "/courseWork" + dtps.classroomAuth, function(resp) {
+		dtps.googleClasses[i].rawData = resp;
+		dtps.googleClasses[i].stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
 			if (resp.courseWork[ii].dueDate) {
 			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month - 1, resp.courseWork[ii].dueDate.day - 1);
 			} else {
 			var due = new Date();
 			}
-			dtps.classes[i].google.stream.push({
+			dtps.googleClasses[i].stream.push({
 				title: resp.courseWork[ii].title,
 				due: due.toHumanString(),
 				dueDate: due.toISOString(),
-				class: i,
-				subject: dtps.classes[i].subject,
 				turnedIn: false,
 				google: true,
 				url: resp.courseWork[ii].alternateLink,
 				letter: "--",
-				grade: "--/" + resp.courseWork[ii].maxPoints
+				grade: "/" + resp.courseWork[ii].maxPoints
 			})
+			if () {
+			    dtps.googleClasses[i].stream[ii].class = dtps.googleClasses[i].psClass;
+			    dtps.googleClasses[i].stream[ii].subject = dtps.classes[dtps.googleClasses[i].psClass].subject;
+			    }
 		}
-		if (i < (dtps.classes.length - 1)) googleStream(i + 1);
+		if (i < (dtps.googleClasses.length - 1)) googleStream(i + 1);
 	});
 		} else {
-			if (i < (dtps.classes.length - 1)) googleStream(i + 1);
+			if (i < (dtps.googleClasses.length - 1)) googleStream(i + 1);
 		}
 	}
 	googleStream(0);
@@ -974,13 +976,17 @@ dtps.googleAuth = function() {
     }
 	  for (var i = 0; i < dtps.googleClasses.length; i++) {
 		  var highest = {stat: 0, class: null};
+		   dtps.googleClasses[i].stats = [];
 		  for (var ii = 0; ii < dtps.classes.length; ii++) {
 			  var stat = similarity(dtps.googleClasses[i].name, dtps.classes[ii].subject)
+			  dtps.googleClasses[i].stats.push({class: dtps.classes[ii].subject, stat: stat})
 			  if ((stat > highest.stat) && (stat > 0.2)) highest = {stat: stat, class: ii}
 		  }
 		  if (highest.class !== null) {
+			  if (dtps.classes[highest.class].google == undefined) {
 		  dtps.classes[highest.class].google = dtps.googleClasses[i]
 		  dtps.googleClasses[i].psClass = highest.class
+			      }
 		  }
 	  }
 	  dtps.isolatedGoogleClasses = [];
@@ -1058,7 +1064,7 @@ dtps.render = function() {
     Assignments
     </button>
     <button onclick="dtps.selectedContent = 'google'; $('.classContent').html(dtps.renderStream(dtps.classes[dtps.selectedClass].google.stream))" class="btn google">
-    <i class="material-icons">experiment</i>
+    <i class="material-icons">class</i>
     google_logo Classroom
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
