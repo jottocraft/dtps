@@ -911,7 +911,7 @@ dtps.googleStream = function() {
 				letter: "--",
 				grade: "/" + resp.courseWork[ii].maxPoints
 			})
-			if () {
+			if (dtps.googleClasses[i].psClass !== undefined) {
 			    dtps.googleClasses[i].stream[ii].class = dtps.googleClasses[i].psClass;
 			    dtps.googleClasses[i].stream[ii].subject = dtps.classes[dtps.googleClasses[i].psClass].subject;
 			    }
