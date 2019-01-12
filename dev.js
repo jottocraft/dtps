@@ -819,7 +819,7 @@ dtps.showClasses = function(override) {
 		if (dtps.isolatedGoogleClasses) {
 		dtps.classlist.push(`<div class="classDivider"></div>`)
 		for (var i = 0; i < dtps.isolatedGoogleClasses.length; i++) {
-		dtps.classlist.push(`<div onclick="$('.sidebar .class').removeClass('active'); $(this).addClass('active'); $('.background').css('background', ''); $('.header .btns').hide(); $('.classContent').html(dtps.renderStream(dtps.googleClasses[`  + dtps.isolatedGoogleClasses[i] +`].stream)); $('#headText').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]] + `">
+		dtps.classlist.push(`<div onclick="$('.sidebar .class').removeClass('active'); $(this).addClass('active'); $('body').addClass('isolatedGoogleClass'); dtps.selectedClass = 'isolatedGoogleClass'; $('.classContent').html(dtps.renderStream(dtps.googleClasses[`  + dtps.isolatedGoogleClasses[i] +`].stream)); $('#headText').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]] + `">
       <div style="width: 100%; padding-right: 10px;" class="name">` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `</div>
       </div>`)	
 		}
@@ -839,6 +839,7 @@ dtps.showClasses = function(override) {
   if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class:not(.google)" ).click(function(event) {
+	  $('body').removeClass('isolatedGoogleClass');
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	  $(".btn.google").hide();
 	  $(".background").css("background", prev)
