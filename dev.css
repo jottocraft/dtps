@@ -98,10 +98,10 @@ body {
 	opacity: 0.9;
 }
 .search {
-	 margin: 15px 75px 0px 75px !important;
+	 margin: 15px 75px 0px 10px !important;
 }
 .dash.stream .search {
-	 margin: 10px 25px;
+	 margin: 15px 25px 0px 10px !important;
 }
 .class .dot {
     position: absolute;
