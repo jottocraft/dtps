@@ -222,8 +222,9 @@ window.dataLayer = window.dataLayer || [];
          return item.trim().match(/^eclass_/);
       })[0].replace("eclass_", "");
       var subject = null;
-      if (name.includes("Physics")) { var subject = "Physics" }; if (name.includes("English")) { var subject = "English" }; if (name.includes("Physical Education")) { var subject = "PE" };
-      if (name.includes("Prototyping")) { var subject = "Prototyping" }; if (name.includes("Algebra")) { var subject = "Algebra" };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
+      var icon = null;
+      if (name.includes("Physics")) { var subject = "Physics"; var icon = "experiment"; }; if (name.includes("English")) { var subject = "English"; var icon = "library_books" }; if (name.includes("Physical Education")) { var subject = "PE"; var icon = "directions_run"; };
+      if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
       if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };if (name.includes("Environmental")) { var subject = "Environmental Science" };
       if (name.includes("Robotics")) { var subject = "Robotics" };if (name.includes("Biology")) { var subject = "Biology" };if (name.includes("Engineering")) { var subject = "Engineering" };if (name.includes("Geometry")) { var subject = "Geometry" };
       if (name.includes("Photography")) { var subject = "Photography" };if (name.includes("World History")) { var subject = "World History" };if (name.includes("U.S. History")) { var subject = "US History" };
@@ -237,6 +238,7 @@ window.dataLayer = window.dataLayer || [];
       dtps.classes.push({
         name: name,
         subject: subject,
+	icon: icon,
         abbrv: jQuery(section.children()[0]).text(),
         grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
         letter: (grade == "--") ? ( grade ) : (letterTmp),
