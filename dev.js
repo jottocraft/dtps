@@ -143,7 +143,7 @@ gapi.client.init({
           apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
           clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
           discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
-          scope: "https://www.googleapis.com/auth/classroom.courses.readonly"
+          scope: "https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.coursework.me.readonly"
         }).then(function () {
           gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
           updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
