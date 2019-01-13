@@ -138,6 +138,7 @@ window.dataLayer = window.dataLayer || [];
 	
 });
 	jQuery.getScript("https://apis.google.com/js/api.js", function() {
+		gapi.load('client:auth2', function() {
 gapi.client.init({
           apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
           clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
@@ -160,6 +161,7 @@ gapi.client.init({
           //signoutButton.style.display = 'none';
         }
       }
+		});
 });
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function() {
