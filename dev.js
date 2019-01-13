@@ -130,11 +130,19 @@ dtps.init = function () {
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('config', 'UA-105685403-3', {
+  var configTmp = {
   'page_title' : 'portal',
   'page_path': '/portal',
   'anonymize_ip': true
-  });
+  }
+  if (dtps.trackSuffix !== "") {
+	  configTmp = {
+  'page_title' : 'prerelease',
+  'page_path': '/prerelease',
+  'anonymize_ip': true
+  }
+      }
+  gtag('config', 'UA-105685403-3', configTmp);
 	
 });
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
