@@ -951,9 +951,17 @@ dtps.googleAuth = function() {
 		  }
 	  }
 	  dtps.isolatedGoogleClasses = [];
-	  for (var i = 0; i < dtps.googleClasses.length; i++) { if (dtps.googleClasses[i].psClass == undefined) { dtps.isolatedGoogleClasses.push(i) } }
+	  var isolatedDom = [];
+	  for (var i = 0; i < dtps.googleClasses.length; i++) { if (dtps.googleClasses[i].psClass == undefined) {
+		  dtps.isolatedGoogleClasses.push(i) 
+		  isolatedDom.push(`<br /><br />
+    <div onclick="window.alert('coming soon')" class="switch sudo"><span class="head"></span></div>
+    <div class="label sudo">` +  dtps.googleClasses[i].name + `</div>`)
+	  } }
+	$(".isolatedGClassList").html(isolatedDom.join(""));
 	  dtps.showClasses(true);
 	  dtps.googleStream();
+		fluid.init();
   });
 }
 dtps.logGrades = function() {
@@ -1091,6 +1099,9 @@ dtps.render = function() {
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
+    <div onclick="window.alert('coming soon')" class="switch sudo"><span class="head"></span></div>
+    <div class="label sudo"><i class="material-icons">experiment</i> Display full class names</div>
+    <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
 </div>
@@ -1100,7 +1111,7 @@ dtps.render = function() {
     <br /><br />
     <h5>Google Classes</h5>
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
-    <div class="otherGClasses"><p>Coming soon!</p></div>
+    <div class="isolatedGClassList"><p>Coming soon!</p></div>
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
