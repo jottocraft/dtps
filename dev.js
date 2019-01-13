@@ -1108,7 +1108,7 @@ dtps.render = function() {
     <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
     <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
     <br />
-    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE\n Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { gapi.auth2.getAuthInstance().signIn(); }" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { gapi.auth2.getAuthInstance().signIn(); }" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     <br />
     <button onclick="window.alert('On the page that opens, make sure your d.tech account is selected, then click on Project DTPS, and click Remove Access'); window.open('https://myaccount.google.com/permissions')">Remove google_logo Classroom</button>
 </div>
