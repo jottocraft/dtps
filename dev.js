@@ -137,32 +137,6 @@ window.dataLayer = window.dataLayer || [];
   });
 	
 });
-	jQuery.getScript("https://apis.google.com/js/api.js", function() {
-		gapi.load('client:auth2', function() {
-gapi.client.init({
-          apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
-          clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
-          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
-          scope: "https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.coursework.me.readonly"
-        }).then(function () {
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        }, function(error) {
-          dtps.log(JSON.stringify(error));
-	console.error(error);
-        });
-		function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-          //authorizeButton.style.display = 'none';
-          //signoutButton.style.display = 'block';
-          dtps.googleAuth();
-        } else {
-          //authorizeButton.style.display = 'block';
-          //signoutButton.style.display = 'none';
-        }
-      }
-		});
-});
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function() {
 		jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
@@ -588,6 +562,34 @@ var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData
 	}
 	$(".card.assignment").addClass("color");
 	dtps.calendar(doneLoading);
+}
+dtps.gapis = function() {
+	jQuery.getScript("https://apis.google.com/js/api.js", function() {
+		gapi.load('client:auth2', function() {
+gapi.client.init({
+          apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
+          clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
+          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
+          scope: "https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.coursework.me.readonly"
+        }).then(function () {
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        }, function(error) {
+          dtps.log(JSON.stringify(error));
+	console.error(error);
+        });
+		function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+          //authorizeButton.style.display = 'none';
+          //signoutButton.style.display = 'block';
+          dtps.googleAuth();
+        } else {
+          //authorizeButton.style.display = 'block';
+          //signoutButton.style.display = 'none';
+        }
+      }
+		});
+});
 }
 dtps.getPage = function(loc, id) {
   if (id == undefined) var id = dtps.selectedPage;
@@ -1209,6 +1211,7 @@ dtps.render = function() {
 	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	  $(".background").css("background", prev)
   dtps.showClasses();
+  dtps.gapis();
   $("link").remove();
   jQuery("<link/>", {
     rel: "shortcut icon",
