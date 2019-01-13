@@ -943,6 +943,9 @@ dtps.googleAuth = function() {
   $(".items img").attr("src", dtps.user.google.getImageUrl())
 	gapi.client.classroom.courses.list({ pageSize: 10 }).then(function(resp) {
 	  dtps.googleClasses = resp.result.courses;
+		if (dtps.googleClasses == undefined) {
+			dtps.gapis();
+		} else {
 	  for (var i = 0; i < dtps.googleClasses.length; i++) {
 		  var match = null;
 		  for (var ii = 0; ii < dtps.classes.length; ii++) {
@@ -967,6 +970,7 @@ dtps.googleAuth = function() {
 	  dtps.showClasses(true);
 	  dtps.googleStream();
 		fluid.init();
+	}
   });
 }
 dtps.logGrades = function() {
@@ -1113,9 +1117,8 @@ dtps.render = function() {
     <br /><br />
 <div class="googleClassroom">
     <h5>google_logo Classes</h5>
-    <br />
-    <button onclick="window.alert('On the page that opens, make sure your d.tech account is selected, then select Project DTPS, and click Remove Access'); window.open('https://myaccount.google.com/permissions');">Remove google_logo Classroom</button>
-    <br />
+    <button class="btn" onclick="window.alert('On the page that opens, make sure your d.tech account is selected, then select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions');">Remove google_logo Classroom</button>
+    <br /><br />
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
     <div class="isolatedGClassList"><p>Loading...</p></div>
 </div>
