@@ -580,12 +580,17 @@ gapi.client.init({
         });
 		function updateSigninStatus(isSignedIn) {
         if (isSignedIn) {
-          //authorizeButton.style.display = 'none';
-          //signoutButton.style.display = 'block';
+          jQuery(".googleClassroom").show();
+	  jQuery(".googleSetup").hide();
+	  if (dtps.googleSetup !== undefined) {
+	  window.alert("Google account linked. You have to sign in to PowerSchool again to finish setup.")
+	  window.location.reload();
+	  } else {
           dtps.googleAuth();
+	  }
         } else {
-          //authorizeButton.style.display = 'block';
-          //signoutButton.style.display = 'none';
+         jQuery(".googleClassroom").hide();
+	 jQuery(".googleSetup").show();
         }
       }
 		});
@@ -1106,9 +1111,21 @@ dtps.render = function() {
     <h5>Classes</h5>
     <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">sort</i>Sort classes</button>
     <br /><br />
-    <h5>Google Classes</h5>
+<div class="googleClassroom">
+    <h5>google_logo Classes</h5>
+    <br />
+    <button onclick="window.alert('On the page that opens, make sure your d.tech account is selected, then select Project DTPS, and click Remove Access'); window.open('https://myaccount.google.com/permissions');">Remove google_logo Classroom</button>
+    <br />
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
-    <div class="isolatedGClassList"><p>Coming soon!</p></div>
+    <div class="isolatedGClassList"><p>Loading...</p></div>
+</div>
+<div class="googleSetup">
+    <h5>google_logo Classroom</h5>
+    <p>Link google_logo Classroom to see assignments and classes from both PowerSchool and Google.</p>
+    <p>If Power+ thinks one of your PowerSchool classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
+    <br />
+    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn(); })}" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+</div>
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
@@ -1119,8 +1136,6 @@ dtps.render = function() {
     <h5>Experiments</h5>
     <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
     <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
-    <br />
-    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { gapi.auth2.getAuthInstance().signIn(); }" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
     <br />
     <button onclick="window.alert('On the page that opens, make sure your d.tech account is selected, then click on Project DTPS, and click Remove Access'); window.open('https://myaccount.google.com/permissions')">Remove google_logo Classroom</button>
 </div>
