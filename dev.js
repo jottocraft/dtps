@@ -899,7 +899,7 @@ window.alert("Class order saved");
 dtps.googleStream = function() {
 	function googleStream(i) {
 		if (dtps.googleClasses[i]) {
-	gapi.client.classroom.courses.courseWork.list({ pageSize: 10 }).then(function(response) {
+	gapi.client.classroom.courses.courseWork.list({ courseId: dtps.googleClasses[i] }).then(function(response) {
 		dtps.googleClasses[i].rawData = resp;
 		dtps.googleClasses[i].stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
@@ -932,10 +932,10 @@ dtps.googleStream = function() {
 	googleStream(0);
 }
 dtps.googleAuth = function() {
-  dtps.user.google = result.user;
-  $(".items img").attr("src", dtps.user.google.photoURL)
-	gapi.client.classroom.courses.list({ pageSize: 10 }).then(function(response) {
-	  dtps.googleClasses = response.result.courses;
+  dtps.user.google = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
+  $(".items img").attr("src", dtps.user.google.getImageUrl())
+	gapi.client.classroom.courses.list({ pageSize: 10 }).then(function(resp) {
+	  dtps.googleClasses = resp.result.courses;
 	  for (var i = 0; i < dtps.googleClasses.length; i++) {
 		  var match = null;
 		  for (var ii = 0; ii < dtps.classes.length; ii++) {
