@@ -958,7 +958,7 @@ dtps.googleAuth = function() {
     <div onclick="window.alert('coming soon')" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo">` +  dtps.googleClasses[i].name + `</div>`)
 	  } }
-	$(".isolatedGClassList").html(isolatedDom.join(""));
+	$(".isolatedGClassList").html(isolatedDom.join("").slice(12));
 	  dtps.showClasses(true);
 	  dtps.googleStream();
 		fluid.init();
