@@ -1075,9 +1075,6 @@ dtps.render = function() {
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item sudo">
-      <i class="material-icons">experiment</i> Experiments
-    </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
       <i class="material-icons">bug_report</i> Debugging
     </div>
@@ -1136,7 +1133,7 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
-<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
+<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
 <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
