@@ -899,24 +899,24 @@ window.alert("Class order saved");
 dtps.googleStream = function() {
 	function googleStream(i) {
 		if (dtps.googleClasses[i]) {
-	gapi.client.classroom.courses.courseWork.list({ courseId: dtps.googleClasses[i] }).then(function(response) {
-		dtps.googleClasses[i].rawData = resp;
+	gapi.client.classroom.courses.courseWork.list({ courseId: dtps.googleClasses[i].id }).then(function(resp) {
+		dtps.googleClasses[i].rawData = resp.result;
 		dtps.googleClasses[i].stream = [];
-		for (var ii = 0; ii < resp.courseWork.length; ii++) {
-			if (resp.courseWork[ii].dueDate) {
-			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month - 1, resp.courseWork[ii].dueDate.day - 1);
+		for (var ii = 0; ii < resp.result.courseWork.length; ii++) {
+			if (resp.result.courseWork[ii].dueDate) {
+			var due = new Date(resp.result.courseWork[ii].dueDate.year, resp.result.courseWork[ii].dueDate.month - 1, resp.result.courseWork[ii].dueDate.day - 1);
 			} else {
 			var due = new Date();
 			}
 			dtps.googleClasses[i].stream.push({
-				title: resp.courseWork[ii].title,
+				title: resp.result.courseWork[ii].title,
 				due: due.toHumanString(),
 				dueDate: due.toISOString(),
 				turnedIn: false,
 				google: true,
-				url: resp.courseWork[ii].alternateLink,
+				url: resp.result.courseWork[ii].alternateLink,
 				letter: "--",
-				grade: "/" + resp.courseWork[ii].maxPoints
+				grade: "/" + resp.result.courseWork[ii].maxPoints
 			})
 			if (dtps.googleClasses[i].psClass !== undefined) {
 			    dtps.googleClasses[i].stream[ii].class = dtps.googleClasses[i].psClass;
