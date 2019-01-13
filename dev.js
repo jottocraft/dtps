@@ -921,7 +921,7 @@ dtps.googleStream = function() {
 				dueDate: due.toISOString(),
 				turnedIn: false,
 				google: true,
-				url: resp.result.courseWork[ii].alternateLink,
+				url: resp.result.courseWork[ii].alternateLink + "?authuser=" + dtps.user.google.getEmail(),
 				letter: "--",
 				grade: "/" + resp.result.courseWork[ii].maxPoints
 			})
