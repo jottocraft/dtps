@@ -137,21 +137,29 @@ window.dataLayer = window.dataLayer || [];
   });
 	
 });
-	jQuery.getScript("https://www.gstatic.com/firebasejs/5.7.0/firebase.js", function() {
-// Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
-    authDomain: "project-dtps.firebaseapp.com",
-    databaseURL: "https://project-dtps.firebaseio.com",
-    projectId: "project-dtps",
-    storageBucket: "project-dtps.appspot.com",
-    messagingSenderId: "117676227556"
-  };
-  firebase.initializeApp(config);
-  dtps.authProvider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().useDeviceLanguage();
-  dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.courses.readonly');
-  dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.coursework.me.readonly');
+	jQuery.getScript("https://apis.google.com/js/api.js", function() {
+gapi.client.init({
+          apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
+          clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
+          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
+          scope: "https://www.googleapis.com/auth/classroom.courses.readonly"
+        }).then(function () {
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        }, function(error) {
+          dtps.log(JSON.stringify(error));
+	console.error(error);
+        });
+		function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+          //authorizeButton.style.display = 'none';
+          //signoutButton.style.display = 'block';
+          dtps.googleAuth();
+        } else {
+          //authorizeButton.style.display = 'block';
+          //signoutButton.style.display = 'none';
+        }
+      }
 });
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function() {
@@ -889,7 +897,7 @@ window.alert("Class order saved");
 dtps.googleStream = function() {
 	function googleStream(i) {
 		if (dtps.googleClasses[i]) {
-	jQuery.getJSON("https://classroom.googleapis.com/v1/courses/" + dtps.googleClasses[i].id + "/courseWork" + dtps.classroomAuth, function(resp) {
+	gapi.client.classroom.courses.courseWork.list({ pageSize: 10 }).then(function(response) {
 		dtps.googleClasses[i].rawData = resp;
 		dtps.googleClasses[i].stream = [];
 		for (var ii = 0; ii < resp.courseWork.length; ii++) {
@@ -922,16 +930,10 @@ dtps.googleStream = function() {
 	googleStream(0);
 }
 dtps.googleAuth = function() {
-	window.alert("EXPERIMENTAL FEATURE\n Your name and email will be logged in the Power+ database if you continute. Do not send feedback or bug reports about this feature yet.")
-	firebase.auth().signInWithPopup(dtps.authProvider).then(function(result) {
-  var token = result.credential.accessToken;
   dtps.user.google = result.user;
   $(".items img").attr("src", dtps.user.google.photoURL)
-  $(".items img").show();
-  dtps.classroomAuth = "?access_token=" + token;
-  console.log(result);
-  jQuery.getJSON("https://classroom.googleapis.com/v1/courses" + dtps.classroomAuth, function(resp) {
-	  dtps.googleClasses = resp.courses;
+	gapi.client.classroom.courses.list({ pageSize: 10 }).then(function(response) {
+	  dtps.googleClasses = response.result.courses;
 	  for (var i = 0; i < dtps.googleClasses.length; i++) {
 		  var match = null;
 		  for (var ii = 0; ii < dtps.classes.length; ii++) {
@@ -949,7 +951,6 @@ dtps.googleAuth = function() {
 	  dtps.showClasses(true);
 	  dtps.googleStream();
   });
-})
 }
 dtps.logGrades = function() {
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
@@ -1107,7 +1108,9 @@ dtps.render = function() {
     <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
     <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
     <br />
-    <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE\n Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { gapi.auth2.getAuthInstance().signIn(); }" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+    <br />
+    <button onclick="window.alert('On the page that opens, make sure your d.tech account is selected, then click on Project DTPS, and click Remove Access'); window.open('https://myaccount.google.com/permissions')">Remove google_logo Classroom</button>
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
