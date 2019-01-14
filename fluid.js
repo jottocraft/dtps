@@ -1,7 +1,7 @@
 /*!
-Fluid UI JavaScript Modules v3.0.0 Beta 5
+Fluid UI JavaScript Modules v3.0.0 Beta 6
 
-Copyright (c) 2017-2018 jottocraft
+Copyright (c) 2017-2019 jottocraft
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -38,10 +38,10 @@ SOFTWARE.
  }
 
 fluid = new Object;
-fluid.cloudEnabled = true;
 fluid.contextMenuOpen = false;
 
 fluid.theme = function(theme, dontSave) {
+  if (theme == "toggle") { if ($("body").hasClass("dark")) { theme = "light"; } else { theme = "dark"; } }
   $(".btns.themeSelector .btn").removeClass("active");
   if (theme) { $(".btns.themeSelector .btn." + theme.replace("#", "")).addClass("active"); }
   classes = document.body.classList.value.split(" ");
@@ -52,7 +52,6 @@ fluid.theme = function(theme, dontSave) {
   $("body").removeClass("nitro");
   $("body").removeClass("aquatic");
 }
-  if (theme == "toggle") { $("body").toggleClass("dark"); }
   if (theme == "dark") { $("body").addClass("dark"); }
   if (theme == "light") { $("body").removeClass("dark"); }
   if (theme == "midnight") { $("body").addClass("dark"); $("body").addClass("midnight"); }
@@ -252,7 +251,11 @@ fluid.contextMenu = function(target, event) {
 
     $("#activecontextmenu").css("left", left)
     $("#activecontextmenu").css("top", top)
+	$("#activecontextmenu").css("display", "inline-block")
+	$("#activecontextmenu").css("background", "transparent")
     $(element).parent().css("height", $(element).parent().height());
+	$(element).parent().css("width", $(element).parent().width());
+	$(element).parent().css("vertical-align", "middle");
     if ($(element).hasClass("material-icons")) {
       $(element).parent().parent().css("width", "44px")
       $(element).parent().parent().css("height", "44px")
@@ -312,7 +315,6 @@ if (fluid.expBeh) { event.preventDefault(); fluid.bounceBack(event.target); }
 }
 
 $( document ).ready(fluid.init);
-
 
 fluid.exitContextMenu = function(force) {
   $("#pagewrapper").removeClass("blur")
