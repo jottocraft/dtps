@@ -1,7 +1,7 @@
 /*!
-Fluid UI Elements v3.0.0 Beta 5
+Fluid UI Elements v3.0.0 Beta 6
 
-Copyright (c) 2017-2018 jottocraft
+Copyright (c) 2017-2019 jottocraft
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-/*  THEME COLORS
-Feel free to change these colors to fit your brand.
-For the outline colors, convert the main colors to RGB and add ", 0.75" for RGBA opacity */
+/*  Theme Colors */
 :root {
+  --theme-color: #3396e6;
+  --theme-color-outline: #3396e6C0;
+  --theme-text-color: white;
+}
+
+/*  Light theme colors */
+body.dark {
+  --theme-color: #0c4d82;
+  --theme-color-outline: #0c4d82C0;
+  --theme-text-color: #c7e6ff;
+}
+
+/*  Dark theme colors */
+body:not(.dark) {
   --theme-color: #3396e6;
   --theme-color-outline: #3396e6C0;
   --theme-text-color: white;
@@ -41,14 +53,13 @@ Fluid Elements
 body {
   transition: background-color 0.5s;
 }
-.outline-icons {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-repeat: no-repeat;
-  background-size: contain;
+@font-face {
+  font-family: 'Material Icons Outline';
+  font-style: normal;
+  font-weight: 400;
+  src: url(outline.woff2) format('woff2');
 }
-.theme, body.outline .theme code {
+.theme {
   color: var(--theme-text-color) !important;
   background-color: var(--theme-color) !important;
 }
@@ -75,10 +86,10 @@ body.aquatic.dark {
   --theme-text-color: #0e958b;
 }
 body.midnight.dark {
-    --flex-light: #0c0c0d;
+	--flex-light: #0c0c0d;
     --flex-bg: #040404;
     --flex-text: #bfbfbf;
-    --flex-layer1: #080808;
+    --flex-layer1: #0c0c0c;
     --flex-layer2: #050606;
     --flex-layer3: #000000;
     --theme-color: #232323;
@@ -202,7 +213,10 @@ html {
 }
 h1, h2, h3, h4, h5 {
     font-family: "Product sans", sans-serif;
-    font-weight: normal;
+	font-weight: normal;
+}
+h1, h2, h3 {
+    font-weight: bold;
 }
 p, div, button, a, span, input, body, html, textarea {
   font-family: "Google sans", sans-serif;
@@ -426,7 +440,7 @@ button:focus {outline:0;}
     border: none;
     padding: 12px 30px;
     text-align: center;
-    border-radius: 25px;
+    border-radius: 10px;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
@@ -434,6 +448,19 @@ button:focus {outline:0;}
     user-select: none;
     vertical-align: middle;
     margin: 0px 5px;
+  }
+  .btn.outline {
+	  background-color: inherit !important;
+	  padding: 10px 28px;
+	  border: 2px solid;
+  }
+  .btn.small {
+	  padding: 10px 20px;
+	  font-size: 14px;
+  }
+  .btn.small.outline {
+	  padding: 8px 18px;
+	  border: 2px solid;
   }
   .btn i {
     display: inline-block;
@@ -453,9 +480,6 @@ button:focus {outline:0;}
     transition: background-color 0.4s;
     box-shadow: none !important;
   }
-  body.outline .switch:not(.active) .head {
-    background-color: transparent !important;
-  }
   .switch .head {
     transition: background-color 0.4s, box-shadow 0.4s, margin 0.4s;
     background-color: white;
@@ -465,13 +489,6 @@ button:focus {outline:0;}
     height: 20px;
     margin: 2.5px;
     position: absolute;
-  }
-  body.outline .switch:not(.active) .head {
-    margin: 1.4px;
-  }
-  body.outline .switch.active .head {
-    margin: 1.4px;
-    margin-left: 25.5px;
   }
   .switch.active .head {
     margin-left: 27.5px;
@@ -499,79 +516,49 @@ button:focus {outline:0;}
     margin-top: -13px;
     margin-left: -13px;
   }
-  body.dark:not(.outline) .btn:not(.active):hover {
+  body.dark .btn:not(.active):hover {
     background-color: var(--flex-layer3, #16181a);
-  }
-  body:not(.dark).outline .btn:not(.active):hover {
-    border: 1.4px solid var(--flex-text, #bababa);
-  }
-  body.dark.outline .btn:not(.active):hover {
-    border: 1.4px solid #0d0e0f;
+	border-color:  var(--flex-layer3, #16181a);
   }
   .btns .btn:not(.active):hover {
     box-shadow: none !important;
   }
-  body:not(.dark):not(.outline) .btn:not(.active):hover {
+  body:not(.dark) .btn:not(.active):hover {
     background-color: var(--flex-layer3, #dddddd);
-  }
-  body.dark:not(.outline) .btn:not(.active):hover {
-    background-color: var(--flex-layer3, #16181a)
+	border-color: var(--flex-layer3, #dddddd);
   }
   .row:not(.btns) .btn {
     margin-right: 10px;
   }
-  body:not(.dark):not(.outline) .btn:not(.active), body:not(.dark):not(.outline) .btns.row, body:not(.dark):not(.outline) .switch:not(.active) {
-  background-color: var(--flex-layer1, #efefef);
+  body:not(.dark) .btn:not(.active), body:not(.dark) .btns.row, body:not(.dark) .switch:not(.active) {
+  background-color: var(--flex-layer1, #ececec);
+  border-color: var(--flex-layer1, #ececec);
       color: #333333;
     }
-    body:not(.dark).outline .btn:not(.active), body:not(.dark).outline  .switch:not(.active), body:not(.dark).outline  .switch:not(.active) .head {
-    border: 1.4px solid var(--flex-layer3, #dddddd);
-    background-color: inherit;
-        color: #333333;
-      }
-    body.dark:not(.outline) .btn:not(.active), body.dark:not(.outline) .switch:not(.active), body.dark:not(.outline) .btns.row {
-    background-color: var(--flex-layer1, #181b1d);
+    body.dark .btn:not(.active), body.dark .switch:not(.active), body.dark .btns.row {
+    background-color: var(--flex-layer1, #1d2023);
+	border-color: var(--flex-layer1, #1d2023);
         color: white;
       }
       .btns.row .btn {
         margin: 0;
       }
-      body.dark.outline .btn:not(.active), body.dark.outline .switch:not(.active), body.dark.outline  .switch:not(.active) .head {
-        border: 1.4px solid #1f2123;
-        background-color: inherit;
-          color: white;
-        }
     .btns .btn:not(.active) {
       background-color: transparent !important;
     }
-    body.outline .btns .btn:not(.active) {
-      border: 1.4px solid transparent !important;
-    }
-    body:not(.dark).outline .btns {
-      border: 1.4px solid var(--flex-layer3, #dddddd);
-      }
-      body.dark.outline .btns {
-        border: 1.4px solid #1f2123;
-        }
         .btns {
           width:auto;
           display: inline-block;
           padding: 5px;
-          border-radius: 25px;
+          border-radius: 10px;
           margin-left: 5px;
         }
 
-  body:not(.outline) .btn.active, body:not(.outline) .switch.active, body:not(.outline) .btn.active:hover, body:not(.outline) .list .item.active, body:not(.outline) .list .item.active:hover {
+  body .btn.active, body .switch.active, body .btn.active:hover, body .list .item.active, body .list .item.active:hover {
   background-color: var(--theme-color);
       color: var(--theme-text-color);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
     }
-    body.outline .btn.active, body.outline .switch.active, body.outline .btn.active:hover, body.outline .list .item.active, body.outline .list .item.active:hover {
-    background-color: var(--theme-color-outline);
-    border: 1.4px solid var(--theme-color);
-        color: var(--theme-text-color);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
-      }
 
 
 body.dark .tabs .indicator {
@@ -730,22 +717,12 @@ body.dark .sidenav .item.active {
 .nav.card ul {
   margin: 3px;
 }
-body.dark:not(.outline) .nav {
+body.dark .nav {
   border: 1.4px solid var(--flex-layer1, #23272A);
   background-color: var(--flex-layer1, #23272A);
 }
-body:not(.dark):not(.outline) .nav {
+body:not(.dark) .nav {
 background-color: var(--flex-light, #fcfcfc);
-}
-body.dark.outline .nav {
-  border: 1.4px solid #1f2123;
-  box-shadow: none ;
-  background-color: #2C2F33;
-}
-body:not(.dark).outline .nav {
-  border: 1.4px solid var(--flex-layer3, #dddddd);
-  box-shadow: none;
-background-color: #FFFFFF;
 }
 body:not(.dark) .nav a {
   color:black;
@@ -765,37 +742,22 @@ body:not(.dark) .nav a {
 .nav ul li {
     display: inline-block;
 }
-body:not(.dark):not(.outline) .nav li:not(.active) {
+body:not(.dark) .nav li:not(.active) {
   background-color: #ededed
 }
-body.dark:not(.outline) .nav li:not(.active) {
+body.dark .nav li:not(.active) {
   background-color: #2c3135
 }
-body:not(.dark):not(.outline) .nav li.active {
+body:not(.dark) .nav li.active {
   background-color: #4c4c4c;
   color: white;
 }
-body:not(.dark):not(.outline) .nav li.active span {
+body:not(.dark) .nav li.active span {
   color: white;
 }
-body.dark:not(.outline) .nav li.active {
+body.dark .nav li.active {
   background-color: #ededed;
   color: black;
-}
-
-body:not(.dark).outline .nav li:not(.active) {
-  border: 1.4px solid var(--flex-layer3, #dddddd)
-}
-body.dark.outline .nav li:not(.active) {
-  border: 1.4px solid #1f2123
-}
-body:not(.dark).outline .nav li.active {
-  background-color: rgb(76, 76, 76, 0.8);
-  border: 1.4px solid #4c4c4c;
-  color: white;
-}
-body:not(.dark).outline .nav li.active span {
-  color: white;
 }
 body.dark .nav li.active {
   background-color: rgb(237, 237, 237, 0.8);
@@ -821,7 +783,7 @@ body.dark .nav a {
 input:not([type=submit]):not([type=color]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]), textarea {
   width: 400px;
   margin-bottom: 30px;
-  border-radius: 25px;
+  border-radius: 15px;
   padding-left:7px;
   padding-right:7px;
   opacity: 0.95;
@@ -841,22 +803,12 @@ textarea {
 .white-text {
   color:white;
 }
-body:not(.dark):not(.outline) textarea, body:not(.dark):not(.outline) .fluid.element, body:not(.dark):not(.outline) input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+body:not(.dark) textarea, body:not(.dark) .fluid.element, body:not(.dark) input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
     background-color: var(--flex-layer1, #efefef);
     color: black;
 }
-body.dark:not(.outline) textarea, body.dark:not(.outline) .fluid.element, body.dark:not(.outline) input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+body.dark textarea, body.dark .fluid.element, body.dark input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
     background-color: var(--flex-layer1, #23272A);
-    color: white;
-}
-body:not(.dark).outline textarea, body:not(.dark).outline .fluid.element, body:not(.dark).outline input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
-    background-color:transparent;
-    border: 1.4px solid var(--flex-layer3, #dddddd);
-    color: black;
-}
-body.dark.outline textarea, body.dark.outline .fluid.element, body.dark.outline input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
-    background-color:transparent;
-    border: 1.4px solid #1f2123;
     color: white;
 }
 body:not(.dark) .chips {
@@ -1038,17 +990,17 @@ body.dark .chips {
 .section.collapse.collapsed .body {
   display: none;
 }
-body:not(.dark):not(.outline) .section {
-  background-color:var(--flex-layer2, #f7f7f7);
+body:not(.dark) .section {
+  /*background-color:var(--flex-layer2, #f7f7f7);*/
 }
-body.dark:not(.outline) .section {
-  background-color:var(--flex-layer2, #1c2023);
+body.dark .section {
+  /*background-color:var(--flex-layer2, #1c2023);*/
 }
-body:not(.dark).outline .section {
-  border: 1.4px solid var(--flex-layer3, #dddddd);
+.section .header {
+	text-align: center;
 }
-body.dark.outline .section {
-  border: 1.4px solid #1f2123;
+.section .header h3 {
+	font-size: 60px;
 }
 
 .beta.notice {
@@ -1065,8 +1017,9 @@ body.dark.outline .section {
   padding: 40px;
 }
 .section .header i, .section.header i {
-  font-size: 32px;
+  font-size: 42px;
   margin-left: 5px;
+  vertical-align: middle;
 }
 .section .body {
   padding: 60px;
@@ -1097,7 +1050,7 @@ div.splash {
 .card, code, .list .item {
     /* Add shadows to create the "card" effect */
     transition: background-color 0.4s, background 0.4s, box-shadow 0.4s, color 0.4s;
-    border-radius: 20px;
+    border-radius: 15px;
     z-index: 10;
 }
 .card {
@@ -1125,7 +1078,7 @@ code {
   font-family: monospace, monospace !important;
   font-size: 16px;
   padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.17) !important;
   overflow: auto;
 }
 code xmp {
@@ -1146,20 +1099,11 @@ code xmp {
 .contextmenu.active {
   display:inline-block;
 }
-body.outline .list .item:not(.active) {
-  border: 1.4px solid transparent;
-}
-body:not(.dark):not(.outline) .list.contextmenu .item:not(.active):not(.disabled):hover {
+body:not(.dark) .list.contextmenu .item:not(.active):not(.disabled):hover {
   background-color: var(--flex-layer2, #f2f2f2);
 }
-body.dark:not(.outline) .list.contextmenu .item:not(.active):not(.disabled):hover {
+body.dark .list.contextmenu .item:not(.active):not(.disabled):hover {
   background-color: var(--flex-layer3, #1f2022);
-}
-body:not(.dark).outline .list.contextmenu .item:not(.active):not(.disabled):hover {
-  border: 1.4px solid var(--flex-layer3, #dddddd);
-}
-body.dark.outline .list.contextmenu .item:not(.active):not(.disabled):hover {
-  border: 1.4px solid #1f2022;
 }
 body:not(.dark) .list .item.disabled {
   filter: blur(0.5px);
@@ -1170,10 +1114,10 @@ body.dark .list .item.disabled {
   background-color: #32373c;
 }
 .list:not(.contextmenu) {
-  border-radius: 25px;
+  border-radius: 15px;
 }
-.list.contextmenu {
-  border-radius: 20px;
+.list.contextmenu, .list.contextmenu .item {
+  border-radius: 12px;
 }
 .list .item {
   cursor: pointer;
@@ -1205,29 +1149,17 @@ body.dark .list .item.disabled {
     position: relative;
 }
 
-body.dark .card, body.dark:not(.outline) code, body.dark:not(.outline) .list {
+body.dark code, body.dark .list {
+  background-color:var(--flex-light, #292c2f);
+}
+body.dark .card {
   background-color:var(--flex-light, #25282b);
 }
-body:not(.dark) .card, body:not(.dark):not(.outline) code, body:not(.dark):not(.outline) .list {
-  background-color:var(--flex-light, #fcfcfc);
+body:not(.dark) code, body:not(.dark) .list {
+  background-color:var(--flex-light, #f1f1f1);
 }
-body.dark.outline code, body.dark.outline .list {
-  border: 1.4px solid #1f2123;
-  box-shadow: none !important;
-}
-body:not(.dark).outline code, body:not(.dark).outline .list {
-  border: 1.4px solid var(--flex-layer3, #dddddd);
-  box-shadow: none !important;
-}
-body.dark.outline .list.contextmenu {
-  border: none;
-  background-color: var(--flex-light, #25282b);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17) !important;
-}
-body:not(.dark).outline .list.contextmenu {
-  border: none;
-  background-color: #FFFFFF;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17) !important;
+body:not(.dark) .card {
+  background-color:var(--flex-light, #fdfdfd);
 }
 
 
@@ -1309,12 +1241,6 @@ R.I.P Materialize
     .nav li {
       margin: 0 3px;
     }
-     body:not(.dark).outline .section {
-      border: 1.4px solid var(--flex-layer3, #dddddd) !important;
-    }
-     body.dark.outline .section {
-      border: 1.4px solid #1f2123 !important;
-    }
     .section {
       margin-left: 3px;
       margin-right: 3px;
@@ -1360,7 +1286,6 @@ textarea {
 
 .row {
   margin-bottom: 20px;
-
 }
 h1 {
     font-size: 4.2rem;
