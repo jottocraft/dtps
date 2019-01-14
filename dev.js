@@ -1167,7 +1167,7 @@ dtps.render = function() {
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
 <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="dtps.clearData();" class="btn"><i class="material-icons">delete_outline</i>Reset Power+</button>
+    <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
     <br /><br />
     <h5>Resources</h5>
     <ul>
