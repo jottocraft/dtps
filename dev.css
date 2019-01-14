@@ -410,6 +410,7 @@ body.dark .classContent .card {
 .classContent .card .points .earned {
 	font-size: 24px;
 	display: inline-block;
+	font-weight: bold;
 }
 .classContent .card .points .total {
 	font-size: 14px;
