@@ -975,8 +975,8 @@ dtps.googleAuth = function() {
 	  for (var i = 0; i < dtps.googleClasses.length; i++) { if ((dtps.googleClasses[i].psClass == undefined) && (dtps.googleClasses[i].courseState == "ACTIVE")) {
 		  dtps.isolatedGoogleClasses.push(i)
 		  isolatedDom.push(`<br /><br />
-    <div onclick="jQuery('.google.isolated.class.` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].id + `').toggle()" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo">` +  dtps.googleClasses[i].name + `</div>`)
+    <div onclick="jQuery('.google.isolated.class.` + dtps.googleClasses[i].id + `').toggle()" class="switch"><span class="head"></span></div>
+    <div class="label">` +  dtps.googleClasses[i].name + `</div>`)
 	  } }
 	$(".isolatedGClassList").html(isolatedDom.join("").slice(12));
 	  dtps.showClasses(true);
