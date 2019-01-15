@@ -846,7 +846,7 @@ dtps.showClasses = function(override) {
 		if (dtps.isolatedGoogleClasses) {
 		dtps.classlist.push(`<div class="classDivider"></div>`)
 		for (var i = 0; i < dtps.isolatedGoogleClasses.length; i++) {
-		dtps.classlist.push(`<div onclick="$('.sidebar .class').removeClass('active'); $(this).addClass('active'); $('body').addClass('isolatedGoogleClass'); dtps.selectedClass = 'isolatedGoogleClass'; $('.classContent').html(dtps.renderStream(dtps.googleClasses[`  + dtps.isolatedGoogleClasses[i] +`].stream)); $('#headText').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]] + `">
+		dtps.classlist.push(`<div style="display: none;" onclick="$('.sidebar .class').removeClass('active'); $(this).addClass('active'); $('body').addClass('isolatedGoogleClass'); dtps.selectedClass = 'isolatedGoogleClass'; $('.classContent').html(dtps.renderStream(dtps.googleClasses[`  + dtps.isolatedGoogleClasses[i] +`].stream)); $('#headText').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class isolated google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].id + `">
       <div style="width: 100%; padding-right: 10px;" class="name">` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `</div>
       </div>`)	
 		}
@@ -975,7 +975,7 @@ dtps.googleAuth = function() {
 	  for (var i = 0; i < dtps.googleClasses.length; i++) { if ((dtps.googleClasses[i].psClass == undefined) && (dtps.googleClasses[i].courseState == "ACTIVE")) {
 		  dtps.isolatedGoogleClasses.push(i)
 		  isolatedDom.push(`<br /><br />
-    <div onclick="window.alert('coming soon')" class="switch sudo"><span class="head"></span></div>
+    <div onclick="$('.class.isolated.google.' + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].id).toggle()" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo">` +  dtps.googleClasses[i].name + `</div>`)
 	  } }
 	$(".isolatedGClassList").html(isolatedDom.join("").slice(12));
