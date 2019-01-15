@@ -951,12 +951,13 @@ dtps.googleStream = function() {
 dtps.googleAuth = function() {
   dtps.user.google = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
   $(".items img").attr("src", dtps.user.google.getImageUrl())
-	gapi.client.classroom.courses.list({ pageSize: 10 }).then(function(resp) {
+	gapi.client.classroom.courses.list({ pageSize: 40 }).then(function(resp) {
 	  dtps.googleClasses = resp.result.courses;
 		if (dtps.googleClasses == undefined) {
 			dtps.gapis();
 		} else {
 	  for (var i = 0; i < dtps.googleClasses.length; i++) {
+		  if (dtps.googleClasses[i].courseState == "ACTIVE") {
 		  var match = null;
 		  for (var ii = 0; ii < dtps.classes.length; ii++) {
 			  if (dtps.googleClasses[i].name.includes(dtps.classes[ii].subject)) match = ii;
@@ -967,11 +968,12 @@ dtps.googleAuth = function() {
 		  dtps.googleClasses[i].psClass = match
 			      }
 		  }
+		  }
 	  }
 	  dtps.isolatedGoogleClasses = [];
 	  var isolatedDom = [];
-	  for (var i = 0; i < dtps.googleClasses.length; i++) { if (dtps.googleClasses[i].psClass == undefined) {
-		  dtps.isolatedGoogleClasses.push(i) 
+	  for (var i = 0; i < dtps.googleClasses.length; i++) { if ((dtps.googleClasses[i].psClass == undefined) && (dtps.googleClasses[i].courseState == "ACTIVE")) {
+		  dtps.isolatedGoogleClasses.push(i)
 		  isolatedDom.push(`<br /><br />
     <div onclick="window.alert('coming soon')" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo">` +  dtps.googleClasses[i].name + `</div>`)
