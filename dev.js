@@ -1113,7 +1113,6 @@ dtps.render = function() {
     <p><b>Theme</b></p>
     <div class="btns row themeSelector"></div>
     <br /><br />
-    <p><b>Grades</b></p>
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
