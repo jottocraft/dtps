@@ -6,7 +6,7 @@
 
 <br />
 
-[developer docs](https://dtps.rtfd.io)
+[developer docs](https://jottocraft.github.io/s/dtps/docs)
 
 <br /><br />
 
