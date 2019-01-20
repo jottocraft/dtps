@@ -354,7 +354,6 @@ dtps.classStream = function(num, renderOv) {
 		var dueDateString = null;
 	} else {
 		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
-		if (assignment.children("td:nth-child(3)").text().slice(0,-1).split(", ")[1].length !== 4) {
 		var today = new Date().toHumanString();
 		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today));
 		if (assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today).split(", ")[1].length !== 4) {
