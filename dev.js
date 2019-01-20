@@ -832,6 +832,16 @@ dtps.showClasses = function(override) {
       </div>
     `);
   }
+		for (var i = 0; i < dtps.classes.length; i++) {
+		if (!classOrder.includes(dtps.classes[i].id)) {
+    dtps.classlist.push(`
+      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
+      <div class="name">` + dtps.classes[i].subject + `</div>
+      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+      </div>
+    `);
+		}
+  }
 	} else {
   for (var i = 0; i < dtps.classes.length; i++) {
     dtps.classlist.push(`
