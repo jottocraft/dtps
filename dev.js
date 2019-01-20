@@ -348,7 +348,9 @@ dtps.classStream = function(num, renderOv) {
 		var dueDateString = null;
 	} else {
 		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
-	    dueDate.setFullYear(2018);
+		if (assignment.children("td:nth-child(3)").text().slice(0,-1).split(", ")[1].length !== 4) {
+	    dueDate.setFullYear(new Date().getFullYear());
+	}
 		var dueDateString = dueDate.toISOString();
 	}
       dtps.classes[num].stream.push({
