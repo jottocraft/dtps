@@ -347,8 +347,9 @@ dtps.classStream = function(num, renderOv) {
 		var due = "";
 		var dueDateString = null;
 	} else {
-		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
-		if (assignment.children("td:nth-child(3)").text().slice(0,-1).split(", ")[1].length !== 4) {
+		var today = new Date().toHumanString();
+		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today));
+		if (assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today).split(", ")[1].length !== 4) {
 	    dueDate.setFullYear(new Date().getFullYear());
 	}
 		var dueDateString = dueDate.toISOString();
@@ -562,10 +563,8 @@ var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData
 		
 		dtps.announcements();
 	jQuery(".classContent .stream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
-    var year = new Date().getFullYear();
-    var today = new Date().toHumanString();
-    var keyA = new Date(a.due.replace("Today", today).replace(year + " at", "")).setYear(year),
-    keyB = new Date(b.due.replace("Today", today).replace(year + " at", "")).setYear(year);
+    var keyA = new Date(a.dueDate),
+    keyB = new Date(b.dueDate);
     // Compare the 2 dates
     if(keyA < keyB) return 1;
     if(keyA > keyB) return -1;
