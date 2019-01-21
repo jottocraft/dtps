@@ -1198,7 +1198,7 @@ dtps.render = function() {
     <br /><br />
     <h5>Resources</h5>
     <ul>
-<li><a href="mailto:jotto3053@gmail.com">Contact me</a></li>
+<li><a href="mailto:hello@jottocraft.com">Contact me</a></li>
 <li><a href="https://dtps.js.org">Power+ website</a></li>
 <li><a href="https://github.com/jottocraft/dtps">Source code on GitHub</a> (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</li>
 </ul>
