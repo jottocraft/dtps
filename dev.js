@@ -913,7 +913,7 @@ dtps.showClasses = function(override) {
 }
 dtps.saveClassOrder = function() {
 $(".sidebar").sortable("destroy");
-var classes = $(".sidebar").children(".class")
+var classes = $(".sidebar").children(".class:not(.google)")
 var classOrder = [];
 for (var i = 0; i < classes.length; i++) {
 if (/\d/.test(jQuery(classes[i]).attr("class"))) {
