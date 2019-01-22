@@ -1247,7 +1247,7 @@ dtps.render = function() {
 <h3>Grade Trend</h3>
 <p>Grade trend lets you keep track of your grades over time. When you enable grade trend, Power+ will store a copy of your class grades locally on your computer every day you use Power+. Then, when you click on the grades tab with grade trend enabled, Power+ will show you a graph of how your class grades have changed over time.</p>
 <p>The grade trend setting applies to all classes. It may take a few days after enabling grade trend for the graph to appear.</p>
-<p><b>You can always disable grade trend by clicking the turn off button on the grade trend graph. Disabling grade trend permanently erases all of your grade data off of your computer.</b></p>
+<p><b>You can always disable grade trend by clicking the "Clear all Power+ data" button in the settings menu (the 3 dots at the top-right corner of the screen).</b></p>
 <button onclick="localStorage.setItem('dtpsGradeTrend', JSON.stringify({})); window.alert('Grade trend enabled'); dtps.logGrades();" class="btn"><i class="material-icons">timeline</i> Enable grade trend</button><button onclick="fluid.cards.close('.card.trend')" class="btn"><i class="material-icons">cancel</i> Not now</button>
 </div>
   `);
