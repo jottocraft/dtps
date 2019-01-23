@@ -303,7 +303,7 @@ body.titlebar .classContent {
 	border-radius: 0px !important;
 }
 .tabs.btns .btn:not(.active) {
-	var(--light, #cacaca) !important;
+	color: var(--light, #cacaca) !important;
 }
 .tabs.btns .btn.active {
 	color: white;
