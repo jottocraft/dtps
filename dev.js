@@ -1120,7 +1120,7 @@ dtps.render = function() {
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item sudo">
+    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="display: none !important;" class="item sudo">
       <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
