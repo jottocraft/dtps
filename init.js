@@ -136,22 +136,6 @@ window.dataLayer = window.dataLayer || [];
   });
 	
 });
-	jQuery.getScript("https://www.gstatic.com/firebasejs/5.7.0/firebase.js", function() {
-// Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
-    authDomain: "project-dtps.firebaseapp.com",
-    databaseURL: "https://project-dtps.firebaseio.com",
-    projectId: "project-dtps",
-    storageBucket: "project-dtps.appspot.com",
-    messagingSenderId: "117676227556"
-  };
-  firebase.initializeApp(config);
-  dtps.authProvider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().useDeviceLanguage();
-  dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.courses.readonly');
-  dtps.authProvider.addScope('https://www.googleapis.com/auth/classroom.coursework.me.readonly');
-});
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function() {
 		jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
@@ -354,8 +338,8 @@ dtps.classStream = function(num, renderOv) {
 	} else {
 		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
 		var today = new Date().toHumanString();
-		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today));
-		if (assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today).split(", ")[1].length !== 4) {
+		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today).replace(" at", ","));
+		if (assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today).replace(" at", ",").split(", ")[1].length !== 4) {
 	    dueDate.setFullYear(new Date().getFullYear());
 	}
 		var dueDateString = dueDate.toISOString();
@@ -758,7 +742,7 @@ dtps.calendar = function(doneLoading) {
 		    var styles = window.getComputedStyle($(".class." + i)[0]);
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
-		  start: dtps.classes[i].stream[ii].dueDate,
+		  start: moment(new Date(dtps.classes[i].stream[ii].dueDate)).toISOString(true),
 		  allDay: false,
 	          color: styles.getPropertyValue('--norm'),
 			    classNum: i,
@@ -891,103 +875,8 @@ localStorage.setItem("dtpsClassOrder", JSON.stringify(classOrder));
 dtps.sorting = false;
 window.alert("Class order saved");
 }
-dtps.googleStream = function() {
-	function googleStream(i) {
-		if (dtps.classes[i].google) {
-	jQuery.getJSON("https://classroom.googleapis.com/v1/courses/" + dtps.classes[i].google.id + "/courseWork" + dtps.classroomAuth, function(resp) {
-		dtps.classes[i].google.rawData = resp;
-		dtps.classes[i].google.stream = [];
-		for (var ii = 0; ii < resp.courseWork.length; ii++) {
-			if (resp.courseWork[ii].dueDate) {
-			var due = new Date(resp.courseWork[ii].dueDate.year, resp.courseWork[ii].dueDate.month - 1, resp.courseWork[ii].dueDate.day - 1);
-			} else {
-			var due = new Date();
-			}
-			dtps.classes[i].google.stream.push({
-				title: resp.courseWork[ii].title,
-				due: due.toHumanString(),
-				dueDate: due.toISOString(),
-				class: i,
-				subject: dtps.classes[i].subject,
-				turnedIn: false,
-				google: true,
-				url: resp.courseWork[ii].alternateLink,
-				letter: "--",
-				grade: "--/" + resp.courseWork[ii].maxPoints
-			})
-		}
-		if (i < (dtps.classes.length - 1)) googleStream(i + 1);
-	});
-		} else {
-			if (i < (dtps.classes.length - 1)) googleStream(i + 1);
-		}
-	}
-	googleStream(0);
-}
 dtps.googleAuth = function() {
-	window.alert("EXPERIMENTAL FEATURE\n Your name and email will be logged in the Power+ database if you continute. Do not send feedback or bug reports about this feature yet.")
-	firebase.auth().signInWithPopup(dtps.authProvider).then(function(result) {
-  var token = result.credential.accessToken;
-  dtps.user.google = result.user;
-  $(".items img").attr("src", dtps.user.google.photoURL)
-  $(".items img").show();
-  dtps.classroomAuth = "?access_token=" + token;
-  console.log(result);
-  jQuery.getJSON("https://classroom.googleapis.com/v1/courses" + dtps.classroomAuth, function(resp) {
-	  dtps.googleClasses = resp.courses;
-	  function editDistance(s1, s2) {
-      s1 = s1.toLowerCase();
-      s2 = s2.toLowerCase();
-
-      var costs = new Array();
-      for (var i = 0; i <= s1.length; i++) {
-        var lastValue = i;
-        for (var j = 0; j <= s2.length; j++) {
-          if (i == 0)
-            costs[j] = j;
-          else {
-            if (j > 0) {
-              var newValue = costs[j - 1];
-              if (s1.charAt(i - 1) != s2.charAt(j - 1))
-                newValue = Math.min(Math.min(newValue, lastValue),
-                  costs[j]) + 1;
-              costs[j - 1] = lastValue;
-              lastValue = newValue;
-            }
-          }
-        }
-        if (i > 0)
-          costs[s2.length] = lastValue;
-      }
-      return costs[s2.length];
-    }
-	  function similarity(s1, s2) {
-      var longer = s1;
-      var shorter = s2;
-      if (s1.length < s2.length) {
-        longer = s2;
-        shorter = s1;
-      }
-      var longerLength = longer.length;
-      if (longerLength == 0) {
-        return 1.0;
-      }
-      return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
-    }
-	  for (var i = 0; i < dtps.googleClasses.length; i++) {
-		  var highest = {stat: 0, class: null};
-		  for (var ii = 0; ii < dtps.classes.length; ii++) {
-			  var stat = similarity(dtps.googleClasses[i].name, dtps.classes[ii].subject)
-			  if ((stat > highest.stat) && (stat > 0.2)) highest = {stat: stat, class: ii}
-		  }
-		  if (highest.class !== null) {
-		  dtps.classes[highest.class].google = dtps.googleClasses[i]
-		  }
-	  }
-	  dtps.showClasses(true);
-	  dtps.googleStream();
-  });
-})
+	window.alert("Switch to Power+ dev to use Google Classroom features")
 }
 dtps.logGrades = function() {
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
