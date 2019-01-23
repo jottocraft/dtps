@@ -13,7 +13,7 @@ dtps.changelog = function () {
 };
 dtps.log = function(msg) {
   console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
-  if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS` + dtps.trackSuffix + `] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
+  if (typeof msg !== "object") { try { jQuery("span.log").html(`<h5>[DTPS` + dtps.trackSuffix + `] ` + msg + `</h5>` + jQuery("span.log").html()); } catch(e) {} }
 }
 dtps.firstrun = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
@@ -1181,6 +1181,9 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage debug">
 <div class="dev">
     <h5>Debugging</h5>
+<br />
+<span class="log">
+</span>
 </div>
 </div>
 <div style="display: none;" class="abtpage about">
@@ -1215,20 +1218,13 @@ dtps.render = function() {
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
-    <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons">feedback</i>
-    <i onclick="fluid.modal('.console')" class="material-icons dev">bug_report</i>
+    <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons sudo">bug_report</i>
     <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">more_horiz</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
 <h3>What's new in Power+</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
-</div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus console close">
-<i onclick="fluid.cards.close('.card.console')" class="material-icons close">close</i>
-<h3>dtps.log</h3>
-<span class="log">
-</span>
 </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus script close">
 <i onclick="fluid.cards.close('.card.script')" class="material-icons close">close</i>
