@@ -545,7 +545,9 @@ dtps.masterStream = function(doneLoading) {
 		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[ii].id]))
 		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
 		var styles = window.getComputedStyle($(".class." + ii)[0]); 
-		dataSets.push({ label: dtps.classes[ii].subject, borderColor: styles.getPropertyValue('--light'), data: dataPoints})
+		var name = dtps.classes[ii].subject
+		if (dtps.fullNames) name = dtps.classes[ii].name
+		dataSets.push({ label: name, borderColor: styles.getPropertyValue('--light'), data: dataPoints})
 		}
 		
 var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
@@ -763,7 +765,9 @@ dtps.announcements = function() {
 				var subject = "";
 				if (psClass !== -1) {
 					col = dtps.classes[psClass].col
-					subject = `<div class="label">` + dtps.classes[psClass].subject + `</div>`;
+					var name = dtps.classes[psClass].subject
+					if (dtps.fullNames) name = dtps.classes[psClass].name
+					subject = `<div class="label">` + name + `</div>`;
 				}
 			announcements.push(`<div onclick="$(this).toggleClass('open');" style="margin: 25px; margin-right: 0px; width: 100%;cursor: pointer;" class="announcement card color ` + col + `">
 ` + subject + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
@@ -1139,7 +1143,7 @@ dtps.render = function() {
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
-    <div onclick="dtps.fullNames = !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames);" class="switch sudo` + fullNamesClass + `"><span class="head"></span></div>
+    <div onclick="dtps.fullNames = !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames); dtps.showClasses(true);" class="switch sudo` + fullNamesClass + `"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">title</i> Display full class names</div>
     <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
