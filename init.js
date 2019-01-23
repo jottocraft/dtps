@@ -114,7 +114,7 @@ dtps.init = function () {
   fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-  og = ["10894474", "10837719", "10838212"]
+  og = ["10894474", "10838212"]
   if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
   contributors = ["10837719", "10463823", "10894474"]
   if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
