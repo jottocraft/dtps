@@ -746,7 +746,7 @@ dtps.calendar = function(doneLoading) {
 		  allDay: false,
 	          color: styles.getPropertyValue('--norm'),
 			    classNum: i,
-			    streamNum: ii
+			    assignmentID: dtps.classes[i].stream[ii].id
 		})
 		    }
 	    }
@@ -759,7 +759,7 @@ dtps.calendar = function(doneLoading) {
       right: 'prev,next'
   },
   eventClick: function(calEvent, jsEvent, view) {
-dtps.assignment(calEvent.classNum, calEvent.streamNum);
+dtps.assignment(calEvent.assignmentID, calEvent.classNum);
   }
 });
 	}
