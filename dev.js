@@ -3,6 +3,7 @@ var dtps = {
   readableVer: "v1.5.0 (dev)",
   trackSuffix: " (dev)",
   showLetters: false,
+  fullNames: false,
   unreadAnn: 0,
   latestStream: []
 };
@@ -826,18 +827,22 @@ dtps.showClasses = function(override) {
 		for (var ii = 0; ii < dtps.classes.length; ii++) {
 			if (dtps.classes[ii].id == classOrder[i]) { var num = ii; }
 		}
+		var name = dtps.classes[num].subject
+		if (dtps.fullNames) dtps.classes[num].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + dtps.classes[num].col + `">
-      <div class="name">` + dtps.classes[num].subject + `</div>
+      <div class="name">` + name + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + dtps.classes[num].grade + `%</span></div>
       </div>
     `);
   }
 		for (var i = 0; i < dtps.classes.length; i++) {
 		if (!classOrder.includes(dtps.classes[i].id)) {
+		var name = dtps.classes[num].subject
+		if (dtps.fullNames) dtps.classes[num].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + dtps.classes[i].subject + `</div>
+      <div class="name">` + name + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
@@ -845,9 +850,11 @@ dtps.showClasses = function(override) {
   }
 	} else {
   for (var i = 0; i < dtps.classes.length; i++) {
+	 var name = dtps.classes[num].subject
+	if (dtps.fullNames) dtps.classes[num].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + dtps.classes[i].subject + `</div>
+      <div class="name">` + name + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
@@ -1021,6 +1028,8 @@ dtps.render = function() {
   $ = jQuery;
   var letterGradesClass = "";
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); letterGradesClass = " active"; }
+  var fullNamesClass = "";
+  if (window.localStorage.dtpsFullNames == "true") { dtps.fullNames = true; fullNamesClass = " active"; }
   if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "dash";
   dtps.sorting = false;
@@ -1130,7 +1139,7 @@ dtps.render = function() {
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
-    <div onclick="window.alert('coming soon')" class="switch sudo"><span class="head"></span></div>
+    <div onclick="dtps.fullNames == !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames);" class="switch sudo` + fullNamesClass + `"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">title</i> Display full class names</div>
     <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
