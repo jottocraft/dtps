@@ -785,8 +785,7 @@ dtps.calendar = function(doneLoading) {
 		    var styles = window.getComputedStyle($(".class." + i)[0]);
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
-		  start: dtps.classes[i].stream[ii].dueDate,
-		  timezone: "UTC",
+		  start: moment(new Date(dtps.classes[i].stream[ii].dueDate)).toISOString(true),
 		  allDay: false,
 	          color: styles.getPropertyValue('--norm'),
 			    classNum: i,
