@@ -786,6 +786,7 @@ dtps.calendar = function(doneLoading) {
 		    calEvents.push({
 		  title: dtps.classes[i].stream[ii].title,
 		  start: dtps.classes[i].stream[ii].dueDate,
+		  timezone: "UTC",
 		  allDay: false,
 	          color: styles.getPropertyValue('--norm'),
 			    classNum: i,
