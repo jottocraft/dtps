@@ -1139,7 +1139,7 @@ dtps.render = function() {
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
-    <div onclick="dtps.fullNames == !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames);" class="switch sudo` + fullNamesClass + `"><span class="head"></span></div>
+    <div onclick="dtps.fullNames = !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames);" class="switch sudo` + fullNamesClass + `"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">title</i> Display full class names</div>
     <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
