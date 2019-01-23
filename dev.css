@@ -303,7 +303,7 @@ body.titlebar .classContent {
 	border-radius: 0px !important;
 }
 .tabs.btns .btn:not(.active) {
-	color: var(--light, #cacaca) !important;
+	var(--light, #cacaca) !important;
 }
 .tabs.btns .btn.active {
 	color: white;
@@ -443,7 +443,7 @@ body.dark .classContent .card {
 	cursor: pointer;
 }
 .weight.parent .weight p {
-	color: #8e8e8e !important;
+	color: gray !important;
 }
 .weight.parent .weight:not(.open) {
 	overflow: hidden !important;
