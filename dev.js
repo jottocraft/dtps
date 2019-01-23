@@ -828,7 +828,7 @@ dtps.showClasses = function(override) {
 			if (dtps.classes[ii].id == classOrder[i]) { var num = ii; }
 		}
 		var name = dtps.classes[num].subject
-		if (dtps.fullNames) dtps.classes[num].name
+		if (dtps.fullNames) name = dtps.classes[num].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + dtps.classes[num].col + `">
       <div class="name">` + name + `</div>
@@ -839,7 +839,7 @@ dtps.showClasses = function(override) {
 		for (var i = 0; i < dtps.classes.length; i++) {
 		if (!classOrder.includes(dtps.classes[i].id)) {
 		var name = dtps.classes[num].subject
-		if (dtps.fullNames) dtps.classes[num].name
+		if (dtps.fullNames) name = dtps.classes[num].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
       <div class="name">` + name + `</div>
@@ -851,7 +851,7 @@ dtps.showClasses = function(override) {
 	} else {
   for (var i = 0; i < dtps.classes.length; i++) {
 	 var name = dtps.classes[num].subject
-	if (dtps.fullNames) dtps.classes[num].name
+	if (dtps.fullNames) name = dtps.classes[num].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
       <div class="name">` + name + `</div>
