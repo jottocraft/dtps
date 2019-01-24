@@ -550,6 +550,9 @@ body:not(.dark) .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter
     --dark: #676767;
     --grad: linear-gradient(to bottom right, #d4d4d4, #676767);
 }
+body:not(.dark) .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
+    --grad: linear-gradient(to bottom right, #d6d6d6, white) !important;
+}
 .background.filter_0, .class.filter_0, .card.filter_0, .card .weight.filter_0, .header.filter_0 {
     --light: #f34848;
     --norm: #ab3030;
