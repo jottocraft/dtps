@@ -894,16 +894,16 @@ dtps.showClasses = function(override) {
 	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
-	          if (!$(".background").attr("class").includes("filter")) {
+		  dtps.bgTimeout = setTimeout(function() {
+		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+		  $(".background").css("background", next)
+		  $(".background").removeClass("trans");
+			  if (!$(".background").attr("class").includes("filter")) {
 			  //no color
 			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
 		  } else {
 			  $(".items").removeClass("black");
 		  }
-		  dtps.bgTimeout = setTimeout(function() {
-		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-		  $(".background").css("background", next)
-		  $(".background").removeClass("trans");
 		  }, 500);
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
