@@ -680,7 +680,7 @@ dtps.gradebook = function(num) {
 	}
 	jQuery(".classContent").html(headsUp + gradeTrendDom + `
 <div style="height: 700px;" class="card withnav">
-  <div class="sidenav">
+  <div class="sidenav" style="height: 1000000000%;">
     <div class="title">
       <h5>Gradebook</h5>
       <p>` + dtps.classes[num].name + `</p>
@@ -1103,7 +1103,7 @@ dtps.render = function() {
     </div>
 <div style="height: calc(100vh - 50px);width: 75%;" class="card withnav focus close abt-new">
 <i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
-  <div class="sidenav">
+  <div class="sidenav" style="height: 1000000000%;">
     <div class="title">
 	  <img src="https://dtps.js.org/outline.png" style="width: 50px;vertical-align: middle;margin-right: 5px;padding: 7px; padding-top: 14px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
