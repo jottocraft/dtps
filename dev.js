@@ -891,10 +891,16 @@ dtps.showClasses = function(override) {
 	  $('body').removeClass('isolatedGoogleClass');
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	  $(".btn.google").hide();
-	  $(".background").css("background", prev)
+	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
-		  bgTimeout = setTimeout(function() {
+	          if (!$(".background").attr("class").includes("filter")) {
+			  //no color
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
+		  } else {
+			  $(".items").removeClass("black");
+		  }
+		  dtps.bgTimeout = setTimeout(function() {
 		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 		  $(".background").css("background", next)
 		  $(".background").removeClass("trans");
