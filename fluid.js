@@ -123,6 +123,9 @@ fluid.theme = function(theme, dontSave) {
   if ($("#activecontextmenu").length) { if ($("#activecontextmenu").children().length == 2) { if ($("body").hasClass("dark")) { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #16181a);" } else { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #dddddd);" } } } }
   if (dontSave !== true) localStorage.setItem("fluidTheme", theme);
 }
+	if (typeof dtps !== "undefined") {
+		if (dtps.onThemeChange) dtps.onThemeChange();
+	}
 }
 fluid.isOutlined = function() {
   return $("body").hasClass("outline");
