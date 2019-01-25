@@ -453,14 +453,17 @@ body.dark .classContent .card {
 }
 .badge, .beta.notice {
 	display: inline-block;
-	margin: 0 10px;
+	margin: 0 5px;
 	border: none;
 	padding: 3px 6px;
 	color: white !important;
-	background-color: #ff7e00;
+	background-color: white;
+	font-size: 14px;
+	font-weight: bold;
 }
 .badge i, .beta.notice i {
 	vertical-align: middle;
+	font-size: 20px;
 }
 .beta.notice.turnin {
 	color: white;
