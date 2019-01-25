@@ -713,8 +713,11 @@ body.faded:not(.dark) .tabs.btns .btn.active {
 	color: black !important;
 	border-color: black !important;
 }
-body.faded .tabs.btns .btn:not(.active) {
+body.faded:not(.dark) .tabs.btns .btn:not(.active) {
 	color: var(--norm, gray) !important;
+}
+body.faded.dark .tabs.btns .btn:not(.active) {
+	color: var(--light, gray) !important;
 }
 body:not(.dark) .items.black, body:not(.dark) .items.black i, body:not(.dark) .items.black h4 {
 	color: black !important;
