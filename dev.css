@@ -707,7 +707,7 @@ body.faded:not(.dark) .tabs.btns .btn.active {
 	color: black !important;
 	border-color: black !important;
 }
-body.faded:not(.dark) .tabs.btns .btn:not(.active) {
+body.faded .tabs.btns .btn:not(.active) {
 	color: var(--norm, gray) !important;
 }
 .items.black, .items.black i, .items.black h4 {
