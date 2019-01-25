@@ -501,6 +501,12 @@ dtps.masterStream = function(doneLoading) {
 		 }
 	  }
 	}
+	if (!$(".background").attr("class").includes("filter")) {
+			  //no color
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
+		  } else {
+			  $(".items").removeClass("black");
+		  } 
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
   jQuery(".classContent").html(`
     <div class="spinner">
@@ -954,7 +960,7 @@ dtps.showClasses = function(override) {
 			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
 		  } else {
 			  $(".items").removeClass("black");
-		  }
+		  } 
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
     $(".header h1").html($(this).children(".name").text())
