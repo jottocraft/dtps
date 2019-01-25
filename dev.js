@@ -898,12 +898,6 @@ dtps.showClasses = function(override) {
 		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 		  $(".background").css("background", next)
 		  $(".background").removeClass("trans");
-			  if (!$(".background").attr("class").includes("filter")) {
-			  //no color
-			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
-		  } else {
-			  $(".items").removeClass("black");
-		  }
 		  }, 500);
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
@@ -911,7 +905,19 @@ dtps.showClasses = function(override) {
 	  $(".header").removeClass(jQuery.grep($(".header").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
-	  if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].google) { $(".btn.google").show(); }; $(".background").addClass(dtps.classes[dtps.selectedClass].col); $(".header").addClass(dtps.classes[dtps.selectedClass].col) }
+	  if (dtps.classes[dtps.selectedClass]) { 
+		  if (dtps.classes[dtps.selectedClass].google) { 
+			  $(".btn.google").show(); 
+		  }; 
+		  $(".background").addClass(dtps.classes[dtps.selectedClass].col); 
+		  $(".header").addClass(dtps.classes[dtps.selectedClass].col) 
+	  }
+	   if (!$(".background").attr("class").includes("filter")) {
+			  //no color
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
+		  } else {
+			  $(".items").removeClass("black");
+		  }
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
     $(".header h1").html($(this).children(".name").text())
@@ -1250,6 +1256,12 @@ dtps.render = function() {
 <button onclick="localStorage.setItem('dtpsGradeTrend', JSON.stringify({})); window.alert('Grade trend enabled'); dtps.logGrades();" class="btn"><i class="material-icons">timeline</i> Enable grade trend</button><button onclick="fluid.cards.close('.card.trend')" class="btn"><i class="material-icons">cancel</i> Not now</button>
 </div>
   `);
+	 if (!$(".background").attr("class").includes("filter")) {
+			  //no color
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
+		  } else {
+			  $(".items").removeClass("black");
+		  }
 	var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
 	if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
 	jQuery.getJSON(getURL, function(data) {
