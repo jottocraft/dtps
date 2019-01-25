@@ -542,7 +542,7 @@ body.dark .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):no
     --light: #7d7d7d;
     --norm: #383838;
     --dark: #101010;
-    --grad: linear-gradient(to bottom right, #7d7d7d, #101010);
+    --grad: linear-gradient(to right bottom, #7d7d7d, #2C2F33)
 }
 body:not(.dark) .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .card .weight:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
     --light: #d4d4d4;
