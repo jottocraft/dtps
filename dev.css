@@ -648,10 +648,10 @@ body:not(.dark) .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.fi
     transition: all 0.5s ease-in-out;
   }
 body:not(.dark).faded .background:before {
-	background: linear-gradient(to right bottom, var(--light), white) !important;
+	background: linear-gradient(to right bottom, var(--light), var(--flex-bg, white)) !important;
 }
 body.dark.faded .background:before {
-	background: linear-gradient(to right bottom, var(--dark), #2C2F33) !important;
+	background: linear-gradient(to right bottom, var(--dark), var(--flex-bg, #2C2F33)) !important;
 }
 .background.trans:before {
        opacity: 1; 
