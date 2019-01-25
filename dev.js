@@ -227,7 +227,7 @@ window.dataLayer = window.dataLayer || [];
       var subject = null;
       var icon = null;
       if (name.includes("Physics")) { var subject = "Physics"; var icon = "experiment"; }; if (name.includes("English")) { var subject = "English"; var icon = "library_books" }; if (name.includes("Physical Education")) { var subject = "PE"; var icon = "directions_run"; };
-      if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; };if (name.includes("Algebra 2")) { var subject = "Algebra 2"; if (highFlyers.includes(HaikuContext.user.login)) { subject = "Algebra 2 High Flyers" } };
+      if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; };if (name.includes("Algebra 2")) { var subject = "Algebra 2"; if (highFlyers.includes(HaikuContext.user.login)) { subject = "Algebra 2 High Flyers"; } };
       if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };if (name.includes("Environmental")) { var subject = "Environmental Science" };
       if (name.includes("Robotics")) { var subject = "Robotics" };if (name.includes("Biology")) { var subject = "Biology" };if (name.includes("Engineering")) { var subject = "Engineering" };if (name.includes("Geometry")) { var subject = "Geometry" };
       if (name.includes("Photography")) { var subject = "Photography" };if (name.includes("World History")) { var subject = "World History" };if (name.includes("U.S. History")) { var subject = "US History" };
@@ -906,6 +906,11 @@ dtps.showClasses = function(override) {
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
+  for (var i = 0; i < dtps.classes.length; i++) {
+	  if (dtps.classes[i].subject.includes("Algebra 2")) {
+		 if (highFlyers.includes(HaikuContext.user.login)) { $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)).getPropertyValue("--dark")); }
+	  }
+	}
   if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class:not(.google)" ).click(function(event) {
@@ -1228,6 +1233,7 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
+<div style="display:inline-block;" class="beta badge notice highFlyer">high flyer&nbsp;<i style="vertical-align: middle;" class="material-icons highFlyer">school</i></div>
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
 <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
