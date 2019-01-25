@@ -907,14 +907,14 @@ dtps.showClasses = function(override) {
   $( ".class:not(.google)" ).click(function(event) {
 	  $('body').removeClass('isolatedGoogleClass');
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	  if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--light") + ", " + jQuery("body").css("background-color") + ")"
+	  if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("dark") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".btn.google").hide();
 	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
 		  dtps.bgTimeout = setTimeout(function() {
 		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-		  if (dtps.fadedColors) next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--light") + ", " + jQuery("body").css("background-color") + ")"
+		  if (dtps.fadedColors) next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("dark") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 		  $(".background").css("background", next)
 		  $(".background").removeClass("trans");
 		  }, 500);
@@ -1307,7 +1307,7 @@ dtps.render = function() {
   });	
 	
 	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--light") + ", " + jQuery("body").css("background-color") + ")"
+	if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("dark") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".background").css("background", prev)
   dtps.showClasses();
   dtps.gapis();
