@@ -227,7 +227,7 @@ window.dataLayer = window.dataLayer || [];
       var subject = null;
       var icon = null;
       if (name.includes("Physics")) { var subject = "Physics"; var icon = "experiment"; }; if (name.includes("English")) { var subject = "English"; var icon = "library_books" }; if (name.includes("Physical Education")) { var subject = "PE"; var icon = "directions_run"; };
-      if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; };if (name.includes("Algebra 2")) { var subject = "Algebra 2"; if (highFlyers.includes(HaikuContext.user.login)) { subject = "Algebra 2 High Flyers"; } };
+      if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; };if (name.includes("Algebra 2")) { var subject = "Algebra 2"; if (highFlyers.includes(HaikuContext.user.login)) { subject = "Algebra 2 High Flyers" } };
       if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };if (name.includes("Environmental")) { var subject = "Environmental Science" };
       if (name.includes("Robotics")) { var subject = "Robotics" };if (name.includes("Biology")) { var subject = "Biology" };if (name.includes("Engineering")) { var subject = "Engineering" };if (name.includes("Geometry")) { var subject = "Geometry" };
       if (name.includes("Photography")) { var subject = "Photography" };if (name.includes("World History")) { var subject = "World History" };if (name.includes("U.S. History")) { var subject = "US History" };
@@ -908,7 +908,9 @@ dtps.showClasses = function(override) {
   ` + dtps.classlist.join(""));
   for (var i = 0; i < dtps.classes.length; i++) {
 	  if (dtps.classes[i].subject.includes("Algebra 2")) {
-		 if (highFlyers.includes(HaikuContext.user.login)) { $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)).getPropertyValue("--dark")); }
+		 if (highFlyers.includes(HaikuContext.user.login)) { 
+			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark")); 
+		 }
 	  }
 	}
   if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
