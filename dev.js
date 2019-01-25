@@ -421,6 +421,11 @@ dtps.classStream = function(num, renderOv) {
     });
   }
 }
+dtps.onThemeChange = function() {
+	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	if (dtps.fadedColors) next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("dark") ? ($("body").hasClass("midnight") ? "--dark" : "--norm") : "--light") + ", " + jQuery("body").css("background-color") + ")"
+	$(".background").css("background", next)
+}
 dtps.renderStream = function(stream, searchRes) {
 	var streamlist = [];
 	for (var i = 0; i < stream.length; i++) {
