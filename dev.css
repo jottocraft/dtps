@@ -688,6 +688,19 @@ body.titlebar .items {
 	padding-right: 10px;
 	z-index: 300;
 }
+body.faded:not(.dark) .items, body.faded:not(.dark) .items i, body.faded:not(.dark) .items h4 {
+	color: black !important;
+}
+body.faded:not(.dark) .header h1 {
+	color: black !important;
+}
+body.faded:not(.dark) .tabs.btns .btn.active {
+	color: black !important;
+	border-color: black !important;
+}
+body.faded:not(.dark) .tabs.btns .btn:not(.active) {
+	color: var(--norm, gray) !important;
+}
 .items.black, .items.black i, .items.black h4 {
 	color: black !important;
 }
