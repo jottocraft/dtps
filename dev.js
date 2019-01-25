@@ -861,8 +861,8 @@ dtps.showClasses = function(override) {
   }
 		for (var i = 0; i < dtps.classes.length; i++) {
 		if (!classOrder.includes(dtps.classes[i].id)) {
-		var name = dtps.classes[num].subject
-		if (dtps.fullNames) name = dtps.classes[num].name
+		var name = dtps.classes[i].subject
+		if (dtps.fullNames) name = dtps.classes[i].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
       <div class="name">` + name + `</div>
