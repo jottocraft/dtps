@@ -651,7 +651,7 @@ body:not(.dark).faded .background:before {
 	background: linear-gradient(to right bottom, var(--light), white) !important;
 }
 body.dark.faded .background:before {
-	background: linear-gradient(to right bottom, var(--light), #2C2F33) !important;
+	background: linear-gradient(to right bottom, var(--dark), #2C2F33) !important;
 }
 .background.trans:before {
        opacity: 1; 
