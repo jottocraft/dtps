@@ -406,7 +406,7 @@ dtps.classStream = function(num, renderOv) {
 	    } else {
     		var earnedTmp = dtps.classes[num].stream[id].letter;
     	}
-	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push(dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1]);
+	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push({disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1]))});
     	    }
   	    }
 	    }
@@ -649,9 +649,26 @@ dtps.gradebook = function(num) {
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-			assignTmp.push(`<p>` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
+			assignTmp.push(`<div style="
+    padding: 5px;
+    background-color:  var(--theme-color-outline);;
+    border-radius: 12px;
+    height: 30px;
+    margin: 10px 5px;
+"><div style="
+    position: absolute;
+    z-index: 5;
+    color: var(--theme-text-color);
+">` + dtps.classes[num].weights[i].assignments[ii].disp + `</div><div style="
+    position: absolute;
+    width: calc(` + (dtps.classes[num].weights[i].assignments[ii].percentage * 100) + `% - 280px);
+    height: 32px;
+    background-color: var(--theme-color);
+    margin: -6px;
+    border-radius: 12px;
+"></div></div>`)
 			if (!((dtps.classes[num].weights[i].weight.includes("Success")) || (dtps.classes[num].weights[i].weight.includes("SS")))) {
-				var parts = dtps.classes[num].weights[i].assignments[ii].split(":");		
+				var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");		
 				if (parts[parts.length - 1].includes("DV")) DVs++;
 				if (parts[parts.length - 1].includes("M")) DVs++;
 				if (parts[parts.length - 1].includes("INC")) DVs++;
