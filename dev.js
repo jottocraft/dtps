@@ -890,12 +890,14 @@ dtps.showClasses = function(override) {
   $( ".class:not(.google)" ).click(function(event) {
 	  $('body').removeClass('isolatedGoogleClass');
 	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	  if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".btn.google").hide();
 	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
 		  dtps.bgTimeout = setTimeout(function() {
 		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+		  if (dtps.fadedColors) next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--light") + ", " + jQuery("body").css("background-color") + ")"
 		  $(".background").css("background", next)
 		  $(".background").removeClass("trans");
 		  }, 500);
@@ -1132,7 +1134,7 @@ dtps.render = function() {
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="display: none !important;" class="item sudo">
+    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
       <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
@@ -1188,6 +1190,10 @@ dtps.render = function() {
     <h5>Experiments</h5>
     <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
     <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
+<br />
+<br /><br />
+    <div onclick="$('body').toggleClass('faded'); dtps.fadedColors = $('body').hasClass('faded');" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">color_lens</i> Faded Class Color Gradient Experiment 1/24/2019</div>
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
@@ -1284,6 +1290,7 @@ dtps.render = function() {
   });	
 	
 	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".background").css("background", prev)
   dtps.showClasses();
   dtps.gapis();
