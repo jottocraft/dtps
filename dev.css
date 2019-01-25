@@ -457,7 +457,7 @@ body.dark .classContent .card {
 	border: none;
 	padding: 3px 6px;
 	color: white !important;
-	background-color: white;
+	background-color: #ff7e00;
 	font-size: 14px;
 	font-weight: bold;
 }
