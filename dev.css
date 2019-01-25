@@ -681,7 +681,7 @@ body.dark.faded .background:before {
 	background-color: var(--light);
 }
 
-body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contributor) .contributor {
+body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contributor) .contributor, body:not(.highFlyer) .highFlyer {
 	display: none !important;
 }
 
