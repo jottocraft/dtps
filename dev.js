@@ -1235,22 +1235,18 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
+    <br /><br />
+    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
+    <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
+     <br />
+   <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + `</h5>
+   <p>ID: ` + dtps.user.login + `</p>
 <div style="display:inline-block;" class="beta badge notice highFlyer">high flyer&nbsp;<i style="vertical-align: middle;" class="material-icons highFlyer">school</i></div>
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
 <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
-<br /><br />
-    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
     <br /><br />
-    <h5>Resources</h5>
-    <ul>
-<li><a href="mailto:hello@jottocraft.com">Contact me</a></li>
-<li><a href="https://dtps.js.org">Power+ website</a></li>
-<li><a href="https://github.com/jottocraft/dtps">Source code on GitHub</a> (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</li>
-</ul>
-    <br />
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
