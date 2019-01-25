@@ -1235,12 +1235,10 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
-    <br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
-     <br />
-   <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + `</h5>
-   <p>ID: ` + dtps.user.login + `</p>
+     <br /><br />
+   <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + ` <span style="font-size: 12px;">` + dtps.user.login + `</span></h5>
 <div style="display:inline-block;" class="beta badge notice highFlyer">high flyer&nbsp;<i style="vertical-align: middle;" class="material-icons highFlyer">school</i></div>
 <div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
 <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
