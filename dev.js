@@ -494,6 +494,13 @@ if (dtps.selectedClass == "dash") {
 }
 dtps.masterStream = function(doneLoading) {
   dtps.showClasses();
+	for (var i = 0; i < dtps.classes.length; i++) {
+	  if (dtps.classes[i].subject.includes("Algebra 2")) {
+		 if (highFlyers.includes(HaikuContext.user.login)) { 
+			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark")); 
+		 }
+	  }
+	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
   jQuery(".classContent").html(`
     <div class="spinner">
