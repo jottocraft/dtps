@@ -844,10 +844,11 @@ dtps.showClasses = function(override) {
 	if (window.localStorage.dtpsClassOrder !== undefined) {
 		var classOrder = JSON.parse(window.localStorage.dtpsClassOrder)
 		for (var i = 0; i < classOrder.length; i++) {
-		var num = 0;
+		var num = null;
 		for (var ii = 0; ii < dtps.classes.length; ii++) {
 			if (dtps.classes[ii].id == classOrder[i]) { var num = ii; }
 		}
+			if (num !== null) {
 		var name = dtps.classes[num].subject
 		if (dtps.fullNames) name = dtps.classes[num].name
     dtps.classlist.push(`
@@ -856,6 +857,7 @@ dtps.showClasses = function(override) {
       <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + dtps.classes[num].grade + `%</span></div>
       </div>
     `);
+			}
   }
 		for (var i = 0; i < dtps.classes.length; i++) {
 		if (!classOrder.includes(dtps.classes[i].id)) {
