@@ -22,7 +22,7 @@ dtps.firstrun = function () {
 <li>Power+ can't fully replace PowerSchool yet. Many PowerSchool features are not included in Power+.</li>
 <li>To use Power+, you have to visit PowerSchool, then run the bookmark script. You can choose stop using Power+ at any time by not using the bookmark script.</li>
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
-</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="ThickBox.close();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
+</div><div id="TB_actionBar" style=""><span><input class="button button" onclick="window.location.reload();" type="button" value="Cancel"><input class="button button" onclick="ThickBox.close(); localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
 dtps.alert = function (text, sub) {
@@ -126,6 +126,8 @@ dtps.init = function () {
   dtps.user = HaikuContext.user;
   dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
+  $ = jQuery;
+  jQuery.getScript('https://dtps.js.org/fluid.js');
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -149,9 +151,7 @@ window.dataLayer = window.dataLayer || [];
 	    dtps.log("New release")
       dtps.showChangelog = true;
 	    //Load fluid JS modules early for changelogs
-    $ = jQuery;
 	    jQuery("body").addClass("notwemoji");
-      jQuery.getScript('https://dtps.js.org/fluid.js');
 	    dtps.shouldRender = true;
       dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
     } else {
@@ -902,10 +902,8 @@ dtps.logGrades = function() {
 }
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix
-  $ = jQuery;
   var letterGradesClass = "";
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); letterGradesClass = " active"; }
-  if (!dtps.showChangelog) jQuery.getScript('https://dtps.js.org/fluid.js');
   dtps.selectedClass = "dash";
   dtps.sorting = false;
   dtps.selectedContent = "stream";
