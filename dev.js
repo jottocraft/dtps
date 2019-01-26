@@ -1080,6 +1080,7 @@ dtps.logGrades = function() {
 	}
 }
 dtps.render = function() {
+  jQuery.getScript('https://dtps.js.org/fluid.js');
   document.title = "Power+" + dtps.trackSuffix
   var letterGradesClass = "";
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); letterGradesClass = " active"; }
