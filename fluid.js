@@ -39,7 +39,6 @@ SOFTWARE.
 
 fluid = new Object;
 fluid.contextMenuOpen = false;
-
 fluid.theme = function(theme, dontSave) {
   if (theme == "toggle") { if ($("body").hasClass("dark")) { theme = "light"; } else { theme = "dark"; } }
   $(".btns.themeSelector .btn").removeClass("active");
@@ -68,6 +67,9 @@ fluid.theme = function(theme, dontSave) {
       $("body").addClass("dark");
     }
   }
+  if (typeof dtps !== "undefined") {
+		if (dtps.onThemeChange) dtps.onThemeChange();
+	}
   if (theme == undefined) {
     if (dontSave !== "unsetStat") { var activeTheme = "light"; } else { var activeTheme = "unset"; }
     if ($("body").hasClass("dark")) var activeTheme = "dark";
@@ -123,9 +125,6 @@ fluid.theme = function(theme, dontSave) {
   if ($("#activecontextmenu").length) { if ($("#activecontextmenu").children().length == 2) { if ($("body").hasClass("dark")) { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #16181a);" } else { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #dddddd);" } } } }
   if (dontSave !== true) localStorage.setItem("fluidTheme", theme);
 }
-	if (typeof dtps !== "undefined") {
-		if (dtps.onThemeChange) dtps.onThemeChange();
-	}
 }
 fluid.isOutlined = function() {
   return $("body").hasClass("outline");
