@@ -4,6 +4,7 @@ var dtps = {
   trackSuffix: " (dev)",
   showLetters: false,
   fullNames: false,
+  fadedColors: true,
   unreadAnn: 0,
   latestStream: []
 };
@@ -1081,7 +1082,8 @@ dtps.logGrades = function() {
 }
 dtps.render = function() {
   jQuery.getScript('https://dtps.js.org/fluid.js');
-  document.title = "Power+" + dtps.trackSuffix
+  document.title = "Power+" + dtps.trackSuffix;
+  $("body").addClass("faded");
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
   if (window.localStorage.dtpsFullNames == "true") { dtps.fullNames = true; }
   dtps.selectedClass = "dash";
@@ -1234,7 +1236,7 @@ dtps.render = function() {
     <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
 <br />
 <br /><br />
-    <div onclick="$('body').toggleClass('faded'); dtps.fadedColors = $('body').hasClass('faded');" class="switch"><span class="head"></span></div>
+    <div onclick="$('body').toggleClass('faded'); dtps.fadedColors = $('body').hasClass('faded');" class="switch active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">color_lens</i> Faded Class Color Gradient Experiment 1/24/2019</div>
 </div>
 </div>
