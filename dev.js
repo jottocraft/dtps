@@ -393,7 +393,7 @@ dtps.classStream = function(num, renderOv) {
 	    dtps.classes[num].weights = [];
 	    for (var i = 0; i < data.length; i++) {
 		    if (jQuery(data[i]).children("th").length > 0) {
-			    dtps.classes[num].weights.push({weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: []});
+			    dtps.classes[num].weights.push({weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: [], grade: jQuery(jQuery(data[i]).children("th").toArray()[2]).text()});
 			    prevWeight++;
 	    } else {
   	    if (jQuery(data[i]).find("a").attr("href")) {
@@ -407,7 +407,7 @@ dtps.classStream = function(num, renderOv) {
 	    } else {
     		var earnedTmp = dtps.classes[num].stream[id].letter;
     	}
-	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push({disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1]))});
+	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push({id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1]))});
     	    }
   	    }
 	    }
@@ -664,12 +664,13 @@ dtps.gradebook = function(num) {
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-			assignTmp.push(`<div style="
+			assignTmp.push(`<div onclick="dtps.assignment(` + dtps.classes[num].weights[i].assignments[ii].id + `, ` + num + `)" style="
     padding: 5px;
     background-color:  var(--theme-color-outline);;
     border-radius: 12px;
     height: 30px;
     margin: 10px 5px;
+    cursor: pointer;
 "><div style="
     position: absolute;
     z-index: 5;
@@ -690,10 +691,10 @@ dtps.gradebook = function(num) {
 			}
 		}
 		dtps.classes[num].weights[i].icon = "";
-		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills"; }
-	        if (dtps.classes[num].weights[i].weight.toUpperCase().includes("COMPREHENSION") || dtps.classes[num].weights[i].weight.includes("CC")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `; dtps.classes[num].weights[i].weight = "Comprehension Checks"; }
-		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks"; }
-		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `</h4>` + assignTmp.join("") + `</div>` );
+		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (15%)"; }
+	        if (dtps.classes[num].weights[i].weight.toUpperCase().includes("COMPREHENSION") || dtps.classes[num].weights[i].weight.includes("CC")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `; dtps.classes[num].weights[i].weight = "Comprehension Checks (0%)"; }
+		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks (85%)"; }
+		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: gray; text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>` );
 		sidebarTmp.push(`<div onclick="$('.sidenav .item').removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
        ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
     </div>`);
