@@ -423,7 +423,7 @@ dtps.classStream = function(num, renderOv) {
 dtps.onThemeChange = function() {
 	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	if (dtps.fadedColors) {
-		if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
+		if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #2C2F33)" : "var(--flex-bg, white)") + ")"
 	}
 	$(".background").css("background", next)
 }
