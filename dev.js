@@ -1225,7 +1225,7 @@ dtps.render = function() {
 </div>
 <div style="display: none;" class="abtpage dashboard">
     <h5>Dashboard</h5>
-    <p>Coming soon</p>
+    <p>Dashboard sorting features will be released in a future version of Power+. If you aren't already, check the dev channel for the latest updates.</p>
 </div>
 <div style="display: none;" class="abtpage experiments">
 <div class="sudo">
