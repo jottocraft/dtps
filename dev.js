@@ -546,7 +546,7 @@ dtps.masterStream = function(doneLoading) {
 	function pushDom(side) {
 	for (var i = 0; i < dtps.dashContent[side].length; i++) {
 	   if (dtps.dashContent[side][i] == "cal") {
-	   	dom[side].push(`<div id="calendar" class="card" style="width: 100%;margin: 25px;padding: 20px;">
+	   	dom[side].push(`<div id="calendar" class="card" style="padding: 20px;">
 </div>`)
 	   }
 	   if (dtps.dashContent[side][i] == "gradeTrend") {
@@ -830,7 +830,7 @@ dtps.announcements = function() {
 					if (dtps.fullNames) name = dtps.classes[psClass].name
 					subject = `<div class="label">` + name + `</div>`;
 				}
-			announcements.push(`<div onclick="$(this).toggleClass('open');" style="margin: 25px; margin-right: 0px; width: 100%;cursor: pointer;" class="announcement card color ` + col + `">
+			announcements.push(`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color ` + col + `">
 ` + subject + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
