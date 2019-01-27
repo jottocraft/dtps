@@ -21,6 +21,9 @@ body.dark .list {
 body.isolatedGoogleClass .header .btns {
 	display: none !important;
 }
+body.dark .sidenav .item:not(.active) {
+	color: var(--flex-light, #b2b2b2);
+}
 body.isolatedGoogleClass .background {
 	background: linear-gradient(to right bottom, rgb(177, 168, 35), rgb(8, 101, 59)) !important;
 }
