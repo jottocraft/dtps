@@ -433,7 +433,7 @@ body.dark .classContent .card {
 input::placeholder {
 	color: var(--flex-text, gray);
 }
-body.midnight.dark .classContent .card .points .total, body.midnight.dark .assignment .weighted {
+body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight.dark .assignment:not(.color) .weighted {
 	color: gray;
 }
 .assignment .weighted {
