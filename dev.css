@@ -235,10 +235,10 @@ body.dark .spinner > div {
 	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.17);
 }
 body:not(.dark) .sidebar, body:not(.dark) .abtheader {
-	background-color: #f1f1f1;
+	background-color: var(--flex-layer2, #f1f1f1);
 }
 body.dark .sidebar, body.dark .abtheader {
-	background-color: #232323;
+	background-color: var(--flex-layer2, #232323);
 }
 body.dark.midnight .sidebar {
 	background-color: #080808;
