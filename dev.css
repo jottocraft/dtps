@@ -7,8 +7,12 @@
 .material-icons {
   font-family: 'Material Icons Outline';
 }
-body.dark .fc-today {
-	background-color: #181b1d !important;
+.fc-today {
+	background: var(--theme-color) !important;
+        color: var(--theme-text-color) !important;
+}
+.fc-widget-content {
+	border-radius: 5px;
 }
 body.dark .list {
 	background-color: #191919 !important;
