@@ -544,7 +544,7 @@ dtps.masterStream = function(doneLoading) {
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
-<div id="calendar" class="card" style="width: 100%;margin: 25px;">
+<div id="calendar" class="card" style="width: 100%;margin: 25px;padding: 20px;">
 </div>
 ` + gradeTrendDom + `
 </div>
@@ -849,8 +849,15 @@ dtps.calendar = function(doneLoading) {
   },
   eventClick: function(calEvent, jsEvent, view) {
 dtps.assignment(calEvent.assignmentID, calEvent.classNum);
+  },
+  eventAfterAllRender: function() {
+	$(".fc-prev-button").html(`<i class="material-icons">keyboard_arrow_left</i>`);
+	$(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
   }
 });
+		$(".fc-prev-button").html(`<i class="material-icons">keyboard_arrow_left</i>`);
+	$(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
+		
 	}
 }
 dtps.clearData = function() {
