@@ -6,6 +6,7 @@ var dtps = {
   fullNames: false,
   fadedColors: true,
   unreadAnn: 0,
+  dashContent: {left: ["cal", "gradeTrend", "announcements"], right: ["stream"]},
   latestStream: []
 };
 dtps.changelog = function () {
@@ -541,12 +542,23 @@ dtps.masterStream = function(doneLoading) {
 	 gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="margin:25px; margin-right:0px;background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data</h5></div>`
 	    }
 	}
+	var leftDom = "";
+	for (var i = 0; i < dtps.dashContent.left.length; i++) {
+	   if (dtps.dashContent.left[i] == "cal") {
+	   	leftDom.push(`<div id="calendar" class="card" style="width: 100%;margin: 25px;padding: 20px;">
+</div>`)
+	   }
+	   if (dtps.dashContent.left[i] == "gradeTrend") {
+		leftDom.push(gradeTrendDom)
+	   }
+	   if (dtps.dashContent.left[i] == "announcements") {
+		leftDom.push(`<div class="announcements"></div>`)
+	   }
+	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
-<div id="calendar" class="card" style="width: 100%;margin: 25px;padding: 20px;">
-</div>
-` + gradeTrendDom + `
+` + leftDom + `
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
 </div>
@@ -817,7 +829,7 @@ dtps.announcements = function() {
 		}
 		}
 		if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-  jQuery(".dash.cal").append("<br />" + announcements.join("")); }
+  jQuery(".dash .announcements").append("<br />" + announcements.join("")); }
 	});
 };
 dtps.calendar = function(doneLoading) {
