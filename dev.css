@@ -22,20 +22,11 @@
 .fc-widget-content {
 	border-radius: 5px;
 }
-body.dark .list {
-	background-color: var(--flex-layer1, #292c2f) !important;
-}
 body.isolatedGoogleClass .header .btns {
 	display: none !important;
 }
-body.dark .sidenav .item:not(.active) {
-	color: var(--flex-light, #b2b2b2);
-}
 body.isolatedGoogleClass .background {
 	background: linear-gradient(to right bottom, rgb(177, 168, 35), rgb(8, 101, 59)) !important;
-}
-body:not(.dark) .list {
-	background-color: var(--flex-layer1, #f1f1f1) !important;
 }
 .fc-event {
 	cursor: pointer !important;
@@ -231,26 +222,6 @@ body.dark .spinner > div {
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-.sidebar {
-	visibility: visible;
-	height: 100%;
-	min-height: 100vh;
-	width: 275px;
-	padding-left: 10px;
-	padding-top: 25px;
-	z-index: 5;
-	position: absolute;
-	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.17);
-}
-body:not(.dark) .sidebar, body:not(.dark) .abtheader {
-	background-color: var(--flex-layer2, #f1f1f1);
-}
-body.dark .sidebar, body.dark .abtheader {
-	background-color: var(--flex-layer2, #232323);
-}
-body.dark.midnight .sidebar {
-	background-color: #080808;
-}
 body.noSidebar .sidebar {
 	display: none;
 	visibility: hidden;
@@ -436,16 +407,13 @@ body.dark .classContent .card {
 	font-size: 14px;
 	margin-top: 15px;
 	display: inline-block;
-	color: var(--flex-layer2, #8e8e8e);
-}
-input::placeholder {
-	color: var(--flex-text, gray);
+	color: var(--flex-sectext, #8e8e8e);
 }
 body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight.dark .assignment:not(.color) .weighted {
 	color: gray;
 }
 .assignment .weighted {
-	color: var(--flex-layer2, #8e8e8e);
+	color: var(--flex-sectext, #8e8e8e);
 	font-size: 0.9rem;
 	margin-left: 10px;
 }
