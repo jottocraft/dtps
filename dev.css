@@ -47,6 +47,9 @@ body:not(.dark) .list {
 	box-shadow: none;
 	border: none;
 }
+body.dark .fc .fc-button-group>* {
+	color: white;
+}
 .announcement .label {
 	position: absolute;
   	right: 0;
