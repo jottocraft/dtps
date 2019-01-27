@@ -59,6 +59,7 @@ body.dark .fc .fc-button-group>* {
  	color: var(--dark);
  	padding: 3px 6px;
    	border-radius: 20px;
+	line-height: 18px;
 }
 .announcement:not(.open) {
 	max-height: 200px;
@@ -679,11 +680,11 @@ body.dark.midnight.faded .background:before {
     transition: all 0.5s;
 }
 .card.color {
-	background: var(--grad);
+	background: linear-gradient(to right bottom, var(--light), var(--norm));
 	color: white !important;
 }
 .card.color .weighted {
-	color: var(--dark);
+	color: var(--norm);
 }
 .class {
 	border-color: var(--dark);
