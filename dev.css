@@ -12,6 +12,13 @@
 	background: var(--theme-color) !important;
         color: var(--theme-text-color) !important;
 }
+.dash.cal #calendar, .dash.cal .announcement {
+	margin: 25px;
+	width: 100%;
+}
+.dash.cal .announcement {
+	margin-right: 0px;
+}
 .fc-widget-content {
 	border-radius: 5px;
 }
