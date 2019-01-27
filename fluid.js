@@ -1,5 +1,5 @@
 /*!
-Fluid UI JavaScript Modules v3.0.0 Beta 6
+Fluid UI JavaScript Modules v3.0.0 Beta 7
 
 Copyright (c) 2017-2019 jottocraft
 
@@ -103,6 +103,7 @@ fluid.theme = function(theme, dontSave) {
       document.body.style.setProperty("--flex-layer2", tinycolor(baseColor).darken(10).toString())
       document.body.style.setProperty("--flex-layer3", tinycolor(baseColor).darken(15).toString())
       document.body.style.setProperty("--theme-color", colorDark)
+      document.body.style.setProperty("--flex-sectext", tinycolor(baseColor).brighten(40).desaturate(50).toString())
       document.body.style.setProperty("--theme-color-outline", colorDark + `c0`)
       document.body.style.setProperty("--theme-text-color", tinycolor(baseColor).brighten(10).toString())
       $("#genTheme").html(`<code>/* Set this CSS on your Fluid site to use your generated Flex Theme */
@@ -111,6 +112,7 @@ fluid.theme = function(theme, dontSave) {
         --flex-light: ` +  tinycolor(baseColor).brighten(10).toString() + `;
         --flex-bg: ` + tinycolor(baseColor).brighten(5).toString() + `;
         --flex-text: ` + colorDark + `;
+	--flex-sectext: ` + tinycolor(baseColor).brighten(40).desaturate(50).toString() + `;
         --flex-layer1: ` + tinycolor(baseColor).darken(5).toString() + `;
         --flex-layer2: ` + tinycolor(baseColor).darken(10).toString() + `;
         --flex-layer3: ` + tinycolor(baseColor).darken(15).toString() + `;
@@ -212,7 +214,7 @@ fluid.init = function() {
     if (fluid.theme(undefined, "unsetStat") == "unset") fluid.theme("auto", true);
   }
 
-  $( ".btns:not(.themeSelector) .btn, .list.select .item, .sidenav .item" ).click(function(event) {
+  $( ".btns:not(.themeSelector) .btn, .list.select .item, .sidenav .item, .sidebar .item" ).click(function(event) {
   if ($(event.target).parent().hasClass("multiple")) {
     $(this).toggleClass("active")
   } else {
