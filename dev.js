@@ -1,3 +1,4 @@
+try {
 var dtps = {
   ver: 150,
   readableVer: "v1.5.0 (GM)",
@@ -463,7 +464,7 @@ dtps.renderStream = function(stream, searchRes) {
 		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
 		var turnInDom = "";
-		if (stream[ii].turnedIn) {
+		if (stream[i].turnedIn) {
 		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i></div>`
 	    }
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
@@ -1441,3 +1442,6 @@ dtps.render = function() {
   fluid.init();
 }
 dtps.init();
+} catch(e) {
+	Sentry.captureException(e);
+}
