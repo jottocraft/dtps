@@ -16,7 +16,6 @@ Sentry.configureScope((scope) => {
   if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + temp.dtpsGradeTrend.length + " entries"
   scope.setExtra("dtps-config", JSON.stringify(temp));
   scope.setExtra("page-state", $("body").attr("class"));
-  scope.setExtra("dtps-build", $(".buildInfo").html().replace("build ", "") + dtps.trackSuffix);
   var classesTmp = [];
   for (var i = 0; i < dtps.classes.length; i++) {
 	classesTmp.push({
@@ -552,7 +551,6 @@ dtps.masterStream = function(doneLoading) {
   		buffer = buffer.concat(dtps.classes[i].stream)
     }
   }
-	dtps.log(buffer)
 	var loadingDom = "";
 	if (!doneLoading) {
 		loadingDom = `<div class="spinner">
