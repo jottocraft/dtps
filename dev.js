@@ -62,7 +62,7 @@ dtps.alert = function (text, sub) {
 `)
 };
 dtps.bugReport = function() {
-	if (window.confirm("If the issue is related to a class in any way, make sure you have that class selected before sending this bug report. By sending a bug report, logs and usage information will be sent for debugging purposes.")) {
+	if (window.confirm("If the issue is related to a class in any way, make sure you have that class selected before sending this bug report. By sending a bug report, logs and usage information will be sent for debugging purposes (grades will never be sent in a bug report).")) {
 	Sentry.configureScope((scope) => {
   scope.setExtra("class-selected", JSON.stringify(dtps.selectedClass));
   var streamTmp = JSON.parse(JSON.stringify(dtps.classes[dtps.selectedClass]));
