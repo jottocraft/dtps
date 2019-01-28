@@ -12,9 +12,24 @@ var dtps = {
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
 Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /https?:\/\/((cdn|www)\.)?dtps\.js\.org/ ] });
 Sentry.configureScope((scope) => {
-  scope.setExtra("dtps-config", JSON.stringify(window.localStorage));
+  var temp = JSON.parse(JSON.stringify(window.localStorage));
+  if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + temp.dtpsGradeTrend.length + " entries"
+  scope.setExtra("dtps-config", JSON.stringify(temp));
   scope.setExtra("page-state", $("body").attr("class"));
   scope.setExtra("dtps-build", $(".buildInfo").html().replace("build ", "") + dtps.trackSuffix);
+  var classesTmp = [];
+  for (var i = 0; i < dtps.classes.length; i++) {
+	classesTmp.push({
+		col: dtps.classes[i].col,
+		abbrv: dtps.classes[i].abbrv,
+		id: dtps.classes[i].id,
+		loc: dtps.classes[i].loc,
+		name: dtps.classes[i].name,
+		num: dtps.classes[i].num,
+		subject: dtps.classes[i].subject
+	})
+  }
+  scope.setExtra("classes-metadata", JSON.stringify(classesTmp));
 });
 });
 dtps.changelog = function () {
@@ -1362,6 +1377,9 @@ dtps.render = function() {
 	if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
 	jQuery.getJSON(getURL, function(data) {
 		jQuery(".buildInfo").html("build " + data[0].sha.substring(7,0));
+		Sentry.configureScope((scope) => {
+  scope.setTag("build", data[0].sha.substring(7,0) + dtps.trackSuffix);
+});
 		jQuery(".buildInfo").click(function() {
 			window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
 		});
