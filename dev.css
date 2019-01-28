@@ -16,6 +16,9 @@
 	margin: 25px;
 	width: 100%;
 }
+#id_email, #id_name {
+	display: none !important;
+}
 .dash.cal .announcement {
 	margin-right: 0px;
 }
