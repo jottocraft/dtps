@@ -273,7 +273,7 @@ img.emoji {
 
 
 ::-webkit-scrollbar-thumb {
-    background: #707275;
+    background: var(--flex-sectext, #707275);
     opacity: 90px;
     border-radius: 20px;
 }
