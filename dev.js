@@ -117,9 +117,6 @@ if (req == "assignGET") {
 	}
 }
 dtps.init = function () {
-	setInterval(function() {
-	throw "oh no an error oh no so scary oh no"
-	}, 1000);
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
   fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
