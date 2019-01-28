@@ -9,6 +9,9 @@ var dtps = {
   dashContent: {left: ["cal", "gradeTrend", "announcements"], right: ["stream"]},
   latestStream: []
 };
+jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
+Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ 'dtps.js.org', 'fluid.js.org' ] });
+});
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
   fluid.modal(".card.changelog");
