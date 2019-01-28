@@ -464,7 +464,7 @@ dtps.renderStream = function(stream, searchRes) {
 		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
 		var turnInDom = "";
-		if (stream[i].turnedIn) {
+		if (stream[ii].turnedIn) {
 		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i></div>`
 	    }
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
