@@ -41,6 +41,12 @@ dtps.alert = function (text, sub) {
 </div>
 `)
 };
+dtps.bugReport = function() {
+	if (window.confirm("By sending a bug report, logs and usage information will be sent for debugging purposes")) {
+	Sentry.captureMessage("BUG REPORT (BUILD " + $(".buildInfo").html().replace("build ", "") + "): " + window.prompt('Please describe the issue:'));
+	window.alert("Thanks for sending a bug report")
+}
+}
 dtps.requests = {};
 dtps.http = {};
 dtps.webReq = function(req, url, callback, q) {
@@ -1307,7 +1313,7 @@ dtps.render = function() {
     <li>Logo made with logomakr.com</li>
 </ul>
 <br />
-<p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
+<p><span onclick="dtps.bugReport()">(c)</span> 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
   </div>
 </div>
