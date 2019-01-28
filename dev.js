@@ -12,8 +12,8 @@ var dtps = {
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
 Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /https?:\/\/((cdn|www)\.)?dtps\.js\.org/ ] });
 Sentry.configureScope((scope) => {
-  var temp = JSON.parse(JSON.stringify(window.localStorage));
-  if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + temp.dtpsGradeTrend.length + " entries"
+  var temp = window.localStorage;
+  if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + JSON.parse(window.localStorage.dtpsGradeTrend).length + " entries"
   scope.setExtra("dtps-config", JSON.stringify(temp));
   scope.setExtra("page-state", $("body").attr("class"));
   var classesTmp = [];
@@ -29,6 +29,7 @@ Sentry.configureScope((scope) => {
 	})
   }
   scope.setExtra("classes-metadata", JSON.stringify(classesTmp));
+  scope.setUser({"id": dtps.user.login});
 });
 });
 dtps.changelog = function () {
@@ -462,7 +463,7 @@ dtps.renderStream = function(stream, searchRes) {
 		var due = "Due " + stream[i].due;
     	    if (due.includes("n/a")) var due = "";
 		var turnInDom = "";
-		if (stream[i].turnedIn) {
+		if (stream[ii].turnedIn) {
 		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i></div>`
 	    }
     if ((stream[i].grade !== "-") && (stream[i].grade)) {
