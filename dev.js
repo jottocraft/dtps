@@ -11,6 +11,11 @@ var dtps = {
 };
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
 Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /https?:\/\/((cdn|www)\.)?dtps\.js\.org/ ] });
+Sentry.configureScope((scope) => {
+  scope.setExtra("dtps-config", JSON.stringify(window.localStorage));
+  scope.setExtra("page-state", $("body").attr("class"));
+  scope.setExtra("dtps-build", $(".buildInfo").html().replace("build ", "") + dtps.trackSuffix);
+});
 });
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -328,7 +333,7 @@ dtps.loadPages = function(num) {
   });
 }
 dtps.classStream = function(num, renderOv) {
-	dtps.log("rendering stream for " + num)
+  dtps.log("Fetching assignments for class " + num)
   if (!renderOv) dtps.showClasses();
   if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
@@ -509,6 +514,7 @@ if (dtps.selectedClass == "dash") {
 }	
 }
 dtps.masterStream = function(doneLoading) {
+	dtps.log("RENDERING DASHBOARD")
   dtps.showClasses();
 	for (var i = 0; i < dtps.classes.length; i++) {
 	  if (dtps.classes[i].subject.includes("Algebra 2")) {
@@ -528,7 +534,6 @@ dtps.masterStream = function(doneLoading) {
 	var buffer = [];
   for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
-  		dtps.log("BUILDING: " + i)
   		buffer = buffer.concat(dtps.classes[i].stream)
     }
   }
@@ -850,11 +855,11 @@ dtps.announcements = function() {
 	});
 };
 dtps.calendar = function(doneLoading) {
+	dtps.log("BUILDING CAL")
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 	calEvents = [];
 	for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
-  		dtps.log("BUILDING CAL: " + i)
 	    for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
 		    if (dtps.classes[i].stream[ii].dueDate) {
 		    var styles = window.getComputedStyle($(".class." + i)[0]);
@@ -1034,6 +1039,7 @@ dtps.sorting = false;
 window.alert("Class order saved");
 }
 dtps.googleStream = function() {
+	dtps.log("FETCHING GOOGLE ASSIGNMENTS")
 	function googleStream(i) {
 		if (dtps.googleClasses[i]) {
 	gapi.client.classroom.courses.courseWork.list({ courseId: dtps.googleClasses[i].id }).then(function(resp) {
@@ -1069,6 +1075,7 @@ dtps.googleStream = function() {
 	googleStream(0);
 }
 dtps.googleAuth = function() {
+ dtps.log("GOOGLE AUTH")
   dtps.user.google = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
   $(".items img").attr("src", dtps.user.google.getImageUrl())
 	gapi.client.classroom.courses.list({ pageSize: 40 }).then(function(resp) {
@@ -1107,15 +1114,14 @@ dtps.googleAuth = function() {
 }
 dtps.logGrades = function() {
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-		dtps.log("Grade trend enabled; checking grade data")
+		dtps.log("LOGGING GRADES")
 		var now = new Date();
 		var start = new Date(now.getFullYear(), 0, 0);
 		var diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
 		var oneDay = 1000 * 60 * 60 * 24;
 		var day = Math.floor(diff / oneDay);
 		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend);
-		if (!gradeData.day) {
-			dtps.log("Grade trend enabled; check passed; storing grades for today")
+		if (gradeData.day !== undefined) {
 			var gradesNow = {};
 			for (var i = 0; i < dtps.classes.length; i++) {
 				gradesNow[dtps.classes[i].id] = dtps.classes[i].grade
