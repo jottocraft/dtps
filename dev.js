@@ -1,4 +1,3 @@
-try {
 var dtps = {
   ver: 150,
   readableVer: "v1.5.0 (GM)",
@@ -11,7 +10,7 @@ var dtps = {
   latestStream: []
 };
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
-Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /https?:\/\/((cdn|www)\.)?dtps\.js\.org/ ] });
+Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, blacklistUrls: [ /^https:\/\/dtechhs.learning.powerschool.com\/javascripts/ ] });
 Sentry.configureScope((scope) => {
   var temp = window.localStorage;
   if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + JSON.parse(window.localStorage.dtpsGradeTrend).length + " entries"
@@ -1442,6 +1441,3 @@ dtps.render = function() {
   fluid.init();
 }
 dtps.init();
-} catch(e) {
-	Sentry.captureException(e);
-}
