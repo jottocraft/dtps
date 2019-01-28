@@ -62,9 +62,15 @@ dtps.alert = function (text, sub) {
 `)
 };
 dtps.bugReport = function() {
-	if (window.confirm("By sending a bug report, logs and usage information will be sent for debugging purposes")) {
+	if (window.confirm("If the issue is related to a class in any way, make sure you have that class selected before sending this bug report. By sending a bug report, logs and usage information will be sent for debugging purposes.")) {
+	Sentry.configureScope((scope) => {
+  scope.setExtra("class-selected", JSON.stringify(dtps.selectedClass));
+  var streamTmp = JSON.parse(JSON.stringify(dtps.classes[dtps.selectedClass]));
+  streamTmp.forEach(function(v){ if (v.grade) {v.grade = v.grade.replace(v.grade.split("/")[0], "X")}; if (v.letter) {v.letter = "X"}; })
+  scope.setExtra("selected-stream", JSON.stringify(streamTmp));
+});
 	Sentry.captureMessage("BUG REPORT (BUILD " + $(".buildInfo").html().replace("build ", "") + "): " + window.prompt('Please describe the issue:'));
-	window.alert("Thanks for sending a bug report")
+	window.alert("Thanks for sending a bug report. The issue will be reviewed as soon as possible.")
 }
 }
 dtps.requests = {};
