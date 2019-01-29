@@ -1,17 +1,16 @@
-### Experimental features
-* Features marked with a experiment icon are incomplete. Do not submit issues related to any of these features. These features should only appear if you are a Project DTPS tester or if you are on a pre-release version of Project DTPS.
+## Contributing to Power+
+Power+ is open-source and open to contributions on GitHub. Making PRs will make you a contributor on GitHub (the contributor badge on Power+ is invite-only). This document will provide several important details on how Power+ is developed and additional information about debugging Power+.
 
-### Contributing (PRs and code)
-Please make sure to read the Project DTPS docs before making PRs
+### Pull request guidelines
+General pull request guidelines:
+* All PRs must be made in dev.js and dev.css. PRs made to the stable Power+ files will not be accepted.
+* PRs cannot give, take change, add, or remove Power+ badges
+* Never change any version info or change any changelogs in a PR
+* PRs should generally include only small bugfixes and minor changes. PRs that make major changes will not be accepted. If you want to add a feature in a PR, you can commit the code that is needed for fetching data needed for your feature, then make a feature request on GitHub issues.
+* Any PRs that attempt to steal user data or include any bad stuff like malware, bloatware, etc. will cause the PR to be instantly denied and the user will get banned from contributing to Power+.
 
-Project DTPS docs: [dtps.rtfd.io](dtps.rtfd.io)
+### Release schedule
+To use the very latest code, make sure you are using the dev version of Power+. Version numbers are really vauge and only represent the latest milestone. A new major stable release of Power+ typically occurs at the beginning of every month. Minor releases (0.x or 0.0.x) are rare and only occur if major bugfixs needs to be pushed to stable ASAP. Fixes don't always indicate a new release number. Version numbers in the dev channel do not indicate that the features in that version are finished. Features included in a release are only finalized when they hit stable, or when the feature freeze is announced (feature freezes are only announced when the active development is not allowed to add any more features and should focus on bugfixes and performance). Each version number is also associated with a month (version 1.5.0 can also be called the Febuary 2019 update).
 
-* Do not submit PRs to add/edit/remove any profile badges. Profile badges should only be created and distributed by jottocraft.
-* Only submit PRs that edit dev.js. Never edit/make a PR for init.js. init.js will be updated to match dev.js for the next release. Use the [dev bookmark](https://dtps.js.org/devbookmark.txt) to use dev.js to access the new features early.
-* Never change build numbers, version numbers, changelogs, or releases. Releases, changelogs, version numbers, etc. are all determined by jottocraft.
-* Never change any core components Project DTPS (never change name, attempt a redesign, new icon, major reworks, etc.). Open an issue for something related to that instead.
-* If you feel like your PR needs an exception for one of these guidelines or you are unsure about any of these, submit the PR anyways. I'd rather reject a PR than lose a good idea that slightly bends the guidelines.
-
-### Milestones and Releases
-* I call the dev version of DTPS dev and not beta or alpha because they really don't represent the final release, which could change drastically from the dev version. It just means it has the latest code from whatever I'm working on. The dev version number is not always accurate and can change. When I release something, I just copy the dev code to stable and give it a version number.
-* Issues marked with a milestone may not accuratly represent the release they will be included in; they are just targets. If a milestone is marked with a release number right after the release number of the latest dev version in development, it just means it will be in a release after the one in active development, not the one right after (i.e. if the latest stable is v1.2.0 and latest dev is v1.4.0, and an issue gets a milestone of v1.5.0 that just means it will be after v1.4.0. It might be in v1.5.0, or might be pushed back to a later release)
+#### Questions / Additional Information
+If you want to know any additional information or if you have questions about contributing to Power+, please email me at [hello@jottocraft.com](mailto:hello@jottocraft.com).
