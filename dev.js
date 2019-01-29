@@ -6,11 +6,29 @@ var dtps = {
   fullNames: false,
   fadedColors: true,
   unreadAnn: 0,
+  errorBuffer: [],
+  sentryLoaded: false,
   dashContent: {left: ["cal", "gradeTrend", "announcements"], right: ["stream"]},
   latestStream: []
 };
+window.onerror = function(message, url, lineNumber) {
+if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
+  if (dtps.sentryLoaded) {
+  Sentry.addBreadcrumb({
+  category: 'error',
+  message: "[" + url + ":" + lineNumber + "] " + message,
+  level: 'error',
+  type: 'error'
+ });
+  } else {
+  dtps.errorBuffer.push("[" + url + ":" + lineNumber + "] " + message) 
+  }
+  try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + "] " + message + `</p>` + jQuery("span.log").html()); } catch(e) {}
+}
+  return false;
+};
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
-Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, blacklistUrls: [ /^https:\/\/dtechhs.learning.powerschool.com\/javascripts/, "https://dtechhs.learning.powerschool.com/javascripts", "https://dtechhs.learning.powerschool.com/javascripts/bottom_1537881337_1253887cbc.js", "https://dtechhs.learning.powerschool.com/javascripts/base_1537881337_896b304af0.js", "https://dtechhs.learning.powerschool.com/javascripts/portal_1537881337_04f4ecdf6d.js", "https://dtechhs.learning.powerschool.com/javascripts/sbg_1537881337_2bc89e2cab.js" ] });
+Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /^https:\/\/dtps.js.org/ ] });
 Sentry.configureScope((scope) => {
   var temp = JSON.parse(JSON.stringify(window.localStorage));
   if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + JSON.parse(window.localStorage.dtpsGradeTrend).length + " entries"
@@ -31,6 +49,15 @@ Sentry.configureScope((scope) => {
   scope.setExtra("classes-metadata", JSON.stringify(classesTmp));
   scope.setUser({"id": dtps.user.login});
 });
+for (var i = 0; i < dtps.errorBuffer.length; i++) {
+Sentry.addBreadcrumb({
+  category: 'error',
+  message: dtps.errorBuffer[i],
+  level: 'error',
+  type: 'error'
+});
+}
+dtps.sentryLoaded = true;
 });
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
