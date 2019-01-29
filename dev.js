@@ -71,8 +71,7 @@ if (dtps.selectedClass !== "dash") {
   scope.setExtra("selected-stream", JSON.stringify(streamTmp));
 }
 });
-	Sentry.captureMessage("BUG REPORT (BUILD " + $(".buildInfo").html().replace("build ", "") + "): " + window.prompt('Please describe the issue:'));
-	window.alert("Thanks for sending a bug report")
+	window.alert("Thanks for sending a bug report. Report ID: " + Sentry.captureMessage("BUG REPORT (BUILD " + $(".buildInfo").html().replace("build ", "") + "): " + window.prompt('Please describe the issue:')));
 }
 }
 dtps.requests = {};
@@ -1253,7 +1252,7 @@ dtps.render = function() {
     <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
       <i class="material-icons">bug_report</i> Debugging
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.about').show();" class="item">
+    <div onclick="$('.abtpage').hide();$('.abtpage.about').show(); $('.advancedOptions').hide(); $('.advOp').show();" class="item">
       <i class="material-icons">info</i> About
     </div>
   </div>
@@ -1341,6 +1340,12 @@ dtps.render = function() {
     <li>Logo made with logomakr.com</li>
 </ul>
 <br />
+<p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
+<div class="advancedOptions" style="display: none;">
+<p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="dtps.bugReport();">Send a bug report</p>
+<p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="dtps.render();">Re-render Power+</p>
+<br />
+</div>
 <p><span onclick="dtps.bugReport()">(c)</span> 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
   </div>
@@ -1348,7 +1353,7 @@ dtps.render = function() {
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
-    <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons sudo">bug_report</i>
+    <i onclick="dtps.bugReport();" class="material-icons sudo">bug_report</i>
     <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">more_horiz</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
