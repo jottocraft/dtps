@@ -10,7 +10,7 @@ var dtps = {
   latestStream: []
 };
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
-Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, blacklistUrls: [ /^https:\/\/dtechhs.learning.powerschool.com\/javascripts/ ] });
+Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, blacklistUrls: [ /^https:\/\/dtechhs.learning.powerschool.com\/javascripts/, "https://dtechhs.learning.powerschool.com/javascripts", "https://dtechhs.learning.powerschool.com/javascripts/bottom_1537881337_1253887cbc.js", "https://dtechhs.learning.powerschool.com/javascripts/base_1537881337_896b304af0.js", "https://dtechhs.learning.powerschool.com/javascripts/portal_1537881337_04f4ecdf6d.js", "https://dtechhs.learning.powerschool.com/javascripts/sbg_1537881337_2bc89e2cab.js" ] });
 Sentry.configureScope((scope) => {
   var temp = JSON.parse(JSON.stringify(window.localStorage));
   if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + JSON.parse(window.localStorage.dtpsGradeTrend).length + " entries"
@@ -888,7 +888,7 @@ dtps.calendar = function(doneLoading) {
 		  title: dtps.classes[i].stream[ii].title,
 		  start: moment(new Date(dtps.classes[i].stream[ii].dueDate)).toISOString(true),
 		  allDay: false,
-	          color: styles.getPropertyValue('--norm'),
+	          color: styles.getPropertyValue('--light'),
 			    classNum: i,
 			    assignmentID: dtps.classes[i].stream[ii].id
 		})
