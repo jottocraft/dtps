@@ -531,7 +531,7 @@ dtps.renderStream = function(stream, searchRes) {
 	searchRes = "";
 }
 }
-  return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There are no assignments that match the search input") + `</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + streamlist.join("") );
+  return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + streamlist.join("") );
   //return streamlist.join("");
 }
 dtps.search = function() {
