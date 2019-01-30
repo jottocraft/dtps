@@ -4,9 +4,6 @@ var dtps = {
   trackSuffix: " (dev)",
   showLetters: false,
   fullNames: false,
-  fadedColors: true,
-  unreadAnn: 0,
-  dashContent: {left: ["cal", "grades", "announcements"], right: ["stream"]},
   latestStream: []
 };
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
@@ -63,7 +60,7 @@ dtps.firstrun = function () {
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="window.location.reload();" type="button" value="Cancel"><input class="button button" onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
-dtps.alert = function (text, sub) {
+dtps.nativeAlert = function (text, sub) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
@@ -173,13 +170,12 @@ dtps.init = function () {
   if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
   if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   dtps.shouldRender = false;
-	dtps.first = false;
-	dtps.showChangelog = false;
-	dtps.updateScript = false;
+  dtps.first = false;
+  dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
   dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
- $ = jQuery;
+  $ = jQuery;
 jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
@@ -206,24 +202,24 @@ window.dataLayer = window.dataLayer || [];
 	jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
   if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
     dtps.shouldRender = false;
-    dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
+    dtps.nativeAlert("Unsupported school", "Power+ only works at Design Tech High School");
   } else {
     if (Number(window.localStorage.dtps) < dtps.ver) {
 	    dtps.log("New release")
       dtps.showChangelog = true;
 	    dtps.shouldRender = true;
-      dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
+      dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer);
     } else {
 	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
-    dtps.alert("Unsupported Account", "Power+ only works on student accounts");
+    dtps.nativeAlert("Unsupported Account", "Power+ only works on student accounts");
 	      } else {
-				 if (window.location.pathname.split("/")[3] !== "portal") {
+				 if (!window.location.pathname.includes("portal")) {
 					 dtps.shouldRender = false;
-      dtps.alert("Page error", 'Go to your <a href="/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
+      dtps.nativeAlert("Page error", 'Go to the PowerSchool homepage to load Power+');
 				     } else {
       dtps.shouldRender = true;
-      dtps.alert("Loading...");
+      dtps.nativeAlert("Loading...");
 			  }
 		      
 	      
@@ -305,14 +301,20 @@ window.dataLayer = window.dataLayer || [];
   });
 
 }
+var dtps.readyInterval = "n/a";
 dtps.checkReady = function(num) {
-  //dtps.log(num + " reporting as READY total of " + dtps.classesReady);
+  dtps.log(num + " reporting as READY total of " + dtps.classesReady);
   if ((dtps.selectedClass == "dash") && (dtps.classesReady == dtps.classes.length)) {
     dtps.log("All classes ready, loading master stream");
+    clearInterval(dtps.readyInterval);
     dtps.masterStream(true);
   } else {
   if ((dtps.selectedClass == "dash") && (dtps.classesReady < dtps.classes.length)) {
-	  dtps.masterStream();
+    if (dtps.readyInterval == "n/a") {
+    dtps.readyInterval = setInterval(function() {
+      dtps.masterStream();
+    }, 500);
+    }
   }
   }
 }
@@ -470,9 +472,8 @@ dtps.classStream = function(num, renderOv) {
 }
 dtps.onThemeChange = function() {
 	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	if (dtps.fadedColors) {
-		if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #2C2F33)" : "var(--flex-bg, white)") + ")"
-	}
+	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #2C2F33)" : "var(--flex-bg, white)") + ")"
+	
 	$(".background").css("background", next)
 }
 dtps.renderStream = function(stream, searchRes) {
@@ -533,26 +534,26 @@ dtps.renderStream = function(stream, searchRes) {
 dtps.search = function() {
 if (dtps.selectedClass == "dash") {
 	if ($("input.search").val() == "") {
-	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, "")) 
+	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, ""))
 	} else {
 	jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
 	}
 	$(".card.assignment").addClass("color");
 } else {
 	if ($("input.search").val() == "") {
-	jQuery(".classContent").html(dtps.renderStream(dtps.latestStream, "")) 
+	jQuery(".classContent").html(dtps.renderStream(dtps.latestStream, ""))
 	} else {
 	jQuery(".classContent").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
 	}
-}	
+}
 }
 dtps.masterStream = function(doneLoading) {
 	dtps.log("RENDERING DASHBOARD")
   dtps.showClasses();
 	for (var i = 0; i < dtps.classes.length; i++) {
 	  if (dtps.classes[i].subject.includes("Algebra 2")) {
-		 if (highFlyers.includes(HaikuContext.user.login)) { 
-			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark")); 
+		 if (highFlyers.includes(HaikuContext.user.login)) {
+			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark"));
 		 }
 	  }
 	}
@@ -580,33 +581,14 @@ dtps.masterStream = function(doneLoading) {
 	} else {
 		dtps.logGrades();
 	}
-	var dom = {left: [], right: []};
-	function pushDom(side) {
-	for (var i = 0; i < dtps.dashContent[side].length; i++) {
-	   if (dtps.dashContent[side][i] == "cal") {
-	   	dom[side].push(`<div id="calendar" class="card" style="padding: 20px;">
-</div>`)
-	   }
-	   if (dtps.dashContent[side][i] == "grades") {
-		dom[side].push(``)
-	   }
-	   if (dtps.dashContent[side][i] == "announcements") {
-		dom[side].push(`<div class="announcements"></div>`)
-	   }
-	   if (dtps.dashContent[side][i] == "stream") {
-		dom[side].push(`<div class="assignmentStream"></div>`)
-	   }
-	}
-	}
-	pushDom("left")
-	pushDom("right")
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
-` + dom.left.join("") + `
+<div id="calendar" class="card" style="padding: 20px;">
+<div class="announcements"></div>
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
-` + dom.right.join("") + `
+<div class="assignmentStream"></div>
 </div>
 `)
 		}
@@ -619,7 +601,7 @@ dtps.masterStream = function(doneLoading) {
     if(keyA < keyB) return 1;
     if(keyA > keyB) return -1;
     return 0;
-  }))); 
+  })));
 	$(".card.assignment").addClass("color");
 	dtps.calendar(doneLoading);
 }
@@ -715,7 +697,7 @@ dtps.gradebook = function(num) {
     border-radius: 12px;
 "></div></div>`)
 			if (!((dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS")) || (dtps.classes[num].weights[i].weight.toUpperCase().includes("SS")))) {
-				var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");		
+				var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");
 				if (parts[parts.length - 1].includes("DV")) DVs++;
 				if (parts[parts.length - 1].includes("M")) DVs++;
 				if (parts[parts.length - 1].includes("INC")) DVs++;
@@ -882,8 +864,6 @@ dtps.showClasses = function(override) {
   var streamClass = "active"
   if (dtps.selectedClass !== "dash") var streamClass = "";
 	dtps.classlist = [];
-	var unreadAnn = "";
-	if (dtps.unreadAnn) unreadAnn = "&nbsp;&nsbp;(" + dtps.unreadAnn + ")";
 	if (window.localStorage.dtpsClassOrder !== undefined) {
 		var classOrder = JSON.parse(window.localStorage.dtpsClassOrder)
 		for (var i = 0; i < classOrder.length; i++) {
@@ -932,7 +912,7 @@ dtps.showClasses = function(override) {
 		for (var i = 0; i < dtps.isolatedGoogleClasses.length; i++) {
 		dtps.classlist.push(`<div style="display: none;" onclick="$('.sidebar .class').removeClass('active'); $(this).addClass('active'); $('body').addClass('isolatedGoogleClass'); dtps.selectedClass = 'isolatedGoogleClass'; $('.classContent').html(dtps.renderStream(dtps.googleClasses[`  + dtps.isolatedGoogleClasses[i] +`].stream)); $('#headText').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class isolated google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].id + `">
       <div style="width: 100%; padding-right: 10px;" class="name">` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `</div>
-      </div>`)	
+      </div>`)
 		}
 		}
 	if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
@@ -941,16 +921,12 @@ dtps.showClasses = function(override) {
     <div class="name">Dashboard</div>
     <div class="grade"><i class="material-icons">dashboard</i></div>
     </div>
-   <div style="display: none;" onclick="dtps.selectedClass = 'announcements';" class="class">
-    <div class="name" id="annLabel">Announcements ` + unreadAnn + `</div>
-    <div class="grade"><i class="material-icons">announcement</i></div>
-    </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
   for (var i = 0; i < dtps.classes.length; i++) {
 	  if (dtps.classes[i].subject.includes("Algebra 2")) {
-		 if (highFlyers.includes(HaikuContext.user.login)) { 
-			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark")); 
+		 if (highFlyers.includes(HaikuContext.user.login)) {
+			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark"));
 		 }
 	  }
 	}
@@ -958,8 +934,7 @@ dtps.showClasses = function(override) {
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class:not(.google)" ).click(function(event) {
 	  $('body').removeClass('isolatedGoogleClass');
-	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	  if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
+	  var prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".btn.google").hide();
 	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
@@ -974,19 +949,19 @@ dtps.showClasses = function(override) {
 	  $(".header").removeClass(jQuery.grep($(".header").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
-	  if (dtps.classes[dtps.selectedClass]) { 
-		  if (dtps.classes[dtps.selectedClass].google) { 
-			  $(".btn.google").show(); 
-		  }; 
-		  $(".background").addClass(dtps.classes[dtps.selectedClass].col); 
-		  $(".header").addClass(dtps.classes[dtps.selectedClass].col) 
+	  if (dtps.classes[dtps.selectedClass]) {
+		  if (dtps.classes[dtps.selectedClass].google) {
+			  $(".btn.google").show();
+		  };
+		  $(".background").addClass(dtps.classes[dtps.selectedClass].col);
+		  $(".header").addClass(dtps.classes[dtps.selectedClass].col)
 	  }
 	   if (!$(".background").attr("class").includes("filter")) {
 			  //no color
-			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); }
 		  } else {
 			  $(".items").removeClass("black");
-		  } 
+		  }
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
     $(".header h1").html($(this).children(".name").text())
@@ -1272,8 +1247,7 @@ dtps.render = function() {
     <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
 <br />
 <br /><br />
-    <div onclick="$('body').toggleClass('faded'); dtps.fadedColors = $('body').hasClass('faded');" class="switch active"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">color_lens</i> Faded Class Color Gradient Experiment 1/24/2019</div>
+
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
@@ -1335,7 +1309,7 @@ dtps.render = function() {
   `);
 	 if (!$(".background").attr("class").includes("filter")) {
 			  //no color
-			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); } 
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); }
 		  } else {
 			  $(".items").removeClass("black");
 		  }
@@ -1361,10 +1335,9 @@ dtps.render = function() {
 			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.modal(".card.script"); }
 			 $(".btn.changelog").show();
         });
-  });	
+  });
 	
-	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	if (dtps.fadedColors) prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
+	var prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".background").css("background", prev)
   dtps.showClasses();
   dtps.gapis();
