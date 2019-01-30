@@ -1297,11 +1297,6 @@ dtps.render = function() {
 <h3>What's new in Power+</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus script close">
-<i onclick="fluid.cards.close('.card.script')" class="material-icons close">close</i>
-<h3>Update your DTPS bookmark</h3>
-<p>It looks like you're using an outdated or invalid version of the Power+ bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
-</div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus details close">
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <p>An error occured</p>
@@ -1332,7 +1327,6 @@ dtps.render = function() {
 				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
 		 }
-			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.modal(".card.script"); }
 			 $(".btn.changelog").show();
         });
   });
