@@ -861,7 +861,7 @@ dtps.calendar = function(doneLoading) {
 		  title: dtps.classes[i].stream[ii].title,
 		  start: moment(new Date(dtps.classes[i].stream[ii].dueDate)).toISOString(true),
 		  allDay: false,
-	          color: styles.getPropertyValue('--light'),
+	          color: styles.getPropertyValue('--norm'),
 			    classNum: i,
 			    assignmentID: dtps.classes[i].stream[ii].id
 		})
