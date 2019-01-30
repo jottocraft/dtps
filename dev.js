@@ -750,7 +750,8 @@ dtps.gradebook = function(num) {
 	if (DVs > 0) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
 	}
-	jQuery(".classContent").html(headsUp + "" + `
+	jQuery(".classContent").html(headsUp + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3cc15b;color: white;padding: 10px 20px;cursor: pointer;">
+<i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">arrow_upward</i><span style="font-size: 18px;">Your grade in this class has increased by 3 percent</span></h5></div>` : "") + `
 <div style="height: 800px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
