@@ -750,9 +750,9 @@ dtps.gradebook = function(num) {
 	if (DVs > 0) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
 	}
-	if (String(window.localStorage.dtpsGradeTrend).startsWith("{")) var gradeDiff = (dtps.classes[dtps.selectedClass].grade - JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade).toFixed(2);
-	jQuery(".classContent").html(headsUp + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;cursor: pointer;">
-<i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + ` percent</span></h5></div>` : "") : "") + `
+	if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
+	jQuery(".classContent").html(headsUp + (dtps.classes[dtps.selectedClass].grade !== "--" ? (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;">
+<i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + `%</span></h5></div>` : "") : "") : "") + `
 <div style="height: 800px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
@@ -1117,12 +1117,14 @@ dtps.logGrades = function() {
 		var day = Math.floor(diff / oneDay);
 		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend);
 		for (var i = 0; i < dtps.classes.length; i++) {
+			if (dtps.classes[i].grade !== "--") {
 		if (!gradeData[dtps.classes[i].id]) gradeData[dtps.classes[i].id] = {oldGrade: dtps.classes[i].grade, lastUpdated: new Date(), currentGrade: dtps.classes[i].grade}
 			if (dtps.classes[i].grade !== gradeData[dtps.classes[i].id].currentGrade) {
 				gradeData[dtps.classes[i].id].oldGrade = gradeData[dtps.classes[i].id].currentGrade
 				gradeData[dtps.classes[i].id].currentGrade = dtps.classes[i].grade
 				gradeData[dtps.classes[i].id].lastUpdated = new Date();
 			}
+		}
 		}
 		window.localStorage.setItem("dtpsGradeTrend", JSON.stringify(gradeData));
 		}
