@@ -67,9 +67,9 @@ fluid.theme = function(theme, dontSave) {
       $("body").addClass("dark");
     }
   }
-  if (typeof dtps !== "undefined") {
+  try { if (typeof dtps !== "undefined") {
 		if (dtps.onThemeChange) dtps.onThemeChange();
-	}
+	} } catch(e) { console.warn("[FLUID.UI] Ignoring DTPS theme change", e); }
   if (theme == undefined) {
     if (dontSave !== "unsetStat") { var activeTheme = "light"; } else { var activeTheme = "unset"; }
     if ($("body").hasClass("dark")) var activeTheme = "dark";
