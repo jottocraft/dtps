@@ -1,4 +1,4 @@
-try { var dtps = {
+var dtps = {
   ver: 150,
   readableVer: "v1.5.0 (dev)",
   trackSuffix: " (dev)",
@@ -312,8 +312,9 @@ dtps.checkReady = function(num) {
   if ((dtps.selectedClass == "dash") && (dtps.classesReady < dtps.classes.length)) {
     if (dtps.readyInterval == "n/a") {
     dtps.readyInterval = setInterval(function() {
+      dtps.log("master stream auto load");
       dtps.masterStream();
-    }, 500);
+    }, 1000);
     }
   }
   }
@@ -584,7 +585,7 @@ dtps.masterStream = function(doneLoading) {
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
-<div id="calendar" class="card" style="padding: 20px;">
+<div id="calendar" class="card" style="padding: 20px;"></div>
 <div class="announcements"></div>
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
@@ -1374,4 +1375,4 @@ dtps.render = function() {
     });
   fluid.init();
 }
-dtps.init(); } catch(e) { alert(e)}
+dtps.init();
