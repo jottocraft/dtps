@@ -841,6 +841,7 @@ dtps.calendar = function(doneLoading) {
 	    }
     }
   }
+		if ($.fullCalendar !== undefined) {
 	$('#calendar').fullCalendar({
   events: calEvents,
   header: {
@@ -855,6 +856,7 @@ dtps.assignment(calEvent.assignmentID, calEvent.classNum);
 	$(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
   }
 });
+	}
 		$(".fc-prev-button").html(`<i class="material-icons">keyboard_arrow_left</i>`);
 	$(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
 		
