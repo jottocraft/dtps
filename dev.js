@@ -8,7 +8,7 @@ var dtps = {
   unreadAnn: 0,
   errorBuffer: [],
   sentryLoaded: false,
-  dashContent: {left: ["cal", "gradeTrend", "announcements"], right: ["stream"]},
+  dashContent: {left: ["cal", "grades", "announcements"], right: ["stream"]},
   latestStream: []
 };
 window.onerror = function(message, url, lineNumber, col, full) {
@@ -196,7 +196,7 @@ dtps.init = function () {
   dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
  $ = jQuery;
-jQuery.getScript('https://dtps.js.org/fluid.js');
+jQuery.getScript('https://dtps.js.org/fluid.js', fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -1244,7 +1244,7 @@ dtps.render = function() {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); }});" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
+    <div onclick="if (!$(this).hasClass('active')) { window.localStorage.setItem('dtpsGradeTrend', 'false'); window.alert('Grade trend disabled'); } else { swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. When a grade for one of your classes changes, Power+ will tell you how much it changed in the grades tab of the class. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); }});}" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">timeline</i> Display grade trend</div>
     <br /><br />
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
