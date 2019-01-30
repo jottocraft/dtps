@@ -301,7 +301,7 @@ window.dataLayer = window.dataLayer || [];
   });
 
 }
-var dtps.readyInterval = "n/a";
+dtps.readyInterval = "n/a";
 dtps.checkReady = function(num) {
   dtps.log(num + " reporting as READY total of " + dtps.classesReady);
   if ((dtps.selectedClass == "dash") && (dtps.classesReady == dtps.classes.length)) {
