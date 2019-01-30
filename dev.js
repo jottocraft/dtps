@@ -471,7 +471,7 @@ dtps.classStream = function(num, renderOv) {
 	    } else {
     		var earnedTmp = dtps.classes[num].stream[id].letter;
     	}
-	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push({id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1]))});
+	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push({id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2)});
     	    }
   	    }
 	    }
@@ -519,7 +519,7 @@ dtps.renderStream = function(stream, searchRes) {
         <div class="earned numbers">` + earnedTmp + `</div>
 	<div class="earned letters">` + stream[i].letter + `</div>
         <div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>
-	<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100) + `%</div>
+	<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>
         </div>
         <h4>` + stream[i].title + `</h4>
       	<h5>` + due + ` ` + wFormat + turnInDom + `</h5>
