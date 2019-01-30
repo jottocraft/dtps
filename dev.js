@@ -6,32 +6,12 @@ var dtps = {
   fullNames: false,
   fadedColors: true,
   unreadAnn: 0,
-  errorBuffer: [],
-  sentryLoaded: false,
   dashContent: {left: ["cal", "grades", "announcements"], right: ["stream"]},
   latestStream: []
-};
-window.onerror = function(message, url, lineNumber, col, full) {
-if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
-  if (dtps.sentryLoaded) {
-  Sentry.addBreadcrumb({
-  category: 'error',
-  message: "[" + url + ":" + lineNumber + ":" + col + "] " + message + "\n" + full,
-  level: 'error',
-  type: 'error'
- });
-  } else {
-  dtps.errorBuffer.push("[" + url + ":" + lineNumber + ":" + col + "] " + message + "\n" + full) 
-  }
-  try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + ":" + col + "] " + message + "<br />" + full + `</p>` + jQuery("span.log").html()); } catch(e) {}
-}
-  return false;
 };
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
 Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /^https:\/\/dtps.js.org/ ] });
 Sentry.configureScope((scope) => {
-  var temp = JSON.parse(JSON.stringify(window.localStorage));
-  if (temp.dtpsGradeTrend !== undefined) temp.dtpsGradeTrend = "enabled with " + JSON.parse(window.localStorage.dtpsGradeTrend).length + " entries"
   scope.setExtra("dtps-config", JSON.stringify(temp));
   scope.setExtra("page-state", $("body").attr("class"));
   var classesTmp = [];
@@ -49,14 +29,18 @@ Sentry.configureScope((scope) => {
   scope.setExtra("classes-metadata", JSON.stringify(classesTmp));
   scope.setUser({"id": dtps.user.login});
 });
-for (var i = 0; i < dtps.errorBuffer.length; i++) {
-Sentry.addBreadcrumb({
+window.onerror = function(message, url, lineNumber, col, full) {
+if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
+  Sentry.addBreadcrumb({
   category: 'error',
-  message: dtps.errorBuffer[i],
+  message: "[" + url + ":" + lineNumber + ":" + col + "] " + message + "\n" + full,
   level: 'error',
   type: 'error'
-});
+ });
+  try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + ":" + col + "] " + message + "<br />" + full + `</p>` + jQuery("span.log").html()); } catch(e) {}
 }
+  return false;
+};
 dtps.sentryLoaded = true;
 });
 dtps.changelog = function () {
