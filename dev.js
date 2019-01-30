@@ -567,11 +567,13 @@ dtps.masterStream = function(doneLoading) {
     </div>
   `);}
 	var buffer = [];
+	if (dtps.classes) {
   for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
   		buffer = buffer.concat(dtps.classes[i].stream)
     }
   }
+	}
 	var loadingDom = "";
 	if (!doneLoading) {
 		loadingDom = `<div class="spinner">
@@ -596,7 +598,7 @@ dtps.masterStream = function(doneLoading) {
 		}
 		
 		dtps.announcements();
-	jQuery(".classContent .dash .assignmentStream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
+	jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function(a, b){
     var keyA = new Date(a.dueDate),
     keyB = new Date(b.dueDate);
     // Compare the 2 dates
