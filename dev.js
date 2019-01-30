@@ -11,19 +11,19 @@ var dtps = {
   dashContent: {left: ["cal", "gradeTrend", "announcements"], right: ["stream"]},
   latestStream: []
 };
-window.onerror = function(message, url, lineNumber) {
+window.onerror = function(message, url, lineNumber, col, full) {
 if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
   if (dtps.sentryLoaded) {
   Sentry.addBreadcrumb({
   category: 'error',
-  message: "[" + url + ":" + lineNumber + "] " + message,
+  message: "[" + url + ":" + lineNumber + ":" + col + "] " + message + "\n" + full,
   level: 'error',
   type: 'error'
  });
   } else {
-  dtps.errorBuffer.push("[" + url + ":" + lineNumber + "] " + message) 
+  dtps.errorBuffer.push("[" + url + ":" + lineNumber + ":" + col + "] " + message + "\n" + full) 
   }
-  try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + "] " + message + `</p>` + jQuery("span.log").html()); } catch(e) {}
+  try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + ":" + col + "] " + message + "<br />" + full + `</p>` + jQuery("span.log").html()); } catch(e) {}
 }
   return false;
 };
