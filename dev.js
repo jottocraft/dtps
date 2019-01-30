@@ -1121,7 +1121,7 @@ dtps.logGrades = function() {
 				gradeData[dtps.classes[i].id].lastUpdated = new Date();
 			}
 		}
-		window.localStorage.setItem("dtpsGradeTrend", gradeData);
+		window.localStorage.setItem("dtpsGradeTrend", JSON.stringify(gradeData));
 		}
 	}
 }
