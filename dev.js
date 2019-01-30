@@ -196,7 +196,7 @@ dtps.init = function () {
   dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
  $ = jQuery;
-jQuery.getScript('https://dtps.js.org/fluid.js', fluid.init);
+jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -1131,7 +1131,6 @@ dtps.logGrades = function() {
 	}
 }
 dtps.render = function() {
-  jQuery.getScript('https://dtps.js.org/fluid.js');
   document.title = "Power+" + dtps.trackSuffix;
   $("body").addClass("faded");
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
