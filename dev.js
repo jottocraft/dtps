@@ -215,7 +215,7 @@ window.dataLayer = window.dataLayer || [];
   gtag('config', 'UA-105685403-3', configTmp);
 	
 });
-	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
+	jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function() {
 		jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
 	})
@@ -596,14 +596,6 @@ dtps.masterStream = function(doneLoading) {
 	} else {
 		dtps.logGrades();
 	}
-	var gradeTrendDom = ""
-	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-	     gradeTrendDom = `<div class="card" style="padding: 5px;margin:25px;margin-right:0px;width: 100%;"><canvas id="gradeTrendChart"></canvas></div>`
-	    } else {
-	 gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="margin:25px; margin-right:0px;background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data</h5></div>`
-	    }
-	}
 	var dom = {left: [], right: []};
 	function pushDom(side) {
 	for (var i = 0; i < dtps.dashContent[side].length; i++) {
@@ -611,8 +603,8 @@ dtps.masterStream = function(doneLoading) {
 	   	dom[side].push(`<div id="calendar" class="card" style="padding: 20px;">
 </div>`)
 	   }
-	   if (dtps.dashContent[side][i] == "gradeTrend") {
-		dom[side].push(gradeTrendDom)
+	   if (dtps.dashContent[side][i] == "grades") {
+		dom[side].push(``)
 	   }
 	   if (dtps.dashContent[side][i] == "announcements") {
 		dom[side].push(`<div class="announcements"></div>`)
@@ -633,32 +625,6 @@ dtps.masterStream = function(doneLoading) {
 ` + dom.right.join("") + `
 </div>
 `)
-		if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend)
-		var dataSets = [];
-		for (var ii = 0; ii < dtps.classes.length; ii++) {
-		var dataPoints = [];
-		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[ii].id]))
-		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
-		var styles = window.getComputedStyle($(".class." + ii)[0]); 
-		var name = dtps.classes[ii].subject
-		if (dtps.fullNames) name = dtps.classes[ii].name
-		dataSets.push({ label: name, borderColor: styles.getPropertyValue('--light'), data: dataPoints})
-		}
-		
-var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
-        datasets: dataSets.sort(function(a, b){
-    var keyA = a.data[a.data.length - 1],
-    keyB = b.data[b.data.length - 1];
-    // Compare the 2 dates
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
-  })
-    },  options: {}
-});
-	}
 		}
 		
 		dtps.announcements();
@@ -785,15 +751,7 @@ dtps.gradebook = function(num) {
 	if (DVs > 0) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
 	}
-	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>`
-	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-	    var gradeTrendDom = `<div class="card" style="padding: 5px;"><canvas id="gradeTrendChart"></canvas></div>`
-	    } else {
-	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data&nbsp;&nbsp;<span style="font-size: 18px;">Power+ doesn't have enough grade data to show a graph yet</span></h5></div>`
-	    }
-	}
-	jQuery(".classContent").html(headsUp + gradeTrendDom + `
+	jQuery(".classContent").html(headsUp + "" + `
 <div style="height: 800px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
@@ -807,19 +765,6 @@ dtps.gradebook = function(num) {
   </div>
 </div>
   `);
-		if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend)
-		var dataPoints = [];
-		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[num].id]))
-		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
-		var styles = window.getComputedStyle($(".class." + num)[0]); 
-var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
-       datasets: [{ label: "Grade trend", backgroundColor: styles.getPropertyValue('--norm'), borderColor: styles.getPropertyValue('--light'), data: dataPoints}]
-    },  options: {}
-});
-	}
-		}
 	    } else {
 	$(".btns .btn.grades").hide();
         $(".btns .btn").removeClass("active");
@@ -1162,6 +1107,7 @@ dtps.googleAuth = function() {
 }
 dtps.logGrades = function() {
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
+		if (window.localStorage.dtpsGradeTrend.startsWith("{")) {
 		dtps.log("LOGGING GRADES")
 		var now = new Date();
 		var start = new Date(now.getFullYear(), 0, 0);
@@ -1169,13 +1115,13 @@ dtps.logGrades = function() {
 		var oneDay = 1000 * 60 * 60 * 24;
 		var day = Math.floor(diff / oneDay);
 		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend);
-		if (gradeData.day !== undefined) {
-			var gradesNow = {};
-			for (var i = 0; i < dtps.classes.length; i++) {
-				gradesNow[dtps.classes[i].id] = dtps.classes[i].grade
+		for (var i = 0; i < dtps.classes.length; i++) {
+		if (gradeData[dtps.classes[i].id]) gradeData[dtps.classes[i].id] = {grade: "X", lastUpdated: new Date()}
+			if (dtps.classes[i].grade !== gradeData[dtps.classes[i].id].grade) {
+				gradeData[dtps.classes[i].id].grade = dtps.classes[i].grade
+				gradeData[dtps.classes[i].id].lastUpdated = new Date();
 			}
-			gradeData[day] = gradesNow;
-			localStorage.setItem('dtpsGradeTrend', JSON.stringify(gradeData));
+		}
 		}
 	}
 }
@@ -1293,6 +1239,9 @@ dtps.render = function() {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
+    <div onclick="swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); }});" class="switch` + (window.localStorage.dtpsGradeTrend.startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">timeline</i> Display grade trend</div>
+    <br /><br />
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
     <br /><br />
@@ -1363,7 +1312,6 @@ dtps.render = function() {
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
-    <li>Grade trend graphs made with <a href="https://www.chartjs.org/">Chart.js</a></li>
     <li>Logo made with logomakr.com</li>
 </ul>
 <br />
@@ -1371,7 +1319,6 @@ dtps.render = function() {
 <div class="advancedOptions" style="display: none;">
 <p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="dtps.bugReport();">Send a bug report</p>
 <p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="dtps.render();">Re-render Power+</p>
-<br />
 </div>
 <p><span onclick="dtps.bugReport()">(c)</span> 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
@@ -1396,14 +1343,6 @@ dtps.render = function() {
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus details close">
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <p>An error occured</p>
-</div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus trend close">
-<i onclick="fluid.cards.close('.card.trend')" class="material-icons close">close</i>
-<h3>Grade Trend</h3>
-<p>Grade trend lets you keep track of your grades over time. When you enable grade trend, Power+ will store a copy of your class grades locally on your computer every day you use Power+. Then, when you click on the grades tab with grade trend enabled, Power+ will show you a graph of how your class grades have changed over time.</p>
-<p>The grade trend setting applies to all classes. It may take a few days after enabling grade trend for the graph to appear.</p>
-<p><b>You can always disable grade trend by clicking the "Clear all Power+ data" button in the settings menu (the 3 dots at the top-right corner of the screen).</b></p>
-<button onclick="localStorage.setItem('dtpsGradeTrend', JSON.stringify({})); window.alert('Grade trend enabled'); dtps.logGrades();" class="btn"><i class="material-icons">timeline</i> Enable grade trend</button><button onclick="fluid.cards.close('.card.trend')" class="btn"><i class="material-icons">cancel</i> Not now</button>
 </div>
   `);
 	 if (!$(".background").attr("class").includes("filter")) {
