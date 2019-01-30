@@ -1,7 +1,7 @@
 var dtps = {
   ver: 150,
-  readableVer: "v1.5.0 (GM)",
-  trackSuffix: " (GM)",
+  readableVer: "v1.5.0 (dev)",
+  trackSuffix: " (dev)",
   showLetters: false,
   fullNames: false,
   fadedColors: true,
