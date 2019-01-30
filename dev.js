@@ -1,4 +1,4 @@
-var dtps = {
+try { var dtps = {
   ver: 150,
   readableVer: "v1.5.0 (dev)",
   trackSuffix: " (dev)",
@@ -1379,4 +1379,4 @@ dtps.render = function() {
     });
   fluid.init();
 }
-dtps.init();
+dtps.init(); } catch(e) { alert(e); Sentry.captureException(e); }
