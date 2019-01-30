@@ -520,6 +520,7 @@ dtps.renderStream = function(stream, searchRes) {
        `);
     }
   }
+	if (typeof Fuse !== "undefined") {
 	if (searchRes == undefined) {
  dtps.latestStream = stream;
  dtps.fuse = new Fuse(stream,  {
@@ -529,7 +530,8 @@ dtps.renderStream = function(stream, searchRes) {
 });
 	searchRes = "";
 }
-  return streamlist.length == 0 ? `<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>` : ( `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` + streamlist.join("") );
+}
+  return streamlist.length == 0 ? `<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + streamlist.join("") );
   //return streamlist.join("");
 }
 dtps.search = function() {
