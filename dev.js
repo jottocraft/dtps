@@ -1115,7 +1115,7 @@ dtps.logGrades = function() {
 		var day = Math.floor(diff / oneDay);
 		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend);
 		for (var i = 0; i < dtps.classes.length; i++) {
-		if (gradeData[dtps.classes[i].id]) gradeData[dtps.classes[i].id] = {grade: "X", lastUpdated: new Date()}
+		if (!gradeData[dtps.classes[i].id]) gradeData[dtps.classes[i].id] = {grade: "X", lastUpdated: new Date()}
 			if (dtps.classes[i].grade !== gradeData[dtps.classes[i].id].grade) {
 				gradeData[dtps.classes[i].id].grade = dtps.classes[i].grade
 				gradeData[dtps.classes[i].id].lastUpdated = new Date();
