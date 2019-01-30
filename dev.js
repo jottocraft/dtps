@@ -589,6 +589,7 @@ dtps.masterStream = function(doneLoading) {
 <div class="announcements"></div>
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
+` + loadingDom + `
 <div class="assignmentStream"></div>
 </div>
 `)
@@ -1309,6 +1310,7 @@ dtps.render = function() {
 		  } else {
 			  $(".items").removeClass("black");
 		  }
+       dtps.masterStream();
 	var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
 	if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
 	jQuery.getJSON(getURL, function(data) {
