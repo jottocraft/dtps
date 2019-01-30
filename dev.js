@@ -636,7 +636,6 @@ dtps.masterStream = function(doneLoading) {
     if(keyA > keyB) return -1;
     return 0;
   }))); 
-	}
 	$(".card.assignment").addClass("color");
 	dtps.calendar(doneLoading);
 }
@@ -1239,7 +1238,7 @@ dtps.render = function() {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); }});" class="switch` + (window.localStorage.dtpsGradeTrend.startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
+    <div onclick="swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); }});" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">timeline</i> Display grade trend</div>
     <br /><br />
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
