@@ -9,6 +9,8 @@ var dtps = {
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
 Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /^https:\/\/dtps.js.org/ ] });
 Sentry.configureScope((scope) => {
+  var temp = JSON.parse(JSON.stringify(window.localStorage));
+  if (String(temp.dtpsGradeTrend).startsWith("{")) temp.dtpsGradeTrend = "enabled"
   scope.setExtra("dtps-config", JSON.stringify(temp));
   scope.setExtra("page-state", $("body").attr("class"));
   var classesTmp = [];
@@ -462,7 +464,7 @@ dtps.classStream = function(num, renderOv) {
 	    } else {
     		var earnedTmp = dtps.classes[num].stream[id].letter;
     	}
-	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push({id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2)});
+	    if ((prevWeight !== -1) && (dtps.classes[num].stream[id].grade.split("/")[1] !== undefined)) dtps.classes[num].weights[prevWeight].assignments.push({id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2)});
     	    }
   	    }
 	    }
@@ -490,7 +492,7 @@ dtps.renderStream = function(stream, searchRes) {
 		if (stream[i].turnedIn) {
 		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i></div>`
 	    }
-    if ((stream[i].grade !== "-") && (stream[i].grade)) {
+    if (stream[i].grade && !stream[i].letter.includes("-")) {
   		if ("ABC".includes(stream[i].letter.toArray()[0])) {
   			var earnedTmp = stream[i].grade.split("/")[0];
 	    } else {
@@ -508,8 +510,8 @@ dtps.renderStream = function(stream, searchRes) {
         <div class="points">
         <div class="earned numbers">` + earnedTmp + `</div>
 	<div class="earned letters">` + stream[i].letter + `</div>
-        <div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>
-	<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>
+        ` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") + `
+	` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>` : "") + `
         </div>
         <h4>` + stream[i].title + `</h4>
       	<h5>` + due + ` ` + wFormat + turnInDom + `</h5>
