@@ -713,7 +713,7 @@ body.dark.midnight.faded .background:before {
 	background-color: var(--light);
 }
 
-body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contributor) .contributor, body:not(.highFlyer) .highFlyer {
+body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contributor) .contributor, body:not(.highFlyer) .highFlyer, body:not(.prerelease) .prerelease {
 	display: none !important;
 }
 
