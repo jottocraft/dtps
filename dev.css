@@ -673,13 +673,13 @@ body:not(.dark) .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.fi
    z-index: -100;
     transition: all 0.5s ease-in-out;
   }
-body:not(.dark).faded .background:before {
+body:not(.dark):not(.dashboard) .background:before {
 	background: linear-gradient(to right bottom, var(--light), var(--flex-bg, white)) !important;
 }
-body.dark.faded .background:before {
+body.dark:not(.dashboard) .background:before {
 	background: linear-gradient(to right bottom, var(--light), var(--flex-bg, #2C2F33)) !important;
 }
-body.dark.midnight.faded .background:before {
+body.dark.midnight:not(.dashboard) .background:before {
 	background: linear-gradient(to right bottom, var(--dark), var(--flex-bg, black)) !important;
 }
 .background.trans:before {
