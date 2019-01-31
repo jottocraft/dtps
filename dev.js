@@ -1110,6 +1110,7 @@ dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix;
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
   if (window.localStorage.dtpsFullNames == "true") { dtps.fullNames = true; }
+  $("body").addClass("dashboard");
   dtps.selectedClass = "dash";
   dtps.sorting = false;
   dtps.selectedContent = "stream";
