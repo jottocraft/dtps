@@ -170,6 +170,7 @@ dtps.init = function () {
   if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
   if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
   if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
+  if (sudoers.includes(HaikuContext.user.login)) jQuery("body").addClass("prerelease");
   dtps.shouldRender = false;
   dtps.first = false;
   dtps.showChangelog = false;
@@ -1299,7 +1300,7 @@ dtps.render = function() {
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
-    <i onclick="dtps.bugReport();" class="material-icons sudo">bug_report</i>
+    <i onclick="dtps.bugReport();" class="material-icons prerelease">bug_report</i>
     <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">more_horiz</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
