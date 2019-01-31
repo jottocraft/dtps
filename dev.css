@@ -332,6 +332,16 @@ body.titlebar .classContent {
 	color: white;
 	border-bottom: 1px solid white;
 }
+body:not(.dark) .tabs.btns .btn.active {
+	color: black !important;
+	border-color: black !important;
+}
+body:not(.dark) .tabs.btns .btn:not(.active) {
+	color: var(--norm, gray) !important;
+}
+body.dark .tabs.btns .btn:not(.active) {
+	color: var(--light, gray) !important;
+}
 .sidebar, .header {
 	transition: all 0.5s;
 }
@@ -726,21 +736,11 @@ body.titlebar .items {
 	padding-right: 10px;
 	z-index: 300;
 }
-body.faded:not(.dark) .items, body.faded:not(.dark) .items i, body.faded:not(.dark) .items h4 {
+body:not(.dark) .items, body:not(.dark) .items i, body:not(.dark) .items h4 {
 	color: black !important;
 }
-body.faded:not(.dark) .header h1 {
+body:not(.dark) .header h1 {
 	color: black !important;
-}
-body.faded:not(.dark) .tabs.btns .btn.active {
-	color: black !important;
-	border-color: black !important;
-}
-body.faded:not(.dark) .tabs.btns .btn:not(.active) {
-	color: var(--norm, gray) !important;
-}
-body.faded.dark .tabs.btns .btn:not(.active) {
-	color: var(--light, gray) !important;
 }
 body:not(.dark) .items.black, body:not(.dark) .items.black i, body:not(.dark) .items.black h4 {
 	color: black !important;
