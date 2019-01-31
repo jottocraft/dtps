@@ -480,7 +480,7 @@ dtps.classStream = function(num, renderOv) {
 dtps.onThemeChange = function() {
 	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
 	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #2C2F33)" : "var(--flex-bg, white)") + ")"
-	
+	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
 	$(".background").css("background", next)
 }
 dtps.renderStream = function(stream, searchRes) {
@@ -948,8 +948,10 @@ dtps.showClasses = function(override) {
   if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class:not(.google)" ).click(function(event) {
+	  if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
+	  if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
 	  $('body').removeClass('isolatedGoogleClass');
-	  var prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
+	  var prev = $(".background").attr("style").split("background: ")[1]
 	  $(".btn.google").hide();
 	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
@@ -1106,7 +1108,6 @@ dtps.logGrades = function() {
 }
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix;
-  $("body").addClass("faded");
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
   if (window.localStorage.dtpsFullNames == "true") { dtps.fullNames = true; }
   dtps.selectedClass = "dash";
