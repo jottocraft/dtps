@@ -313,6 +313,8 @@ dtps.checkReady = function(num) {
   } else {
   if ((dtps.selectedClass == "dash") && (dtps.classesReady < dtps.classes.length)) {
     if (dtps.readyInterval == "n/a") {
+    dtps.log("master auto load start")
+     dtps.masterStream();
     dtps.readyInterval = setInterval(function() {
       dtps.log("master stream auto load");
       dtps.masterStream();
