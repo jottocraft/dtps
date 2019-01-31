@@ -439,16 +439,13 @@ body.dark .classContent .card {
 	font-size: 14px;
 	margin-top: 15px;
 	display: inline-block;
-	color: var(--flex-layer2, #8e8e8e);
-}
-input::placeholder {
-	color: var(--flex-text, gray);
+	color: var(--flex-sectext, #8e8e8e);
 }
 body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight.dark .assignment:not(.color) .weighted {
 	color: gray;
 }
 .assignment .weighted {
-	color: var(--flex-layer2, #8e8e8e);
+	color: var(--flex-sectext, #8e8e8e);
 	font-size: 0.9rem;
 	margin-left: 10px;
 }
