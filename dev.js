@@ -1193,9 +1193,6 @@ dtps.render = function() {
     <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
       <i class="material-icons">book</i> Classes
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();" class="item sudo">
-      <i class="material-icons">widgets</i> Dashboard
-    </div>
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
@@ -1252,10 +1249,6 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
     <div class="extensionDom" ></div>
-</div>
-<div style="display: none;" class="abtpage dashboard">
-    <h5>Dashboard</h5>
-    <p>Dashboard sorting features will be released in a future version of Power+. If you aren't already, check the dev channel for the latest updates.</p>
 </div>
 <div style="display: none;" class="abtpage experiments">
 <div class="sudo">
