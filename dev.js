@@ -1,7 +1,7 @@
 var dtps = {
   ver: 150,
-  readableVer: "v1.5.0 (dev)",
-  trackSuffix: " (dev)",
+  readableVer: "v1.5.0 (GM)",
+  trackSuffix: " (GM)",
   showLetters: false,
   fullNames: false,
   latestStream: []
