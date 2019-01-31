@@ -183,7 +183,7 @@ dtps.init = function () {
 jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  gtag = function() {dataLayer.push(arguments);}
   var configTmp = {
   'page_title' : 'portal',
   'page_path': '/portal',
