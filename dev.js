@@ -6,42 +6,12 @@ var dtps = {
   fullNames: false,
   latestStream: []
 };
-jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function() {
-Sentry.init({ dsn: 'https://7adcd57c0fc84239bba1d811b3b5cefd@sentry.io/1380747', release: "dtps@" + dtps.readableVer, whitelistUrls: [ /https?:\/\/?dtps\.js\.org/ ] });
-Sentry.configureScope((scope) => {
-  var temp = JSON.parse(JSON.stringify(window.localStorage));
-  if (String(temp.dtpsGradeTrend).startsWith("{")) temp.dtpsGradeTrend = "enabled"
-  scope.setExtra("dtps-config", JSON.stringify(temp));
-  scope.setExtra("page-state", $("body").attr("class"));
-  var classesTmp = [];
-  for (var i = 0; i < dtps.classes.length; i++) {
-	classesTmp.push({
-		col: dtps.classes[i].col,
-		abbrv: dtps.classes[i].abbrv,
-		id: dtps.classes[i].id,
-		loc: dtps.classes[i].loc,
-		name: dtps.classes[i].name,
-		num: dtps.classes[i].num,
-		subject: dtps.classes[i].subject
-	})
-  }
-  scope.setExtra("classes-metadata", JSON.stringify(classesTmp));
-  scope.setUser({"id": dtps.user.login});
-});
 window.onerror = function(message, url, lineNumber, col, full) {
 if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
-  Sentry.addBreadcrumb({
-  category: 'error',
-  message: "[" + url + ":" + lineNumber + ":" + col + "] " + message + "\n" + full,
-  level: 'error',
-  type: 'error'
- });
   try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + ":" + col + "] " + message + "<br />" + full + `</p>` + jQuery("span.log").html()); } catch(e) {}
 }
   return false;
 };
-dtps.sentryLoaded = true;
-});
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
   fluid.modal(".card.changelog");
@@ -72,17 +42,7 @@ dtps.nativeAlert = function (text, sub) {
 `)
 };
 dtps.bugReport = function() {
-	if (window.confirm("If the issue is related to a class in any way, make sure you have that class selected before sending this bug report. By sending a bug report, logs and usage information will be sent for debugging purposes (grades will never be sent in a bug report).")) {
-	Sentry.configureScope((scope) => {
-  scope.setExtra("class-selected", dtps.selectedClass + (dtps.selectedClass !== "dash" ? "-" + dtps.classes[dtps.selectedClass].id : ""));
-if (dtps.selectedClass !== "dash") {
-  var streamTmp = JSON.parse(JSON.stringify(dtps.classes[dtps.selectedClass].stream));
-  streamTmp.forEach(function(v){ if (v.grade) {v.grade = v.grade.replace(v.grade.split("/")[0], "X")}; if (v.letter) {v.letter = "X"}; })
-  scope.setExtra("selected-stream", JSON.stringify(streamTmp));
-}
-});
-	window.alert("Thanks for sending a bug report. Report ID: " + Sentry.captureMessage("BUG REPORT (BUILD " + $(".buildInfo").html().replace("build ", "") + "): " + window.prompt('Please describe the issue:')));
-}
+  window.open("https://github.com/jottocraft/dtps/issues/new?assignees=jottocraft&labels=bug&template=bug_report.md")
 }
 dtps.requests = {};
 dtps.http = {};
@@ -1106,6 +1066,21 @@ dtps.logGrades = function() {
 		}
 	}
 }
+dtps.gradeTrend = function() {
+	var temp = this; 
+	console.log(this);
+	if ($(temp).hasClass('head')) { temp = $(this).parent()[0] }; 
+	console.log(temp)
+	if (!$(temp).hasClass('active')) { 
+		window.localStorage.setItem('dtpsGradeTrend', 'false'); 
+		window.alert('Grade trend disabled'); 
+	} else { 
+		swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. When a grade for one of your classes changes, Power+ will tell you how much it changed in the grades tab of the class. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { 
+			if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); 
+				    } else {
+					    $(temp).removeClass('active')
+				    }});}
+}
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix;
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
@@ -1216,7 +1191,7 @@ dtps.render = function() {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="if (!$(this).hasClass('active')) { window.localStorage.setItem('dtpsGradeTrend', 'false'); window.alert('Grade trend disabled'); } else { swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. When a grade for one of your classes changes, Power+ will tell you how much it changed in the grades tab of the class. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); }});}" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
+    <div onclick="dtps.gradeTrend();" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">timeline</i> Display grade trend</div>
     <br /><br />
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
@@ -1323,9 +1298,6 @@ dtps.render = function() {
 	if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
 	jQuery.getJSON(getURL, function(data) {
 		jQuery(".buildInfo").html("build " + data[0].sha.substring(7,0));
-		Sentry.configureScope((scope) => {
-  scope.setTag("build", data[0].sha.substring(7,0) + dtps.trackSuffix);
-});
 		jQuery(".buildInfo").click(function() {
 			window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
 		});
