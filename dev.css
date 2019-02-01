@@ -577,19 +577,19 @@ body.dark .card.details * {
 body.dark .class .name {
 	color: #ececec;
 }
-body.dark .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .card .weight:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body.dark .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
+body.dark {
     --light: var(--flex-light, #7d7d7d);
     --norm: var(--flex-layer1, #383838);
     --dark: var(--flex-layer3, #101010);
     --grad: linear-gradient(to right bottom, var(--flex-layer3, #3e3e3e), var(--flex-bg, #2C2F33));
 }
-body:not(.dark) .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .card:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .card .weight:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .class:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) {
+body:not(.dark) {
     --light: var(--flex-light, #d4d4d4);
     --norm: var(--flex-layer1, #a7a7a7);
     --dark: var(--flex-layer3, #676767);
     --grad: linear-gradient(to bottom right, var(--flex-layer3, #d4d4d4), var(--flex-bg, #FFFFFF));
 }
-body:not(.dark) .background:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11), body:not(.dark) .header:not(.filter_0):not(.filter_1):not(.filter_2):not(.filter_3):not(.filter_4):not(.filter_5):not(.filter_6):not(.filter_7):not(.filter_8):not(.filter_9):not(.filter_10):not(.filter_11) h1 {
+body:not(.dark) .background, body:not(.dark) .header h1 {
     --grad: linear-gradient(to bottom right, #d6d6d6, white) !important;
     color: black !important;
 }
