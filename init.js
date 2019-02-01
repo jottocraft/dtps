@@ -1,10 +1,16 @@
 var dtps = {
-  ver: 141,
-  readableVer: "v1.4.1",
+  ver: 150,
+  readableVer: "v1.5.0",
   trackSuffix: "",
   showLetters: false,
-  unreadAnn: 0,
+  fullNames: false,
   latestStream: []
+};
+window.onerror = function(message, url, lineNumber, col, full) {
+if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
+  try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + ":" + col + "] " + message + "<br />" + full + `</p>` + jQuery("span.log").html()); } catch(e) {}
+}
+  return false;
 };
 dtps.changelog = function () {
   fluid.cards.close(".card.focus")
@@ -12,7 +18,7 @@ dtps.changelog = function () {
 };
 dtps.log = function(msg) {
   console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
-  if (typeof msg !== "object") { try { jQuery(".card.console .log").html(`<h5>[DTPS` + dtps.trackSuffix + `] ` + msg + `</h5>` + jQuery(".card.console .log").html()); } catch(e) {} }
+  if (typeof msg !== "object") { try { jQuery("span.log").html(`<p>[DTPS` + dtps.trackSuffix + `] ` + msg + `</p>` + jQuery("span.log").html()); } catch(e) {} }
 }
 dtps.firstrun = function () {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
@@ -21,11 +27,12 @@ dtps.firstrun = function () {
 <p>Things to keep in mind when using Power+</p>
 <li>Power+ can't fully replace PowerSchool yet. Many PowerSchool features are not included in Power+.</li>
 <li>To use Power+, you have to visit PowerSchool, then run the bookmark script. You can choose stop using Power+ at any time by not using the bookmark script.</li>
+<li>Report bugs and send feedback by clicking the feedback button at the top right corner.</li>
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="window.location.reload();" type="button" value="Cancel"><input class="button button" onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
-dtps.alert = function (text, sub) {
+dtps.nativeAlert = function (text, sub) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
@@ -34,6 +41,9 @@ dtps.alert = function (text, sub) {
 </div>
 `)
 };
+dtps.bugReport = function() {
+  window.open("https://github.com/jottocraft/dtps/issues/new?assignees=jottocraft&labels=bug&template=bug_report.md")
+}
 dtps.requests = {};
 dtps.http = {};
 dtps.webReq = function(req, url, callback, q) {
@@ -116,55 +126,64 @@ dtps.init = function () {
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719"]
   if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
+  highFlyers = ["10894474", "10837719"]
+  if (highFlyers.includes(HaikuContext.user.login)) { jQuery("body").addClass("highFlyer"); }
   contributors = ["10837719", "10463823", "10894474"]
   if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
   if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+  if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
+  if (sudoers.includes(HaikuContext.user.login)) jQuery("body").addClass("prerelease");
   dtps.shouldRender = false;
-	dtps.first = false;
-	dtps.showChangelog = false;
-	dtps.updateScript = false;
+  dtps.first = false;
+  dtps.showChangelog = false;
   dtps.user = HaikuContext.user;
   dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
   $ = jQuery;
-  jQuery.getScript('https://dtps.js.org/fluid.js');
+jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag('config', 'UA-105685403-3', {
+  var configTmp = {
   'page_title' : 'portal',
   'page_path': '/portal',
   'anonymize_ip': true
-  });
+  }
+  if (dtps.trackSuffix !== "") {
+	  configTmp = {
+  'page_title' : 'prerelease',
+  'page_path': '/prerelease',
+  'anonymize_ip': true
+  }
+      }
+  gtag('config', 'UA-105685403-3', configTmp);
 	
 });
-	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js")
+	jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
 	jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function() {
 		jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
 	})
 	jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
   if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
     dtps.shouldRender = false;
-    dtps.alert("Unsupported school", "Power+ only works at Design Tech High School");
+    dtps.nativeAlert("Unsupported school", "Power+ only works at Design Tech High School");
   } else {
     if (Number(window.localStorage.dtps) < dtps.ver) {
 	    dtps.log("New release")
       dtps.showChangelog = true;
-	    //Load fluid JS modules early for changelogs
-	    jQuery("body").addClass("notwemoji");
 	    dtps.shouldRender = true;
-      dtps.alert("Loading...", "Updating to Power+ " + dtps.readableVer);
+      dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer);
     } else {
 	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
-    dtps.alert("Unsupported Account", "Power+ only works on student accounts");
+    dtps.nativeAlert("Unsupported Account", "Power+ only works on student accounts");
 	      } else {
-				 if (window.location.pathname.split("/")[3] !== "portal") {
+				 if (!window.location.pathname.includes("portal")) {
 					 dtps.shouldRender = false;
-      dtps.alert("Page error", 'Go to your <a href="/u/' + HaikuContext.user.login + '/portal">PowerSchool homepage</a> to load Power+');
+      dtps.nativeAlert("Page error", 'Go to the PowerSchool homepage to load Power+');
 				     } else {
       dtps.shouldRender = true;
-      dtps.alert("Loading...");
+      dtps.nativeAlert("Loading...");
 			  }
 		      
 	      
@@ -213,8 +232,9 @@ window.dataLayer = window.dataLayer || [];
          return item.trim().match(/^eclass_/);
       })[0].replace("eclass_", "");
       var subject = null;
-      if (name.includes("Physics")) { var subject = "Physics" }; if (name.includes("English")) { var subject = "English" }; if (name.includes("Physical Education")) { var subject = "PE" };
-      if (name.includes("Prototyping")) { var subject = "Prototyping" }; if (name.includes("Algebra")) { var subject = "Algebra" };if (name.includes("Algebra 2")) { var subject = "Algebra 2" };
+      var icon = null;
+      if (name.includes("Physics")) { var subject = "Physics"; var icon = "experiment"; }; if (name.includes("English")) { var subject = "English"; var icon = "library_books" }; if (name.includes("Physical Education")) { var subject = "PE"; var icon = "directions_run"; };
+      if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; };if (name.includes("Algebra 2")) { var subject = "Algebra 2"; if (highFlyers.includes(HaikuContext.user.login)) { subject = "Algebra 2 High Flyers" } };
       if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" };if (name.includes("Environmental")) { var subject = "Environmental Science" };
       if (name.includes("Robotics")) { var subject = "Robotics" };if (name.includes("Biology")) { var subject = "Biology" };if (name.includes("Engineering")) { var subject = "Engineering" };if (name.includes("Geometry")) { var subject = "Geometry" };
       if (name.includes("Photography")) { var subject = "Photography" };if (name.includes("World History")) { var subject = "World History" };if (name.includes("U.S. History")) { var subject = "US History" };
@@ -228,6 +248,7 @@ window.dataLayer = window.dataLayer || [];
       dtps.classes.push({
         name: name,
         subject: subject,
+	icon: icon,
         abbrv: jQuery(section.children()[0]).text(),
         grade: (grade == "--") ? ( grade ) : (Number(grade.match(/\d+/g).join(".")).toFixed(2)),
         letter: (grade == "--") ? ( grade ) : (letterTmp),
@@ -244,14 +265,23 @@ window.dataLayer = window.dataLayer || [];
   });
 
 }
+dtps.readyInterval = "n/a";
 dtps.checkReady = function(num) {
-  //dtps.log(num + " reporting as READY total of " + dtps.classesReady);
+  dtps.log(num + " reporting as READY total of " + dtps.classesReady);
   if ((dtps.selectedClass == "dash") && (dtps.classesReady == dtps.classes.length)) {
     dtps.log("All classes ready, loading master stream");
+    clearInterval(dtps.readyInterval);
     dtps.masterStream(true);
   } else {
   if ((dtps.selectedClass == "dash") && (dtps.classesReady < dtps.classes.length)) {
-	  dtps.masterStream();
+    if (dtps.readyInterval == "n/a") {
+    dtps.log("master auto load start")
+     dtps.masterStream();
+    dtps.readyInterval = setInterval(function() {
+      dtps.log("master stream auto load");
+      dtps.masterStream();
+    }, 1000);
+    }
   }
   }
 }
@@ -305,7 +335,7 @@ dtps.loadPages = function(num) {
   });
 }
 dtps.classStream = function(num, renderOv) {
-	dtps.log("rendering stream for " + num)
+  dtps.log("Fetching assignments for class " + num)
   if (!renderOv) dtps.showClasses();
   if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(`
     <div class="spinner">
@@ -336,7 +366,6 @@ dtps.classStream = function(num, renderOv) {
 		var due = "";
 		var dueDateString = null;
 	} else {
-		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1));
 		var today = new Date().toHumanString();
 		var dueDate = new Date(assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today).replace(" at", ","));
 		if (assignment.children("td:nth-child(3)").text().slice(0,-1).replace("Today", today).replace(" at", ",").split(", ")[1].length !== 4) {
@@ -381,7 +410,7 @@ dtps.classStream = function(num, renderOv) {
 	    dtps.classes[num].weights = [];
 	    for (var i = 0; i < data.length; i++) {
 		    if (jQuery(data[i]).children("th").length > 0) {
-			    dtps.classes[num].weights.push({weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: []});
+			    dtps.classes[num].weights.push({weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: [], grade: jQuery(jQuery(data[i]).children("th").toArray()[2]).text()});
 			    prevWeight++;
 	    } else {
   	    if (jQuery(data[i]).find("a").attr("href")) {
@@ -395,7 +424,7 @@ dtps.classStream = function(num, renderOv) {
 	    } else {
     		var earnedTmp = dtps.classes[num].stream[id].letter;
     	}
-	    if (prevWeight !== -1) dtps.classes[num].weights[prevWeight].assignments.push(dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1]);
+	    if ((prevWeight !== -1) && (dtps.classes[num].stream[id].grade.split("/")[1] !== undefined)) dtps.classes[num].weights[prevWeight].assignments.push({id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2)});
     	    }
   	    }
 	    }
@@ -408,6 +437,12 @@ dtps.classStream = function(num, renderOv) {
     });
   }
 }
+dtps.onThemeChange = function() {
+	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #2C2F33)" : "var(--flex-bg, white)") + ")"
+	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+	$(".background").css("background", next)
+}
 dtps.renderStream = function(stream, searchRes) {
 	var streamlist = [];
 	for (var i = 0; i < stream.length; i++) {
@@ -417,7 +452,7 @@ dtps.renderStream = function(stream, searchRes) {
 		if (stream[i].turnedIn) {
 		    turnInDom = `<div class="beta notice turnin"><i class="material-icons">assignment_turned_in</i></div>`
 	    }
-    if ((stream[i].grade !== "-") && (stream[i].grade)) {
+    if (stream[i].grade && !stream[i].letter.includes("-")) {
   		if ("ABC".includes(stream[i].letter.toArray()[0])) {
   			var earnedTmp = stream[i].grade.split("/")[0];
 	    } else {
@@ -435,8 +470,8 @@ dtps.renderStream = function(stream, searchRes) {
         <div class="points">
         <div class="earned numbers">` + earnedTmp + `</div>
 	<div class="earned letters">` + stream[i].letter + `</div>
-        <div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>
-	<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100) + `%</div>
+        ` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") + `
+	` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>` : "") + `
         </div>
         <h4>` + stream[i].title + `</h4>
       	<h5>` + due + ` ` + wFormat + turnInDom + `</h5>
@@ -451,6 +486,7 @@ dtps.renderStream = function(stream, searchRes) {
        `);
     }
   }
+	if (typeof Fuse !== "undefined") {
 	if (searchRes == undefined) {
  dtps.latestStream = stream;
  dtps.fuse = new Fuse(stream,  {
@@ -460,27 +496,36 @@ dtps.renderStream = function(stream, searchRes) {
 });
 	searchRes = "";
 }
-  return `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` + streamlist.join("");
+}
+  return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + streamlist.join("") );
   //return streamlist.join("");
 }
 dtps.search = function() {
 if (dtps.selectedClass == "dash") {
 	if ($("input.search").val() == "") {
-	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, "")) 
+	jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, ""))
 	} else {
 	jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
 	}
 	$(".card.assignment").addClass("color");
 } else {
 	if ($("input.search").val() == "") {
-	jQuery(".classContent").html(dtps.renderStream(dtps.latestStream, "")) 
+	jQuery(".classContent").html(dtps.renderStream(dtps.latestStream, ""))
 	} else {
 	jQuery(".classContent").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
 	}
-}	
+}
 }
 dtps.masterStream = function(doneLoading) {
+	dtps.log("RENDERING DASHBOARD")
   dtps.showClasses();
+	for (var i = 0; i < dtps.classes.length; i++) {
+	  if (dtps.classes[i].subject.includes("Algebra 2")) {
+		 if (highFlyers.includes(HaikuContext.user.login)) {
+			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark"));
+		 }
+	  }
+	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
   jQuery(".classContent").html(`
     <div class="spinner">
@@ -490,13 +535,13 @@ dtps.masterStream = function(doneLoading) {
     </div>
   `);}
 	var buffer = [];
+	if (dtps.classes) {
   for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
-  		dtps.log("BUILDING: " + i)
   		buffer = buffer.concat(dtps.classes[i].stream)
     }
   }
-	dtps.log(buffer)
+	}
 	var loadingDom = "";
 	if (!doneLoading) {
 		loadingDom = `<div class="spinner">
@@ -507,62 +552,63 @@ dtps.masterStream = function(doneLoading) {
 	} else {
 		dtps.logGrades();
 	}
-	var gradeTrendDom = ""
-	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-	     gradeTrendDom = `<div class="card" style="padding: 5px;margin:25px;margin-right:0px;width: 100%;"><canvas id="gradeTrendChart"></canvas></div>`
-	    } else {
-	 gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="margin:25px; margin-right:0px;background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data</h5></div>`
-	    }
-	}
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 		jQuery(".classContent").html(`
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
-<div id="calendar" class="card" style="width: 100%;margin: 25px;">
-</div>
-` + gradeTrendDom + `
+` + ($.fullCalendar !== undefined ? `<div id="calendar" class="card" style="padding: 20px;"></div>` : ``) + `
+<div class="announcements"></div>
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
+` + loadingDom + `
+<div class="assignmentStream"></div>
 </div>
 `)
-		if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend)
-		var dataSets = [];
-		for (var ii = 0; ii < dtps.classes.length; ii++) {
-		var dataPoints = [];
-		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[ii].id]))
-		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
-		var styles = window.getComputedStyle($(".class." + ii)[0]); 
-		dataSets.push({ label: dtps.classes[ii].subject, borderColor: styles.getPropertyValue('--light'), data: dataPoints})
-		}
-		
-var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
-        datasets: dataSets.sort(function(a, b){
-    var keyA = a.data[a.data.length - 1],
-    keyB = b.data[b.data.length - 1];
-    // Compare the 2 dates
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
-  })
-    },  options: {}
-});
-	}
 		}
 		
 		dtps.announcements();
-	jQuery(".classContent .stream").html(loadingDom + dtps.renderStream(buffer.sort(function(a, b){
+	jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function(a, b){
     var keyA = new Date(a.dueDate),
     keyB = new Date(b.dueDate);
     // Compare the 2 dates
     if(keyA < keyB) return 1;
     if(keyA > keyB) return -1;
     return 0;
-  }))); 
-	}
+  })));
 	$(".card.assignment").addClass("color");
 	dtps.calendar(doneLoading);
+}
+dtps.gapis = function() {
+	jQuery.getScript("https://apis.google.com/js/api.js", function() {
+		gapi.load('client:auth2', function() {
+gapi.client.init({
+          apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
+          clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
+          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
+          scope: "https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.coursework.me.readonly"
+        }).then(function () {
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        }, function(error) {
+          dtps.log(JSON.stringify(error));
+	console.error(error);
+        });
+		function updateSigninStatus(isSignedIn) {
+        if (isSignedIn) {
+          jQuery(".googleClassroom").show();
+	  jQuery(".googleSetup").hide();
+	  if (dtps.googleSetup !== undefined) {
+	  window.alert("Google account linked. You have to sign in to PowerSchool again to finish setup.")
+	  window.location.reload();
+	  } else {
+          dtps.googleAuth();
+	  }
+        } else {
+         jQuery(".googleClassroom").hide();
+	 jQuery(".googleSetup").show();
+        }
+      }
+		});
+});
 }
 dtps.getPage = function(loc, id) {
   if (id == undefined) var id = dtps.selectedPage;
@@ -603,20 +649,39 @@ dtps.gradebook = function(num) {
 	for (var i = 0; i < dtps.classes[num].weights.length; i++) {
 		var assignTmp = [];
 		for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-			assignTmp.push(`<p>` + dtps.classes[num].weights[i].assignments[ii] + `</p>`)
-			if (!((dtps.classes[num].weights[i].weight.includes("Success")) || (dtps.classes[num].weights[i].weight.includes("SS")))) {
-				var parts = dtps.classes[num].weights[i].assignments[ii].split(":");		
+			assignTmp.push(`<div onclick="dtps.assignment(` + dtps.classes[num].weights[i].assignments[ii].id + `, ` + num + `)" style="
+    padding: 5px;
+    background-color:  var(--theme-color-outline);;
+    border-radius: 12px;
+    height: 30px;
+    margin: 10px 5px;
+    cursor: pointer;
+"><div style="
+    position: absolute;
+    z-index: 5;
+    color: var(--theme-text-color);
+">` + dtps.classes[num].weights[i].assignments[ii].disp + `</div><div style="
+    position: absolute;
+    width: calc(` + (dtps.classes[num].weights[i].assignments[ii].percentage * 100) + `% - 280px);
+    height: 32px;
+    background-color: var(--theme-color);
+    margin: -6px;
+    border-radius: 12px;
+"></div></div>`)
+			if (!((dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS")) || (dtps.classes[num].weights[i].weight.toUpperCase().includes("SS")))) {
+				var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");
 				if (parts[parts.length - 1].includes("DV")) DVs++;
 				if (parts[parts.length - 1].includes("M")) DVs++;
 				if (parts[parts.length - 1].includes("INC")) DVs++;
 			}
 		}
 		dtps.classes[num].weights[i].icon = "";
-		if (dtps.classes[num].weights[i].weight.includes("Success") || dtps.classes[num].weights[i].weight.includes("SS")) dtps.classes[num].weights[i].icon = `<i class="material-icons">star</i> `
-	        if (dtps.classes[num].weights[i].weight.includes("Comprehension") || dtps.classes[num].weights[i].weight.includes("CC")) dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `
-		if (dtps.classes[num].weights[i].weight.includes("Performance") || dtps.classes[num].weights[i].weight.includes("PT"))dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `
-		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `</h4>` + assignTmp.join("") + `</div>` );
-		sidebarTmp.push(`<div onclick="$('.sidenav .item').removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
+		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (15%)"; }
+	        if (dtps.classes[num].weights[i].weight.toUpperCase().includes("COMPREHENSION") || dtps.classes[num].weights[i].weight.includes("CC")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `; dtps.classes[num].weights[i].weight = "Comprehension Checks (0%)"; }
+		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks (85%)"; }
+		if (dtps.classes[num].weights[i].icon == "") dtps.classes[num].weights[i].icon = '<i class="material-icons">category</i> ';
+		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--flex-sectext, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>` );
+		sidebarTmp.push(`<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
        ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
     </div>`);
 	}
@@ -624,16 +689,10 @@ dtps.gradebook = function(num) {
 	if (DVs > 0) {
         var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
 	}
-	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #3c8ac1;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Grade trend&nbsp;&nbsp;<span style="font-size: 18px;">Keep track of your grades over time with grade trend. Click to learn more.</span></h5></div>`
-	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-	    var gradeTrendDom = `<div class="card" style="padding: 5px;"><canvas id="gradeTrendChart"></canvas></div>`
-	    } else {
-	var gradeTrendDom = `<div onclick="fluid.modal('.card.trend')" class="card" style="background-color: #7b7b7b;color: white;padding: 10px 20px;cursor: pointer;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">timeline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Not enough data&nbsp;&nbsp;<span style="font-size: 18px;">Power+ doesn't have enough grade data to show a graph yet</span></h5></div>`
-	    }
-	}
-	jQuery(".classContent").html(headsUp + gradeTrendDom + `
-<div style="height: 700px;" class="card withnav">
+	if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
+	jQuery(".classContent").html(headsUp + (dtps.classes[dtps.selectedClass].grade !== "--" ? (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;">
+<i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px; vertical-align: middle;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + `%</span></h5></div>` : "") : "") : "") + `
+<div style="height: 800px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
       <h5>Gradebook</h5>
@@ -646,19 +705,6 @@ dtps.gradebook = function(num) {
   </div>
 </div>
   `);
-		if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-	if (Object.keys(JSON.parse(window.localStorage.dtpsGradeTrend)).length > 2) {
-		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend)
-		var dataPoints = [];
-		for (var i = 0; i < Object.keys(gradeData).length; i++) dataPoints.push(Number(gradeData[Object.keys(gradeData)[i]][dtps.classes[num].id]))
-		var ctx = document.getElementById('gradeTrendChart').getContext('2d');
-		var styles = window.getComputedStyle($(".class." + num)[0]); 
-var chart = new Chart(ctx, { type: 'line', data: { labels: Object.keys(gradeData),
-       datasets: [{ label: "Grade trend", backgroundColor: styles.getPropertyValue('--norm'), borderColor: styles.getPropertyValue('--light'), data: dataPoints}]
-    },  options: {}
-});
-	}
-		}
 	    } else {
 	$(".btns .btn.grades").hide();
         $(".btns .btn").removeClass("active");
@@ -694,10 +740,18 @@ dtps.assignment = function(id, classNum) {
 	jQuery(props[i]).remove();
 	}
 	}
+	if (assignment.grade) {
+	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">star_border</i>` + "<b>Points earned</b>:  " + assignment.grade + " (" + assignment.letter +  `)</div>`)
+	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">category</i>` + "<b>Category</b>:  " + assignment.weight + `</div>`)
+	}
+	if (contributors.includes(HaikuContext.user.login)) {
+	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">bug_report</i>` + "<b>IDs (classNumber-classID, streamNumber-assignmentID)</b>:  " + classNum + "-" + dtps.classes[classNum].id + " " + streamNum + "-" + assignment.id + `</div>`)
+	}
+	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">class</i>` + "<b>Class</b>:  " + (dtps.fullNames ? dtps.classes[classNum].name : dtps.classes[classNum].subject) + `</div>`)
 	dom.children("div").siblings("table").before(`<br /><div class="list">` + list.join("") + `</div><br /><br />`)
 	  $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + dom.html() + `
 ` + handInDom + `
-<div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons">experiment</i> View Work</div>
+<div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> View Work</div>
 `);
 	});
 }
@@ -719,24 +773,26 @@ dtps.announcements = function() {
 				var subject = "";
 				if (psClass !== -1) {
 					col = dtps.classes[psClass].col
-					subject = `<div class="label">` + dtps.classes[psClass].subject + `</div>`;
+					var name = dtps.classes[psClass].subject
+					if (dtps.fullNames) name = dtps.classes[psClass].name
+					subject = `<div class="label">` + name + `</div>`;
 				}
-			announcements.push(`<div onclick="$(this).toggleClass('open');" style="margin: 25px; margin-right: 0px; width: 100%;cursor: pointer;" class="announcement card color ` + col + `">
+			announcements.push(`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color ` + col + `">
 ` + subject + jQuery(jQuery(ann[i]).children("td")[1]).children(".annc-with-images").html() + `
 </div>
 `);
 		}
 		}
 		if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-  jQuery(".dash.cal").append("<br />" + announcements.join("")); }
+  jQuery(".dash .announcements").append("<br />" + announcements.join("")); }
 	});
 };
 dtps.calendar = function(doneLoading) {
+	dtps.log("BUILDING CAL")
 	if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
 	calEvents = [];
 	for (var i = 0; i < dtps.classes.length; i++) {
     if (dtps.classes[i].stream) {
-  		dtps.log("BUILDING CAL: " + i)
 	    for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
 		    if (dtps.classes[i].stream[ii].dueDate) {
 		    var styles = window.getComputedStyle($(".class." + i)[0]);
@@ -752,6 +808,7 @@ dtps.calendar = function(doneLoading) {
 	    }
     }
   }
+		if ($.fullCalendar !== undefined) {
 	$('#calendar').fullCalendar({
   events: calEvents,
   header: {
@@ -760,8 +817,16 @@ dtps.calendar = function(doneLoading) {
   },
   eventClick: function(calEvent, jsEvent, view) {
 dtps.assignment(calEvent.assignmentID, calEvent.classNum);
+  },
+  eventAfterAllRender: function() {
+	$(".fc-prev-button").html(`<i class="material-icons">keyboard_arrow_left</i>`);
+	$(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
   }
 });
+	}
+		$(".fc-prev-button").html(`<i class="material-icons">keyboard_arrow_left</i>`);
+	$(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
+		
 	}
 }
 dtps.clearData = function() {
@@ -774,8 +839,6 @@ dtps.showClasses = function(override) {
   var streamClass = "active"
   if (dtps.selectedClass !== "dash") var streamClass = "";
 	dtps.classlist = [];
-	var unreadAnn = "";
-	if (dtps.unreadAnn) unreadAnn = "&nbsp;&nsbp;(" + dtps.unreadAnn + ")";
 	if (window.localStorage.dtpsClassOrder !== undefined) {
 		var classOrder = JSON.parse(window.localStorage.dtpsClassOrder)
 		for (var i = 0; i < classOrder.length; i++) {
@@ -783,12 +846,12 @@ dtps.showClasses = function(override) {
 		for (var ii = 0; ii < dtps.classes.length; ii++) {
 			if (dtps.classes[ii].id == classOrder[i]) { var num = ii; }
 		}
-	  var googleDom = "";
-	  if (dtps.classes[num].google) var googleDom = "&nbsp;&nbsp;google_G";
 			if (num !== null) {
+		var name = dtps.classes[num].subject
+		if (dtps.fullNames) name = dtps.classes[num].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + dtps.classes[num].col + `">
-      <div class="name">` + dtps.classes[num].subject + googleDom + `</div>
+      <div class="name">` + name + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + dtps.classes[num].grade + `%</span></div>
       </div>
     `);
@@ -796,9 +859,11 @@ dtps.showClasses = function(override) {
   }
 		for (var i = 0; i < dtps.classes.length; i++) {
 		if (!classOrder.includes(dtps.classes[i].id)) {
+		var name = dtps.classes[i].subject
+		if (dtps.fullNames) name = dtps.classes[i].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + dtps.classes[i].subject + `</div>
+      <div class="name">` + name + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
@@ -806,39 +871,53 @@ dtps.showClasses = function(override) {
   }
 	} else {
   for (var i = 0; i < dtps.classes.length; i++) {
-	  var googleDom = "";
-	  if (dtps.classes[i].google) var googleDom = "&nbsp;&nbsp;google_G";
+	 var name = dtps.classes[i].subject
+	if (dtps.fullNames) name = dtps.classes[i].name
     dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + dtps.classes[i].subject + googleDom + `</div>
+      <div class="name">` + name + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
       </div>
     `);
   }
 	}
+	var googleClassDom = ""
+		if (dtps.isolatedGoogleClasses) {
+		dtps.classlist.push(`<div class="classDivider"></div>`)
+		for (var i = 0; i < dtps.isolatedGoogleClasses.length; i++) {
+		dtps.classlist.push(`<div style="display: none;" onclick="$('.sidebar .class').removeClass('active'); $(this).addClass('active'); $('body').addClass('isolatedGoogleClass'); dtps.selectedClass = 'isolatedGoogleClass'; $('.classContent').html(dtps.renderStream(dtps.googleClasses[`  + dtps.isolatedGoogleClasses[i] +`].stream)); $('#headText').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class isolated google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].id + `">
+      <div style="width: 100%; padding-right: 10px;" class="name">` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `</div>
+      </div>`)
+		}
+		}
 	if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
   jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
 <div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
     <div class="name">Dashboard</div>
     <div class="grade"><i class="material-icons">dashboard</i></div>
     </div>
-   <div style="display: none;" onclick="dtps.selectedClass = 'announcements';" class="class">
-    <div class="name" id="annLabel">Announcements ` + unreadAnn + `</div>
-    <div class="grade"><i class="material-icons">announcement</i></div>
-    </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
+  for (var i = 0; i < dtps.classes.length; i++) {
+	  if (dtps.classes[i].subject.includes("Algebra 2")) {
+		 if (highFlyers.includes(HaikuContext.user.login)) {
+			 $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark"));
+		 }
+	  }
+	}
   if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
   if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
   $( ".class:not(.google)" ).click(function(event) {
-	  var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	  if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
+	  if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+	  $('body').removeClass('isolatedGoogleClass');
+	  var prev = $(".background").attr("style").split("background: ")[1]
 	  $(".btn.google").hide();
-	  $(".background").css("background", prev)
+	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
-		  bgTimeout = setTimeout(function() {
-		  var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-		  $(".background").css("background", next)
+		  dtps.bgTimeout = setTimeout(function() {
+		  dtps.onThemeChange();
 		  $(".background").removeClass("trans");
 		  }, 500);
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
@@ -847,7 +926,19 @@ dtps.showClasses = function(override) {
 	  $(".header").removeClass(jQuery.grep($(".header").attr("class").split(" "), function (item, index) {
       return item.trim().match(/^filter_/);
     })[0]);
-	  if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].google) { $(".btn.google").show(); }; $(".background").addClass(dtps.classes[dtps.selectedClass].col); $(".header").addClass(dtps.classes[dtps.selectedClass].col) }
+	  if (dtps.classes[dtps.selectedClass]) {
+		  if (dtps.classes[dtps.selectedClass].google) {
+			  $(".btn.google").show();
+		  };
+		  $(".background").addClass(dtps.classes[dtps.selectedClass].col);
+		  $(".header").addClass(dtps.classes[dtps.selectedClass].col)
+	  }
+	   if (!$(".background").attr("class").includes("filter")) {
+			  //no color
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); }
+		  } else {
+			  $(".items").removeClass("black");
+		  }
     $(this).siblings().removeClass("active")
     $(this).addClass("active")
     $(".header h1").html($(this).children(".name").text())
@@ -866,7 +957,7 @@ dtps.showClasses = function(override) {
 }
 dtps.saveClassOrder = function() {
 $(".sidebar").sortable("destroy");
-var classes = $(".sidebar").children(".class")
+var classes = $(".sidebar").children(".class:not(.google)")
 var classOrder = [];
 for (var i = 0; i < classes.length; i++) {
 if (/\d/.test(jQuery(classes[i]).attr("class"))) {
@@ -877,33 +968,125 @@ localStorage.setItem("dtpsClassOrder", JSON.stringify(classOrder));
 dtps.sorting = false;
 window.alert("Class order saved");
 }
+dtps.googleStream = function() {
+	dtps.log("FETCHING GOOGLE ASSIGNMENTS")
+	function googleStream(i) {
+		if (dtps.googleClasses[i]) {
+	gapi.client.classroom.courses.courseWork.list({ courseId: dtps.googleClasses[i].id }).then(function(resp) {
+		dtps.googleClasses[i].rawData = resp.result;
+		dtps.googleClasses[i].stream = [];
+		for (var ii = 0; ii < resp.result.courseWork.length; ii++) {
+			if (resp.result.courseWork[ii].dueDate) {
+			var due = new Date(resp.result.courseWork[ii].dueDate.year, resp.result.courseWork[ii].dueDate.month - 1, resp.result.courseWork[ii].dueDate.day - 1);
+			} else {
+			var due = new Date();
+			}
+			dtps.googleClasses[i].stream.push({
+				title: resp.result.courseWork[ii].title,
+				due: due.toHumanString(),
+				dueDate: due.toISOString(),
+				turnedIn: false,
+				google: true,
+				url: resp.result.courseWork[ii].alternateLink + "?authuser=" + dtps.user.google.getEmail(),
+				letter: "--",
+				grade: "/" + resp.result.courseWork[ii].maxPoints
+			})
+			if (dtps.googleClasses[i].psClass !== undefined) {
+			    dtps.googleClasses[i].stream[ii].class = dtps.googleClasses[i].psClass;
+			    dtps.googleClasses[i].stream[ii].subject = dtps.classes[dtps.googleClasses[i].psClass].subject;
+			    }
+		}
+		if (i < (dtps.googleClasses.length - 1)) googleStream(i + 1);
+	});
+		} else {
+			if (i < (dtps.googleClasses.length - 1)) googleStream(i + 1);
+		}
+	}
+	googleStream(0);
+}
 dtps.googleAuth = function() {
-	window.alert("Switch to Power+ dev to use Google Classroom features")
+ dtps.log("GOOGLE AUTH")
+  dtps.user.google = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
+  $(".items img").attr("src", dtps.user.google.getImageUrl())
+	gapi.client.classroom.courses.list({ pageSize: 40 }).then(function(resp) {
+	  dtps.googleClasses = resp.result.courses;
+		if (dtps.googleClasses == undefined) {
+			dtps.gapis();
+		} else {
+	  for (var i = 0; i < dtps.googleClasses.length; i++) {
+		  if (dtps.googleClasses[i].courseState == "ACTIVE") {
+		  var match = null;
+		  for (var ii = 0; ii < dtps.classes.length; ii++) {
+			  if (dtps.googleClasses[i].name.includes(dtps.classes[ii].subject)) match = ii;
+		  }
+		  if (match !== null) {
+			  if (dtps.classes[match].google == undefined) {
+		  dtps.classes[match].google = dtps.googleClasses[i]
+		  dtps.googleClasses[i].psClass = match
+			      }
+		  }
+		  }
+	  }
+	  dtps.isolatedGoogleClasses = [];
+	  var isolatedDom = [];
+	  for (var i = 0; i < dtps.googleClasses.length; i++) { if ((dtps.googleClasses[i].psClass == undefined) && (dtps.googleClasses[i].courseState == "ACTIVE")) {
+		  dtps.isolatedGoogleClasses.push(i)
+		  isolatedDom.push(`<br /><br />
+    <div onclick="jQuery('.google.isolated.class.` + dtps.googleClasses[i].id + `').toggle()" class="switch"><span class="head"></span></div>
+    <div class="label">` +  dtps.googleClasses[i].name + `</div>`)
+	  } }
+	$(".isolatedGClassList").html(isolatedDom.join("").slice(12));
+	  dtps.showClasses(true);
+	  dtps.googleStream();
+		fluid.init();
+	}
+  });
 }
 dtps.logGrades = function() {
 	if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
-		dtps.log("Grade trend enabled; checking grade data")
+		if (window.localStorage.dtpsGradeTrend.startsWith("{")) {
+		dtps.log("LOGGING GRADES")
 		var now = new Date();
 		var start = new Date(now.getFullYear(), 0, 0);
 		var diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
 		var oneDay = 1000 * 60 * 60 * 24;
 		var day = Math.floor(diff / oneDay);
 		var gradeData = JSON.parse(window.localStorage.dtpsGradeTrend);
-		if (!gradeData.day) {
-			dtps.log("Grade trend enabled; check passed; storing grades for today")
-			var gradesNow = {};
-			for (var i = 0; i < dtps.classes.length; i++) {
-				gradesNow[dtps.classes[i].id] = dtps.classes[i].grade
+		for (var i = 0; i < dtps.classes.length; i++) {
+			if (dtps.classes[i].grade !== "--") {
+		if (!gradeData[dtps.classes[i].id]) gradeData[dtps.classes[i].id] = {oldGrade: dtps.classes[i].grade, lastUpdated: new Date(), currentGrade: dtps.classes[i].grade}
+			if (dtps.classes[i].grade !== gradeData[dtps.classes[i].id].currentGrade) {
+				gradeData[dtps.classes[i].id].oldGrade = gradeData[dtps.classes[i].id].currentGrade
+				gradeData[dtps.classes[i].id].currentGrade = dtps.classes[i].grade
+				gradeData[dtps.classes[i].id].lastUpdated = new Date();
 			}
-			gradeData[day] = gradesNow;
-			localStorage.setItem('dtpsGradeTrend', JSON.stringify(gradeData));
+		}
+		}
+		window.localStorage.setItem("dtpsGradeTrend", JSON.stringify(gradeData));
 		}
 	}
 }
+dtps.gradeTrend = function(ele) {
+	var temp = ele; 
+	if ($(temp).hasClass('head')) { temp = $(ele).parent()[0] }; 
+	if (!$(temp).hasClass('active')) { 
+		window.localStorage.setItem('dtpsGradeTrend', 'false'); 
+		swal('Grade trend is disabled. All data stored on your computer by grade trend has been deleted.', { icon: 'success', }); 
+	} else { 
+		swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. When a grade for one of your classes changes, Power+ will tell you how much it changed in the grades tab of the class. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { 
+			if (enable) { 
+			window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); 
+				    } else {
+					    $(temp).removeClass('active')
+				    }
+					});
+	}
+}
 dtps.render = function() {
-  document.title = "Power+" + dtps.trackSuffix
-  var letterGradesClass = "";
-  if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); letterGradesClass = " active"; }
+  document.title = "Power+" + dtps.trackSuffix;
+  if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
+  if (window.localStorage.dtpsFullNames == "true") { dtps.fullNames = true; }
+  $("body").addClass("dashboard");
   dtps.selectedClass = "dash";
   dtps.sorting = false;
   dtps.selectedContent = "stream";
@@ -946,7 +1129,7 @@ dtps.render = function() {
     Assignments
     </button>
     <button onclick="dtps.selectedContent = 'google'; $('.classContent').html(dtps.renderStream(dtps.classes[dtps.selectedClass].google.stream))" class="btn google">
-    <i class="material-icons">experiment</i>
+    <i class="material-icons">class</i>
     google_logo Classroom
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.loadPages(dtps.selectedClass);" class="btn pages">
@@ -970,40 +1153,9 @@ dtps.render = function() {
       <div class="bounce3"></div>
     </div>
     </div>
-    <div style="width: calc(80%);border-radius: 30px;" class="card focus close abt">
-<i onclick="fluid.cards.close('.card.abt')" class="material-icons close">close</i>
-<img src="https://dtps.js.org/dtps.png" style="vertical-align: middle;width: 100px;margin-right: 10px;">
-    <div style="display:inline-block; vertical-align: middle;">
-    <h4 style="margin: 0px">Power+ ` + trackDom + `</h4>
-    <h5 style="display: inline-block; margin: 0px; margin-top: 5px; font-size: 1.5rem;">` + dtps.readableVer.replace(dtps.trackSuffix, "") + `<div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
-</div>
-<br /><br />
-    Logged in as ` + dtps.user.first_name + ` ` + dtps.user.last_name + ` (` + dtps.user.login + `)
-<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
-<div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
-<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
-<div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
-    <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
-    <div class="btns row themeSelector"></div>
-<br /><br />
-<div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
-    <br /><br />
-<div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
-<br /><br />
-<div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">edit</i> Show grade editor</div>
-<div class="extensionDom" ></div>
-    <br /><br />
-    <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Sort classes</button>
-    <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo</button>
-    <button onclick="dtps.clearData();" class="btn"><i class="material-icons">delete_outline</i>Reset Power+</button>
-    </div>
 <div style="height: calc(100vh - 50px);width: 75%;" class="card withnav focus close abt-new">
 <i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
-  <div class="sidenav">
+  <div class="sidenav" style="position: fixed; height: calc(100% - 50px); border-radius: 20px 0px 0px 20px;">
     <div class="title">
 	  <img src="https://dtps.js.org/outline.png" style="width: 50px;vertical-align: middle;margin-right: 5px;padding: 7px; padding-top: 14px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
@@ -1020,13 +1172,13 @@ dtps.render = function() {
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item sudo">
-      <i class="material-icons">experiment</i> Experiments
+    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
+      <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
       <i class="material-icons">bug_report</i> Debugging
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.about').show();" class="item">
+    <div onclick="$('.abtpage').hide();$('.abtpage.about').show(); $('.advancedOptions').hide(); $('.advOp').show();" class="item">
       <i class="material-icons">info</i> About
     </div>
   </div>
@@ -1037,23 +1189,38 @@ dtps.render = function() {
     <p><b>Theme</b></p>
     <div class="btns row themeSelector"></div>
     <br /><br />
-    <p><b>Grades</b></p>
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + letterGradesClass + `"><span class="head"></span></div>
+    <div onclick="dtps.gradeTrend(this);" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">timeline</i> Display grade trend</div>
+    <br /><br />
+    <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
+    <br /><br />
+    <div onclick="dtps.fullNames = !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames); dtps.showClasses(true);" class="switch` + (window.localStorage.dtpsFullNames == "true" ? " active" : "") + `"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">title</i> Display full class names</div>
     <br /><br />
     <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
     <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
 </div>
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
-    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">list</i>Sort classes</button>
+    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">sort</i>Sort classes</button>
     <br /><br />
-    <h5>Google Classes</h5>
+<div class="googleClassroom prerelease">
+    <h5>google_logo Classes</h5>
+    <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">remove</i>Remove google_logo Classroom</button>
+    <br /><br />
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
-    <div class="otherGClasses"><p>Coming soon!</p></div>
+    <div class="isolatedGClassList"><p>Loading...</p></div>
+</div>
+<div class="googleSetup prerelease">
+    <h5>google_logo Classroom</h5>
+    <p>Link google_logo Classroom to see assignments and classes from both PowerSchool and Google.</p>
+    <p>If Power+ thinks one of your PowerSchool classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
+    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn sudo"><i class="material-icons">book</i>Link google_logo Classroom</button>
+</div>
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
@@ -1064,80 +1231,70 @@ dtps.render = function() {
     <h5>Experiments</h5>
     <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
     <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
-    <br />
-    <button onclick="dtps.googleAuth();" class="btn sudo"><i class="material-icons">experiment</i>Link google_logo Classroom</button>
+<br />
+<br /><br />
+
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
 <div class="dev">
     <h5>Debugging</h5>
+<br />
+<span class="log">
+</span>
 </div>
 </div>
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
-<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">experiment</i></div>
-<div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
-<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star</i></div>
-<div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
-<br /><br />
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
-    <button onclick="dtps.clearData();" class="btn"><i class="material-icons">delete_outline</i>Reset Power+</button>
+    <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
+     <br /><br />
+   <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + ` <span style="font-size: 12px;">` + dtps.user.login + `</span></h5>
+<div style="display:inline-block;" class="beta badge notice highFlyer">high flyer&nbsp;<i style="vertical-align: middle;" class="material-icons highFlyer">school</i></div>
+<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
+<div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
+<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
+<div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <br /><br />
-    <h5>Resources</h5>
-    <ul>
-<li><a href="mailto:hello@jottocraft.com">Contact me</a></li>
-<li><a href="https://dtps.js.org">Power+ website</a></li>
-<li><a href="https://github.com/jottocraft/dtps">Source code on GitHub</a> (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</li>
-</ul>
-    <br />
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
-    <li>Grade trend graphs made with <a href="https://www.chartjs.org/">Chart.js</a></li>
     <li>Logo made with logomakr.com</li>
 </ul>
 <br />
-<p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
+<p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
+<div class="advancedOptions" style="display: none;">
+<p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="dtps.bugReport();">Send a bug report</p>
+<p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="dtps.render();">Re-render Power+</p>
+</div>
+<p><span onclick="dtps.bugReport()">(c)</span> 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
   </div>
 </div>
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
-    <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;" />
-    <i onclick="fluid.modal('.console')" class="material-icons dev">code</i>
-    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons sudo">experiment</i>
-    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt')" class="material-icons">more_horiz</i>
+    <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
+    <i onclick="dtps.bugReport();" class="material-icons prerelease">bug_report</i>
+    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">more_horiz</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
 <h3>What's new in Power+</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus console close">
-<i onclick="fluid.cards.close('.card.console')" class="material-icons close">close</i>
-<h3>dtps.log</h3>
-<span class="log">
-</span>
-</div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus script close">
-<i onclick="fluid.cards.close('.card.script')" class="material-icons close">close</i>
-<h3>Update your DTPS bookmark</h3>
-<p>It looks like you're using an outdated or invalid version of the Power+ bookmark. While this may work for now, you may run into some issues in the future. Right click the bookmark, select "Edit", and replace the URL with the <a href="https://dtps.js.org/bookmark.txt">latest script</a>.</p>
-</div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus details close">
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <p>An error occured</p>
 </div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus trend close">
-<i onclick="fluid.cards.close('.card.trend')" class="material-icons close">close</i>
-<h3>Grade Trend</h3>
-<p>Grade trend lets you keep track of your grades over time. When you enable grade trend, Power+ will store a copy of your class grades locally on your computer every day you use Power+. Then, when you click on the grades tab with grade trend enabled, Power+ will show you a graph of how your class grades have changed over time.</p>
-<p>The grade trend setting applies to all classes. It may take a few days after enabling grade trend for the graph to appear.</p>
-<p><b>You can always disable grade trend by clicking the "Clear all Power+ data" button in the settings menu (the 3 dots at the top-right corner of the screen).</b></p>
-<button onclick="localStorage.setItem('dtpsGradeTrend', JSON.stringify({})); window.alert('Grade trend enabled'); dtps.logGrades();" class="btn"><i class="material-icons">timeline</i> Enable grade trend</button><button onclick="fluid.cards.close('.card.trend')" class="btn"><i class="material-icons">cancel</i> Not now</button>
-</div>
   `);
+	 if (!$(".background").attr("class").includes("filter")) {
+			  //no color
+			  if (!$("body").hasClass("dark")) { $(".items").addClass("black"); } else { $(".items").removeClass("black"); }
+		  } else {
+			  $(".items").removeClass("black");
+		  }
+       dtps.masterStream();
 	var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
 	if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
 	jQuery.getJSON(getURL, function(data) {
@@ -1154,14 +1311,14 @@ dtps.render = function() {
 				 localStorage.setItem('dtps', dtps.ver);
 			if (dtps.showChangelog) dtps.changelog();
 		 }
-			 if (dtps.updateScript) { fluid.cards.close(".card.focus"); fluid.modal(".card.script"); }
 			 $(".btn.changelog").show();
         });
-  });	
+  });
 	
-	var prev =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	var prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".background").css("background", prev)
   dtps.showClasses();
+  dtps.gapis();
   $("link").remove();
   jQuery("<link/>", {
     rel: "shortcut icon",
