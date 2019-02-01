@@ -1066,20 +1066,21 @@ dtps.logGrades = function() {
 		}
 	}
 }
-dtps.gradeTrend = function() {
-	var temp = this; 
-	console.log(this);
-	if ($(temp).hasClass('head')) { temp = $(this).parent()[0] }; 
-	console.log(temp)
+dtps.gradeTrend = function(ele) {
+	var temp = ele; 
+	if ($(temp).hasClass('head')) { temp = $(ele).parent()[0] }; 
 	if (!$(temp).hasClass('active')) { 
 		window.localStorage.setItem('dtpsGradeTrend', 'false'); 
-		window.alert('Grade trend disabled'); 
+		swal('Grade trend is disabled. All data stored on your computer by grade trend has been deleted.', { icon: 'success', }); 
 	} else { 
 		swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. When a grade for one of your classes changes, Power+ will tell you how much it changed in the grades tab of the class. The grade trend setting applies to all classes.',  buttons: true }).then((enable) => { 
-			if (enable) { window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); 
+			if (enable) { 
+			window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', }); 
 				    } else {
 					    $(temp).removeClass('active')
-				    }});}
+				    }
+					});
+	}
 }
 dtps.render = function() {
   document.title = "Power+" + dtps.trackSuffix;
@@ -1191,7 +1192,7 @@ dtps.render = function() {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="dtps.gradeTrend();" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
+    <div onclick="dtps.gradeTrend(this);" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">timeline</i> Display grade trend</div>
     <br /><br />
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
