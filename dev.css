@@ -461,7 +461,6 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
 .assignment .weighted {
 	color: var(--flex-sectext, #8e8e8e);
 	font-size: 0.9rem;
-	margin-left: 10px;
 }
 .weight.parent .weight {
 	padding: 10px !important;
