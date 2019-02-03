@@ -1,3 +1,6 @@
+/* Power+ for Canvas v1.6.0 [DEV]
+(c) 2018 - 2019 jottocraft
+https://github.com/jottocraft/dtps */
 var dtps = {
   ver: 160,
   readableVer: "v1.6.0 (dev)",
