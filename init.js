@@ -1,3 +1,7 @@
+/* Power+ v1.5.0
+(c) 2018 - 2019 jottocraft
+https://github.com/jottocraft/dtps
+Email: hello@jottocraft.com */
 var dtps = {
   ver: 150,
   readableVer: "v1.5.0",
