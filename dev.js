@@ -144,6 +144,30 @@ dtps.init = function () {
   dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
   $ = jQuery;
+  var time = Number(String(new Date().getHours()) + String(new Date().getMinutes()))
+  var period = null;
+  if ((new Date().getDay() > 0) && (new Date().getDay() < 6)) {
+	 //Weekday
+	  if (new Date().getDay() == 3) {
+		  //Wednesday
+		  if ((time > 0929) && (time < 1018)) period = 1;
+		  if ((time > 1019) && (time < 1108)) period = 2;
+			if ((time > 1109) && (time < 1158)) period = 3;
+			if ((time > 1229) && (time < 1318)) period = 4;
+			if ((time > 1319) && (time < 1408)) period = 5;
+			if ((time > 1409) && (time < 1458)) period = 6;
+	  } else {
+		if (new Date().getDay() !== 4) {
+			//M, TU, F
+			if ((time > 0917) && (time < 1013)) period = 1;
+			if ((time > 1022) && (time < 1118)) period = 2;
+			if ((time > 1119) && (time < 1215)) period = 3;
+			if ((time > 1246) && (time < 1342)) period = 4;
+			if ((time > 1343) && (time < 1439)) period = 5;
+			if ((time > 1440) && (time < 1536)) period = 6;
+		}
+	  }
+  }
 jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
