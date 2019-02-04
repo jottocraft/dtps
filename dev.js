@@ -447,6 +447,17 @@ dtps.onThemeChange = function() {
 	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
 	$(".background").css("background", next)
 }
+dtps.schedule = function() {
+	var schedule = {}
+	if (confirm("Type in which period you have each class as a number (1-6). If the class is from a different semester or you don't have that class for a class period, leave the box blank")) {
+	for (var i = 0; i < dtps.classes.length; i++) {
+		var num = prompt("Which class period do you have '" + dtps.classes[i].name + "'? (Number 1-6 or leave blank)");
+		if ((Number(num) > 0) && (Number(num) < 7)) schedule[num] = dtps.classes[i].id;
+	}
+	localStorage.setItem("dtpsSchedule", JSON.stringify(schedule));
+	alert("Your schedule has been saved. When loading Power+, Power+ will try to load the class that you are in instead of the dashboard, if you are visiting during school hours.")
+	}
+}
 dtps.renderStream = function(stream, searchRes) {
 	var streamlist = [];
 	for (var i = 0; i < stream.length; i++) {
