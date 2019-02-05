@@ -145,26 +145,26 @@ dtps.init = function () {
   dtps.classColors = [];
   $ = jQuery;
   var time = Number(String(new Date().getHours()) + String(new Date().getMinutes()))
-  var period = null;
+  dtps.period = null;
   if ((new Date().getDay() > 0) && (new Date().getDay() < 6)) {
 	 //Weekday
 	  if (new Date().getDay() == 3) {
 		  //Wednesday
-		  if ((time > 0929) && (time < 1018)) period = 1;
-		  if ((time > 1019) && (time < 1108)) period = 2;
-			if ((time > 1109) && (time < 1158)) period = 3;
-			if ((time > 1229) && (time < 1318)) period = 4;
-			if ((time > 1319) && (time < 1408)) period = 5;
-			if ((time > 1409) && (time < 1458)) period = 6;
+		  if ((time > 0929) && (time < 1018)) dtps.period = 1;
+		  if ((time > 1019) && (time < 1108)) dtps.period = 2;
+			if ((time > 1109) && (time < 1158)) dtps.period = 3;
+			if ((time > 1229) && (time < 1318)) dtps.period = 4;
+			if ((time > 1319) && (time < 1408)) dtps.period = 5;
+			if ((time > 1409) && (time < 1458)) dtps.period = 6;
 	  } else {
 		if (new Date().getDay() !== 4) {
 			//M, TU, F
-			if ((time > 0917) && (time < 1013)) period = 1;
-			if ((time > 1022) && (time < 1118)) period = 2;
-			if ((time > 1119) && (time < 1215)) period = 3;
-			if ((time > 1246) && (time < 1342)) period = 4;
-			if ((time > 1343) && (time < 1439)) period = 5;
-			if ((time > 1440) && (time < 1536)) period = 6;
+			if ((time > 0917) && (time < 1013)) dtps.period = 1;
+			if ((time > 1022) && (time < 1118)) dtps.period = 2;
+			if ((time > 1119) && (time < 1215)) dtps.period = 3;
+			if ((time > 1246) && (time < 1342)) dtps.period = 4;
+			if ((time > 1343) && (time < 1439)) dtps.period = 5;
+			if ((time > 1440) && (time < 1536)) dtps.period = 6;
 		}
 	  }
   }
