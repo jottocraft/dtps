@@ -168,6 +168,7 @@ dtps.init = function () {
 		}
 	  }
   }
+	if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period]
 jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
@@ -286,6 +287,11 @@ window.dataLayer = window.dataLayer || [];
         num: i
       })
 	  dtps.classLocs.push(loc[1] + "/" + loc[2]);
+      if (dtps.currentClass == id) {
+            dtps.selectedClass = i;
+            dtps.selectedContent = "stream";
+	    dtps.classStream(i);
+      }
     }
     dtps.log("Grades loaded: ", dtps.classes)
     if (dtps.shouldRender) dtps.render();
