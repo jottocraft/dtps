@@ -1132,9 +1132,11 @@ dtps.render = function() {
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
   if (window.localStorage.dtpsFullNames == "true") { dtps.fullNames = true; }
   $("body").addClass("dashboard");
+	if (!dtps.currentClass) {
   dtps.selectedClass = "dash";
-  dtps.sorting = false;
   dtps.selectedContent = "stream";
+	}
+	dtps.sorting = false;
   dtps.masterContent = "assignments";
 	var trackDom = "";
 	if (dtps.trackSuffix !== "") {
