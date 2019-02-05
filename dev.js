@@ -1001,6 +1001,11 @@ dtps.showClasses = function(override) {
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
 }
+if (override == "first") {
+	if (dtps.currentClass) {
+		$(".class." + dtps.selectedClass).click();
+	}
+}
 }
 dtps.saveClassOrder = function() {
 $(".sidebar").sortable("destroy");
@@ -1171,7 +1176,7 @@ dtps.render = function() {
     </div>
     <div class="background trans"></div>
 <div class="header">
-    <h1 id="headText">Dashboard</h1>
+    <h1 id="headText"></h1>
     <div style="display: none;" class="btns row tabs">
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
     <i class="material-icons">assignment</i>
@@ -1366,7 +1371,7 @@ dtps.render = function() {
 	
 	var prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".background").css("background", prev)
-  dtps.showClasses();
+  dtps.showClasses("first");
   dtps.gapis();
   $("link").remove();
   jQuery("<link/>", {
