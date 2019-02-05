@@ -1,7 +1,7 @@
 /* Power+ v1.6.0 [DEV]
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
-Email: hello@jottocraft.com */
+Email: hello@jottocraft.com */ try {
 var dtps = {
   ver: 160,
   readableVer: "v1.6.0 (dev)",
@@ -1413,3 +1413,4 @@ dtps.render = function() {
   fluid.init();
 }
 dtps.init();
+} catch(e) {alert(e)}
