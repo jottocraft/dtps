@@ -1,7 +1,7 @@
 /* Power+ v1.6.0 [DEV]
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
-Email: hello@jottocraft.com */ try {
+Email: hello@jottocraft.com */
 var dtps = {
   ver: 160,
   readableVer: "v1.6.0 (dev)",
@@ -958,9 +958,7 @@ dtps.showClasses = function(override) {
 	  if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
 	  if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
 	  $('body').removeClass('isolatedGoogleClass');
-	  var prev = $(".background").attr("style").split("background: ")[1]
 	  $(".btn.google").hide();
-	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
 		  dtps.bgTimeout = setTimeout(function() {
@@ -1176,7 +1174,7 @@ dtps.render = function() {
     </div>
     <div class="background trans"></div>
 <div class="header">
-    <h1 id="headText"></h1>
+    <h1 id="headText">Dashboard</h1>
     <div style="display: none;" class="btns row tabs">
     <button onclick="dtps.selectedContent = 'stream'; dtps.classStream(dtps.selectedClass);" class="btn active stream">
     <i class="material-icons">assignment</i>
@@ -1413,4 +1411,3 @@ dtps.render = function() {
   fluid.init();
 }
 dtps.init();
-} catch(e) {alert(e)}
