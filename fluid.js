@@ -1,5 +1,5 @@
 /*!
-Fluid UI JavaScript Modules v3.0.0 Beta 7
+Fluid UI JavaScript Modules v3.0.0
 
 Copyright (c) 2017-2019 jottocraft
 
