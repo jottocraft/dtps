@@ -1,5 +1,5 @@
 /*!
-Fluid UI Elements v3.0.0 Beta 7
+Fluid UI Elements v3.0.0
 
 Copyright (c) 2017-2019 jottocraft
 
@@ -273,7 +273,7 @@ img.emoji {
 
 
 ::-webkit-scrollbar-thumb {
-    background: var(--flex-sectext, #707275);
+    background: #707275;
     opacity: 90px;
     border-radius: 20px;
 }
@@ -458,9 +458,11 @@ body.dark .side-nav li > a {
 
 /* Buttons */
 button:focus {outline:0;}
-.btn {
+.btn, select {
   cursor: pointer;
+  font-family: "Google sans";
     border: none;
+    outline: none;
     padding: 12px 30px;
     text-align: center;
     border-radius: 10px;
@@ -472,16 +474,16 @@ button:focus {outline:0;}
     vertical-align: middle;
     margin: 0px 5px;
   }
-  .btn.outline {
+  .btn.outline, select.outline {
 	  background-color: inherit !important;
 	  padding: 10px 28px;
 	  border: 2px solid;
   }
-  .btn.small {
+  .btn.small, select.small {
 	  padding: 10px 20px;
 	  font-size: 14px;
   }
-  .btn.small.outline {
+  .btn.small.outline, select.small.outline {
 	  padding: 8px 18px;
 	  border: 2px solid;
   }
@@ -525,6 +527,31 @@ button:focus {outline:0;}
     vertical-align: middle;
     margin-left: 25px;
   }
+  .slider {
+  -webkit-appearance: none;
+  height: 25px;
+  outline: none;
+  border-radius: 7px;
+  min-width: 200px;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: var(--theme-color);
+  cursor: pointer;
+  border-radius: 7px;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: var(--theme-color);
+  cursor: pointer;
+  border-radius: 7px;
+}
   .list .item i {
     display: inline-block;
     vertical-align: middle;
@@ -553,12 +580,12 @@ button:focus {outline:0;}
   .row:not(.btns) .btn {
     margin-right: 10px;
   }
-  body:not(.dark) .btn:not(.active), body:not(.dark) .btns.row, body:not(.dark) .switch:not(.active), body:not(.dark) .directory span:hover {
+  body:not(.dark) .btn:not(.active), body:not(.dark) .btns.row, body:not(.dark) .switch:not(.active), body:not(.dark) .directory span:hover, body:not(.dark) .slider, body:not(.dark) select {
   background-color: var(--flex-layer1, #ececec);
   border-color: var(--flex-layer1, #ececec);
       color: #333333;
     }
-    body.dark .btn:not(.active), body.dark .switch:not(.active), body.dark .btns.row, body.dark .directory span:hover {
+    body.dark .btn:not(.active), body.dark .switch:not(.active), body.dark .btns.row, body.dark .directory span:hover, body.dark .slider, body.dark select {
     background-color: var(--flex-layer1, #1d2023);
 	border-color: var(--flex-layer1, #1d2023);
         color: white;
@@ -857,7 +884,7 @@ body.dark .nav a {
 
 
 
-input:not([type=submit]):not([type=color]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]), textarea {
+input:not([type=submit]):not([type=color]):not([type=range]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]), textarea {
   width: 400px;
   margin-bottom: 30px;
   border-radius: 15px;
@@ -870,7 +897,7 @@ input:not([type=submit]):not([type=color]):not([type=file]):not([type=checkbox])
   margin-bottom: 20px;
   transition: background-color 0.4s, box-shadow 0.3s, color 0.4s;
 }
-input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]):not(.noshadow):focus, textarea:not(.noshadow):focus {
+input:not([type=color]):not([type=range]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]):not(.noshadow):focus, textarea:not(.noshadow):focus {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 input::placeholder {
@@ -883,11 +910,11 @@ textarea {
 .white-text {
   color:white;
 }
-body:not(.dark) textarea, body:not(.dark) .fluid.element, body:not(.dark) input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+body:not(.dark) textarea, body:not(.dark) .fluid.element, body:not(.dark) input:not([type=color]):not([type=range]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
     background-color: var(--flex-layer1, #efefef);
     color: black;
 }
-body.dark textarea, body.dark .fluid.element, body.dark input:not([type=color]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
+body.dark textarea, body.dark .fluid.element, body.dark input:not([type=color]):not([type=range]):not([type=submit]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]) {
     background-color: var(--flex-layer1, #23272A);
     color: white;
 }
@@ -1141,6 +1168,13 @@ padding: 15px;
 }
 .card {
   padding: 30px;
+}
+.card i.close {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    top: 0;
+    margin: 25px;
 }
 .list:not(.contextmenu) {
   padding: 3px;
