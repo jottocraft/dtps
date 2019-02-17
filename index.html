@@ -1,38 +1,90 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Power+</title>
-<!-- Fluid UI -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Extended" rel="stylesheet">
-<link type="text/css" rel="stylesheet" href="fluid.css" media="screen,projection"/>
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <!--Import Google Icon Font-->
+       <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Extended" rel="stylesheet">
+       <link type="text/css" rel="stylesheet" href="fluid.css"  media="screen,projection"/>
+       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="google-site-verification" content="chUbiBgEJbrtnOpPoYTEYA40RVFz0hCduYDZsfZvCoM" />
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <!--OpenGraph -->
+  <meta property="og:url" content="https://dtps.js.org" />
+  <meta property="og:title" content="Power+" />
+  <meta property="og:description" content="A new UI for PowerSchool Learning" />
+  <meta property="og:image" content="https://dtps.js.org" />
+
+  <meta charset="utf-8">
+  <title>Power+</title>
+<meta name="description" content="A new UI for PowerSchool Learning">
+  <meta name="author" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
-<body>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script src="fluid.js"></script>
-<div class="container" style="margin-top: 100px;">
-<img src="https://dtps.js.org/dtps.png" style="width: 100px; height: 100px;vertical-align: middle;" />
-<h1 style="display: inline-block; vertical-align: middle; margin-left: 50px;">Power+</h1>
-<h3 style="margin-top: 100px;">Install Power+</h3>
-<p>Get Power+ installed on your chromebook</p>
-<h5>Install the script</h5>
-<p>Make sure the bookmarks bar is enabled on your Chromebook. If it's not there, you can press Control + Shift + B to make it appear</p>
-<p>Drag and drop the Power+ link into the bookmarks bar: <a href="javascript:jQuery.getScript('https://dtps.js.org/init.js');dtpsLoader=2;" style="cursor: move;">Power+</a></p>
-<h5>Run the script</h5>
-<p>You need to have PowerSchool open in order for the script to work. Open PowerSchool, then click on the Power+ bookmark. Follow any on-screen instructions to complete setup.</p>
-<br />
-<h5>Other methods of installing Power+</h5>
-<ul>
-<li>To install Power+ at home, install the <a href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo">Power+ Chrome Extension</a></li>
-<li>To install the dev (unstable) version of Power+, use <a href="#" onclick="window.open('https://dtps.js.org/devbookmark.txt')">this</a> bookmark script</li>
-<li>To run Power+ on Firefox (not supported), use <a href="#" onclick="window.open('https://pastebin.com/raw/6Nh6sABu')">this</a> bookmark script</li>
-</ul>
-<br />
-<h5>Troubleshooting</h5>
-<p><a href="https://github.com/jottocraft/dtps/issues/new/choose">Submit a new issue on GitHub</a> or <a href="mailto:hello@jottocraft.com">email me</a> if you have any issues with the steps above</p>
+
+<style>
+</style>
+<body class="auto">
+  <style>
+    body.dark #mainIMG {
+      background-image: url(https://i.imgur.com/pGFhY92.png);
+    }
+    body:not(.dark) #mainIMG {
+      background-image: url(https://i.imgur.com/D4OLWRi.png);
+    }
+  </style>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="fluid.js"></script>
+  <br /><br /><br /><br /><br /><br />
+  <div class="center">
+  <h1 style="font-size: 100px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold;">Power+</h1>
+  <h5>A redesigned UI for PowerSchool Learning designed for d.tech</h5>
+  			<br /></div>
+        <div style="text-align: center;">
+          <button onclick="fluid.modal('.soon.card')" class="btn"><i class="material-icons">add</i> Install</button>
+          <div class="card focus container soon close">
+            <i onclick="fluid.cards.close('.card.soon')" class="material-icons close">close</i>
+            <h3>Install Power+</h3>
+            <h5>Make sure the bookmarks bar is showing. If it's not showing, press Control + Shift + B to show it.</h5>
+            <br />
+            <h5>Drag this into your bookmarks bar to install Power+: <a style="cursor: move;" href="javascript:jQuery.getScript('https://dtps.js.org/init.js');dtpsLoader=2;">Power+</a></h5>
+            <h5>Then, every time you visit PowerSchool, you need to click the Power+ bookmark to use Power+</h5>
+            </div>
+          <br />
+        <div id="mainIMG" style="width: 1000px;height: 486px;border-radius: 10px;margin-top: 50px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);margin: 50px auto;background-size: cover;"></div>
+      </div>
+      <div style="margin-top: 100px;" class="container">
+          <div class="section">
+<div class="header" style="text-align: left; padding-bottom: 0px;">
+  <i style="font-size: 32px;" class="material-icons">code</i>
+  <h4 style="vertical-align: middle;">Other versions of Power+</h4>
 </div>
+<div  class="body">
+<p>To load Power+ automatically at home, install the <a href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo">Power+ Chrome Extension</a>.</p>
+<p>To get the very latest, fresh-off-the-vine features, try the unstable dev version of Power+ by dragging this into your bookmarks bar: <a style="cursor: move;" href="javascript:jQuery.getScript('https://dtps.js.org/dev.js');dtpsLoader=2;">Power+ (dev)</a></p>
+<p>To use Power+ on a non-chrome (not fully supported) browser, drag this into the bookmark bar: <a style="cursor: move;" href="javascript:(function(){jQuery.getScript('https://dtps.js.org/init.js');dtpsLoader=2;})();">Power+</a></p>
+</div>
+</div>
+
+        <div class="section">
+     <div class="header" style="text-align: left; padding-bottom: 0px;">
+  <i style="font-size: 32px;" class="material-icons">build</i>
+  <h4 style="vertical-align: middle;">Troubleshooting</h4>
+</div>
+      <div class="body">
+      <p>If something isn't working with Power+ or you want to submit a feature request, you should <a href="https://github.com/jottocraft/dtps/issues/new/choose">submit a new issue on GitHub</a></p>
+      <p>For general questions, feedback, or anything else, email <a href="mailto:hello@jottocraft.com">hello@jottocraft.com</a></p>
+      </div>
+  </div>
+  
+ 
+    </div>
+
+
+
+</div>
+
 </body>
 </html>
