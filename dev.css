@@ -30,13 +30,13 @@ Power+ (Project DTPS) CSS v1.6.0
 }
 
 body.darkDtech {
-    --flex-light: #bf573c;
+    --flex-light: #bb4a2d;
     --flex-bg: #a73a21;
     --flex-text: white;
     --flex-sectext: #fb9c83;
-    --flex-layer1: #af4b32;
-    --flex-layer2: #9e422c;
-    --flex-layer3: #7f311d;
+    --flex-layer1: #da5332;
+    --flex-layer2: #923923;
+    --flex-layer3: #6f2715;
     --theme-color: #f2896f;
     --theme-color-outline: rgb(242, 137, 111, 0.75);
     --theme-text-color: #af4125;
