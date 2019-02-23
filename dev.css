@@ -29,6 +29,19 @@ Power+ (Project DTPS) CSS v1.6.0
     display: none !important;
 }
 
+body.dark.dtech {
+    --flex-light: #bf573c;
+    --flex-bg: #a73a21;
+    --flex-text: white;
+    --flex-sectext: #fb9c83;
+    --flex-layer1: #af4b32;
+    --flex-layer2: #9e422c;
+    --flex-layer3: #7f311d;
+    --theme-color: #f2896f;
+    --theme-color-outline: rgb(242, 137, 111, 0.75);
+    --theme-text-color: #af4125;
+}
+
 .dash.cal .announcement {
     margin-right: 0px;
 }
@@ -43,10 +56,6 @@ body.dark .list {
 
 body.isolatedGoogleClass .header .btns {
     display: none !important;
-}
-
-body.dark .sidenav .item:not(.active) {
-    color: var(--flex-light, #b2b2b2);
 }
 
 body.isolatedGoogleClass .background {
