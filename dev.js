@@ -1263,7 +1263,7 @@ dtps.render = function() {
     <br /><br />
 <div class="googleClassroom prerelease">
     <h5>google_logo Classes</h5>
-    <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">remove</i>Remove google_logo Classroom</button>
+    <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">remove</i>Remove Google Classroom</button>
     <br /><br />
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
     <div class="isolatedGClassList"><p>Loading...</p></div>
