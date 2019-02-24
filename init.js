@@ -1,10 +1,11 @@
-/* Power+ v1.5.0
+/* Power+ v1.6.0
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
 Email: hello@jottocraft.com */
+alert("Power+ is currently going through maintence. Power+ may not work as expected during this time.")
 var dtps = {
-  ver: 150,
-  readableVer: "v1.5.0",
+  ver: 160,
+  readableVer: "v1.6.0",
   trackSuffix: "",
   showLetters: false,
   fullNames: false,
@@ -125,7 +126,8 @@ if (req == "assignGET") {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
-  fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
+  fluidStorage = "localStorage";
+  fluidThemes = [[{name: "d.tech", id: "darkDtech", icon: "school"}, "nitro", "aquatic"]];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719"]
@@ -144,6 +146,33 @@ dtps.init = function () {
   dtps.user.prof = jQuery(".avatar_circle.avatar-img").attr("src")
   dtps.classColors = [];
   $ = jQuery;
+  var min = new Date().getMinutes();
+  if (String(min).length < 2) min = Number("0" + String(min))
+  var time = Number(String(new Date().getHours()) + String(min))
+  dtps.period = null;
+  if ((new Date().getDay() > 0) && (new Date().getDay() < 6)) {
+	 //Weekday
+	  if (new Date().getDay() == 3) {
+		  //Wednesday
+		  if ((time > 0929) && (time < 1018)) dtps.period = 1;
+		  if ((time > 1019) && (time < 1108)) dtps.period = 2;
+			if ((time > 1109) && (time < 1158)) dtps.period = 3;
+			if ((time > 1229) && (time < 1318)) dtps.period = 4;
+			if ((time > 1319) && (time < 1408)) dtps.period = 5;
+			if ((time > 1409) && (time < 1458)) dtps.period = 6;
+	  } else {
+		if (new Date().getDay() !== 4) {
+			//M, TU, F
+			if ((time > 0917) && (time < 1013)) dtps.period = 1;
+			if ((time > 1022) && (time < 1118)) dtps.period = 2;
+			if ((time > 1119) && (time < 1215)) dtps.period = 3;
+			if ((time > 1246) && (time < 1342)) dtps.period = 4;
+			if ((time > 1343) && (time < 1439)) dtps.period = 5;
+			if ((time > 1440) && (time < 1536)) dtps.period = 6;
+		}
+	  }
+  }
+  if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) { dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period]; }
 jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
@@ -262,6 +291,11 @@ window.dataLayer = window.dataLayer || [];
         num: i
       })
 	  dtps.classLocs.push(loc[1] + "/" + loc[2]);
+      if (dtps.currentClass == id) {
+            dtps.selectedClass = i;
+            dtps.selectedContent = "stream";
+	    dtps.classStream(i);
+      }
     }
     dtps.log("Grades loaded: ", dtps.classes)
     if (dtps.shouldRender) dtps.render();
@@ -443,9 +477,20 @@ dtps.classStream = function(num, renderOv) {
 }
 dtps.onThemeChange = function() {
 	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #2C2F33)" : "var(--flex-bg, white)") + ")"
+	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #252525)" : "var(--flex-bg, white)") + ")"
 	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
 	$(".background").css("background", next)
+}
+dtps.schedule = function() {
+	var schedule = {}
+	if (confirm("Type in which period you have each class as a number (1-6). If the class is from a different semester or you don't have that class for a class period, leave the box blank")) {
+	for (var i = 0; i < dtps.classes.length; i++) {
+		var num = prompt("Which class period do you have '" + dtps.classes[i].name + "'? (Number 1-6 or leave blank)");
+		if ((Number(num) > 0) && (Number(num) < 7)) schedule[num] = dtps.classes[i].id;
+	}
+	localStorage.setItem("dtpsSchedule", JSON.stringify(schedule));
+	alert("Your schedule has been saved. When loading Power+, Power+ will try to load the class that you are in instead of the dashboard, if you are visiting during school hours.")
+	}
 }
 dtps.renderStream = function(stream, searchRes) {
 	var streamlist = [];
@@ -501,7 +546,7 @@ dtps.renderStream = function(stream, searchRes) {
 	searchRes = "";
 }
 }
-  return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + streamlist.join("") );
+  return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + streamlist.join("") );
   //return streamlist.join("");
 }
 dtps.search = function() {
@@ -680,9 +725,9 @@ dtps.gradebook = function(num) {
 			}
 		}
 		dtps.classes[num].weights[i].icon = "";
-		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (15%)"; }
-	        if (dtps.classes[num].weights[i].weight.toUpperCase().includes("COMPREHENSION") || dtps.classes[num].weights[i].weight.includes("CC")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `; dtps.classes[num].weights[i].weight = "Comprehension Checks (0%)"; }
-		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks (85%)"; }
+		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
+	        if (dtps.classes[num].weights[i].weight.toUpperCase().includes("COMPREHENSION") || dtps.classes[num].weights[i].weight.includes("CC")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `; dtps.classes[num].weights[i].weight = "Comprehension Checks (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
+		if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
 		if (dtps.classes[num].weights[i].icon == "") dtps.classes[num].weights[i].icon = '<i class="material-icons">category</i> ';
 		weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--flex-sectext, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>` );
 		sidebarTmp.push(`<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
@@ -915,9 +960,7 @@ dtps.showClasses = function(override) {
 	  if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
 	  if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
 	  $('body').removeClass('isolatedGoogleClass');
-	  var prev = $(".background").attr("style").split("background: ")[1]
 	  $(".btn.google").hide();
-	  $(".background").css("background", prev);
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
 		  dtps.bgTimeout = setTimeout(function() {
@@ -957,6 +1000,11 @@ dtps.showClasses = function(override) {
     if (dtps.selectedClass == "announcements") dtps.announcements();
     if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
   });
+}
+if (override == "first") {
+	if (dtps.currentClass) {
+		$(".class." + dtps.selectedClass).click();
+	}
 }
 }
 dtps.saveClassOrder = function() {
@@ -1091,9 +1139,11 @@ dtps.render = function() {
   if (window.localStorage.dtpsLetterGrades == "true") { $("body").addClass("letterGrades"); }
   if (window.localStorage.dtpsFullNames == "true") { dtps.fullNames = true; }
   $("body").addClass("dashboard");
+	if (!dtps.currentClass) {
   dtps.selectedClass = "dash";
-  dtps.sorting = false;
   dtps.selectedContent = "stream";
+	}
+	dtps.sorting = false;
   dtps.masterContent = "assignments";
 	var trackDom = "";
 	if (dtps.trackSuffix !== "") {
@@ -1190,7 +1240,7 @@ dtps.render = function() {
 <div class="abtpage display">
     <h5>Display</h5>
     <br />
-    <p><b>Theme</b></p>
+    <p>Theme</p>
     <div class="btns row themeSelector"></div>
     <br /><br />
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
@@ -1211,10 +1261,11 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
     <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">sort</i>Sort classes</button>
+    <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule</button>
     <br /><br />
 <div class="googleClassroom prerelease">
     <h5>google_logo Classes</h5>
-    <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">remove</i>Remove google_logo Classroom</button>
+    <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">link_off</i>Unlink Google Classroom</button>
     <br /><br />
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
     <div class="isolatedGClassList"><p>Loading...</p></div>
@@ -1223,7 +1274,7 @@ dtps.render = function() {
     <h5>google_logo Classroom</h5>
     <p>Link google_logo Classroom to see assignments and classes from both PowerSchool and Google.</p>
     <p>If Power+ thinks one of your PowerSchool classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
-    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn sudo"><i class="material-icons">book</i>Link google_logo Classroom</button>
+    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn sudo"><i class="material-icons">link</i>Link Google Classroom</button>
 </div>
 </div>
 <div style="display: none;" class="abtpage extension">
@@ -1321,7 +1372,7 @@ dtps.render = function() {
 	
 	var prev = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + jQuery("body").css("background-color") + ")"
 	  $(".background").css("background", prev)
-  dtps.showClasses();
+  dtps.showClasses("first");
   dtps.gapis();
   $("link").remove();
   jQuery("<link/>", {
