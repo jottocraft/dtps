@@ -1,5 +1,5 @@
 /*
-Power+ (Project DTPS) CSS v1.6.0
+Power+ CSS v1.6.0
 (c) jottocraft 2018-2019
 */
 
@@ -164,11 +164,11 @@ body {
     opacity: 0.9;
 }
 
-.search {
+.search, .classContent i.inputIcon {
     margin: 15px 75px 0px 10px !important;
 }
 
-.dash.stream .search {
+.dash.stream .search, .classContent .dash.stream i.inputIcon {
     margin: 15px 25px 0px 10px !important;
 }
 
