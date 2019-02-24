@@ -125,6 +125,7 @@ if (req == "assignGET") {
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
+  fluidStorage = "localStorage";
   fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
