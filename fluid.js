@@ -1,5 +1,5 @@
 /*!
-Fluid UI JavaScript Modules v3.0.0
+Fluid UI JavaScript Modules v3.1.0
 
 Copyright (c) 2017-2019 jottocraft
 
@@ -36,9 +36,10 @@ SOFTWARE.
      }
      return "";
  }
-
+if (typeof fluidStorage == "undefined") { fluidStorage = "cookies" }
 fluid = new Object;
 fluid.contextMenuOpen = false;
+fluid.includedFlexThemes = ["midnight", "nitro", "aquatic", "city", "highContrast"]
 fluid.theme = function(theme, dontSave) {
   if (theme == "toggle") { if ($("body").hasClass("dark")) { theme = "light"; } else { theme = "dark"; } }
   $(".btns.themeSelector .btn").removeClass("active");
@@ -47,36 +48,28 @@ fluid.theme = function(theme, dontSave) {
   for (var ii = 0; ii < classes.length; ii++) { if ((classes[ii].startsWith("light") || classes[ii].startsWith("dark")) && ((classes[ii] !== "dark") && (classes[ii] !== "light"))) { $("body").removeClass(classes[ii]) } }
   document.body.style = "";
   if (theme) {
-  $("body").removeClass("midnight");
-  $("body").removeClass("nitro");
-  $("body").removeClass("aquatic");
-}
+    for (var i = 0; i < fluid.includedFlexThemes.length; i++) $("body").removeClass(fluid.includedFlexThemes[i])
+  }
   if (theme == "dark") { $("body").addClass("dark"); }
-  if (theme == "light") { $("body").removeClass("dark"); }
-  if (theme == "midnight") { $("body").addClass("dark"); $("body").addClass("midnight"); }
-  if (theme == "nitro") { $("body").addClass("dark"); $("body").addClass("nitro"); }
-  if (theme == "aquatic") { $("body").addClass("dark"); $("body").addClass("aquatic"); }
+  if (theme == "light") { $("body").removeClass("dark"); } else { $("body").removeClass("light"); }
+  if (fluid.includedFlexThemes.includes(theme)) { $("body").addClass("dark"); $("body").addClass(theme); }
+  if (theme == "highContrast") { $("body").removeClass("dark"); }
   if (String(theme).startsWith("light")) { $("body").removeClass("dark"); $("body").addClass(theme); }
   if (String(theme).startsWith("dark")) { $("body").addClass("dark"); $("body").addClass(theme); }
   if (theme == "auto") {
     var hours = new Date().getHours()
-    // Light: 6AM - 4PM Dark: 5PM - 5AM
-    if (hours > 5 && hours < 17) {
+    // Light: 6AM - 5PM Dark: 6PM - 5AM
+    if (hours > 5 && hours < 18) {
       $("body").removeClass("dark");
     } else {
       $("body").addClass("dark");
     }
   }
-  try { if (typeof dtps !== "undefined") {
-		if (dtps.onThemeChange) dtps.onThemeChange();
-	} } catch(e) { console.warn("[FLUID.UI] Ignoring DTPS theme change", e); }
   if (theme == undefined) {
     if (dontSave !== "unsetStat") { var activeTheme = "light"; } else { var activeTheme = "unset"; }
     if ($("body").hasClass("dark")) var activeTheme = "dark";
     if ($("body").hasClass("light")) var activeTheme = "light";
-    if ($("body").hasClass("nitro")) var activeTheme = "nitro";
-    if ($("body").hasClass("midnight")) var activeTheme = "midnight";
-    if ($("body").hasClass("aquatic")) var activeTheme = "aquatic";
+    if (fluid.includedFlexThemes.includes(theme)) var activeTheme = theme;
     if (activeTheme) { $(".btns.themeSelector .btn." + activeTheme.replace("#", "")).addClass("active"); }
     for (var i = 0; i < document.body.classList.length.length; i++) { if (document.body.classList.length[i].startsWith("light")) { var activeTheme = document.body.classList.length[i] } if (document.body.classList.length[i].startsWith("dark")) { var activeTheme = document.body.classList.length[i] } }
     return activeTheme;
@@ -112,7 +105,7 @@ fluid.theme = function(theme, dontSave) {
         --flex-light: ` +  tinycolor(baseColor).brighten(10).toString() + `;
         --flex-bg: ` + tinycolor(baseColor).brighten(5).toString() + `;
         --flex-text: ` + colorDark + `;
-	--flex-sectext: ` + tinycolor(baseColor).brighten(40).desaturate(50).toString() + `;
+        --flex-sectext: ` + tinycolor(baseColor).brighten(40).desaturate(50).toString() + `;
         --flex-layer1: ` + tinycolor(baseColor).darken(5).toString() + `;
         --flex-layer2: ` + tinycolor(baseColor).darken(10).toString() + `;
         --flex-layer3: ` + tinycolor(baseColor).darken(15).toString() + `;
@@ -125,7 +118,7 @@ fluid.theme = function(theme, dontSave) {
   if (theme !== undefined) {
   if ($("#activecontextmenu").children(".btn").hasClass("active")) {$("#activecontextmenu").children(".btn").css("background-color", "#207bdf") } else {
   if ($("#activecontextmenu").length) { if ($("#activecontextmenu").children().length == 2) { if ($("body").hasClass("dark")) { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #16181a);" } else { $("#activecontextmenu").children(".btn, i")[0].style = "background-color: var(--flex-layer3, #dddddd);" } } } }
-  if (dontSave !== true) localStorage.setItem("fluidTheme", theme);
+  if (dontSave !== true) { if (fluidStorage == "localStorage") { localStorage.setItem("fluidTheme", theme); } else { document.cookie = "fluidTheme=" + theme; } }
 }
 }
 fluid.isOutlined = function() {
@@ -170,51 +163,72 @@ fluid.themePages = function(ele, dir) {
 }
 fluid.init = function() {
   if (typeof fluidThemes !== "undefined") {
-    var flexDom = [];
-    for (var i = 0; i < fluidThemes.length; i++) {
-      if (typeof fluidThemes[i] == "object") { if (!fluidThemes[i].icon) { fluidThemes[i].icon = "palette";} flexDom.push(`<div onclick="fluid.theme('` + fluidThemes[i].id + `')" class="btn ` + fluidThemes[i].id.replace("#", "") + `"><i class="material-icons">` + fluidThemes[i].icon + `</i> ` + fluidThemes[i].name + `</div>`)  }
+    if (typeof fluidThemes[0] == "string") {
+      fluidThemes = [];
     }
+    var flexDom = [];
+    var pages = [];
+    for (var i = 0; i < fluidThemes.length; i++) {
+    pages.push([]);
+    for (var ii = 0; ii < fluidThemes[i].length; ii++) {
+      if (typeof fluidThemes[i][ii] == "object") { if (!fluidThemes[i][ii].icon) { fluidThemes[i][ii].icon = "palette";} pages[i].push(`<div onclick="fluid.theme('` + fluidThemes[i][ii].id + `')" class="btn ` + fluidThemes[i][ii].id.replace("#", "") + `"><i class="material-icons">` + fluidThemes[i][ii].icon + `</i> ` + fluidThemes[i][ii].name + `</div>`)  }
+      if (fluidThemes[i][ii] == "midnight") { pages[i].push(`<div onclick="fluid.theme('midnight')" class="btn midnight"><i class="material-icons">brightness_3</i> Midnight Black</div>`) }
+      if (fluidThemes[i][ii] == "nitro") { pages[i].push(`<div onclick="fluid.theme('nitro')" class="btn nitro"><i class="material-icons">whatshot</i> Nitro</div>`) }
+      if (fluidThemes[i][ii] == "aquatic") { pages[i].push(`<div onclick="fluid.theme('aquatic')" class="btn aquatic"><i class="material-icons">pool</i> Aqua</div>`) }
+      if (fluidThemes[i][ii] == "city") { pages[i].push(`<div onclick="fluid.theme('city')" class="btn city"><i class="material-icons">location_city</i> City</div>`) }
+      if (fluidThemes[i][ii] == "highContrast") { pages[i].push(`<div onclick="fluid.theme('highContrast')" class="btn highContrast"><i class="material-icons">accessibility_new</i> High Contrast</div>`) }
+      if (fluidThemes[i][ii] == "rainbow") { pages[i] = [`<div onclick="fluid.theme('darkRed')" class="btn darkRed"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #8e0004;" class="material-icons"></i></div>
+      <div onclick="fluid.theme('darkOrange')" class="btn darkOrange"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #8e4b00;" class="material-icons"></i></div>
+      <div onclick="fluid.theme('darkYellow')" class="btn darkYellow"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #6a5a00;"class="material-icons"></i></div>
+      <div onclick="fluid.theme('darkGreen')" class="btn darkGreen"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #257300;" class="material-icons"></i></div>
+      <div onclick="fluid.theme('darkBlue')" class="btn darkBlue"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #0043bf;" class="material-icons"></i></div>
+      <div onclick="fluid.theme('darkPurple')" class="btn darkPurple"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #8100b9;" class="material-icons"></i></div>`] }
+    } }
     fluid.themePage = 0;
     fluid.themePageList = [];
   $( ".btns.row.themeSelector" ).html(`
-    <div style="display: none;" onclick="fluid.themePages(this, -1);" class="btn sudo"><i class="material-icons">keyboard_arrow_left</i></div>
+    <div style="display: none;" onclick="fluid.themePages(this, -1);" class="btn"><i class="material-icons">keyboard_arrow_left</i></div>
     <span class="s0">
     <div onclick="fluid.theme('auto')" class="btn auto"><i class="material-icons">brightness_auto</i> Auto</div>
     <div onclick="fluid.theme('light')" class="btn light"><i class="material-icons">brightness_high</i> Light</div>
     <div onclick="fluid.theme('dark')" class="btn dark"><i class="material-icons">brightness_low</i> Dark</div>
     </span>
     <span style="display:none;" class="s1">
-    ` + ( fluidThemes.includes("midnight") ? ( `<div onclick="fluid.theme('midnight')" class="btn midnight"><i class="material-icons">brightness_3</i> Midnight Black</div>` ) : ("") ) + `
-    ` + ( fluidThemes.includes("nitro") ? ( `<div onclick="fluid.theme('nitro')" class="btn nitro"><i class="material-icons">whatshot</i> Nitro</div>` ) : ("") ) + `
-    ` + ( fluidThemes.includes("aquatic") ? ( `<div onclick="fluid.theme('aquatic')" class="btn aquatic"><i class="material-icons">pool</i> Aqua</div>` ) : ("") ) + `
+    ` + (pages[0] ? pages[0].join("") : "") + `
     </span>
     <span style="display:none;" class="s2">
-    ` + flexDom.join("") + `
+    ` + (pages[1] ? pages[1].join("") : "") + `
     </span>
     <span style="display:none;" class="s3">
-    ` + ( fluidThemes.includes("rainbow") ? (
-      `<div onclick="fluid.theme('darkRed')" class="btn darkRed"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #8e0004;" class="material-icons"></i></div>
-      <div onclick="fluid.theme('darkOrange')" class="btn darkOrange"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #8e4b00;" class="material-icons"></i></div>
-      <div onclick="fluid.theme('darkYellow')" class="btn darkYellow"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #6a5a00;"class="material-icons"></i></div>
-      <div onclick="fluid.theme('darkGreen')" class="btn darkGreen"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #257300;" class="material-icons"></i></div>
-      <div onclick="fluid.theme('darkBlue')" class="btn darkBlue"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #0043bf;" class="material-icons"></i></div>
-      <div onclick="fluid.theme('darkPurple')" class="btn darkPurple"><i style="width: 24px; height: 24px; border-radius: 50%; background-color: #8100b9;" class="material-icons"></i></div>`
-    ) : ("") ) + `
+    ` + (pages[2] ? pages[2].join("") : "") + `
     </span>
-    <div onclick="fluid.themePages(this, +1);" class="btn sudo"><i class="material-icons">keyboard_arrow_right</i></div>
+    <div onclick="fluid.themePages(this, +1);" class="btn"><i class="material-icons">keyboard_arrow_right</i></div>
     `);
     for (var i = 0; i < ($('.themeSelector').children().length - 2); i++) {
       if ($('.themeSelector .s' + i).children().length) fluid.themePageList.push(i);
     }
   }
 
+if (fluidStorage == "localStorage") {
   if (window.localStorage.fluidTheme !== undefined) {
-    fluid.theme(window.localStorage.fluidTheme, true)
+     fluid.theme(window.localStorage.fluidTheme, true)
+   } else {
+     if (fluid.theme(undefined, "unsetStat") == "unset") fluid.theme("auto", true);
+   }
+} else {
+  if (getCookie("fluidTheme") !== "") {
+    fluid.theme(getCookie("fluidTheme"), true)
   } else {
     if (fluid.theme(undefined, "unsetStat") == "unset") fluid.theme("auto", true);
   }
+}
 
-  $( ".btns:not(.themeSelector) .btn, .list.select .item, .sidenav .item, .sidebar .item" ).click(function(event) {
+  if (!$("body").hasClass("notwemoji")) {
+  if (typeof twemoji !== "undefined") twemoji.parse(document.body);
+}
+
+  $("loader").html('<div class="bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>');
+  $( ".btns:not(.themeSelector) .btn:not(.manual), .list.select .item:not(.manual), .sidenav .item:not(.manual), .sidebar .item:not(.manual)" ).click(function(event) {
   if ($(event.target).parent().hasClass("multiple")) {
     $(this).toggleClass("active")
   } else {
@@ -320,7 +334,12 @@ if (fluid.expBeh) { event.preventDefault(); fluid.bounceBack(event.target); }
 
 $( document ).ready(fluid.init);
 
+$( window ).resize(function() {
+  fluid.exitContextMenu(true);
+});
+
 fluid.exitContextMenu = function(force) {
+  if (fluid.contextMenuOpen) {
   $("#pagewrapper").removeClass("blur")
   $("#activecontextmenu").children(".contextmenu").css("display", "none");
   if (force) { wait = 0; } else { wait = 300; }
@@ -336,6 +355,7 @@ fluid.exitContextMenu = function(force) {
   document.body.style.overflow = "";
   $( "body" ).css( "padding-right", "");
 }, wait);
+}
 }
 
 fluid.bounceBack = function (ele) {
@@ -359,7 +379,7 @@ fluid.cards = function(element, isModal) {
   var focus = $(element).hasClass('focus');
   if (focus) {
     fluid.generateWrapper();
-        $(element).css({top: window.scrollY + 25});
+        $(element).css({top: window.scrollY + 50});
         if (menuopen) {
           fluid.cards.close(".focus");
           $("#pagewrapper").addClass('blur');
