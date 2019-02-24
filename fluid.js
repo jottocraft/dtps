@@ -65,6 +65,7 @@ fluid.theme = function(theme, dontSave) {
       $("body").addClass("dark");
     }
   }
+  if (fluid.onThemeChange) fluid.onThemeChange();
   if (theme == undefined) {
     if (dontSave !== "unsetStat") { var activeTheme = "light"; } else { var activeTheme = "unset"; }
     if ($("body").hasClass("dark")) var activeTheme = "dark";
