@@ -173,7 +173,15 @@ dtps.init = function () {
 	  }
   }
   if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) { dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period]; }
-jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
+jQuery.getScript('https://dtps.js.org/fluid.js', function() { 
+	fluid.init();
+	fluid.onThemeChange = function() {
+	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #252525)" : "var(--flex-bg, white)") + ")"
+	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+	$(".background").css("background", next);
+	}
+});
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -474,12 +482,6 @@ dtps.classStream = function(num, renderOv) {
       dtps.checkReady(num);
     });
   }
-}
-dtps.onThemeChange = function() {
-	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #252525)" : "var(--flex-bg, white)") + ")"
-	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
-	$(".background").css("background", next)
 }
 dtps.schedule = function() {
 	var schedule = {}
