@@ -1238,7 +1238,7 @@ dtps.render = function() {
 <div class="abtpage display">
     <h5>Display</h5>
     <br />
-    <p><b>Theme</b></p>
+    <p>Theme</p>
     <div class="btns row themeSelector"></div>
     <br /><br />
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
@@ -1259,6 +1259,7 @@ dtps.render = function() {
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
     <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">sort</i>Sort classes</button>
+    <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule</button>
     <br /><br />
 <div class="googleClassroom prerelease">
     <h5>google_logo Classes</h5>
