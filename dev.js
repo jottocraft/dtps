@@ -2,6 +2,7 @@
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
 Email: hello@jottocraft.com */
+alert("Power+ is currently going through maintence. Power+ may not work as expected during this time.")
 var dtps = {
   ver: 160,
   readableVer: "v1.6.0 (GM)",
@@ -126,7 +127,7 @@ if (req == "assignGET") {
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
   fluidStorage = "localStorage";
-  fluidThemes = [ "midnight", "nitro", "aquatic", "rainbow" ];
+  fluidThemes = [[{name: "d.tech", id: "darkDtech", icon: "school"}, "nitro", "aquatic"]];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719"]
@@ -545,7 +546,7 @@ dtps.renderStream = function(stream, searchRes) {
 	searchRes = "";
 }
 }
-  return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + streamlist.join("") );
+  return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ( (typeof Fuse !== "undefined" ? `<div style="text-align: right;"><input value="` + searchRes + `" onchange="dtps.search()" class="search" placeholder="Search assignments" type="text" /></div>` : "") + streamlist.join("") );
   //return streamlist.join("");
 }
 dtps.search = function() {
