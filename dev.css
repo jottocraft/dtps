@@ -403,6 +403,8 @@ body.titlebar .classContent {
     box-shadow: none !important;
     color: #cacaca;
     border-radius: 0px !important;
+    font-weight: normal;
+    letter-spacing: normal;
 }
 
 .tabs.btns .btn:not(.active) {
@@ -715,7 +717,7 @@ body.dark .class .name {
 }
 
 body.dark {
-    --light: var(--flex-light, #7d7d7d); --norm: var(--flex-layer1, #383838); --dark: var(--flex-layer3, #101010); --grad: linear-gradient(to right bottom, var(--flex-layer3, #3e3e3e), var(--flex-bg, #2C2F33)); }
+    --light: var(--flex-light, #7d7d7d); --norm: var(--flex-layer1, #383838); --dark: var(--flex-layer3, #101010); --grad: linear-gradient(to right bottom, var(--flex-layer3, #3e3e3e), var(--flex-bg, #252525)); }
 
 body:not(.dark) {
     --light: var(--flex-light, #d4d4d4); --norm: var(--flex-layer1, #a7a7a7); --dark: var(--flex-layer3, #676767); --grad: linear-gradient(to bottom right, var(--flex-layer3, #d4d4d4), var(--flex-bg, #FFFFFF)); }
@@ -786,7 +788,7 @@ body:not(.dark):not(.dashboard) .background:before {
 }
 
 body.dark:not(.dashboard) .background:before {
-    background: linear-gradient(to right bottom, var(--light), var(--flex-bg, #2C2F33)) !important;
+    background: linear-gradient(to right bottom, var(--light), var(--flex-bg, #252525)) !important;
 }
 
 body.dark.midnight:not(.dashboard) .background:before {
