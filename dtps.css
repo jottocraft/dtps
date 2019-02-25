@@ -50,20 +50,12 @@ body.darkDtech {
     border-radius: 5px;
 }
 
-body.dark .list {
-    background-color: var(--flex-layer1, #292c2f) !important;
-}
-
 body.isolatedGoogleClass .header .btns {
     display: none !important;
 }
 
 body.isolatedGoogleClass .background {
     background: linear-gradient(to right bottom, rgb(177, 168, 35), rgb(8, 101, 59)) !important;
-}
-
-body:not(.dark) .list {
-    background-color: var(--flex-layer1, #f1f1f1) !important;
 }
 
 .fc-event {
