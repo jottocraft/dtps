@@ -243,7 +243,10 @@ body.titlebar .sidebar {
 }
 
 body.dark .spinner > div {
-    background-color: #bbb;
+    background-color: var(--flex-sectext, #bbb);
+}
+body:not(.dark) .spinner > div {
+    background-color: var(--flex-sectext, #333);
 }
 
 .class .grade .letter, .class .grade .points , .class .grade .material-icons {
