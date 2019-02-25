@@ -2,11 +2,10 @@
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
 Email: hello@jottocraft.com */
-alert("Power+ is currently going through maintence. Power+ may not work as expected during this time.")
 var dtps = {
-  ver: 160,
-  readableVer: "v1.6.0 (GM)",
-  trackSuffix: " (GM)",
+  ver: 170,
+  readableVer: "v1.7.0 (dev)",
+  trackSuffix: " (dev)",
   showLetters: false,
   fullNames: false,
   latestStream: []
@@ -127,7 +126,7 @@ if (req == "assignGET") {
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
   fluidStorage = "localStorage";
-  fluidThemes = [[{name: "d.tech", id: "darkDtech", icon: "school"}, "nitro", "aquatic"]];
+  fluidThemes = [[ "midnight", "nitro", "aquatic" ], ["rainbow"]];
   sudoers = ["10837719", "10838212", "10894474", "10463823"]
   if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
   og = ["10894474", "10837719"]
@@ -136,7 +135,7 @@ dtps.init = function () {
   if (highFlyers.includes(HaikuContext.user.login)) { jQuery("body").addClass("highFlyer"); }
   contributors = ["10837719", "10463823", "10894474"]
   if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
-  if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+  if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); fluidThemes[0].push({name: "d.tech", id: "darkDtech", icon: "school"}); }
   if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
   if (sudoers.includes(HaikuContext.user.login)) jQuery("body").addClass("prerelease");
   dtps.shouldRender = false;
@@ -173,7 +172,15 @@ dtps.init = function () {
 	  }
   }
   if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) { dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period]; }
-jQuery.getScript('https://dtps.js.org/fluid.js', () => fluid.init);
+jQuery.getScript('https://dtps.js.org/fluid.js', function() { 
+	fluid.init();
+	fluid.onThemeChange = function() {
+	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #252525)" : "var(--flex-bg, white)") + ")"
+	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+	$(".background").css("background", next);
+	}
+});
 jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function() {
 window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -474,12 +481,6 @@ dtps.classStream = function(num, renderOv) {
       dtps.checkReady(num);
     });
   }
-}
-dtps.onThemeChange = function() {
-	var next =  window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-	if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #252525)" : "var(--flex-bg, white)") + ")"
-	if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
-	$(".background").css("background", next)
 }
 dtps.schedule = function() {
 	var schedule = {}
