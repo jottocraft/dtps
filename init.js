@@ -2,7 +2,6 @@
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
 Email: hello@jottocraft.com */
-alert("Power+ is currently going through maintence. Power+ may not work as expected during this time.")
 var dtps = {
   ver: 160,
   readableVer: "v1.6.0",
