@@ -36,14 +36,19 @@ dtps.firstrun = function () {
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="window.location.reload();" type="button" value="Cancel"><input class="button button" onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
 };
-dtps.nativeAlert = function (text, sub) {
+dtps.nativeAlert = function (text, sub, loadingSplash) {
   if (text == undefined) var text = "";
   if (sub == undefined) var sub = "";
+	if (loadingSplash) {
+jQuery("body").append(`<div id="TB_overlay" style="position: fixed; opacity: 0.9;">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 300px;width: 100%;">Power+</h1><h5 style=" font-family: Product sans; font-size: 30px; color: gray; width: 100%; text-align: center; position: fixed; top: 400px;">` + sub + `</h5><div class="spinner" style="margin-top: 550px;"> <div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
+<style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner{margin: 100px auto 0; width: 70px; text-align: center;}.spinner > div{width: 18px; height: 18px; background-color: #333; border-radius: 100%; display: inline-block; -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both; animation: sk-bouncedelay 1.4s infinite ease-in-out both;}.spinner .bounce1{-webkit-animation-delay: -0.32s; animation-delay: -0.32s;}.spinner .bounce2{-webkit-animation-delay: -0.16s; animation-delay: -0.16s;}@-webkit-keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0)}40%{-webkit-transform: scale(1.0)}}@keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0); transform: scale(0);}40%{-webkit-transform: scale(1.0); transform: scale(1.0);}}</style></div>`)
+	} else {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
 <p>` + sub + `</p>
 </div>
 `)
+	}
 };
 dtps.bugReport = function() {
   window.open("https://github.com/jottocraft/dtps/issues/new?assignees=jottocraft&labels=bug&template=bug_report.md")
@@ -212,7 +217,7 @@ window.dataLayer = window.dataLayer || [];
 	    dtps.log("New release")
       dtps.showChangelog = true;
 	    dtps.shouldRender = true;
-      dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer);
+      dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer, true);
     } else {
 	  if (!Number(HaikuContext.user.login)) {
 		  dtps.shouldRender = false;
@@ -223,7 +228,7 @@ window.dataLayer = window.dataLayer || [];
       dtps.nativeAlert("Page error", 'Go to the PowerSchool homepage to load Power+');
 				     } else {
       dtps.shouldRender = true;
-      dtps.nativeAlert("Loading...");
+      dtps.nativeAlert("Loading...", undefined, true);
 			  }
 		      
 	      
