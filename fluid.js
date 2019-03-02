@@ -380,7 +380,7 @@ fluid.cards = function(element, isModal) {
   var focus = $(element).hasClass('focus');
   if (focus) {
     fluid.generateWrapper();
-        $(element).css({top: window.scrollY + 50});
+        $(element).css({top: window.scrollY + 25});
         if (menuopen) {
           fluid.cards.close(".focus");
           $("#pagewrapper").addClass('blur');
