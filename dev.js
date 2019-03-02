@@ -1200,10 +1200,6 @@ dtps.render = function() {
     <i class="material-icons">assessment</i>
     Grades
     </button>
-    <button onclick="alert('The grade editor is just for fun. Does not change your actual grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');dtps.showClasses(true);" class="btn sudo gradeEditor" style="display: none;">
-    <i class="material-icons">edit</i>
-    Grade Editor
-    </button>
     </div>
     </div>
 	<div class="classContent">
@@ -1253,16 +1249,13 @@ dtps.render = function() {
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
     <div onclick="dtps.gradeTrend(this);" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">timeline</i> Display grade trend</div>
+    <div class="label"><i class="material-icons">timeline</i> Show grade trend</div>
     <br /><br />
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">font_download</i> Display letter grades instead of points earned</div>
+    <div class="label"><i class="material-icons">font_download</i> Show letter grades instead of points earned</div>
     <br /><br />
     <div onclick="dtps.fullNames = !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames); dtps.showClasses(true);" class="switch` + (window.localStorage.dtpsFullNames == "true" ? " active" : "") + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">title</i> Display full class names</div>
-    <br /><br />
-    <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
+    <div class="label"><i class="material-icons">title</i> Show full class names</div>
 </div>
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
