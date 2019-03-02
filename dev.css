@@ -1,5 +1,5 @@
 /*
-Power+ CSS v1.7.0 [DEV]
+Power+ CSS v1.7.0 (dev)
 (c) jottocraft 2018-2019
 */
 
@@ -8,6 +8,10 @@ Power+ CSS v1.7.0 [DEV]
     font-style: normal;
     font-weight: 400;
     src: url(outline.woff2) format('woff2');
+}
+
+.card.focus {
+    top: 25px !important;
 }
 
 .material-icons {
