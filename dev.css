@@ -10,10 +10,6 @@ Power+ CSS v1.7.0 (dev)
     src: url(outline.woff2) format('woff2');
 }
 
-.card.focus {
-    top: 25px !important;
-}
-
 .material-icons {
     font-family: 'Material Icons Outline';
 }
