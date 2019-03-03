@@ -129,12 +129,12 @@ if (req == "assignGET") {
 	}
 }
 dtps.computeClassGrade = function(data) {
-        weights = [];
+        var weights = [];
 	var total = 0;
 	for (var i = 0; i < data.weights.length; i++) {
 		weights.push({total: 0, earned: 0, weighted: 0, weight: (Number(data.weights[i].weight.match(/\(([^)]+)\)/)[1].replace("%", "")) / 100) })
 		for (var ii = 0; ii < data.weights[i].assignments.length; ii++) {
-		var grade = data.weights[i].assignments[ii].disp.split(": ").pop().split("/")
+		var grade = data.stream[data.streamitems.indexOf(data.weights[i].assignments[ii].id)].grade.split("/")
 		weights[i].total = weights[i].total + Number(grade[1])
 	        weights[i].earned = weights[i].earned + Number(grade[0])
 		}
@@ -811,7 +811,7 @@ dtps.assignment = function(id, classNum) {
 	}
 	}
 	if (assignment.grade) {
-	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">star_border</i>` + "<b>Points earned</b>:  " + assignment.grade + " (" + assignment.letter +  `)</div>`)
+	list.push(`<div onclick="var tmp = '` + assignment.grade + `'; dtps.classes[` + classNum + `].stream[` + streamNum + `].grade = window.prompt('What-if grade:'); alert('Your grade in this class would move from ` + dtps.classes[classNum].grade + `% to ' + (dtps.computeClassGrade(dtps.classes[` + classNum + `]) * 100) + '%'); dtps.classes[` + classNum + `].stream[` + streamNum + `].grade = tmp;" style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">star_border</i>` + "<b>Points earned</b>:  " + assignment.grade + " (" + assignment.letter +  `)</div>`)
 	list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">category</i>` + "<b>Category</b>:  " + assignment.weight + `</div>`)
 	}
 	if (contributors.includes(HaikuContext.user.login)) {
@@ -985,7 +985,7 @@ dtps.showClasses = function(override) {
 		  $(".background").addClass("trans");
 		  clearTimeout(dtps.bgTimeout);
 		  dtps.bgTimeout = setTimeout(function() {
-		  dtps.onThemeChange();
+		  fluid.onThemeChange();
 		  $(".background").removeClass("trans");
 		  }, 500);
 	  $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
