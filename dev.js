@@ -41,7 +41,7 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
   if (sub == undefined) var sub = "";
 	if (loadingSplash) {
 jQuery("body").append(`<div id="TB_overlay" style="position: fixed; opacity: 0.9;">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 300px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"> <div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
-<style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner{margin: 100px auto 0; width: 70px; text-align: center;}.spinner > div{width: 18px; height: 18px; background-color: #333; border-radius: 100%; display: inline-block; -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both; animation: sk-bouncedelay 1.4s infinite ease-in-out both;}.spinner .bounce1{-webkit-animation-delay: -0.32s; animation-delay: -0.32s;}.spinner .bounce2{-webkit-animation-delay: -0.16s; animation-delay: -0.16s;}@-webkit-keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0)}40%{-webkit-transform: scale(1.0)}}@keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0); transform: scale(0);}40%{-webkit-transform: scale(1.0); transform: scale(1.0);}}</style></div>`)
+<style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner{margin: 100px auto 0; width: 70px; text-align: center;}.spinner > div{width: 18px; height: 18px; background-color: gray; border-radius: 100%; display: inline-block; -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both; animation: sk-bouncedelay 1.4s infinite ease-in-out both;}.spinner .bounce1{-webkit-animation-delay: -0.32s; animation-delay: -0.32s;}.spinner .bounce2{-webkit-animation-delay: -0.16s; animation-delay: -0.16s;}@-webkit-keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0)}40%{-webkit-transform: scale(1.0)}}@keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0); transform: scale(0);}40%{-webkit-transform: scale(1.0); transform: scale(1.0);}}</style></div>`)
 	} else {
   jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>` + text + `</h2>
@@ -127,6 +127,21 @@ if (req == "assignGET") {
 	} else {
 		if (callback) callback(dtps.requests[url], q);
 	}
+}
+dtps.computeClassGrade = function(data) {
+        weights = [];
+	var total = 0;
+	for (var i = 0; i < data.weights.length; i++) {
+		weights.push({total: 0, earned: 0, weighted: 0, weight: (Number(data.weights[i].weight.match(/\(([^)]+)\)/)[1].replace("%", "")) / 100) })
+		for (var ii = 0; ii < data.weights[i].assignments.length; ii++) {
+		var grade = data.weights[i].assignments[ii].disp.split(": ").pop().split("/")
+		weights[i].total = weights[i].total + Number(grade[1])
+	        weights[i].earned = weights[i].earned + Number(grade[0])
+		}
+		weights[i].weighted = (weights[i].earned / weights[i].total) * weights[i].weight
+		total = total + weights[i].weighted
+	}
+	return total;
 }
 dtps.init = function () {
   dtps.log("Starting DTPS " + dtps.readableVer + "...");
