@@ -2,6 +2,7 @@
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
 Email: hello@jottocraft.com */
+
 var dtps = {
     ver: 170,
     readableVer: "v1.7.0 (dev)",
