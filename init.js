@@ -1162,7 +1162,7 @@ dtps.render = function() {
    if (e.detail == "extensionInstalled") {
 	        var extensionDom = "";
 	   jQuery(".extensionDom").html(`<br />
-<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false); } else {localStorage.setItem('disableAutoLoad', true); window.alert('To re-enable auto load, click on your profile picture at the top right corner of PowerSchool Learning and select the option to enable Power+')}" class="switch active"><span class="head"></span></div>
+<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false); } else {localStorage.setItem('disableAutoLoad', true); }" class="switch active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
 <br /><br />
 <div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true); window.alert('The dev version of Power+ is often untested and may contain several bugs. Continue at your own risk.'); }"><span class="head"></span></div>
