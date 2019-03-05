@@ -1162,13 +1162,13 @@ dtps.render = function() {
    if (e.detail == "extensionInstalled") {
 	        var extensionDom = "";
 	   jQuery(".extensionDom").html(`<br />
-<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false); jQuery('.extensionDevMode').show();} else {localStorage.setItem('disableAutoLoad', true); jQuery('.extensionDevMode').hide(); window.alert('To re-enable auto load, click on your profile picture at the top right corner of PowerSchool Learning and select the option to enable Power+')}" class="switch active"><span class="head"></span></div>
+<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false); } else {localStorage.setItem('disableAutoLoad', true); window.alert('To re-enable auto load, click on your profile picture at the top right corner of PowerSchool Learning and select the option to enable Power+')}" class="switch active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
 <br /><br />
 <div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true);}"><span class="head"></span></div>
     <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the dev (unstable) version of Power+</div>`)
 	   jQuery(".extTab").show();
-	   if (window.localStorage.disableAutoLoad == "true") { jQuery("#extensionAutoLoad").removeClass("active"); jQuery(".extensionDevMode").hide(); }
+	   if (window.localStorage.disableAutoLoad == "true") { jQuery("#extensionAutoLoad").removeClass("active"); }
 	   if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
    }
 });
