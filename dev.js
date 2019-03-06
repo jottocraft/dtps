@@ -1227,13 +1227,13 @@ dtps.render = function () {
         if (e.detail == "extensionInstalled") {
             var extensionDom = "";
             jQuery(".extensionDom").html(`<br />
-<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'true') {localStorage.setItem('disableAutoLoad', false);} else {localStorage.setItem('disableAutoLoad', true);}" class="switch active"><span class="head"></span></div>
+<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'false') {localStorage.setItem('disableAutoLoad', true);} else {localStorage.setItem('disableAutoLoad', false);}" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
 <br /><br />
 <div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true); window.alert('The dev version of Power+ is often untested and may contain several bugs. Continue at your own risk.'); }"><span class="head"></span></div>
     <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the unstable (dev) version of Power+</div>`)
             jQuery(".extTab").show();
-            if (window.localStorage.disableAutoLoad == "true") { jQuery("#extensionAutoLoad").removeClass("active"); }
+            if (window.localStorage.disableAutoLoad == "false") { jQuery("#extensionAutoLoad").addClass("active"); }
             if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
         }
     });
