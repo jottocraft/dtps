@@ -14,11 +14,11 @@ document.addEventListener('extensionData', function(e) {
    }
 });
 
-if ((window.localStorage.disableAutoLoad == undefined) || (window.localStorage.disableAutoLoad == "false")) {
-console.log("[DTPS Chrome] Automatically loading Project DTPS");
-$.getScript(url);
+if ((window.localStorage.disableAutoLoad == undefined) || (window.localStorage.disableAutoLoad == "true")) {
+jQuery("#global_top_links").append(`<a onclick="javascript:jQuery.getScript('` + url + `');dtpsLoader=2;">Power+` + (window.localStorage.devAutoLoad == "true" ? " (dev)" : "") + `</a>`)
 } else {
-	jQuery("#global_top_links").append(`<a onclick="javascript:jQuery.getScript('` + url + `');dtpsLoader=2;">Power+` + (window.localStorage.devAutoLoad == "true" ? " (dev)" : "") + `</a>`)
+console.log("[DTPS Chrome] Automatically loading Project DTPS");
+$.getScript(url);	
 }
 
 	});
