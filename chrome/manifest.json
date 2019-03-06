@@ -3,7 +3,7 @@
 
   "name": "Power+",
   "description": "A redesigned UI for PowerSchool Learning",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "content_scripts": [
     {
       "matches": ["https://dtechhs.learning.powerschool.com/u/*"],
