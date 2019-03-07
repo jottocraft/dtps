@@ -112,10 +112,14 @@ dtps.webReq = function (req, url, callback, q) {
             dtps.http[url].send("csrf_token=" + CSRFTOK);
         }
         if (req == "letPOST") {
-            if ((url == "portal/portlet_reportcard?my_portal=true") && (jQuery("#portlet_box_content_reportcard:not(:has(.loading))").html())) {
+            if ((url.includes("portlet_reportcard")) && (jQuery("#portlet_box_content_reportcard:not(:has(.loading))").html())) {
                 if (callback) callback(jQuery("#portlet_box_content_reportcard").html(), q);
                 dtps.requests[url] = this.responseText;
             } else {
+              if ((url.includes("portlet_annc")) && (jQuery("#portlet_box_content_annc:not(:has(.loading))").html())) {
+                  if (callback) callback(jQuery("#portlet_box_content_annc").html(), q);
+                  dtps.requests[url] = this.responseText;
+              } else {
                 dtps.http[url] = new XMLHttpRequest();
                 dtps.http[url].onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
@@ -130,6 +134,7 @@ dtps.webReq = function (req, url, callback, q) {
                 dtps.http[url].setRequestHeader("X-Prototype-Version", "1.7.1")
                 dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
                 dtps.http[url].send(portalClassesAndUserQuery() + "&csrf_token=" + CSRFTOK);
+              }
             }
         }
     } else {
@@ -156,6 +161,7 @@ dtps.computeClassGrade = function (data) {
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
     fluidStorage = "localStorage";
+    if (window.localStorage.dtpsLocal) { dtps.readableVer.replace(dtps.trackSuffix, " (local)"); dtps.trackSuffix = " (local)" }
     fluidThemes = [["midnight", "nitro", "aquatic"], ["rainbow"]];
     sudoers = ["10837719", "10838212", "10894474", "10463823"]
     if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
@@ -553,15 +559,15 @@ dtps.renderStream = function (stream, searchRes) {
             var wFormat = "";
             if (stream[i].weight) wFormat = stream[i].weight.replace(/ *\([^)]*\) */g, "");
             if (wFormat == "undefined") { wFormat = "" } else { wFormat = `<span class="weighted">` + wFormat + `</span>` };
-            var onclick = `dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `)`
+            var onclick = `if (!$(event.target).parent().hasClass('points')) { dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `) }`
             if (stream[i].google) {
                 var onclick = `window.open('` + stream[i].url + `')`
             }
             streamlist.push(`
         <div onclick="` + onclick + `" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
-        <div class="earned numbers">` + earnedTmp + `</div>
-	<div class="earned letters">` + stream[i].letter + `</div>
+        <div onclick="$(this).parents('.card').addClass('whatif'); $(this).attr('contenteditable', 'true');" class="earned numbers">` + earnedTmp + `</div>
+	<div onclick="$(this).parents('.card').addClass('whatif'); $(this).siblings('.numbers').attr('contenteditable', 'true');" class="earned letters">` + stream[i].letter + `</div>
         ` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") + `
 	` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>` : "") + `
         </div>
@@ -571,7 +577,7 @@ dtps.renderStream = function (stream, searchRes) {
       `);
         } else {
             streamlist.push(`
-        <div onclick="dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `)" class="card assignment ` + stream[i].col + `">
+        <div onclick="` + onclick + `" class="card assignment ` + stream[i].col + `">
         <h4>` + stream[i].title + `</h4>
 	       <h5>` + due + turnInDom + `</h5>
          </div>
@@ -1235,6 +1241,7 @@ dtps.render = function () {
             jQuery(".extTab").show();
             if (window.localStorage.disableAutoLoad == "false") { jQuery("#extensionAutoLoad").addClass("active"); }
             if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
+            if (window.localStorage.dtpsLocal) { jQuery("#dtpsLocal").addClass("active"); }
         }
     });
     jQuery("body").html(`
@@ -1353,7 +1360,10 @@ dtps.render = function () {
 <div style="display: none;" class="abtpage debug">
 <div class="dev">
     <h5>Debugging</h5>
-<br />
+    <br>
+    <div id="dtpsLocal" onclick="$(this).toggleClass('active'); if (window.localStorage.dtpsLocal == 'false') {localStorage.setItem('dtpsLocal', true);} else {localStorage.setItem('dtpsLocal', false);}" class="switch"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">extension</i> Use local copy of Project DTPS</div>
+<br /><br>
 <span class="log">
 </span>
 </div>
@@ -1453,7 +1463,7 @@ dtps.render = function () {
         jQuery("<link/>", {
             rel: "stylesheet",
             type: "text/css",
-            href: "https://dtps.js.org/dev.css"
+            href: (window.localStorage.dtpsLocal ? window.localStorage.dtpsLocal + "dev.css" : "https://dtps.js.org/dev.css")
         }).appendTo("head");
     } else {
         jQuery("<link/>", {
