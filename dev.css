@@ -684,6 +684,8 @@ body.dark .card.details * {
 .card.assignment.whatif .points .numbers {
    padding: 2px 10px;
    border-radius: 10px;
+   outline: none;
+   border: none;
 }
 body.dark .card.assignment.whatif .points .numbers {
   background-color: #171717;
