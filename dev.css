@@ -681,6 +681,26 @@ body.dark .card.details * {
     padding: 20px 30px;
 }
 
+.card.assignment.whatif .points .numbers {
+   padding: 2px 10px;
+   border-radius: 10px;
+}
+body.dark .card.assignment.whatif .points .numbers {
+  background-color: #171717;
+}
+body:not(.dark) .card.assignment.whatif .points .numbers {
+  background-color: #dadada;
+}
+.card.assignment.color.whatif .points .numbers {
+  background-color: var(--dark) !important;
+}
+.card.assignment.whatif .points .numbers, .card.assignment.whatif .points .possible {
+  display: inline-block !important;
+}
+.card.assignment.whatif .points .letters, .card.assignment.whatif .points .percentage {
+  display: none !important;
+}
+
 .classContent .card.assignment h5 {
     font-size: 1rem !important;
 }
