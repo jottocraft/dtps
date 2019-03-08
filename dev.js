@@ -149,6 +149,7 @@ dtps.computeClassGrade = function (data) {
         weights.push({ total: 0, earned: 0, weighted: 0, weight: (Number(data.weights[i].weight.match(/\(([^)]+)\)/)[1].replace("%", "")) / 100) })
         for (var ii = 0; ii < data.weights[i].assignments.length; ii++) {
             var grade = data.stream[data.streamitems.indexOf(data.weights[i].assignments[ii].id)].grade.split("/")
+            if (data.stream[data.streamitems.indexOf(data.weights[i].assignments[ii].id)].whatif) grade = data.stream[data.streamitems.indexOf(data.weights[i].assignments[ii].id)].whatif.split("/")
             weights[i].total = weights[i].total + Number(grade[1])
             weights[i].earned = weights[i].earned + Number(grade[0])
         }
@@ -541,6 +542,17 @@ dtps.schedule = function () {
     }
 }
 
+dtps.whatIf = function(ele, id, classs) {
+  $(ele).parents('.card').addClass('whatif');
+  if ($("ele").hasClass(".numbers")) { $(ele).attr('contenteditable', 'true'); } else { $(ele).siblings('.numbers').attr('contenteditable', 'true'); };
+  $(ele).siblings('.numbers')[0].addEventListener('input', function(event) {
+     var assignment = dtps.classes[classs].stream[dtps.classes[classs].streamitems.indexOf(id.toString())];
+     assignment.whatif = $(event.target).text() + "/" + assignment.grade.split("/")[1];
+     dtps.classes[classs].whatif = (dtps.computeClassGrade(dtps.classes[classs]) * 100).toFixed(2);
+     dtps.showClasses(true);
+   }, false);
+}
+
 dtps.renderStream = function (stream, searchRes) {
     var streamlist = [];
     for (var i = 0; i < stream.length; i++) {
@@ -567,7 +579,7 @@ dtps.renderStream = function (stream, searchRes) {
         <div onclick="` + onclick + `" class="card graded assignment ` + stream[i].col + `">
         <div class="points">
         <div onclick="$(this).parents('.card').addClass('whatif'); $(this).attr('contenteditable', 'true');" class="earned numbers">` + earnedTmp + `</div>
-	<div onclick="$(this).parents('.card').addClass('whatif'); $(this).siblings('.numbers').attr('contenteditable', 'true');" class="earned letters">` + stream[i].letter + `</div>
+	<div onclick="dtps.whatIf(this, ` + stream[i].id + `, ` + stream[i].class + `)" class="earned letters">` + stream[i].letter + `</div>
         ` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") + `
 	` + (stream[i].grade.split("/")[1] !== undefined ? `<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>` : "") + `
         </div>
@@ -963,9 +975,9 @@ dtps.showClasses = function (override) {
                 var name = dtps.classes[num].subject
                 if (dtps.fullNames) name = dtps.classes[num].name
                 dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + dtps.classes[num].col + `">
-      <div class="name">` + name + `</div>
-      <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + dtps.classes[num].grade + `%</span></div>
+      <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + (dtps.classes[num].whatif ? "whatif" : "") + ` ` + dtps.classes[num].col + `">
+      <div class="name">` + (dtps.classes[num].whatif ? name + "*" : name) + `</div>
+      <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + (dtps.classes[num].whatif ? dtps.classes[num].whatif : dtps.classes[num].grade) + `%</span></div>
       </div>
     `);
             }
@@ -975,9 +987,9 @@ dtps.showClasses = function (override) {
                 var name = dtps.classes[i].subject
                 if (dtps.fullNames) name = dtps.classes[i].name
                 dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + name + `</div>
-      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + (dtps.classes[i].whatif ? "whatif" : "") + ` ` + dtps.classes[i].col + `">
+      <div class="name">` + (dtps.classes[i].whatif ? name + "*" : name) + `</div>
+      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + (dtps.classes[i].whatif ? dtps.classes[i].whatif : dtps.classes[i].grade) + `%</span></div>
       </div>
     `);
             }
@@ -987,9 +999,9 @@ dtps.showClasses = function (override) {
             var name = dtps.classes[i].subject
             if (dtps.fullNames) name = dtps.classes[i].name
             dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + name + `</div>
-      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + (dtps.classes[i].whatif ? "whatif" : "") + ` ` + dtps.classes[i].col + `">
+      <div class="name">` + (dtps.classes[i].whatif ? name + "*" : name) + `</div>
+      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + (dtps.classes[i].whatif ? dtps.classes[i].whatif : dtps.classes[i].grade) + `%</span></div>
       </div>
     `);
         }
@@ -1023,6 +1035,10 @@ dtps.showClasses = function (override) {
         $(".class:not(.google)").click(function (event) {
             if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
             if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+            if (dtps.classes[dtps.selectedClass]) {
+              if (dtps.classes[dtps.selectedClass]) dtps.showClasses(true);
+              dtps.classes[dtps.selectedClass].whatif = false;
+            }
             $('body').removeClass('isolatedGoogleClass');
             $(".btn.google").hide();
             $(".background").addClass("trans");
@@ -1361,7 +1377,7 @@ dtps.render = function () {
 <div class="dev">
     <h5>Debugging</h5>
     <br>
-    <div id="dtpsLocal" onclick="$(this).toggleClass('active'); if (window.localStorage.dtpsLocal == 'false') {localStorage.setItem('dtpsLocal', true);} else {localStorage.setItem('dtpsLocal', false);}" class="switch"><span class="head"></span></div>
+    <div id="dtpsLocal" onclick="if (window.localStorage.dtpsLocal == 'false') {localStorage.setItem('dtpsLocal', true);} else {localStorage.setItem('dtpsLocal', false);}" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Use local copy of Project DTPS</div>
 <br /><br>
 <span class="log">
@@ -1463,7 +1479,7 @@ dtps.render = function () {
         jQuery("<link/>", {
             rel: "stylesheet",
             type: "text/css",
-            href: (window.localStorage.dtpsLocal ? window.localStorage.dtpsLocal + "dev.css" : "https://dtps.js.org/dev.css")
+            href: (window.localStorage.dtpsLocal ? window.localStorage.dtpsPath + "dev.css" : "https://dtps.js.org/dev.css")
         }).appendTo("head");
     } else {
         jQuery("<link/>", {
