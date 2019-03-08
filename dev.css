@@ -140,6 +140,14 @@ body {
     display: none;
 }
 
+.class.whatif .letter {
+    display: none;
+}
+
+.class.whatif .points {
+    display: inline !important;
+}
+
 .label i {
     vertical-align: middle;
 }
