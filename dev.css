@@ -738,7 +738,7 @@ body:not(.dark) .card.assignment.whatif .points .numbers {
 }
 
 body.dark .class .name {
-    color: #ececec;
+    color: white;
 }
 
 body.dark {
@@ -827,7 +827,7 @@ body.dark.midnight:not(.dashboard) .background:before {
 
 .card.color {
     background: linear-gradient(to right bottom, var(--light), var(--norm));
-    color: white !important;
+    color: var(--text, white) !important;
 }
 
 .card.color .weighted {
