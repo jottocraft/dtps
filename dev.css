@@ -829,7 +829,8 @@ body.dark.midnight:not(.dashboard) .background:before {
 }
 
 .card.color .weighted {
-    color: var(--norm);
+    color: var(--dark);
+    opacity: 0.45;
 }
 
 .class {
