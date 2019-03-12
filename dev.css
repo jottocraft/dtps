@@ -783,7 +783,10 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
     --light: #d9c5ff; --norm: #7c748c; --dark: #4a4554; --grad: linear-gradient(to bottom right, #d9c5ff, #4a4554); }
 
 .background.filter_20, .class.filter_20, .card.filter_20, .card .weight.filter_20, .header.filter_20 {
-    --light: #e64c81; --norm: #bb2f5f; --dark: #751636; --grad: linear-gradient(to bottom right, #ff5fa3, #790d32); }
+    --light: #e64c81; --norm: #bb2f5f; --dark: #751636; --grad: linear-gradient(to bottom right, #e64c81, #751636); }
+
+.background.filter_21, .class.filter_21, .card.filter_21, .card .weight.filter_21, .header.filter_21 {
+    --light: #c9d63b; --norm: #88920f; --dark: #525808; --grad: linear-gradient(to bottom right, #c9d63b, #525808); }
 
 .background {
     background-size: 100%;
