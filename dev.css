@@ -2,7 +2,6 @@
 Power+ CSS v1.7.0 (dev)
 (c) jottocraft 2018-2019
 */
-
 @font-face {
     font-family: 'Material Icons Outline';
     font-style: normal;
@@ -30,17 +29,7 @@ Power+ CSS v1.7.0 (dev)
 }
 
 body.darkDtech {
-    --flex-light: #bb4a2d;
-    --flex-bg: #a73a21;
-    --flex-text: white;
-    --flex-sectext: #ffb6a3;
-    --flex-layer1: #da5332;
-    --flex-layer2: #923923;
-    --flex-layer3: #6f2715;
-    --theme-color: #f2896f;
-    --theme-color-outline: rgb(242, 137, 111, 0.75);
-    --theme-text-color: #af4125;
-}
+    --flex-light: #bb4a2d; --flex-bg: #a73a21; --flex-text: white; --flex-sectext: #ffb6a3; --flex-layer1: #da5332; --flex-layer2: #923923; --flex-layer3: #6f2715; --theme-color: #f2896f; --theme-color-outline: rgb(242, 137, 111, 0.75); --theme-text-color: #af4125; }
 
 .dash.cal .announcement {
     margin-right: 0px;
@@ -253,6 +242,7 @@ body.titlebar .sidebar {
 body.dark .spinner > div {
     background-color: var(--flex-sectext, #bbb);
 }
+
 body:not(.dark) .spinner > div {
     background-color: var(--flex-sectext, #333);
 }
@@ -690,25 +680,30 @@ body.dark .card.details * {
 }
 
 .card.assignment.whatif .points .numbers {
-   padding: 2px 10px;
-   border-radius: 10px;
-   outline: none;
-   border: none;
+    padding: 2px 10px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
 }
+
 body.dark .card.assignment.whatif .points .numbers {
-  background-color: #171717;
+    background-color: #171717;
 }
+
 body:not(.dark) .card.assignment.whatif .points .numbers {
-  background-color: #dadada;
+    background-color: #dadada;
 }
+
 .card.assignment.color.whatif .points .numbers {
-  background-color: var(--dark) !important;
+    background-color: var(--dark) !important;
 }
+
 .card.assignment.whatif .points .numbers, .card.assignment.whatif .points .possible {
-  display: inline-block !important;
+    display: inline-block !important;
 }
+
 .card.assignment.whatif .points .letters, .card.assignment.whatif .points .percentage {
-  display: none !important;
+    display: none !important;
 }
 
 .classContent .card.assignment h5 {
@@ -786,6 +781,9 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 
 .background.filter_11, .class.filter_11, .card.filter_11, .card .weight.filter_11, .header.filter_11 {
     --light: #d9c5ff; --norm: #7c748c; --dark: #4a4554; --grad: linear-gradient(to bottom right, #d9c5ff, #4a4554); }
+
+.background.filter_20, .class.filter_20, .card.filter_20, .card .weight.filter_20, .header.filter_20 {
+    --light: #e64c81; --norm: #bb2f5f; --dark: #751636; --grad: linear-gradient(to bottom right, #ff5fa3, #790d32); }
 
 .background {
     background-size: 100%;
