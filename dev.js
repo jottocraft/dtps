@@ -33,10 +33,8 @@ dtps.firstrun = function () {
     jQuery("body").append(`<div id="TB_overlay" style="position: fixed;">&nbsp;</div><div id="TB_window" role="dialog" aria-modal="true" aria-labelledby="TB_title" style="width: 800px; height: 540px;margin: 0 calc(50% - 400px); top: calc(50% - 290px);"><div id="TB_closeAjaxWindow" class="tb_title_bar" role="heading"><a href="javascript:;" onclick="TB_remove();" id="TB_closeWindowButton" aria-hidden="true"><i class="icon-close"></i></a><div id="TB_title" class="tb_title">Power+` + dtps.trackSuffix + `</div><div id="TB_ajaxContent" role="main" style="width: 770px; height: 434px;">
 <h2>Welcome to Power+` + dtps.trackSuffix + `</h2>
 <h4>` + dtps.readableVer + `</h4>
-<p>Things to keep in mind when using Power+</p>
-<li>Power+ can't fully replace PowerSchool yet. Many PowerSchool features are not included in Power+.</li>
-<li>To use Power+, you have to visit PowerSchool, then run the bookmark script. You can choose stop using Power+ at any time by not using the bookmark script.</li>
-<li>Report bugs and send feedback by clicking the feedback button at the top right corner.</li>
+<p>Things to keep in mind when using Power+` + dtps.trackSuffix + `</p>
+<li>Power+` + dtps.trackSuffix + ` can't fully replace PowerSchool yet. Many PowerSchool features are not included in Power+` + dtps.trackSuffix + `.</li>
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="window.location.reload();" type="button" value="Cancel"><input class="button button" onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
@@ -544,8 +542,9 @@ dtps.schedule = function () {
 
 dtps.whatIf = function(ele, id, classs) {
   $(ele).parents('.card').addClass('whatif');
-  if ($("ele").hasClass(".numbers")) { $(ele).attr('contenteditable', 'true'); } else { $(ele).siblings('.numbers').attr('contenteditable', 'true'); };
-  $(ele).siblings('.numbers')[0].addEventListener('input', function(event) {
+  if ($("ele").hasClass(".numbers")) { var numbers = ele; } else { var numbers = $(ele).siblings('.numbers')[0]; };
+  $(numbers).attr('contenteditable', 'true');
+  numbers.addEventListener('input', function(event) {
      var assignment = dtps.classes[classs].stream[dtps.classes[classs].streamitems.indexOf(id.toString())];
      assignment.whatif = $(event.target).text() + "/" + assignment.grade.split("/")[1];
      dtps.classes[classs].whatif = (dtps.computeClassGrade(dtps.classes[classs]) * 100).toFixed(2);
@@ -975,7 +974,7 @@ dtps.showClasses = function (override) {
                 var name = dtps.classes[num].subject
                 if (dtps.fullNames) name = dtps.classes[num].name
                 dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + num + `" class="class ` + num + ` ` + (dtps.classes[num].whatif ? "whatif" : "") + ` ` + dtps.classes[num].col + `">
+      <div onclick="dtps.selectedClass = ` + num + `" class="native class ` + num + ` ` + (dtps.classes[num].whatif ? "whatif" : "") + ` ` + dtps.classes[num].col + `">
       <div class="name">` + (dtps.classes[num].whatif ? name + "*" : name) + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[num].letter + `</span><span class="points">` + (dtps.classes[num].whatif ? dtps.classes[num].whatif : dtps.classes[num].grade) + `%</span></div>
       </div>
@@ -987,7 +986,7 @@ dtps.showClasses = function (override) {
                 var name = dtps.classes[i].subject
                 if (dtps.fullNames) name = dtps.classes[i].name
                 dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + (dtps.classes[i].whatif ? "whatif" : "") + ` ` + dtps.classes[i].col + `">
+      <div onclick="dtps.selectedClass = ` + i + `" class="native class ` + i + ` ` + (dtps.classes[i].whatif ? "whatif" : "") + ` ` + dtps.classes[i].col + `">
       <div class="name">` + (dtps.classes[i].whatif ? name + "*" : name) + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + (dtps.classes[i].whatif ? dtps.classes[i].whatif : dtps.classes[i].grade) + `%</span></div>
       </div>
@@ -999,7 +998,7 @@ dtps.showClasses = function (override) {
             var name = dtps.classes[i].subject
             if (dtps.fullNames) name = dtps.classes[i].name
             dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + (dtps.classes[i].whatif ? "whatif" : "") + ` ` + dtps.classes[i].col + `">
+      <div onclick="dtps.selectedClass = ` + i + `" class="native class ` + i + ` ` + (dtps.classes[i].whatif ? "whatif" : "") + ` ` + dtps.classes[i].col + `">
       <div class="name">` + (dtps.classes[i].whatif ? name + "*" : name) + `</div>
       <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + (dtps.classes[i].whatif ? dtps.classes[i].whatif : dtps.classes[i].grade) + `%</span></div>
       </div>
@@ -1023,6 +1022,16 @@ dtps.showClasses = function (override) {
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
+   $('.sidebar').sortable({ items: '.class.native', update: function() {
+     var classes = $(".sidebar .classList").children(".class:not(.google)")
+     var classOrder = [];
+     for (var i = 0; i < classes.length; i++) {
+         if (/\d/.test(jQuery(classes[i]).attr("class"))) {
+             classOrder.push(dtps.classes[Number(jQuery(classes[i]).attr("class").replace(/^\D+|\D.*$/g, ""))].id)
+         }
+     }
+     localStorage.setItem("dtpsClassOrder", JSON.stringify(classOrder));
+   }});
         for (var i = 0; i < dtps.classes.length; i++) {
             if (dtps.classes[i].subject.includes("Algebra 2")) {
                 if (highFlyers.includes(HaikuContext.user.login)) {
@@ -1086,20 +1095,6 @@ dtps.showClasses = function (override) {
             $(".class." + dtps.selectedClass).click();
         }
     }
-}
-
-dtps.saveClassOrder = function () {
-    $(".sidebar").sortable("destroy");
-    var classes = $(".sidebar").children(".class:not(.google)")
-    var classOrder = [];
-    for (var i = 0; i < classes.length; i++) {
-        if (/\d/.test(jQuery(classes[i]).attr("class"))) {
-            classOrder.push(dtps.classes[Number(jQuery(classes[i]).attr("class").replace(/^\D+|\D.*$/g, ""))].id)
-        }
-    }
-    localStorage.setItem("dtpsClassOrder", JSON.stringify(classOrder));
-    dtps.sorting = false;
-    window.alert("Class order saved");
 }
 
 dtps.googleStream = function () {
@@ -1311,9 +1306,6 @@ dtps.render = function () {
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
-      <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
-    </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
       <i class="material-icons">bug_report</i> Debugging
     </div>
@@ -1342,8 +1334,8 @@ dtps.render = function () {
 </div>
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
-    <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">sort</i>Sort classes</button>
-    <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule</button>
+    <p>You can rearrange the classes in the class list by dragging them</p>
+    <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule Classes</button>
     <br /><br />
 <div class="googleClassroom prerelease">
     <h5>google_logo Classes</h5>
@@ -1362,16 +1354,6 @@ dtps.render = function () {
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
     <div class="extensionDom" ></div>
-</div>
-<div style="display: none;" class="abtpage experiments">
-<div class="sudo">
-    <h5>Experiments</h5>
-    <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
-    <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
-<br />
-<br /><br />
-
-</div>
 </div>
 <div style="display: none;" class="abtpage debug">
 <div class="dev">
@@ -1479,7 +1461,7 @@ dtps.render = function () {
         jQuery("<link/>", {
             rel: "stylesheet",
             type: "text/css",
-            href: (window.localStorage.dtpsLocal ? window.localStorage.dtpsPath + "dev.css" : "https://dtps.js.org/dev.css")
+            href: (window.localStorage.dtpsLocal == "true" ? window.localStorage.dtpsPath + "dev.css" : "https://dtps.js.org/dev.css")
         }).appendTo("head");
     } else {
         jQuery("<link/>", {
