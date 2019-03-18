@@ -1433,6 +1433,10 @@ dtps.render = function () {
                 localStorage.setItem('dtps', dtps.ver);
                 if (dtps.showChangelog) dtps.changelog();
             }
+	    if ($("body").hasClass("sudo")) {
+		jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i><h4>Power+ for Canvas Preview</h4><p>You've been invited to test Power+ on Canvas. If you would like to test it, click <a href="https://jottocraft.github.io/dtps-pub-dp/">here</a> for more details.</p>`);
+		if (window.localStorage.dtpsCanvasInvite !== "true") { dtps.changelog(); localStorage.setItem('dtpsCanvasInvite', "true");}
+	    }
             $(".btn.changelog").show();
         });
     });
