@@ -1383,6 +1383,10 @@ dtps.render = function () {
 <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
 <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
     <br /><br />
+<h5>d.lab</h5>
+<p>This version of Power+ is a fork of Power+ (dev) build 9231c9b. All Community Agreement features are purely conceptual and are intended for demonstration and proof-of-concept purposes. 
+Information in the Community Agreements tab does not reflect your actual academic or CAV statuses. This is for a d.lab prototype only. Please do not use this version of Power+ as this is not officially supported and may break things outside the Community Agreements tab.</p>
+<br />
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
