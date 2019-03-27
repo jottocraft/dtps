@@ -5,6 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/dtps/badge/?version=latest)](https://dtps.readthedocs.io/en/latest/?badge=latest)
 
 For users looking to install Power+, visit the Power+ website by clicking [here](https://dtps.js.org)
+For Power+ status, visit the [jottocraft.com status page](https://status.jottocraft.com)
 
 <br />
 
