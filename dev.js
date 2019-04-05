@@ -162,15 +162,15 @@ dtps.init = function () {
     fluidStorage = "localStorage";
     if (window.localStorage.dtpsLocal) { dtps.readableVer.replace(dtps.trackSuffix, " (local)"); dtps.trackSuffix = " (local)" }
     fluidThemes = [["midnight", "nitro", "aquatic"], ["rainbow"]];
-    sudoers = ["10837719", "10838212", "10894474", "10463823"]
+    sudoers = ["10838212", "10894474", "10463823"]
     if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-    og = ["10894474", "10837719"]
+    og = ["10894474"]
     if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
-    highFlyers = ["10894474", "10837719"]
+    highFlyers = ["10894474"]
     if (highFlyers.includes(HaikuContext.user.login)) { jQuery("body").addClass("highFlyer"); }
-    contributors = ["10837719", "10463823", "10894474"]
+    contributors = ["10463823", "10894474"]
     if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
-    if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); fluidThemes[0].push({ name: "d.tech", id: "darkDtech", icon: "school" }); }
+    if (HaikuContext.user.login === 2349803459834598) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); fluidThemes[0].push({ name: "d.tech", id: "darkDtech", icon: "school" }); }
     if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
     if (sudoers.includes(HaikuContext.user.login)) jQuery("body").addClass("prerelease");
     dtps.shouldRender = false;
