@@ -1023,7 +1023,7 @@ dtps.showClasses = function (override) {
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
    $('.sidebar').sortable({ items: '.class.native', update: function() {
-     var classes = $(".sidebar .classList").children(".class:not(.google)")
+     var classes = $(".sidebar").children(".class:not(.google)")
      var classOrder = [];
      for (var i = 0; i < classes.length; i++) {
          if (/\d/.test(jQuery(classes[i]).attr("class"))) {
