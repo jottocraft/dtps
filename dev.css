@@ -575,7 +575,7 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
 }
 
 .assignment .weighted i {
-    font-size: 20px;
+    font-size: 20px !important;
 }
 
 .weight.parent .weight {
