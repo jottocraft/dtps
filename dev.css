@@ -574,6 +574,10 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
     font-size: 0.9rem;
 }
 
+.assignment .weighted i {
+    font-size: 20px;
+}
+
 .weight.parent .weight {
     padding: 10px !important;
     overflow: auto;
