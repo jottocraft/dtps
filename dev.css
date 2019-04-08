@@ -19,11 +19,11 @@ Power+ CSS v1.7.0 (dev)
     color: var(--theme-text-color) !important;
 }
 
-.infoChip {
-    margin: 2px;
-    background-color: transparent;
-    font-weight: normal;
-    border: 1px solid;
+div.beta.notice.infoChip {
+    margin: 2px !important;
+    background-color: transparent !important;
+    font-weight: normal !important;
+    border: 1px solid !important;
     color: inherit !important;
 }
 
