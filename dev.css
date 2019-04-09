@@ -737,6 +737,7 @@ body:not(.dark) .card.assignment.whatif .points .numbers {
 
 .classContent .card.assignment h5 {
     font-size: 1rem !important;
+    min-height: 20px;
 }
 
 .classContent .card.assignment h4 {
