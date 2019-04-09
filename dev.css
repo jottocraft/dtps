@@ -691,6 +691,10 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
     color: var(--light);
 }
 
+.classContent .card.color .floatingIcon {
+    color: var(--light) !important;
+}
+
 .card.details fieldset, .card.details #tb_handin_link, .card.details div.p, .card.details label {
     display: none;
 }
