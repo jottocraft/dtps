@@ -28,6 +28,12 @@ Power+ CSS v1.7.0 (dev)
     line-height: 20px;
 }
 
+.floatingIcon {
+    float: right;
+    margin-top: 40px;
+    font-size: 18px;
+}
+
 .infoChip i {
     vertical-align: middle;
     font-size: 20px;
