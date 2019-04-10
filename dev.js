@@ -340,13 +340,15 @@ dtps.init = function () {
                 dtps.selectedContent = "stream";
                 dtps.classStream(i);
             }
-	    if (Number(grade.match(/\d+/g).join(".")).toFixed(2)) {
+		if (grade!== "--")   {
+			if (Number(grade.match(/\d+/g).join(".")).toFixed(2)) {
 				dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + col + `"><div style="color: var(--dark);" class="progressLabel">` +  subject  + `</div><div class="progress" style="background-color: var(--light); width: calc(` + Number(grade.match(/\d+/g).join(".")).toFixed(2)  + `% - 300px);"></div></div>`)
 				if (letterTmp.includes("A")) gpa.push(4)
 				if (letterTmp.includes("B")) gpa.push(3)
 				if (letterTmp.includes("C")) gpa.push(2)
 				if (letterTmp.includes("DV")) gpa.push(0)
 	     }
+	}
         }
         dtps.log("Grades loaded: ", dtps.classes)
 	var total = 0;
