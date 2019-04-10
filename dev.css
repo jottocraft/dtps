@@ -51,6 +51,21 @@ Power+ CSS v1.7.0 (dev)
     position: absolute;
 }
 
+.progressBar.big {
+    height: 50px;
+    padding: 10px;
+}
+
+.progressBar.big .progressLabel {
+    height: 32px;
+    line-height: 32px;
+    font-size: 18px;
+}
+
+.progressBar.big .progress {
+    height: 42px;
+}
+
 .floatingIcon {
     float: right;
     margin-top: 40px;
