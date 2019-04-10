@@ -298,6 +298,8 @@ dtps.init = function () {
         dtps.rawData = data;
         dtps.classes = [];
         dtps.classLocs = [];
+	dtps.gradeHTML = [`<p>Estimated GPA (beta): N/A</p>`];
+	var gpa = [];
         for (var i = 0; i < data.length; i++) {
             var section = jQuery(data[i]);
             var grade = section.children(".right").text().replace(/\s/g, "").replace("%", "");
@@ -338,8 +340,21 @@ dtps.init = function () {
                 dtps.selectedContent = "stream";
                 dtps.classStream(i);
             }
+	    if (Number(grade.match(/\d+/g).join(".")).toFixed(2)) {
+				dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + col + `"><div style="color: var(--dark);" class="progressLabel">` +  subject  + `</div><div class="progress" style="background-color: var(--light); width: calc(` + Number(grade.match(/\d+/g).join(".")).toFixed(2)  + `% - 300px);"></div></div>`)
+				if (letterTmp.includes("A")) gpa.push(4)
+				if (letterTmp.includes("B")) gpa.push(3)
+				if (letterTmp.includes("C")) gpa.push(2)
+				if (letterTmp.includes("DV")) gpa.push(0)
+	     }
         }
         dtps.log("Grades loaded: ", dtps.classes)
+	var total = 0;
+	for(var i = 0; i < gpa.length; i++) {
+    		total += gpa[i];
+	}
+	dtps.gpa = total / gpa.length;
+	dtps.gradeHTML[0].replace("N/A", dtps.gpa)
         if (dtps.shouldRender) dtps.render();
         if (dtps.first) dtps.firstrun();
     });
@@ -1303,6 +1318,9 @@ dtps.render = function () {
     <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
       <i class="material-icons">book</i> Classes
     </div>
+   <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
+      <i class="material-icons">assessment</i> Grades
+    </div>
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
@@ -1349,6 +1367,12 @@ dtps.render = function () {
     <p>Link google_logo Classroom to see assignments and classes from both PowerSchool and Google.</p>
     <p>If Power+ thinks one of your PowerSchool classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
     <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn"><i class="material-icons">link</i>Link Google Classroom</button>
+</div>
+</div>
+<div style="display: none;" class="abtpage grades">
+<h5>Grades</h5>
+<div class="gradeDom">
+<p>Loading...</p>
 </div>
 </div>
 <div style="display: none;" class="abtpage extension">
@@ -1398,7 +1422,7 @@ dtps.render = function () {
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="dtps.bugReport();" class="material-icons prerelease">bug_report</i>
-    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">settings</i>
+    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); $('.gradeDom').html(dtps.gradeHTML.join('')); fluid.modal('.abt-new')" class="material-icons">settings</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
