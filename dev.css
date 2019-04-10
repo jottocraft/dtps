@@ -28,6 +28,29 @@ Power+ CSS v1.7.0 (dev)
     line-height: 20px;
 }
 
+.progressBar {
+    padding: 5px;
+    background-color:  var(--theme-color-outline);
+    border-radius: 12px;
+    height: 30px;
+    margin: 10px 5px;
+    cursor: pointer;
+}
+
+.progressLabel {
+    position: absolute;
+    z-index: 5;
+    color: var(--theme-text-color);
+}
+
+.progress {
+    height: 32px;
+    background-color: var(--theme-color);
+    margin: -6px;
+    border-radius: 12px;
+    position: absolute;
+}
+
 .floatingIcon {
     float: right;
     margin-top: 40px;
