@@ -713,7 +713,7 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
 }
 
 .card .weight p {
-    color: #5f5f5f !important;
+    color: var(--flex-sectext, gray) !important;
 }
 
 .card.gb {
