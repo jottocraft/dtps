@@ -340,7 +340,7 @@ dtps.init = function () {
                 dtps.selectedContent = "stream";
                 dtps.classStream(i);
             }
-		if (grade!== "--")   {
+		if ((grade!== "--") && !subject.includes("PE"))   {
 			if (Number(grade.match(/\d+/g).join(".")).toFixed(2)) {
 				dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + col + `"><div style="color: var(--dark);" class="progressLabel">` +  subject  + `</div><div class="progress" style="background-color: var(--light); width: calc(` + Number(grade.match(/\d+/g).join(".")).toFixed(2)  + `% - 300px);"></div></div>`)
 				if (letterTmp.includes("A")) gpa.push(4)
@@ -355,8 +355,8 @@ dtps.init = function () {
 	for(var i = 0; i < gpa.length; i++) {
     		total += gpa[i];
 	}
-	dtps.gpa = total / gpa.length;
-	dtps.gradeHTML[0].replace("N/A", dtps.gpa)
+	dtps.gpa = (total / gpa.length).toFixed(2);
+	dtps.gradeHTML[0] = dtps.gradeHTML[0].replace("N/A", dtps.gpa)
         if (dtps.shouldRender) dtps.render();
         if (dtps.first) dtps.firstrun();
     });
