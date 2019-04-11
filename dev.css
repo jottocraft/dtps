@@ -1,5 +1,5 @@
 /*
-Power+ CSS v1.7.0 (dev)
+Power+ CSS v1.7.0 (dev) | v2.0.0 (canary)
 (c) jottocraft 2018-2019
 */
 @font-face {
@@ -901,7 +901,7 @@ body.dark.midnight:not(.dashboard) .background:before {
 
 .card.color .weighted {
     color: var(--dark);
-    opacity: 0.45;
+    opacity: 0.55;
 }
 
 .class {
