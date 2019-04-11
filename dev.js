@@ -517,7 +517,7 @@ dtps.classStream = function (num, renderOv) {
             dtps.classes[num].weights = [];
             for (var i = 0; i < data.length; i++) {
                 if (jQuery(data[i]).children("th").length > 0) {
-                    dtps.classes[num].weights.push({ weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: [], grade: jQuery(jQuery(data[i]).children("th").toArray()[2]).text() });
+                    dtps.classes[num].weights.push({ weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: [], grade: jQuery(jQuery(data[i]).children("th").toArray()[2]).text(), possible: 0, earned: 0 });
                     prevWeight++;
                 } else {
                     if (jQuery(data[i]).find("a").attr("href")) {
@@ -531,7 +531,11 @@ dtps.classStream = function (num, renderOv) {
                             } else {
                                 var earnedTmp = dtps.classes[num].stream[id].letter;
                             }
-                            if ((prevWeight !== -1) && (dtps.classes[num].stream[id].grade.split("/")[1] !== undefined)) dtps.classes[num].weights[prevWeight].assignments.push({ id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2), possible: Number(dtps.classes[num].stream[id].grade.split("/")[1]), earned: Number(dtps.classes[num].stream[id].grade.split("/")[0]) });
+                            if ((prevWeight !== -1) && (dtps.classes[num].stream[id].grade.split("/")[1] !== undefined)) {
+				    dtps.classes[num].weights[prevWeight].possible = dtps.classes[num].weights[prevWeight].possible + Number(dtps.classes[num].stream[id].grade.split("/")[1])
+			            dtps.classes[num].weights[prevWeight].earned = dtps.classes[num].weights[prevWeight].earned + Number(dtps.classes[num].stream[id].grade.split("/")[0])
+				    dtps.classes[num].weights[prevWeight].assignments.push({ id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2), possible: Number(dtps.classes[num].stream[id].grade.split("/")[1]), earned: Number(dtps.classes[num].stream[id].grade.split("/")[0]) });
+			    }
                         }
                     }
                 }
