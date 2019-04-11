@@ -517,7 +517,7 @@ dtps.classStream = function (num, renderOv) {
             dtps.classes[num].weights = [];
             for (var i = 0; i < data.length; i++) {
                 if (jQuery(data[i]).children("th").length > 0) {
-                    dtps.classes[num].weights.push({ weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: [], grade: jQuery(jQuery(data[i]).children("th").toArray()[2]).text(), possible: 0, earned: 0 });
+                    dtps.classes[num].weights.push({ weight: jQuery(jQuery(data[i]).children("th").toArray()[0]).text(), assignments: [], grade: jQuery(jQuery(data[i]).children("th").toArray()[2]).text(), possiblePoints: 0, earnedPoints: 0 });
                     prevWeight++;
                 } else {
                     if (jQuery(data[i]).find("a").attr("href")) {
