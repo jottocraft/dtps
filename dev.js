@@ -531,7 +531,7 @@ dtps.classStream = function (num, renderOv) {
                             } else {
                                 var earnedTmp = dtps.classes[num].stream[id].letter;
                             }
-                            if ((prevWeight !== -1) && (dtps.classes[num].stream[id].grade.split("/")[1] !== undefined)) dtps.classes[num].weights[prevWeight].assignments.push({ id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2) });
+                            if ((prevWeight !== -1) && (dtps.classes[num].stream[id].grade.split("/")[1] !== undefined)) dtps.classes[num].weights[prevWeight].assignments.push({ id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2), possible: data[i].assignments[ii].points_possible, earned: data[i].assignments[ii].submission.score });
                         }
                     }
                 }
