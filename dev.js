@@ -778,30 +778,24 @@ dtps.gradebook = function (num) {
         if (dtps.classes[num].weights.length) {
             $(".btns .btn.grades").show();
             var weightsTmp = [];
-            var sidebarTmp = [];
+            var weightOverview = [];
+            var revisable = [];
             var DVs = 0;
             for (var i = 0; i < dtps.classes[num].weights.length; i++) {
                 var assignTmp = [];
                 for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-                    assignTmp.push(`<div onclick="dtps.assignment(` + dtps.classes[num].weights[i].assignments[ii].id + `, ` + num + `)" style="
-    padding: 5px;
-    background-color:  var(--theme-color-outline);;
-    border-radius: 12px;
-    height: 30px;
-    margin: 10px 5px;
-    cursor: pointer;
-"><div style="
-    position: absolute;
-    z-index: 5;
-    color: var(--theme-text-color);
-">` + dtps.classes[num].weights[i].assignments[ii].disp + `</div><div style="
-    position: absolute;
-    width: calc(` + (dtps.classes[num].weights[i].assignments[ii].percentage * 100) + `% - 280px);
-    height: 32px;
-    background-color: var(--theme-color);
-    margin: -6px;
-    border-radius: 12px;
-"></div></div>`)
+                    assignTmp.push(`<div onclick="dtps.assignment(` + dtps.classes[num].weights[i].assignments[ii].id + `, ` + num + `)" class="progressBar">
+<div class="progressLabel">` + dtps.classes[num].weights[i].assignments[ii].disp + `</div><div style="width: calc(` + (dtps.classes[num].weights[i].assignments[ii].percentage * 100) + `% - 280px);" class="progress"></div></div>`)
+//var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * (dtps.classes[num].weights[i].assignments[ii].percentage * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints))) * 100).toFixed(2)
+		var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints)) * 100).toFixed(2)
+		if (reviseBy > 1) { revisable.push({ dom: `<p>Revising ` + dtps.classes[num].weights[i].assignments[ii].disp + ` could boost your grade by up to ` + reviseBy + `%</p>`, rv: Number(reviseBy) }) }
+	       revisable.sort(function(a, b){
+    var keyA = a.rv,
+        keyB = b.rv;
+    if(keyA < keyB) return -1;
+    if(keyA > keyB) return 1;
+    return 0;
+});
                     if (!((dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS")) || (dtps.classes[num].weights[i].weight.toUpperCase().includes("SS")))) {
                         var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");
                         if (parts[parts.length - 1].includes("DV")) DVs++;
@@ -815,9 +809,7 @@ dtps.gradebook = function (num) {
                 if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
                 if (dtps.classes[num].weights[i].icon == "") dtps.classes[num].weights[i].icon = '<i class="material-icons">category</i> ';
                 weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--flex-sectext, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>`);
-                sidebarTmp.push(`<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
-       ` + dtps.classes[num].weights[i].icon + dtps.classes[num].weights[i].weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
-    </div>`);
+                weightOverview.push(`<div onclick="$('.weight').hide(); $('.weight.` + i + `').show();" class="progressBar big"><div class="progressLabel">` + dtps.classes[num].weights[i].weight  + `</div><div class="progress" style="width: calc(` + dtps.classes[num].weights[i].grade + ` - 300px);"></div></div>`)
             }
             var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">check_circle_outline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">On track to pass&nbsp;&nbsp;<span style="font-size: 18px;">Power+ didn't detect any DVs in any of your CCs or PTs</span></h5></div>`
             if (DVs > 0) {
@@ -826,16 +818,27 @@ dtps.gradebook = function (num) {
             if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
             jQuery(".classContent").html(headsUp + (dtps.classes[dtps.selectedClass].grade !== "--" ? (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;">
 <i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px; vertical-align: middle;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + `%</span></h5></div>` : "") : "") : "") + `
-<div style="height: 800px;" class="card withnav">
+<div style="height: 1000px;" class="card withnav">
   <div class="sidenav">
     <div class="title">
       <h5>Gradebook</h5>
       <p>` + dtps.classes[num].name + `</p>
     </div>
-    ` + sidebarTmp.join("") + `
+    <div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.overview').show();" style="margin-top: -15px;" class="item active"><i class="material-icons">dashboard</i> Overview</div>
+    ` + dtps.classes[num].weights.map(function(key, i) {
+   return `<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
+       ` + key.icon + key.weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
+    </div>` }).join("") + `
   </div>
   <div class="content">
     ` + weightsTmp.join("") + `
+    <div class="weight overview">
+<h4>` + dtps.classes[num].name + `</h4>
+` + weightOverview.join("") + `
+<br />
+<h5><i class="material-icons" style="vertical-align: middle; margin-right: 10px;">trending_up</i>Boost your grade (beta)</h5>
+<p>` + revisable.map((key) => key.dom).join("") + `</p>
+</div>
   </div>
 </div>
   `);
