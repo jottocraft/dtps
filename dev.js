@@ -532,8 +532,8 @@ dtps.classStream = function (num, renderOv) {
                                 var earnedTmp = dtps.classes[num].stream[id].letter;
                             }
                             if ((prevWeight !== -1) && (dtps.classes[num].stream[id].grade.split("/")[1] !== undefined)) {
-				    dtps.classes[num].weights[prevWeight].possible = dtps.classes[num].weights[prevWeight].possible + Number(dtps.classes[num].stream[id].grade.split("/")[1])
-			            dtps.classes[num].weights[prevWeight].earned = dtps.classes[num].weights[prevWeight].earned + Number(dtps.classes[num].stream[id].grade.split("/")[0])
+				    dtps.classes[num].weights[prevWeight].possiblePoints = dtps.classes[num].weights[prevWeight].possiblePoints + Number(dtps.classes[num].stream[id].grade.split("/")[1])
+			            dtps.classes[num].weights[prevWeight].earnedPoints = dtps.classes[num].weights[prevWeight].earnedPoints + Number(dtps.classes[num].stream[id].grade.split("/")[0])
 				    dtps.classes[num].weights[prevWeight].assignments.push({ id: dtps.classes[num].stream[id].id, disp: dtps.classes[num].stream[id].title + ": " + earnedTmp + "/" + dtps.classes[num].stream[id].grade.split("/")[1], percentage: (Number(dtps.classes[num].stream[id].grade.split("/")[0]) / Number(dtps.classes[num].stream[id].grade.split("/")[1])).toFixed(2), possible: Number(dtps.classes[num].stream[id].grade.split("/")[1]), earned: Number(dtps.classes[num].stream[id].grade.split("/")[0]) });
 			    }
                         }
