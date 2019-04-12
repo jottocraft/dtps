@@ -4,7 +4,9 @@
 [![Power+ Chrome Web Store Rating](https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo/reviews)
 
 For users looking to install Power+, visit the Power+ website by clicking [here](https://dtps.js.org)
+
 Help test Power+ for Canvas by following the instructions [here](https://dtps.js.org/canvas)
+
 For Power+ status, visit the [jottocraft.com status page](https://status.jottocraft.com)
 
 <br />
