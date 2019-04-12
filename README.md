@@ -16,7 +16,9 @@ Here's how Power+ will be changing in the coming months
 * April 10th, 2019: Power+ for Canvas can be tested by anyone ([install instructions](https://dtps.js.org/canvas))
 * Late April / Early May 2019: The final version of Power+ for PowerSchool will be released (The May 2019 update). The dev channel will no longer be active, and will redirect users to Power+ for PowerSchool stable.
 * Late May / June 2019: An announcement will be shown in Power+ for the June intersession teaching people how to get started with Power+ for Canvas and the Power+ roadmap.
-* Summer 2019: Power+ for PowerSchool will be moved to another GitHub repository and will officially become no longer supported. Power+ for Canvas will officially become Power+ and will be developed on the main Power+ repository as Power+ beta on init.js. The dev channel will remain inactive as Power+ is developed for Canvas. The Power+ gradebook will not be available until its stable release.
+* June 2019: Power+ for PowerSchool will no longer recive bugfix updates
+* July 2019: Power+ for PowerSchool will be moved to another GitHub repository and will officially become no longer supported. Power+ for Canvas will officially become Power+ and will be developed on the main Power+ repository as Power+ canary on init.js. The dev channel will remain inactive as Power+ is developed for Canvas. The Power+ gradebook will not be available until its stable release.
+* August 2019: Power+ will no longer be opt-in and will be on by default for all Power+ users. Power+ will transition from canary to beta.
 * September 2019: Power+ for Canvas will exit beta with the gradebook and the dev channel will become active again. Power+ development will continue as usual with stable and dev channels.
 
 <br /><br />
