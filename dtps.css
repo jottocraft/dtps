@@ -98,7 +98,14 @@ body.dark .fc .fc-button-group>* {
 
 .announcement:not(.open) {
     max-height: 200px;
+}
+
+.announcement {
     overflow: hidden;
+}
+
+.announcement a {
+    color: var(--norm);
 }
 
 body {
