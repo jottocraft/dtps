@@ -819,7 +819,7 @@ dtps.gradebook = function (num) {
             if (DVs > 0) {
                 var headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
             }
-            if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
+            if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--") && (JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id])) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
             jQuery(".classContent").html(headsUp + (dtps.classes[dtps.selectedClass].grade !== "--" ? (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;">
 <i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px; vertical-align: middle;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + `%</span></h5></div>` : "") : "") : "") + `
 <div style="height: 1000px;" class="card withnav">
@@ -1233,7 +1233,7 @@ dtps.gradeTrend = function (ele) {
     } else {
         swal({ title: 'Enable grade trend', text: 'By enabling grade trend, Power+ will store a copy of your grades locally on your computer every time you use Power+. When a grade for one of your classes changes, Power+ will tell you how much it changed in the grades tab of the class. The grade trend setting applies to all classes.', buttons: true }).then((enable) => {
             if (enable) {
-                window.localStorage.setItem('dtpsGradeTrend', '{}'); swal('Grade trend is enabled', { icon: 'success', });
+                window.localStorage.setItem('dtpsGradeTrend', '{}'); dtps.logGrades(); swal('Grade trend is enabled', { icon: 'success', });
             } else {
                 $(temp).removeClass('active')
             }
