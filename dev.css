@@ -149,6 +149,7 @@ body.dark .fc .fc-button-group>* {
 
 .announcement {
     overflow: hidden;
+    word-break: break-all;
 }
 
 .announcement a {
