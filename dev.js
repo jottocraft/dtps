@@ -639,7 +639,7 @@ $("i.inputIcon").attr("onclick", "")
         } else {
 		if ($("input.search").val() == "snake") {
            $("i.inputIcon").html("gesture")
-           $("i.inputIcon").attr("onclick", `$('.classContent').html('<div style="text-align: center; align-items: center; background-color: black; color: white;" class="card"><canvas width="400" height="400" id="snakeThing"></canvas></div>')$.getScript('https://cdn.jottocraft.com/egg.js')`)
+           $("i.inputIcon").attr("onclick", `$('.classContent').html('<div style="text-align: center; align-items: center; background-color: black; color: white;" class="card"><canvas width="400" height="400" id="snakeThing"></canvas></div>');$.getScript('https://cdn.jottocraft.com/egg.js')`)
 } else {
 jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
 }
