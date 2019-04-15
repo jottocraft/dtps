@@ -166,7 +166,7 @@ dtps.init = function () {
     if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
     og = ["10894474", "10837719"]
     if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
-    highFlyers = ["10894474", "10837719"]
+    highFlyers = ["10837719"]
     if (highFlyers.includes(HaikuContext.user.login)) { jQuery("body").addClass("highFlyer"); }
     contributors = ["10837719", "10463823", "10894474"]
     if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
