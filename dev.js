@@ -35,6 +35,7 @@ dtps.firstrun = function () {
 <h4>` + dtps.readableVer + `</h4>
 <p>Things to keep in mind when using Power+` + dtps.trackSuffix + `</p>
 <li>Power+` + dtps.trackSuffix + ` can't fully replace PowerSchool yet. Many PowerSchool features are not included in Power+` + dtps.trackSuffix + `.</li>
+<li><b style="color: red;">Starting June 1st, 2019, Power+ for PowerSchool will no longer be supported. Visit dtps.js.org to learn more.</b></li>
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
 </div><div id="TB_actionBar" style=""><span><input class="button button" onclick="window.location.reload();" type="button" value="Cancel"><input class="button button" onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" value="Accept & Continue"></span>
 `)
@@ -162,17 +163,6 @@ dtps.init = function () {
     fluidStorage = "localStorage";
     if (window.localStorage.dtpsLocal) { dtps.readableVer.replace(dtps.trackSuffix, " (local)"); dtps.trackSuffix = " (local)" }
     fluidThemes = [["midnight", "nitro", "aquatic"], ["rainbow"]];
-    sudoers = ["10837719", "10838212", "10894474", "10463823"]
-    if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-    og = ["10894474", "10837719"]
-    if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
-    highFlyers = ["10837719"]
-    if (highFlyers.includes(HaikuContext.user.login)) { jQuery("body").addClass("highFlyer"); }
-    contributors = ["10837719", "10463823", "10894474"]
-    if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
-    if (HaikuContext.user.login == "10837719") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); fluidThemes[0].push({ name: "d.tech", id: "darkDtech", icon: "school" }); }
-    if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
-    if (sudoers.includes(HaikuContext.user.login)) jQuery("body").addClass("prerelease");
     dtps.shouldRender = false;
     dtps.first = false;
     dtps.showChangelog = false;
@@ -220,16 +210,9 @@ dtps.init = function () {
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         var configTmp = {
-            'page_title': 'portal',
-            'page_path': '/portal',
+            'page_title': 'powerschool',
+            'page_path': '/powerschool',
             'anonymize_ip': true
-        }
-        if (dtps.trackSuffix !== "") {
-            configTmp = {
-                'page_title': 'prerelease',
-                'page_path': '/prerelease',
-                'anonymize_ip': true
-            }
         }
         gtag('config', 'UA-105685403-3', configTmp);
 
@@ -239,10 +222,6 @@ dtps.init = function () {
         jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
     })
     jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
-    if ((window.location.host !== "dtechhs.learning.powerschool.com") && ((window.location.host !== "mylearning.powerschool.com") || (HaikuContext.user.login.split(".")[0] !== "dtps"))) {
-        dtps.shouldRender = false;
-        dtps.nativeAlert("Unsupported school", "Power+ only works at Design Tech High School");
-    } else {
         if (Number(window.localStorage.dtps) < dtps.ver) {
             dtps.log("New release")
             dtps.showChangelog = true;
@@ -263,7 +242,6 @@ dtps.init = function () {
 
 
             }
-        }
 
         if (window.localStorage.dtpsInstalled !== "true") {
             dtps.shouldRender = false;
@@ -311,7 +289,7 @@ dtps.init = function () {
             var subject = null;
             var icon = null;
             if (name.includes("Physics")) { var subject = "Physics"; var icon = "experiment"; }; if (name.includes("English")) { var subject = "English"; var icon = "library_books" }; if (name.includes("Physical Education")) { var subject = "PE"; var icon = "directions_run"; };
-            if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; }; if (name.includes("Algebra 2")) { var subject = "Algebra 2"; if (highFlyers.includes(HaikuContext.user.login)) { subject = "Algebra 2 High Flyers" } };
+            if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; }; if (name.includes("Algebra 2")) { var subject = "Algebra 2"; };
             if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" }; if (name.includes("Environmental")) { var subject = "Environmental Science" };
             if (name.includes("Robotics")) { var subject = "Robotics" }; if (name.includes("Biology")) { var subject = "Biology" }; if (name.includes("Engineering")) { var subject = "Engineering" }; if (name.includes("Geometry")) { var subject = "Geometry" };
             if (name.includes("Photography")) { var subject = "Photography" }; if (name.includes("World History")) { var subject = "World History" }; if (name.includes("U.S. History")) { var subject = "US History" };
@@ -657,13 +635,6 @@ jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input
 dtps.masterStream = function (doneLoading) {
     dtps.log("RENDERING DASHBOARD")
     dtps.showClasses();
-    for (var i = 0; i < dtps.classes.length; i++) {
-        if (dtps.classes[i].subject.includes("Algebra 2")) {
-            if (highFlyers.includes(HaikuContext.user.login)) {
-                $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark"));
-            }
-        }
-    }
     if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
         jQuery(".classContent").html(`
     <div class="spinner">
@@ -892,14 +863,11 @@ dtps.assignment = function (id, classNum) {
             list.push(`<div onclick="var tmp = '` + assignment.grade + `'; dtps.classes[` + classNum + `].stream[` + streamNum + `].grade = window.prompt('What-if grade:'); alert('Your grade in this class would move from ` + dtps.classes[classNum].grade + `% to ' + (dtps.computeClassGrade(dtps.classes[` + classNum + `]) * 100) + '%'); dtps.classes[` + classNum + `].stream[` + streamNum + `].grade = tmp;" style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">star_border</i>` + "<b>Points earned</b>:  " + assignment.grade + " (" + assignment.letter + `)</div>`)
             list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">category</i>` + "<b>Category</b>:  " + assignment.weight + `</div>`)
         }
-        if (contributors.includes(HaikuContext.user.login)) {
-            list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">bug_report</i>` + "<b>IDs (classNumber-classID, streamNumber-assignmentID)</b>:  " + classNum + "-" + dtps.classes[classNum].id + " " + streamNum + "-" + assignment.id + `</div>`)
-        }
         list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">class</i>` + "<b>Class</b>:  " + (dtps.fullNames ? dtps.classes[classNum].name : dtps.classes[classNum].subject) + `</div>`)
         dom.children("div").siblings("table").before(`<br /><div class="list">` + list.join("") + `</div><br /><br />`)
         $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + dom.html() + `
 ` + handInDom + `
-<div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> View Work</div>
+<div class="btn" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> View Work (beta)</div>
 `);
     });
 }
@@ -914,7 +882,11 @@ dtps.announcements = function () {
     dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc", function (resp) {
         dtps.raw = resp;
         var ann = jQuery(resp).children("tbody").children("tr").toArray();
-        var announcements = [];
+        var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color">
+<div class="label">Power+</div>
+<p>This is a test notification</p>
+</div>
+`];
         for (var i = 0; i < ann.length; i++) {
             if (jQuery(ann[i]).children("td")[1] !== undefined) {
                 var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
@@ -1370,15 +1342,15 @@ dtps.render = function () {
     <p>You can rearrange the classes in the class list by dragging them</p>
     <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule Classes</button>
     <br /><br />
-<div class="googleClassroom prerelease">
-    <h5>google_logo Classes</h5>
+<div class="googleClassroom">
+    <h5>google_logo Classes (beta)</h5>
     <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">link_off</i>Unlink Google Classroom</button>
     <br /><br />
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
     <div class="isolatedGClassList"><p>Loading...</p></div>
 </div>
-<div class="googleSetup prerelease">
-    <h5>google_logo Classroom</h5>
+<div class="googleSetup">
+    <h5>google_logo Classroom (beta)</h5>
     <p>Link google_logo Classroom to see assignments and classes from both PowerSchool and Google.</p>
     <p>If Power+ thinks one of your PowerSchool classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
     <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn"><i class="material-icons">link</i>Link Google Classroom</button>
@@ -1412,12 +1384,7 @@ dtps.render = function () {
     <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
      <br /><br />
    <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + ` <span style="font-size: 12px;">` + dtps.user.login + `</span></h5>
-<div style="display:inline-block;" class="beta badge notice highFlyer">high flyer&nbsp;<i style="vertical-align: middle;" class="material-icons highFlyer">school</i></div>
-<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
-<div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
-<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
-<div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
-    <br /><br />
+    <br />
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
@@ -1436,7 +1403,6 @@ dtps.render = function () {
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
-    <i onclick="dtps.bugReport();" class="material-icons prerelease">bug_report</i>
     <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); $('.gradeDom').html(dtps.gradeHTML.join('')); fluid.modal('.abt-new')" class="material-icons">settings</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
