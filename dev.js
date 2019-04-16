@@ -12,13 +12,6 @@ var dtps = {
     latestStream: []
 };
 
-window.onerror = function (message, url, lineNumber, col, full) {
-    if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
-        try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + ":" + col + "] " + message + "<br />" + full + `</p>` + jQuery("span.log").html()); } catch (e) { }
-    }
-    return false;
-};
-
 dtps.changelog = function () {
     fluid.cards.close(".card.focus")
     fluid.modal(".card.changelog");
@@ -26,7 +19,6 @@ dtps.changelog = function () {
 
 dtps.log = function (msg) {
     console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
-    if (typeof msg !== "object") { try { jQuery("span.log").html(`<p>[DTPS` + dtps.trackSuffix + `] ` + msg + `</p>` + jQuery("span.log").html()); } catch (e) { } }
 }
 
 dtps.firstrun = function () {
@@ -884,7 +876,7 @@ dtps.announcements = function () {
         var ann = jQuery(resp).children("tbody").children("tr").toArray();
         var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color">
 <div class="label">Power+</div>
-<p>This is a test notification</p>
+This is a test notification
 </div>
 `];
         for (var i = 0; i < ann.length; i++) {
@@ -1304,9 +1296,6 @@ dtps.render = function () {
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
-      <i class="material-icons">bug_report</i> Debugging
-    </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.about').show(); $('.advancedOptions').hide(); $('.advOp').show();" class="item">
       <i class="material-icons">info</i> About
     </div>
@@ -1359,17 +1348,6 @@ dtps.render = function () {
     <h5>Extension</h5>
     <div class="extensionDom" ></div>
 </div>
-<div style="display: none;" class="abtpage debug">
-<div class="dev">
-    <h5>Debugging</h5>
-    <br>
-    <div id="dtpsLocal" onclick="if (window.localStorage.dtpsLocal == 'false') {localStorage.setItem('dtpsLocal', true);} else {localStorage.setItem('dtpsLocal', false);}" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Use local copy of Project DTPS</div>
-<br /><br>
-<span class="log">
-</span>
-</div>
-</div>
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
     <p>Made by <a href="https://github.com/jottocraft">jottocraft</a></p>
@@ -1377,7 +1355,6 @@ dtps.render = function () {
     <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
      <br /><br />
    <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + ` <span style="font-size: 12px;">` + dtps.user.login + `</span></h5>
-    <br />
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
