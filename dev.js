@@ -876,7 +876,9 @@ dtps.announcements = function () {
         var ann = jQuery(resp).children("tbody").children("tr").toArray();
         var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color">
 <div class="label">Power+</div>
+<p>
 d.tech is switching to Canvas next school year. You can help test the next version of Power+ by going to <a href="https://dtps.js.org/canvas">dtps.js.org/canvas</a>. This version of Power+ for PowerSchool Learning will no longer be supported starting on June 1st, 2019.
+</p>
 </div>
 `];
         for (var i = 0; i < ann.length; i++) {
