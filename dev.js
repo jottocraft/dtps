@@ -876,7 +876,7 @@ dtps.announcements = function () {
         var ann = jQuery(resp).children("tbody").children("tr").toArray();
         var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color">
 <div class="label">Power+</div>
-This is a test notification
+d.tech is switching to Canvas next school year. You can help test the next version of Power+ by going to <a href="https://dtps.js.org/canvas">dtps.js.org/canvas</a>. This version of Power+ for PowerSchool Learning will no longer be supported starting on June 1st, 2019.
 </div>
 `];
         for (var i = 0; i < ann.length; i++) {
@@ -1355,6 +1355,7 @@ dtps.render = function () {
     <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
      <br /><br />
    <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + ` <span style="font-size: 12px;">` + dtps.user.login + `</span></h5>
+<br />
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
