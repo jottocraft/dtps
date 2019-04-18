@@ -135,7 +135,7 @@ body.dark .fc .fc-button-group>* {
     position: absolute;
     right: 0;
     margin-right: 15px;
-    margin-top: -10px;
+    margin-top: -15px;
     background-color: var(--light);
     color: var(--dark);
     padding: 3px 6px;
