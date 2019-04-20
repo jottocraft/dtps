@@ -1036,7 +1036,7 @@ dtps.showClasses = function (override) {
             if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
             if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
             if (dtps.classes[dtps.selectedClass]) {
-              if (dtps.classes[dtps.selectedClass]) dtps.showClasses(true);
+              if (dtps.classes[dtps.selectedClass]) dtps.showClasses();
               dtps.classes[dtps.selectedClass].whatif = false;
             }
             $('body').removeClass('isolatedGoogleClass');
@@ -1236,9 +1236,10 @@ dtps.render = function () {
             jQuery(".extensionDom").html(`<br />
 <div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'false') {localStorage.setItem('disableAutoLoad', true);} else {localStorage.setItem('disableAutoLoad', false);}" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
+<div style="display: none;">
 <br /><br />
 <div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true); window.alert('The dev version of Power+ is often untested and may contain several bugs. Continue at your own risk.'); }"><span class="head"></span></div>
-    <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the unstable (dev) version of Power+</div>`)
+    <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the unstable (dev) version of Power+</div></div>`)
             jQuery(".extTab").show();
             if (window.localStorage.disableAutoLoad == "false") { jQuery("#extensionAutoLoad").addClass("active"); }
             if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
