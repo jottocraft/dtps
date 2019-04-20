@@ -1,12 +1,12 @@
-/* Power+ v1.7.0 [DEV]
+/* Power+ v1.7.0 [RELEASE CANDIDATE]
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
 Email: hello@jottocraft.com */
 
 var dtps = {
     ver: 170,
-    readableVer: "v1.7.0 (dev)",
-    trackSuffix: " (dev)",
+    readableVer: "v1.7.0 (GM)",
+    trackSuffix: " (GM)",
     showLetters: false,
     fullNames: false,
     latestStream: []
@@ -543,9 +543,9 @@ dtps.whatIf = function(ele, id, classs) {
    }, false);
 }
 
-dtps.renderStream = function (stream, searchRes) {
+dtps.renderStream = function (stream, searchRes, max) {
     var streamlist = [];
-    for (var i = 0; i < stream.length; i++) {
+    for (var i = 0; ((i < stream.length) && ((max == true) || (max == undefined) ? (true) : (i < max))); i++) {
         var due = "Due " + stream[i].due;
         if (due.includes("n/a")) var due = "";
         var turnInDom = "";
@@ -597,10 +597,10 @@ dtps.renderStream = function (stream, searchRes) {
             searchRes = "";
         }
     }
-    return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ((typeof Fuse !== "undefined" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + streamlist.join(""));
+    return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ((typeof Fuse !== "undefined" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + streamlist.join("")) + `
+` + ((stream.length > max) && (max !== undefined) && (max !== true) ? `<div onclick="jQuery('.classContent .stream').html(dtps.renderStream(dtps.latestStream, undefined, true)); if (dtps.selectedClass == 'dash') {$('.card.assignment').addClass('color');}" class="card" style="box-shadow: none; background-color: transparent; text-align: center; cursor: pointer;">Show All Assignments</div>` : ``);
     //return streamlist.join("");
 }
-
 dtps.search = function () {
 $("i.inputIcon").attr("onclick", "")
     if (dtps.selectedClass == "dash") {
@@ -675,7 +675,7 @@ dtps.masterStream = function (doneLoading) {
         if (keyA < keyB) return 1;
         if (keyA > keyB) return -1;
         return 0;
-    })));
+    }), undefined, 50));
     $(".card.assignment").addClass("color");
     dtps.calendar(doneLoading);
 }
@@ -874,11 +874,11 @@ dtps.announcements = function () {
     dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc", function (resp) {
         dtps.raw = resp;
         var ann = jQuery(resp).children("tbody").children("tr").toArray();
-        var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color">
+        var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer; display: none;" class="announcement card color unsupported">
 <div class="label">Power+</div>
-<p>
-d.tech is switching to Canvas next school year. You can help test the next version of Power+ by going to <a href="https://dtps.js.org/canvas">dtps.js.org/canvas</a>. This version of Power+ for PowerSchool Learning will no longer be supported starting on June 1st, 2019.
-</p>
+Transition to Canvas
+<br />
+d.tech will no longer use PowerSchool learning starting on August 14th, 2019. Power+ is currently in the process of being rewritten to bring features from both Power+ today and Canvas. As of May 1st, 2019, Power+ for PowerSchool Learning will no longer receive feature updates to focus development on Power+ for Canvas. Starting June 1st, 2019, Power+ for PowerSchool Learning will no longer receive any updates at all. Power+ for Canvas is scheduled to be fully functional in beta on the first day of school. You can help test the new version of Power+ for Canvas by clicking <a href="https://dtps.js.org/canvas">here</a>. To learn more about the future of Power+, click <a href="https://github.com/jottocraft/dtps/blob/master/README.md#power-roadmap">here</a>.
 </div>
 `];
         for (var i = 0; i < ann.length; i++) {
@@ -1191,7 +1191,7 @@ dtps.logGrades = function () {
 
 dtps.gradeTrend = function () {
     var ele = $("#gradeTrendSwitch")
-    if (ele.hasClass('active')) {
+    if (String(window.localStorage.dtpsGradeTrend).startsWith("{")) {
         window.localStorage.setItem('dtpsGradeTrend', 'false');
         swal('Grade trend is disabled. All data stored on your computer by grade trend has been deleted.', { icon: 'success', });
     } else {
@@ -1355,6 +1355,11 @@ dtps.render = function () {
     <button onclick="dtps.changelog();" style="display:none;" class="btn changelog"><i class="material-icons">update</i>Changelog</button>
     <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
      <br /><br />
+<div style="display: none;" class="unsupported">
+<h5 style="color: #c14d3c;">!! Unsupported version of Power+ !!</h5>
+<p>As of June 1st, 2019, Power+ is no longer supported on PowerSchool Learning. All Power+ development is now focused on Power+ built for Canvas LMS. Learn more about the Power+ roadmap <a href="https://github.com/jottocraft/dtps/blob/master/README.md#power-roadmap">here</a>.</p>
+<br />
+</div>
    <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + ` <span style="font-size: 12px;">` + dtps.user.login + `</span></h5>
 <br />
     <h5>Credits</h5>
