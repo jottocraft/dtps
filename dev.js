@@ -1189,10 +1189,9 @@ dtps.logGrades = function () {
     }
 }
 
-dtps.gradeTrend = function (ele) {
-    var temp = ele;
-    if ($(temp).hasClass('head')) { temp = $(ele).parent()[0] };
-    if (!$(temp).hasClass('active')) {
+dtps.gradeTrend = function () {
+    var ele = $("#gradeTrendSwitch")
+    if (ele.hasClass('active')) {
         window.localStorage.setItem('dtpsGradeTrend', 'false');
         swal('Grade trend is disabled. All data stored on your computer by grade trend has been deleted.', { icon: 'success', });
     } else {
@@ -1200,7 +1199,7 @@ dtps.gradeTrend = function (ele) {
             if (enable) {
                 window.localStorage.setItem('dtpsGradeTrend', '{}'); dtps.logGrades(); swal('Grade trend is enabled', { icon: 'success', });
             } else {
-                $(temp).removeClass('active')
+                ele.removeClass('active')
             }
         });
     }
@@ -1312,7 +1311,7 @@ dtps.render = function () {
     <div onclick="jQuery('body').toggleClass('hidegrades')" class="switch"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <br /><br />
-    <div onclick="dtps.gradeTrend(this);" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
+    <div id="gradeTrendSwitch" onclick="dtps.gradeTrend(this);" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">timeline</i> Show grade trend</div>
     <br /><br />
     <div onclick="$('body').toggleClass('letterGrades'); localStorage.setItem('dtpsLetterGrades', $('body').hasClass('letterGrades'));" class="switch` + (window.localStorage.dtpsLetterGrades == "true" ? " active" : "") + `"><span class="head"></span></div>
