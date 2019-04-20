@@ -9,7 +9,8 @@ var dtps = {
     trackSuffix: " (GM)",
     showLetters: false,
     fullNames: false,
-    latestStream: []
+    latestStream: [],
+    unsupported: false
 };
 
 dtps.changelog = function () {
@@ -876,9 +877,9 @@ dtps.announcements = function () {
         var ann = jQuery(resp).children("tbody").children("tr").toArray();
         var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer; display: none;" class="announcement card color unsupported">
 <div class="label">Power+</div>
-Transition to Canvas
-<br />
-d.tech will no longer use PowerSchool learning starting on August 14th, 2019. Power+ is currently in the process of being rewritten to bring features from both Power+ today and Canvas. As of May 1st, 2019, Power+ for PowerSchool Learning will no longer receive feature updates to focus development on Power+ for Canvas. Starting June 1st, 2019, Power+ for PowerSchool Learning will no longer receive any updates at all. Power+ for Canvas is scheduled to be fully functional in beta on the first day of school. You can help test the new version of Power+ for Canvas by clicking <a href="https://dtps.js.org/canvas">here</a>. To learn more about the future of Power+, click <a href="https://github.com/jottocraft/dtps/blob/master/README.md#power-roadmap">here</a>.
+<b style="font-size: 18px;">Transition to Canvas</b>
+<br /><br />
+d.tech will no longer use PowerSchool learning starting on August 14th, 2019. Power+ is currently in the process of being rewritten to bring features from both Power+ and Canvas. As of May 1st, 2019, Power+ for PowerSchool Learning will no longer receive feature updates in order to focus development on Power+ for Canvas. Starting June 1st, 2019, Power+ for PowerSchool Learning will no longer receive any updates at all and will be unsupported. Power+ for Canvas is scheduled to be fully functional in beta on the first day of school. You can help test the new version of Power+ for Canvas right now by clicking <a href="https://dtps.js.org/canvas">here</a>. To learn more about the future of Power+, click <a href="https://github.com/jottocraft/dtps/blob/master/README.md#power-roadmap">here</a>.
 </div>
 `];
         for (var i = 0; i < ann.length; i++) {
@@ -902,6 +903,7 @@ d.tech will no longer use PowerSchool learning starting on August 14th, 2019. Po
         if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
             jQuery(".dash .announcements").append("<br />" + announcements.join(""));
         }
+	    if (dtps.unsupported) $(".unsupported").show();
     });
 };
 
@@ -1461,5 +1463,6 @@ dtps.render = function () {
         jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
     });
     fluid.init();
+    if (dtps.unsupported) $(".unsupported").show();
 }
 dtps.init();
