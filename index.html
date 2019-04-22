@@ -70,7 +70,10 @@
   <script>
     $(document).ready(function() {
       if (window.localStorage.dtpsRefresh) {
-        
+        $("#login").html(`<i class="material-icons">open_in_new</i> Open`)
+      }
+      if (window.location.href.includes("?logout=true")) {
+        $("#login").html(`<i style="font-family: 'Material Icons Extended'" class="material-icons">lock</i> Logged out`)
       }
     })
   </script>
@@ -79,7 +82,7 @@
     <h3>Power+</h3>
 	<div onclick="window.location.href = 'https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo';"><i class="material-icons">cloud_download</i> Install</div>
 	<div onclick="window.location.href='/canvas'"><img src="https://i.imgur.com/g36oHzm.png" /> Power+ for Canvas</div>
-    <div onclick="window.location.href = '/app';"><i style="font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> Login</div>
+    <div id="login" onclick="window.location.href = '/app';"><i style="font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> Login</div>
   </div>
         <div style="text-align: center; margin-top: calc(50vh - 375px);">
         <div id="mainIMG" style="width: 1000px;height: 640px;border-radius: 10px;margin-top: 50px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);margin: 50px auto;background-size: cover;"></div>
