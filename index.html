@@ -73,6 +73,7 @@
         $("#login").html(`<i class="material-icons">open_in_new</i> Open`)
       }
       if (window.location.href.includes("?logout=true")) {
+        window.history.replaceState(null, null, window.location.pathname);
         $("#login").html(`<i style="font-family: 'Material Icons Extended'" class="material-icons">lock</i> Logged out`)
       }
     })

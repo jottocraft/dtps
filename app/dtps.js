@@ -356,7 +356,8 @@ dtps.init = function () {
                 window.localStorage.setItem("dtpsRefresh", data.refresh_token)
                 window.localStorage.setItem("dtpsUser", JSON.stringify(data.user))
                 dtps.oauth.token = data.access_token
-            }).fail(() => alert("An login error occured"));
+                dtps.init();
+            }).fail(() => { alert("An login error occured"); window.location.href = "https://dtps.js.org"; });
         } else {
             window.location.href = 'http://lms.jottocraft.com/login/oauth2/auth?client_id=' + dtps.oauth.clientID + '&response_type=code&state=dtps-login&redirect_uri=' + dtps.oauth.redirectURI;
         }
