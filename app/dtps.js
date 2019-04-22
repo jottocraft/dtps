@@ -17,8 +17,7 @@ var dtps = {
         clientSecret: "crCLyaH4vT8hXaRBLe80kJ6RoHCJPcZXXGnnpEDe7ypnnXBu7KuPHcEzPqygyhZS",
         redirectURI: "https://dtps.js.org/app",
         logout: function () {
-            $.ajax({ url: 'https://cors-anywhere.herokuapp.com/http://lms.jottocraft.com/login/oauth2/token?access_token=' + dtps.oauth.token, type: 'DELETE' });
-            window.location.href = "https://dtps.js.org"
+            $.ajax({ url: 'https://cors-anywhere.herokuapp.com/http://lms.jottocraft.com/login/oauth2/token?access_token=' + dtps.oauth.token, type: 'DELETE', success: function() { window.localStorage.removeItem("dtpsRefresh"); window.localStorage.removeItem("dtpsUser"); window.location.href = "https://dtps.js.org?logout=true" } });
         }
     },
     latestStream: []
@@ -350,7 +349,7 @@ dtps.init = function () {
                     });
                 });
             });
-        });
+        }).fail(() => { window.localStorage.removeItem("dtpsRefresh"); window.localStorage.removeItem("dtpsUser"); dtps.init(); });
     } else {
         if (dtps.param.code && (dtps.param.state == "dtps-login")) {
             $.post("https://cors-anywhere.herokuapp.com/http://lms.jottocraft.com/login/oauth2/token", { grant_type: "authorization_code", code: dtps.param.code, client_id: dtps.oauth.clientID, client_secret: dtps.oauth.clientSecret, redirect_uri: dtps.oauth.redirectURI }).done(function (data) {
@@ -1284,8 +1283,6 @@ dtps.render = function () {
   <div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
   <div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
   <!-- <div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div> -->
-      <br /> <br />
-  <button onclick="window.location.href = '/logout'" class="btn"><i class="material-icons">exit_to_app</i> Logout</button>
   <br /><br />
       <h5>Credits</h5>
   <ul>
