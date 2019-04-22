@@ -17,8 +17,8 @@ Here's how Power+ will be changing in the coming months (Updated 4/21/2019):
 * ~~April 10th, 2019: Power+ for Canvas can be tested by anyone ([install instructions](https://dtps.js.org/canvas))~~
 * ~~Late April / Early May 2019: The final version of Power+ for PowerSchool will be released (The May 2019 update). The dev channel will no longer be active, and will redirect users to Power+ for PowerSchool stable.~~
 * June 2019: Power+ for PowerSchool will no longer recive bugfix updates
-* July 2019: Power+ for PowerSchool will be archived and will officially become no longer supported. Power+ for Canvas will officially become Power+ and will be hosted on the main Power+ repository as Power+ beta on init.js. At this point, Power+ for Canvas will become the version of Power+ and will be enabled by default for everyone.
-* Fall 2019: Power+ for Canvas will be released as a standalone website (the script will be updated to notify users of the change). Power+ development will continue as usual with stable and dev channels. This will take a longer testing time in beta since d.tech admin need to add Power+ as an app on Canvas for it to work. This is currently being tested internally and will hopefully not be in beta for very long.
+* July 2019: Power+ for PowerSchool will be archived and will no longer be supported. Power+ for Canvas will officially become Power+ and will be hosted on the main Power+ repository. At this point, Power+ for Canvas will become the version of Power+ and will be enabled by default for everyone.
+* Fall 2019: Power+ for Canvas will be released as a standalone website (the script will be updated to notify users of the change). Power+ development will continue as usual with stable and dev channels. This is currently being tested internally and will hopefully not be in beta for very long, but needs admin to add it as an app in Canvas for it to work.
 
 <br /><br />
 
