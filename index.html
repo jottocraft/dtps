@@ -67,12 +67,19 @@
   </style>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="fluid.js"></script>
+  <script>
+    $(document).ready(function() {
+      if (window.localStorage.dtpsRefresh) {
+        
+      }
+    })
+  </script>
   <div style="padding: 0px 20px;" class="titlebar">
     <img style="width: auto; height: 36px; margin-bottom: -6px; margin-right: 10px;" src="https://dtps.js.org/outline.png" />
     <h3>Power+</h3>
 	<div onclick="window.location.href = 'https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo';"><i class="material-icons">cloud_download</i> Install</div>
 	<div onclick="window.location.href='/canvas'"><img src="https://i.imgur.com/g36oHzm.png" /> Power+ for Canvas</div>
-    <div onclick="window.location.href = 'http://lms.jottocraft.com/login/oauth2/auth?client_id=10000000000003&response_type=code&state=dtps-login&redirect_uri=https://dtps.js.org/app';"><i style="font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> Login</div>
+    <div onclick="window.location.href = '/app';"><i style="font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> Login</div>
   </div>
         <div style="text-align: center; margin-top: calc(50vh - 375px);">
         <div id="mainIMG" style="width: 1000px;height: 640px;border-radius: 10px;margin-top: 50px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);margin: 50px auto;background-size: cover;"></div>
