@@ -1,5 +1,5 @@
 /*
-Power+ CSS v1.7.0 (dev) | v2.0.0 (canary)
+Power+ CSS v2.0.0 (canary)
 (c) jottocraft 2018-2019
 */
 @font-face {
@@ -503,14 +503,14 @@ body.dark .tabs.btns .btn:not(.active) {
 }
 
 .header {
-    margin-left: 260px;
+    margin-left: 275px;
     text-align: center;
     color: white;
     padding-top: 100px;
     z-index: 200;
     position: absolute;
     top: 0;
-    width: calc(100% - 250px);
+    width: calc(100% - 275px);
 }
 
 .classContent .card {
