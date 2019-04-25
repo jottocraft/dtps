@@ -1,5 +1,5 @@
 /*
-Power+ CSS v1.6.0
+Power+ CSS v1.6.1
 (c) jottocraft 2018-2019
 */
 
@@ -20,6 +20,64 @@ Power+ CSS v1.6.0
     color: var(--theme-text-color) !important;
 }
 
+.infoChip {
+    vertical-align: middle;
+    margin:0px;
+    display: inline-block;
+    font-size: 16px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.progressBar {
+    padding: 5px;
+    background-color:  var(--theme-color-outline);
+    border-radius: 12px;
+    height: 30px;
+    margin: 10px 5px;
+    cursor: pointer;
+}
+
+.progressLabel {
+    position: absolute;
+    z-index: 5;
+    color: var(--theme-text-color);
+}
+
+.progress {
+    height: 32px;
+    background-color: var(--theme-color);
+    margin: -6px;
+    border-radius: 12px;
+    position: absolute;
+}
+
+.progressBar.big {
+    height: 50px;
+    padding: 10px;
+}
+
+.progressBar.big .progressLabel {
+    height: 32px;
+    line-height: 32px;
+    font-size: 18px;
+}
+
+.progressBar.big .progress {
+    height: 42px;
+}
+
+.floatingIcon {
+    float: right;
+    margin-top: 40px;
+    font-size: 18px;
+}
+
+.infoChip i {
+    vertical-align: middle;
+    font-size: 20px;
+}
+
 .dash.cal #calendar, .dash.cal .announcement {
     margin: 25px;
     width: 100%;
@@ -30,17 +88,7 @@ Power+ CSS v1.6.0
 }
 
 body.darkDtech {
-    --flex-light: #bb4a2d;
-    --flex-bg: #a73a21;
-    --flex-text: white;
-    --flex-sectext: #ffb6a3;
-    --flex-layer1: #da5332;
-    --flex-layer2: #923923;
-    --flex-layer3: #6f2715;
-    --theme-color: #f2896f;
-    --theme-color-outline: rgb(242, 137, 111, 0.75);
-    --theme-text-color: #af4125;
-}
+    --flex-light: #bb4a2d; --flex-bg: #a73a21; --flex-text: white; --flex-sectext: #ffb6a3; --flex-layer1: #da5332; --flex-layer2: #923923; --flex-layer3: #6f2715; --theme-color: #f2896f; --theme-color-outline: rgb(242, 137, 111, 0.75); --theme-text-color: #af4125; }
 
 .dash.cal .announcement {
     margin-right: 0px;
@@ -88,7 +136,7 @@ body.dark .fc .fc-button-group>* {
     position: absolute;
     right: 0;
     margin-right: 15px;
-    margin-top: -10px;
+    margin-top: -15px;
     background-color: var(--light);
     color: var(--dark);
     padding: 3px 6px;
@@ -102,7 +150,6 @@ body.dark .fc .fc-button-group>* {
 
 .announcement {
     overflow: hidden;
-    word-break: break-all;
 }
 
 .announcement a {
@@ -146,6 +193,14 @@ body {
 
 .class .grade:not(:hover) .points, .class .grade:hover .letter {
     display: none;
+}
+
+.class.whatif .letter {
+    display: none;
+}
+
+.class.whatif .points {
+    display: inline !important;
 }
 
 .label i {
@@ -253,6 +308,7 @@ body.titlebar .sidebar {
 body.dark .spinner > div {
     background-color: var(--flex-sectext, #bbb);
 }
+
 body:not(.dark) .spinner > div {
     background-color: var(--flex-sectext, #333);
 }
@@ -448,14 +504,14 @@ body.dark .tabs.btns .btn:not(.active) {
 }
 
 .header {
-    margin-left: 260px;
+    margin-left: 275px;
     text-align: center;
     color: white;
     padding-top: 100px;
     z-index: 200;
     position: absolute;
     top: 0;
-    width: calc(100% - 250px);
+    width: calc(100% - 275px);
 }
 
 .classContent .card {
@@ -570,6 +626,11 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
     font-size: 0.9rem;
 }
 
+.assignment .weighted i {
+    font-size: 20px !important;
+    margin-top: -3px;
+}
+
 .weight.parent .weight {
     padding: 10px !important;
     overflow: auto;
@@ -660,7 +721,7 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
 }
 
 .card .weight p {
-    color: #5f5f5f !important;
+    color: var(--flex-sectext, gray) !important;
 }
 
 .card.gb {
@@ -676,6 +737,10 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
     color: var(--light);
 }
 
+.classContent .card.color .floatingIcon {
+    color: var(--light) !important;
+}
+
 .card.details fieldset, .card.details #tb_handin_link, .card.details div.p, .card.details label {
     display: none;
 }
@@ -689,8 +754,36 @@ body.dark .card.details * {
     padding: 20px 30px;
 }
 
+.card.assignment.whatif .points .numbers {
+    padding: 2px 10px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+}
+
+body.dark .card.assignment.whatif .points .numbers {
+    background-color: #171717;
+}
+
+body:not(.dark) .card.assignment.whatif .points .numbers {
+    background-color: #dadada;
+}
+
+.card.assignment.color.whatif .points .numbers {
+    background-color: var(--dark) !important;
+}
+
+.card.assignment.whatif .points .numbers, .card.assignment.whatif .points .possible {
+    display: inline-block !important;
+}
+
+.card.assignment.whatif .points .letters, .card.assignment.whatif .points .percentage {
+    display: none !important;
+}
+
 .classContent .card.assignment h5 {
     font-size: 1rem !important;
+    min-height: 20px;
 }
 
 .classContent .card.assignment h4 {
@@ -716,7 +809,7 @@ body.dark .card.details * {
 }
 
 body.dark .class .name {
-    color: #ececec;
+    color: white;
 }
 
 body.dark {
@@ -729,41 +822,47 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
     --grad: linear-gradient(to bottom right, #d6d6d6, white) !important; color: black !important;
 }
 
-.background.filter_0, .class.filter_0, .card.filter_0, .card .weight.filter_0, .header.filter_0 {
+.filter_0 {
     --light: #f34848; --norm: #ab3030; --dark: #650808; --grad: linear-gradient(to bottom right, #f34848, #650808); }
 
-.background.filter_1, .class.filter_1, .card.filter_1, .card .weight.filter_1, .header.filter_1 {
+.filter_1 {
     --light: #ff8e37; --norm: #b95425; --dark: #863109; --grad: linear-gradient(to bottom right, #ff8e37, #863109); }
 
-.background.filter_2, .class.filter_2, .card.filter_2, .card .weight.filter_2, .header.filter_2 {
+.filter_2 {
     --light: #ffe672; --norm: #c3a51c; --dark: #675b0e; --grad: linear-gradient(to bottom right, #ffe672, #716307); }
 
-.background.filter_3, .class.filter_3, .card.filter_3, .card .weight.filter_3, .header.filter_3 {
+.filter_3 {
     --light: #70d070; --norm: #136d2a; --dark: #044013; --grad: linear-gradient(to bottom right, #70d070, #044013); }
 
-.background.filter_4, .class.filter_4, .card.filter_4, .card .weight.filter_4, .header.filter_4 {
+.filter_4 {
     --light: #4cb4ea; --norm: #0d6a9a; --dark: #032f46; --grad: linear-gradient(to bottom right, #4cb4ea, #032f46); }
 
-.background.filter_5, .class.filter_5, .card.filter_5, .card .weight.filter_5, .header.filter_5 {
+.filter_5 {
     --light: #f091ff; --norm: #9446a0; --dark: #44114c; --grad: linear-gradient(to bottom right, #f091ff, #44114c); }
 
-.background.filter_6, .class.filter_6, .card.filter_6, .card .weight.filter_6, .header.filter_6 {
+.filter_6 {
     --light: #ffa3d0; --norm: #c15689; --dark: #6b2044; --grad: linear-gradient(to bottom right, #ffa3d0, #6b2044); }
 
-.background.filter_7, .class.filter_7, .card.filter_7, .card .weight.filter_7, .header.filter_7 {
+.filter_7 {
     --light: #b59785; --norm: #584a41; --dark: #382c24; --grad: linear-gradient(to bottom right, #b59785, #382c24); }
 
-.background.filter_8, .class.filter_8, .card.filter_8, .card .weight.filter_8, .header.filter_8 {
+.filter_8 {
     --light: #fbd287; --norm: #94763d; --dark: #5d410c; --grad: linear-gradient(to bottom right, #fbd287, #5d410c); }
 
-.background.filter_9, .class.filter_9, .card.filter_9, .card .weight.filter_9, .header.filter_9 {
+.filter_9 {
     --light: #d3f1ac; --norm: #81926a; --dark: #434a39; --grad: linear-gradient(to bottom right, #d3f1ac, #434a39); }
 
-.background.filter_10, .class.filter_10, .card.filter_10, .card .weight.filter_10, .header.filter_10 {
+.filter_10 {
     --light: #bfe8ff; --norm: #768c98; --dark: #435158; --grad: linear-gradient(to bottom right, #bfe8ff, #435158); }
 
-.background.filter_11, .class.filter_11, .card.filter_11, .card .weight.filter_11, .header.filter_11 {
+.filter_11 {
     --light: #d9c5ff; --norm: #7c748c; --dark: #4a4554; --grad: linear-gradient(to bottom right, #d9c5ff, #4a4554); }
+
+.filter_20 {
+    --light: #e64c81; --norm: #bb2f5f; --dark: #751636; --grad: linear-gradient(to bottom right, #e64c81, #751636); }
+
+.filter_21 {
+    --light: #c9d63b; --norm: #88920f; --dark: #525808; --grad: linear-gradient(to bottom right, #c9d63b, #525808); }
 
 .background {
     background-size: 100%;
@@ -805,11 +904,12 @@ body.dark.midnight:not(.dashboard) .background:before {
 
 .card.color {
     background: linear-gradient(to right bottom, var(--light), var(--norm));
-    color: white !important;
+    color: var(--text, white) !important;
 }
 
 .card.color .weighted {
-    color: var(--norm);
+    color: var(--dark);
+    opacity: 0.55;
 }
 
 .class {
