@@ -1,10 +1,10 @@
-/* Power+ v1.6.0
+/* Power+ v1.6.1
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps
 Email: hello@jottocraft.com */
 var dtps = {
-    ver: 160,
-    readableVer: "v1.6.0",
+    ver: 161,
+    readableVer: "v1.6.1",
     trackSuffix: "",
     showLetters: false,
     fullNames: false,
@@ -127,17 +127,6 @@ dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
     fluidStorage = "localStorage";
     fluidThemes = [["midnight", "nitro", "aquatic"], ["rainbow"]];
-    sudoers = ["", "10838212", "10894474", "10463823"]
-    if (sudoers.includes(HaikuContext.user.login)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-    og = ["10894474", ""]
-    if (og.includes(HaikuContext.user.login)) { jQuery("body").addClass("og"); }
-    highFlyers = ["10894474"]
-    if (highFlyers.includes(HaikuContext.user.login)) { jQuery("body").addClass("highFlyer"); }
-    contributors = ["10463823", "10894474"]
-    if (contributors.includes(HaikuContext.user.login)) { jQuery("body").addClass("contributor"); }
-    if (HaikuContext.user.login == 354890809453345908) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); fluidThemes[0].push({ name: "d.tech", id: "darkDtech", icon: "school" }); }
-    if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
-    if (sudoers.includes(HaikuContext.user.login)) jQuery("body").addClass("prerelease");
     dtps.shouldRender = false;
     dtps.first = false;
     dtps.showChangelog = false;
@@ -274,7 +263,7 @@ dtps.init = function () {
             var subject = null;
             var icon = null;
             if (name.includes("Physics")) { var subject = "Physics"; var icon = "experiment"; }; if (name.includes("English")) { var subject = "English"; var icon = "library_books" }; if (name.includes("Physical Education")) { var subject = "PE"; var icon = "directions_run"; };
-            if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; }; if (name.includes("Algebra 2")) { var subject = "Algebra 2"; if (highFlyers.includes(HaikuContext.user.login)) { subject = "Algebra 2 High Flyers" } };
+            if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; }; if (name.includes("Algebra 2")) { var subject = "Algebra 2"; };
             if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" }; if (name.includes("Environmental")) { var subject = "Environmental Science" };
             if (name.includes("Robotics")) { var subject = "Robotics" }; if (name.includes("Biology")) { var subject = "Biology" }; if (name.includes("Engineering")) { var subject = "Engineering" }; if (name.includes("Geometry")) { var subject = "Geometry" };
             if (name.includes("Photography")) { var subject = "Photography" }; if (name.includes("World History")) { var subject = "World History" }; if (name.includes("U.S. History")) { var subject = "US History" };
@@ -804,20 +793,10 @@ dtps.assignment = function (id, classNum) {
             list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">star_border</i>` + "<b>Points earned</b>:  " + assignment.grade + " (" + assignment.letter + `)</div>`)
             list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">category</i>` + "<b>Category</b>:  " + assignment.weight + `</div>`)
         }
-        if (contributors.includes(HaikuContext.user.login)) {
-            list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">bug_report</i>` + "<b>IDs (classNumber-classID, streamNumber-assignmentID)</b>:  " + classNum + "-" + dtps.classes[classNum].id + " " + streamNum + "-" + assignment.id + `</div>`)
-        }
         list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">class</i>` + "<b>Class</b>:  " + (dtps.fullNames ? dtps.classes[classNum].name : dtps.classes[classNum].subject) + `</div>`)
         dom.children("div").siblings("table").before(`<br /><div class="list">` + list.join("") + `</div><br /><br />`)
         $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + dom.html() + `
-` + handInDom + `
-<div class="btn sudo" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> View Work</div>
-`);
-    });
-}
-dtps.myWork = function (loc, id) {
-    dtps.webReq("assignGET", "/" + loc + "/dropbox/messages/" + id + "?user_id=" + dtps.user.login, function (data) {
-        $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data);
+` + handInDom);
     });
 }
 dtps.announcements = function () {
@@ -1176,13 +1155,9 @@ dtps.render = function () {
             var extensionDom = "";
             jQuery(".extensionDom").html(`<br />
 <div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'false') {localStorage.setItem('disableAutoLoad', true); } else {localStorage.setItem('disableAutoLoad', false); }" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
-<br /><br />
-<div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true); window.alert('The dev version of Power+ is often untested and may contain several bugs. Continue at your own risk.'); }"><span class="head"></span></div>
-    <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the unstable (dev) version of Power+</div>`)
+    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>`)
             jQuery(".extTab").show();
             if (window.localStorage.disableAutoLoad == "false") { jQuery("#extensionAutoLoad").addClass("active"); }
-            if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
         }
     });
     jQuery("body").html(`
@@ -1207,10 +1182,6 @@ dtps.render = function () {
     <button onclick="dtps.selectedContent = 'grades'; dtps.gradebook(dtps.selectedClass);" class="btn grades">
     <i class="material-icons">assessment</i>
     Grades
-    </button>
-    <button onclick="alert('The grade editor is just for fun. Does not change your actual grade. For Power+ testers only. Do not abuse this.'); dtps.classes[dtps.selectedClass].letter = prompt('Enter a letter grade'); dtps.classes[dtps.selectedClass].grade = prompt('Enter a percentage number(i.e. 98)');dtps.showClasses(true);" class="btn sudo gradeEditor" style="display: none;">
-    <i class="material-icons">edit</i>
-    Grade Editor
     </button>
     </div>
     </div>
@@ -1240,12 +1211,6 @@ dtps.render = function () {
     <div style="display:none;" onclick="$('.abtpage').hide();$('.abtpage.extension').show();" class="item extTab">
       <i class="material-icons">extension</i> Extension
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
-      <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
-    </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
-      <i class="material-icons">bug_report</i> Debugging
-    </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.about').show(); $('.advancedOptions').hide(); $('.advOp').show();" class="item">
       <i class="material-icons">info</i> About
     </div>
@@ -1268,50 +1233,29 @@ dtps.render = function () {
     <br /><br />
     <div onclick="dtps.fullNames = !dtps.fullNames; localStorage.setItem('dtpsFullNames', dtps.fullNames); dtps.showClasses(true);" class="switch` + (window.localStorage.dtpsFullNames == "true" ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">title</i> Display full class names</div>
-    <br /><br />
-    <div onclick="$('.gradeEditor').toggle();" class="switch sudo"><span class="head"></span></div>
-    <div class="label sudo"><i class="material-icons">edit</i> Show grade editor (Power+ testers only)</div>
 </div>
 <div style="display: none;" class="abtpage classes">
     <h5>Classes</h5>
     <button onclick="if (!dtps.sorting) { dtps.sorting = true; $('.sidebar').sortable(); window.alert('Drag and drop to reorder your classes. Click this button again when you are done.') } else { dtps.saveClassOrder(); }" class="btn"><i class="material-icons">sort</i>Sort classes</button>
     <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule</button>
     <br /><br />
-<div class="googleClassroom prerelease">
-    <h5>google_logo Classes</h5>
+<div class="googleClassroom">
+    <h5>google_logo Classes (beta)</h5>
     <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">link_off</i>Unlink Google Classroom</button>
     <br /><br />
     <p>Classes listed below could not be associated with a PowerSchool class. You can choose which classes to show in the sidebar.</p>
     <div class="isolatedGClassList"><p>Loading...</p></div>
 </div>
-<div class="googleSetup prerelease">
-    <h5>google_logo Classroom</h5>
+<div class="googleSetup">
+    <h5>google_logo Classroom (beta)</h5>
     <p>Link google_logo Classroom to see assignments and classes from both PowerSchool and Google.</p>
     <p>If Power+ thinks one of your PowerSchool classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
-    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn sudo"><i class="material-icons">link</i>Link Google Classroom</button>
+    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn"><i class="material-icons">link</i>Link Google Classroom</button>
 </div>
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
     <div class="extensionDom" ></div>
-</div>
-<div style="display: none;" class="abtpage experiments">
-<div class="sudo">
-    <h5>Experiments</h5>
-    <p>Features listed below are in development or are UI tests and cannot be included in a bug report until their stable releases</p>
-    <p>Want to test out new features as they are developed instead of waiting for the next release? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
-<br />
-<br /><br />
-
-</div>
-</div>
-<div style="display: none;" class="abtpage debug">
-<div class="dev">
-    <h5>Debugging</h5>
-<br />
-<span class="log">
-</span>
-</div>
 </div>
 <div style="display: none;" class="abtpage about">
     <h5>Power+ ` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></h5>
@@ -1320,12 +1264,7 @@ dtps.render = function () {
     <button onclick="dtps.clearData();" class="btn outline"><i class="material-icons">delete_outline</i>Reset Power+</button>
      <br /><br />
    <h5>Logged in as ` + dtps.user.first_name + " " + dtps.user.last_name + ` <span style="font-size: 12px;">` + dtps.user.login + `</span></h5>
-<div style="display:inline-block;" class="beta badge notice highFlyer">high flyer&nbsp;<i style="vertical-align: middle;" class="material-icons highFlyer">school</i></div>
-<div style="display:inline-block;" class="beta badge notice sudo">tester&nbsp;<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
-<div style="display:inline-block;" class="beta badge notice contributor">contributor&nbsp;<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
-<div style="display:inline-block;" class="beta badge notice og">OG&nbsp;<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
-<div style="display:inline-block;" class="beta badge notice dev">developer&nbsp;<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
-    <br /><br />
+    <br />
     <h5>Credits</h5>
 <ul>
     <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
@@ -1344,8 +1283,7 @@ dtps.render = function () {
     <div class="items">
     <h4>` + dtps.user.first_name + ` ` + dtps.user.last_name + `</h4>
     <img src="` + dtps.user.prof + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
-    <i onclick="dtps.bugReport();" class="material-icons prerelease">bug_report</i>
-    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">more_horiz</i>
+    <i onclick="document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionStatus'})); fluid.modal('.abt-new')" class="material-icons">settings</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
