@@ -19,6 +19,11 @@ Here's how Power+ will be changing in the coming months (Updated 4/21/2019):
 * July 2019: Power+ for PowerSchool will be archived and will no longer be supported. Power+ for Canvas will officially become Power+ and will be hosted on the main Power+ repository. At this point, Power+ for Canvas will become the version of Power+ and will be enabled by default for everyone.
 * Fall 2019: Power+ for Canvas will be released as a standalone website (the script will be updated to notify users of the change). Power+ development will continue as usual with stable and dev channels. This is currently being tested internally and will hopefully not be in beta for very long, but needs admin to add it as an app in Canvas for it to work.
 
+#### Versions of Power+
+* Power+ for PowerSchool (Power+)
+* Power+ for Canvas
+* Power+ Standalone
+
 <br /><br />
 
 #### Loader scripts
