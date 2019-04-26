@@ -859,15 +859,7 @@ dtps.assignment = function (id, classNum) {
         list.push(`<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">class</i>` + "<b>Class</b>:  " + (dtps.fullNames ? dtps.classes[classNum].name : dtps.classes[classNum].subject) + `</div>`)
         dom.children("div").siblings("table").before(`<br /><div class="list">` + list.join("") + `</div><br /><br />`)
         $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + dom.html() + `
-` + handInDom + `
-<div class="btn" onclick="dtps.myWork('` + assignment.loc + `', ` + assignment.id + `)"><i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> View Work (beta)</div>
-`);
-    });
-}
-
-dtps.myWork = function (loc, id) {
-    dtps.webReq("assignGET", "/" + loc + "/dropbox/messages/" + id + "?user_id=" + dtps.user.login, function (data) {
-        $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>` + data);
+` + handInDom);
     });
 }
 
@@ -875,13 +867,7 @@ dtps.announcements = function () {
     dtps.webReq("letPOST", "/u/" + dtps.user.login + "/portal/portlet_annc", function (resp) {
         dtps.raw = resp;
         var ann = jQuery(resp).children("tbody").children("tr").toArray();
-        var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer; display: none;" class="announcement card color unsupported">
-<div class="label">Power+</div>
-<b style="font-size: 18px;">Transition to Canvas</b>
-<br /><br />
-d.tech will no longer use PowerSchool learning starting on August 20th, 2019. Power+ is currently in the process of being rewritten to bring features from both Power+ and Canvas. As of May 1st, 2019, Power+ for PowerSchool Learning will no longer receive feature updates in order to focus development on Power+ for Canvas. Starting June 1st, 2019, Power+ for PowerSchool Learning will no longer receive any updates at all and will be unsupported. Power+ for Canvas is scheduled to be fully functional in beta on the first day of school. You can help test the new version of Power+ for Canvas right now by clicking <a href="https://dtps.js.org/canvas">here</a>. To learn more about the future of Power+, click <a href="https://github.com/jottocraft/dtps/blob/master/README.md#power-roadmap">here</a>.
-</div>
-`];
+        var announcements = [];
         for (var i = 0; i < ann.length; i++) {
             if (jQuery(ann[i]).children("td")[1] !== undefined) {
                 var loc = jQuery(ann[i]).children("td:has(a)").children("a").attr("href").split("/");
