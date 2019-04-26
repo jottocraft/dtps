@@ -1,6 +1,5 @@
 ## Power+
 [![Power+ Release](https://img.shields.io/github/release/jottocraft/dtps.svg)](https://github.com/jottocraft/dtps/releases)
-[![Power+ Dev Release](https://img.shields.io/badge/dev-v1.7.0-red.svg)](https://dtps.js.org/devbookmark.txt)
 [![Website Status](https://img.shields.io/website/https/dtps.js.org.svg?label=Power%2B)](https://dtps.js.org)
 [![Power+ Chrome Web Store Rating](https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo/reviews)
 
@@ -13,7 +12,7 @@ For Power+ status, visit the [jottocraft.com status page](https://status.jottocr
 <br />
 
 #### Power+ Roadmap
-Here's how Power+ will be changing in the coming months (Updated 4/21/2019):
+Here's how Power+ will be changing in the coming months. This rollout plan is constantly being updated as new information becomes available. (Updated 4/26/2019):
 * ~~April 10th, 2019: Power+ for Canvas can be tested by anyone ([install instructions](https://dtps.js.org/canvas))~~
 * June 2019: Power+ for PowerSchool will no longer recive bugfix updates
 * July 2019: Power+ for PowerSchool will be archived and will no longer be supported. Power+ for Canvas will officially become Power+ and will be hosted on the main Power+ repository. At this point, Power+ for Canvas will become the version of Power+ and will be enabled by default for everyone.
