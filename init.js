@@ -766,8 +766,8 @@ dtps.gradebook = function (num) {
 	       revisable.sort(function(a, b){
     var keyA = a.rv,
         keyB = b.rv;
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
+    if(keyA > keyB) return -1;
+    if(keyA < keyB) return 1;
     return 0;
 });
                     if (!((dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS")) || (dtps.classes[num].weights[i].weight.toUpperCase().includes("SS")))) {
