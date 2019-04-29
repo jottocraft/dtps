@@ -762,11 +762,11 @@ body.dark .card.details * {
 }
 
 body.dark .card.assignment.whatif .points .numbers {
-    background-color: #171717;
+    background-color: var(--flex-layer1, #171717);
 }
 
 body:not(.dark) .card.assignment.whatif .points .numbers {
-    background-color: #dadada;
+    background-color: var(--flex-layer1, #dadada);
 }
 
 .card.assignment.color.whatif .points .numbers {
