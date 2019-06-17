@@ -5,27 +5,16 @@
 
 For users looking to install Power+, visit the Power+ website by clicking [here](https://dtps.js.org)
 
-Help test Power+ for Canvas by following the instructions [here](https://dtps.js.org/canvas)
-
-For Power+ status, visit the [jottocraft.com status page](https://status.jottocraft.com)
+For Power+ status, uptime, and scheduled maintenance visit the [jottocraft.com status page](https://status.jottocraft.com)
 
 <br />
 
-#### Power+ Roadmap
-Here's how Power+ will be changing in the coming months. This rollout plan is constantly being updated as new information becomes available. (Updated 4/26/2019):
-* ~~April 10th, 2019: Power+ for Canvas can be tested by anyone ([install instructions](https://dtps.js.org/canvas))~~
-* June 2019: Power+ for PowerSchool will no longer recive bugfix updates
-* July 2019: Power+ for PowerSchool will be archived and will no longer be supported. Power+ for Canvas will officially become Power+ and will be hosted on the main Power+ repository. At this point, Power+ for Canvas will become the version of Power+ and will be enabled by default for everyone.
-* Fall 2019: Power+ for Canvas will be released as a standalone website (the script will be updated to notify users of the change). Power+ development will continue as usual with stable and dev channels. This is currently being tested internally and will hopefully not be in beta for very long, but needs admin to add it as an app in Canvas for it to work.
-
-#### Versions of Power+
-* Power+ for PowerSchool (Power+)
-* Power+ for Canvas
-* Power+ Standalone
+#### 2019-2020 School Year
+Power+ for PowerSchool is no longer supported. At this time, multiple options for Power+ next year are being explored and developed. More information will be available soon. Not all Power+ features will be supported in the initial release.
 
 <br /><br />
 
-#### Loader scripts
+#### Install methods
 
 [bookmark script](https://dtps.js.org/bookmark.txt)
 
