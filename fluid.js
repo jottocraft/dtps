@@ -206,12 +206,7 @@ fluid.set = function (key, val, trigger) {
     }
     if (trigger == undefined) window.localStorage.setItem(key, val);
     if (trigger !== "load") {
-      new CustomEvent(
-        key,
-        {
-          detail: val
-        }
-      );
+      new CustomEvent(key, { detail: val });
     }
   } else {
     console.error("Error: Calling fluid.set with invalid prefrence name. Make sure the name of your prefrence starts with 'pref-'. See https://fluid.js.org/#input-prefs.")
