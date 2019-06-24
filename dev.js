@@ -1,4 +1,4 @@
-window.alert("The Power+ dev channel is offline. Visit dtps.js.org/roadmap for more information.")
+window.alert("The Power+ dev channel is offline")
 if (window.localStorage.devAutoLoad == "true") {
 	window.localStorage.devAutoLoad = "false"
 	window.location.reload();

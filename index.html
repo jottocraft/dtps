@@ -61,32 +61,30 @@
     }
     .titlebar img {
       vertical-align: middle;
-      width: 24px;
       height: 24px;
     }
+	.banner {
+		margin: 10px 0px;
+		text-align: center;
+		border-radius: 20px;
+		padding: 2px 20px;
+		background-color: #c14d3c;
+		font-size: 16px;
+		line-height: 30px;
+		vertical-align: middle;
+		display: inline-block;
+	}
   </style>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="fluid.js"></script>
-  <script>
-    $(document).ready(function() {
-      if (window.localStorage.dtpsRefresh) {
-        $("#login").html(`<i class="material-icons">open_in_new</i> Open`)
-      }
-      if (window.location.href.includes("?logout=true")) {
-        window.history.replaceState(null, null, window.location.pathname);
-        $("#login").html(`<i style="font-family: 'Material Icons Extended'" class="material-icons">lock</i> Logged out`)
-      }
-    })
-  </script>
   <div style="padding: 0px 20px;" class="titlebar">
     <img style="width: auto; height: 36px; margin-bottom: -6px; margin-right: 10px;" src="https://dtps.js.org/outline.png" />
     <h3>Power+</h3>
 	<div onclick="window.location.href = 'https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo';"><i class="material-icons">cloud_download</i> Install</div>
-  <div onclick="window.location.href='/canvas'"><img src="https://i.imgur.com/g36oHzm.png" /> Power+ for Canvas</div>
   <div onclick="window.location.href = 'https://status.jottocraft.com';"><i class="material-icons">notifications</i> Status</div>
-    <div id="login" onclick="window.location.href = '/app';"><i style="font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> Login</div>
   </div>
-        <div style="text-align: center; margin-top: calc(50vh - 331px);">
+        <div style="text-align: center; margin-top: calc(50vh - 381px);">
+		<div style="margin-bottom: 50px;" class="banner"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">error_outline</i> Power+ will no longer support PowerSchool Learning starting July 1st, 2019</div>
         <div id="mainIMG" style="width: 798.44px;height: 511px;border-radius: 10px;margin-top: 50px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);margin: 50px auto;background-size: cover;"></div>
       </div>
 

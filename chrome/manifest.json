@@ -2,11 +2,14 @@
   "manifest_version": 2,
 
   "name": "Power+",
-  "description": "A redesigned UI for PowerSchool Learning",
-  "version": "2.0.7",
+  "description": "A redesigned UI for Canvas LMS",
+  "version": "2.1.0",
+  "background": {
+    "scripts": ["background.js"]
+  },
   "content_scripts": [
     {
-      "matches": ["https://dtechhs.learning.powerschool.com/u/*"],
+      "matches": ["https://canvas.instructure.com/*", "https://dtechhs.instructure.com/*"],
       "js": ["jquery.min.js", "communicator.js"]
     }
   ],
