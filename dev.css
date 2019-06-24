@@ -115,6 +115,7 @@ body.isolatedGoogleClass .background {
 
 .card.focus {
     max-height: calc(100vh - 50px);
+    top: 25px !important;
 }
 
 #calendar h2 {
