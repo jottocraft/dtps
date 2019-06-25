@@ -21,7 +21,7 @@ Power+ CSS v2.0.0 (beta)
 
 .infoChip {
     vertical-align: middle;
-    margin:0px;
+    margin: 0px;
     display: inline-block;
     font-size: 16px;
     height: 20px;
@@ -30,7 +30,7 @@ Power+ CSS v2.0.0 (beta)
 
 .progressBar {
     padding: 5px;
-    background-color:  var(--theme-color-outline);
+    background-color: var(--theme-color-outline);
     border-radius: 12px;
     height: 30px;
     margin: 10px 5px;
@@ -688,19 +688,27 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
 }
 
 .badge.dev {
-    background-color: #0090ff;
+    color: #0090ff;
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
 .badge.sudo {
-    background-color: #d64c0c;
+    color: #d64c0c;
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
 .badge.og {
-    background-color: #daa520;
+    color: #daa520;
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
 .badge.contributor {
-    background-color: #20da61;
+    color: #20da61;
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
 .weight.parent {
