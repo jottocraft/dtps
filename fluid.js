@@ -146,6 +146,11 @@ fluid.theme = function (theme, dontSave) {
     document.documentElement.style.setProperty("--acrylicSecText", tinycolor(getComputedStyle(document.body).getPropertyValue("--text")).setAlpha(0.3).toRgbString())
   }
 
+  //Load chroma
+  if (fluid.chroma.on && fluid.chroma.themeLink) {
+    fluid.chroma.static(getComputedStyle(document.body).getPropertyValue("--background"))
+  }
+
   if (theme) {
     //emit theme change event
     document.dispatchEvent(new CustomEvent('fluidTheme', { detail: theme }))
@@ -233,6 +238,134 @@ setTimeout(function () {
   catch (err) {
   }
 }, 1);
+fluid.chroma = { on: false, themeLink: false };
+fluid.chroma.session = {};
+fluid.chroma.supported = function (cb) {
+  $.ajax({
+    type: "GET",
+    url: 'http://localhost:54235/razer/chromasdk',
+    success: function () {
+      if (cb) cb(true);
+    },
+    error: function (error) {
+      if (cb) cb(false);
+    }
+  })
+}
+fluid.chroma.init = function (profile, cb) {
+  $.ajax({
+    type: "POST",
+    url: 'http://localhost:54235/razer/chromasdk',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: `{
+          "title": "` + profile.title + `",
+          "description": "` + profile.description + `",
+          "author": {
+              "name": "` + profile.author + `",
+              "contact": "` + (profile.domain ? profile.domain : document.location.hostname) + `"
+          },
+          "device_supported": ` + JSON.stringify([
+      "keyboard",
+      "mouse",
+      "headset",
+      "mousepad",
+      "keypad",
+      "chromalink"]) + `,
+          "category": "application"
+      }`,
+    success: function (res) {
+      fluid.chroma.session = res
+      setInterval(function () {
+        $.ajax({
+          type: "PUT",
+          url: fluid.chroma.session.uri + "/heartbeat",
+          dataType: 'json',
+          contentType: 'application/json'
+        })
+      }, 10000)
+      setTimeout(function () {
+        $("body").attr("onunload", "fluid.chroma.disable()");
+        fluid.chroma.on = true;
+        if (cb) cb();
+      }, 2000)
+    }
+  })
+}
+fluid.chroma.disable = function (cb) {
+  if (fluid.chroma.on) {
+    $.ajax({
+      type: "DELETE",
+      url: fluid.chroma.session.uri,
+      dataType: 'json',
+      contentType: 'application/json',
+      success: function () {
+        fluid.chroma.on = false;
+        fluid.chroma.session = {};
+        if (cb) cb();
+      }
+    })
+  }
+}
+fluid.chroma.effect = function (color, array) {
+  //color: static color used for everything except for keyboards
+  //array: 2d array for custom effect for keyboards
+  fluid.chroma.static(color, true);
+
+  //color to bgr integer
+  convertedArray = [];
+  for (var i = 0; i < array.length; i++) {
+    convertedArray.push([])
+    for (var ii = 0; ii < array[i].length; ii++) {
+      if (array[i][ii] == 0) {
+        convertedArray[i].push(0)
+      } else {
+        if (array[i][ii] == null) {
+          var rgb = tinycolor(color).toRgb();
+          convertedArray[i].push(parseInt(tinycolor("rgb(" + rgb.b + ", " + rgb.g + ", " + rgb.r + ")").toHexString().replace("#", "1"), 16))
+        } else {
+          var rgb = tinycolor(array[i][ii]).toRgb();
+          convertedArray[i].push(parseInt(tinycolor("rgb(" + rgb.b + ", " + rgb.g + ", " + rgb.r + ")").toHexString().replace("#", "1"), 16))
+        }
+      }
+    }
+  }
+
+  $.ajax({
+    type: "PUT",
+    url: fluid.chroma.session.uri + "/keyboard",
+    dataType: 'json',
+    contentType: 'application/json',
+    data: `{
+      "effect": "CHROMA_CUSTOM",
+      "param": ` + JSON.stringify(convertedArray) + `
+    }`
+  })
+}
+fluid.chroma.static = function (color, exKeyboard) {
+  var rgb = tinycolor(color).toRgb();
+
+  function static(endpoint) {
+    $.ajax({
+      type: "PUT",
+      url: fluid.chroma.session.uri + endpoint,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: `{
+      "effect": "CHROMA_STATIC",
+      "param": {
+          "color": ` + parseInt(tinycolor("rgb(" + rgb.b + ", " + rgb.g + ", " + rgb.r + ")").toHexString().replace("#", "1"), 16) + `
+      }
+    }`
+    })
+  }
+  if (exKeyboard == undefined) static("/keyboard");
+  static("/mouse");
+  static("/mousepad");
+  static("/headset");
+  static("/chromalink");
+  static("/keypad");
+}
 fluid.load = function (mode) {
   if (mode) {
     $("loader").removeClass("hidden");
