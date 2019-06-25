@@ -1,5 +1,5 @@
 /*
-Power+ CSS v2.0.0 (canary)
+Power+ CSS v2.0.0 (beta)
 (c) jottocraft 2018-2019
 */
 @font-face {
@@ -661,17 +661,6 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
 
 .weight.parent .weight:not(.open) {
     overflow: hidden !important;
-}
-
-.badge, .beta.notice {
-    display: inline-block;
-    margin: 0 5px;
-    border: none;
-    padding: 3px 6px;
-    color: white !important;
-    background-color: #ff7e00;
-    font-size: 14px;
-    font-weight: bold;
 }
 
 .badge i, .beta.notice i {
