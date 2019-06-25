@@ -288,7 +288,7 @@ fluid.chroma.init = function (profile, cb) {
         $("body").attr("onunload", "fluid.chroma.disable()");
         fluid.chroma.on = true;
         if (cb) cb();
-      }, 2000)
+      }, 10000)
     }
   })
 }
