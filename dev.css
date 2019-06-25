@@ -472,7 +472,7 @@ body.titlebar .classContent {
 
 .tabs.btns .btn.active {
     color: white;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid white !important;
 }
 
 body:not(.dark) .tabs.btns .btn.active {
@@ -904,7 +904,7 @@ body.dark.midnight:not(.dashboard) .background:before {
 
 .card.color {
     background: linear-gradient(to right bottom, var(--light), var(--norm));
-    color: var(--text, white) !important;
+    color: white !important;
 }
 
 .card.color .weighted {
