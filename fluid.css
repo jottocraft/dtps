@@ -1098,12 +1098,17 @@ textarea {
 }
 
 .label {
-  line-height: 25px;
-  height: 25px;
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 25px;
-}
+     line-height: 25px;
+     height: 25px;
+     display: inline-block;
+     vertical-align: middle;
+     margin-left: 15px;
+   }
+   .label i {
+	 vertical-align: middle;
+	 font-size: 26px;
+	 margin-right: 2px;
+   }
 
 /* Sections & Headers
 ––––––––––––––––––––––––––––––––––––––––––––––––––  */
