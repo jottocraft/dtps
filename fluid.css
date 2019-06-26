@@ -1324,7 +1324,7 @@ body.hasSidebar:not(.collapsedSidebar) .sidebar img {
   overflow: hidden;
 }
 
-.card.container {
+.card.container:not(.withnav) {
   padding: 30px !important;
 }
 
