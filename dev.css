@@ -2,6 +2,7 @@
 Power+ CSS v2.0.0 (beta)
 (c) jottocraft 2018-2019
 */
+
 @font-face {
     font-family: 'Material Icons Outline';
     font-style: normal;
@@ -752,10 +753,17 @@ body.dark .tabs.btns .btn:not(.active) {
     font-weight: bold;
 }
 
-body {
-    --light: var(--cards);
-    --norm: var(--elements);
-    --dark: var(--darkest);
+body:not(.dark) {
+    --light: var(--flex-light, #efefef);
+    --norm: var(--flex-layer1, #929292);
+    --dark: var(--flex-layer3, #5f5f5f);
+    --grad: linear-gradient(to bottom right, var(--cards), var(--background));
+    }
+
+body.dark {
+    --light: var(--flex-light, #949494);
+    --norm: var(--flex-layer1, #444444);
+    --dark: var(--flex-layer3, #292929);
     --grad: linear-gradient(to bottom right, var(--cards), var(--background));
     }
 
