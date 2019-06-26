@@ -24,7 +24,7 @@ if ((window.localStorage.disableAutoLoad == undefined) || (window.localStorage.d
 jQuery("#menu").append(`<li class="ic-app-header__menu-list-item">
             <a onclick="jQuery.getScript('` + url + `');dtpsLoader=2;" style="cursor: pointer;" class="ic-app-header__menu-list-link">
               <div class="menu-item-icon-container" aria-hidden="true">
-                  <img src="https://dtps.js.org/canvas.png" class="ic-icon-svg">
+                  <img src="https://dtps.js.org/whiteOutline.png" class="ic-icon-svg">
 
               </div>
               <div class="menu-item__text" style="font-size: 14px;">Power+
