@@ -753,7 +753,11 @@ body.dark .tabs.btns .btn:not(.active) {
 }
 
 body {
-    --light: var(--cards); --norm: var(--elements); --dark: var(--darker); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
+    --light: var(--cards);
+    --norm: var(--elements);
+    --dark: var(--darkest);
+    --grad: linear-gradient(to bottom right, var(--cards), var(--background));
+    }
 
 body:not(.dark) .background, body:not(.dark) .header h1 {
     --grad: linear-gradient(to bottom right, var(--darker), var(--background)) !important; color: black !important;
