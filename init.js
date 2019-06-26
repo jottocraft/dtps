@@ -10,7 +10,7 @@ var dtps = {
     showLetters: false,
     fullNames: false,
     latestStream: [],
-    unsupported: false
+    unsupported: true
 };
 
 dtps.changelog = function () {
@@ -221,7 +221,7 @@ dtps.init = function () {
             dtps.shouldRender = true;
             dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer, true);
         } else {
-            if (!Number(HaikuContext.user.login)) {
+            if (false) {
                 dtps.shouldRender = false;
                 dtps.nativeAlert("Unsupported Account", "Power+ only works on student accounts");
             } else {
