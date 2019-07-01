@@ -22,6 +22,10 @@ var dtps = {
 //Load a better version of jQuery as soon as possible because of Canvas's weird included version of jQuery that breaks a lot
 jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
 
+//Embedded Status Updates
+jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
+
+
 //Sentry config for sending crash reports, error messages, and logs for bug reports
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function () {
     Sentry.init({ dsn: 'https://fea82a98af05469994f07d6195f09f45@sentry.io/1384289', release: "dtps@" + dtps.readableVer });
