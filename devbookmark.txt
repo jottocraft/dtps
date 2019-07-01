@@ -1,1 +1,0 @@
-javascript:jQuery.getScript('https://dtps.js.org/dev.js');dtpsLoader=2;
