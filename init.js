@@ -19,12 +19,11 @@ var dtps = {
     }
 };
 
-//Load a better version of jQuery as soon as possible because of Canvas's weird included version of jQuery that breaks a lot
+//Load a better version of jQuery as soon as possible because of Canvas's weird included version of jQuery that breaks a lot of important things
 jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
 
-//Embedded Status Updates
+//Embedded Status Updates (load this before AND after rendering Power+ just in case something breaks in dtps.render)
 jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
-
 
 //Sentry config for sending crash reports, error messages, and logs for bug reports
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function () {
@@ -1717,6 +1716,10 @@ dtps.render = function () {
     jQuery('.classContent').bind('heightChange', function () {
         jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
     });
+	
+    //Embedded Status Updates
+    jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
+
     fluid.init();
 }
 
