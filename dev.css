@@ -365,10 +365,6 @@ body.titlebar .sidebar {
     top: 75;
 }
 
-.spinner {
-    background-color: var(--secText);
-}
-
 .class .grade .letter, .class .grade .points , .class .grade .material-icons {
     line-height: 50px;
 }
@@ -596,7 +592,7 @@ body.dark .tabs.btns .btn:not(.active) {
   width: 40px;
   height: 40px;
   margin: 100px auto;
-  background-color: #333;
+  background-color: var(--secText);
 
   border-radius: 100%;  
   -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
