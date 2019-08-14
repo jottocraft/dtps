@@ -13,7 +13,7 @@ var dtps = {
     latestStream: [],
     chromaProfile: {
         title: "Power+",
-        description: "Razer Chroma effects for Power+",
+        description: "Razer Chroma effects for Power+ (beta)",
         author: "jottocraft",
         domain: "dtps.js.org"
     }
