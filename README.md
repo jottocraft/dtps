@@ -6,13 +6,6 @@
 
 For users looking to install Power+, visit the Power+ website by clicking [here](https://dtps.js.org)
 
-For Power+ status, uptime, and scheduled maintenance visit the [jottocraft.com status page](https://status.jottocraft.com)
-
-<br />
-
-#### 2019-2020 School Year
-Try out the next version of Power+ designed for Canvas LMS by installing the Power+ Chrome Extension and visiting canvas.instructure.com or dtechhs.instructure.com
-
 <br /><br />
 
 #### Alternate Install methods
