@@ -649,13 +649,6 @@ dtps.search = function () {
 dtps.masterStream = function (doneLoading) {
     dtps.log("RENDERING DASHBOARD")
     dtps.showClasses();
-    for (var i = 0; i < dtps.classes.length; i++) {
-        if (dtps.classes[i].subject.includes("Algebra 2")) {
-            if (highFlyers.includes(dtps.user.id)) {
-                $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark"));
-            }
-        }
-    }
     if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
         jQuery(".classContent").html(`
     <div class="spinner">
@@ -1067,13 +1060,6 @@ dtps.showClasses = function (override) {
     </div>
     <div class="classDivider"></div>
   ` + dtps.classlist.join(""));
-        for (var i = 0; i < dtps.classes.length; i++) {
-            if (dtps.classes[i].subject.includes("Algebra 2")) {
-                if (highFlyers.includes(dtps.user.id)) {
-                    $(".badge.highFlyer").css("background-color", window.getComputedStyle(jQuery(".sidebar .class." + i)[0]).getPropertyValue("--dark"));
-                }
-            }
-        }
         if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
         if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
         $(".class:not(.google)").click(function (event) {
