@@ -185,7 +185,7 @@ dtps.filter = function (color) {
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
-        fluidThemes = [["midnight", "nitro", "aquatic"]];
+        fluidThemes = ["rainbow"];
         dtps.user = JSON.parse(user);
         //TEMPORARY
         //jQuery("body").addClass("sudo");
