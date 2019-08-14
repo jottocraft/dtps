@@ -26,17 +26,6 @@ jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.
 //REMOVED 8.13.2019
 //jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
 
-//Sentry config for sending crash reports, error messages, and logs for bug reports
-jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function () {
-    Sentry.init({ dsn: 'https://fea82a98af05469994f07d6195f09f45@sentry.io/1384289', release: "dtps@" + dtps.readableVer });
-    window.onerror = function (message, url, lineNumber, col, full) {
-        if (!message.includes("aa.dispatchEvent") && !message.includes("$(...).setStyle") && !message.includes("$(...).fire")) {
-            try { jQuery("span.log").html(`<p style="color: red;">` + "[" + url + ":" + lineNumber + ":" + col + "] " + message + "<br />" + full + `</p>` + jQuery("span.log").html()); } catch (e) { }
-        }
-        return false;
-    };
-});
-
 //Shows the Power+ changelog modal
 dtps.changelog = function () {
     fluid.cards.close(".card.focus")
@@ -81,33 +70,6 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
 <div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%; height: 100%; z-index: 500;"></div>`)
     }
 };
-
-//Sends a copy of error messages and logs without grade data for debugging
-dtps.bugReport = function () {
-    if (window.confirm("If the issue is related to a class in any way, make sure you have that class selected before sending this bug report. By sending a bug report, logs and usage information will be sent for debugging purposes (grades will never be sent in a bug report).")) {
-        Sentry.configureScope((scope) => {
-            scope.setExtra("class-selected", dtps.selectedClass + (dtps.selectedClass !== "dash" ? "-" + dtps.classes[dtps.selectedClass].id : ""));
-            if (dtps.selectedClass !== "dash") {
-                var streamTmp = JSON.parse(JSON.stringify(dtps.classes[dtps.selectedClass].stream));
-                streamTmp.forEach(function (v) { if (v.grade) { v.grade = v.grade.replace(v.grade.split("/")[0], "X") }; if (v.letter) { v.letter = "X" }; })
-                scope.setExtra("selected-stream", JSON.stringify(streamTmp));
-            }
-        });
-        window.alert("Thanks for sending a bug report. Report ID: " + Sentry.captureMessage("BUG REPORT (BUILD " + $(".buildInfo").html().replace("build ", "") + "): " + window.prompt('Please describe the issue:')));
-    }
-}
-
-//Crash report is exactly the same as bug report but it sends less information so it can send data before Power+ can fully load
-dtps.crashReport = function () {
-    if (window.confirm("If the issue is related to a class in any way, make sure you have that class selected before sending this bug report. By sending a bug report, logs and usage information will be sent for debugging purposes (grades will never be sent in a bug report).")) {
-        try {
-            Sentry.configureScope((scope) => {
-                scope.setExtra("class-selected", dtps.selectedClass + (dtps.selectedClass !== "dash" ? "-" + dtps.classes[dtps.selectedClass].id : ""));
-            });
-        } catch (e) { }
-        window.alert("Thanks for sending a crash report. Report ID: " + Sentry.captureMessage("CRASH REPORT: " + window.prompt('Please describe the issue:')));
-    }
-}
 
 //All Canvas & LMS data is sent through dtps.webReq
 dtps.requests = {};
@@ -1564,7 +1526,7 @@ dtps.render = function () {
 <div style="display:inline-block;" class="badge sudo">tester<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
 <div style="display:inline-block;" class="badge contributor">contributor<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
 <div style="display:inline-block;" class="badge og">OG<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
-<!-- <div style="display:inline-block;" class="badge dev">developer<i style="vertical-align: middle;" class="material-icons dev">code</i></div> -->
+<div style="display:inline-block;" class="badge dev">developer<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a style="color: var(--lightText); margin: 0px 5px;" href="/logout"><i class="material-icons" style="vertical-align: middle">exit_to_app</i> Logout</a></div>
 </div>
@@ -1575,7 +1537,7 @@ dtps.render = function () {
     <div onclick="fluid.set('pref-canvasRAW')" class="switch pref-canvasRAW"><span class="head"></span></div>
     <div class="label"><i class="material-icons">description</i> Show raw Canvas data for assignments</div>
 </div>
-<div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.bugReport();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">bug_report</i> Send a bug report</a>
+<div style="margin-top: 15px; margin-bottom: 7px;">
 <a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.clearData();" href="#"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
 <a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.clearData();" href="#"><i class="material-icons" style="vertical-align: middle">aspect_ratio</i> Re-render Power+</a>
 <a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps/issues/new/choose"><i class="material-icons" style="vertical-align: middle">feedback</i> Send feedback</a></div>
@@ -1643,9 +1605,6 @@ dtps.render = function () {
     if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
     jQuery.getJSON(getURL, function (data) {
         jQuery(".buildInfo").html("build " + data[0].sha.substring(7, 0));
-        Sentry.configureScope((scope) => {
-            scope.setTag("build", data[0].sha.substring(7, 0) + dtps.trackSuffix);
-        });
         jQuery(".buildInfo").click(function () {
             window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
         });
