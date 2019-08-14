@@ -23,7 +23,8 @@ var dtps = {
 jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
 
 //Embedded Status Updates (load this before AND after rendering Power+ just in case something breaks in dtps.render)
-jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
+//REMOVED 8.13.2019
+//jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
 
 //Sentry config for sending crash reports, error messages, and logs for bug reports
 jQuery.getScript("https://browser.sentry-cdn.com/4.5.3/bundle.min.js", function () {
