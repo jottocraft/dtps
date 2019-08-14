@@ -185,7 +185,7 @@ dtps.filter = function (color) {
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
-        fluidThemes = ["rainbow"];
+        fluidThemes = [["rainbow"]];
         dtps.user = JSON.parse(user);
         //TEMPORARY
         //jQuery("body").addClass("sudo");
@@ -1513,15 +1513,9 @@ dtps.render = function () {
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;">
 <a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.clearData();" href="#"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
-<a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.clearData();" href="#"><i class="material-icons" style="vertical-align: middle">aspect_ratio</i> Re-render Power+</a>
+<a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.render();" href="#"><i class="material-icons" style="vertical-align: middle">aspect_ratio</i> Re-render Power+</a>
 <a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps/issues/new/choose"><i class="material-icons" style="vertical-align: middle">feedback</i> Send feedback</a></div>
 </div>
-<br />
-    <h5>Credits</h5>
-<ul>
-    <li>Calendar made with <a href="https://fullcalendar.io/">FullCalendar</a></li>
-    <li>Logo made with logomakr.com</li>
-</ul>
 <br />
 <p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
 <p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
@@ -1576,7 +1570,7 @@ dtps.render = function () {
         }
     }
     var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
-    if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
+    //if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
     jQuery.getJSON(getURL, function (data) {
         jQuery(".buildInfo").html("build " + data[0].sha.substring(7, 0));
         jQuery(".buildInfo").click(function () {
@@ -1635,9 +1629,6 @@ dtps.render = function () {
     jQuery('.classContent').bind('heightChange', function () {
         jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
     });
-	
-    //Embedded Status Updates
-    jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
 
     fluid.init();
 }
