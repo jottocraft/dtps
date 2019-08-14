@@ -58,8 +58,8 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
     if (text == undefined) var text = "";
     if (sub == undefined) var sub = "";
     if (loadingSplash) {
-        jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"> <div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
-<style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner{margin: 100px auto 0; width: 70px; text-align: center;}.spinner > div{width: 18px; height: 18px; background-color: gray; border-radius: 100%; display: inline-block; -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both; animation: sk-bouncedelay 1.4s infinite ease-in-out both;}.spinner .bounce1{-webkit-animation-delay: -0.32s; animation-delay: -0.32s;}.spinner .bounce2{-webkit-animation-delay: -0.16s; animation-delay: -0.16s;}@-webkit-keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0)}40%{-webkit-transform: scale(1.0)}}@keyframes sk-bouncedelay{0%, 80%, 100%{-webkit-transform: scale(0); transform: scale(0);}40%{-webkit-transform: scale(1.0); transform: scale(1.0);}}</style></div>`)
+        jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
+<style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner { width: 40px; height: 40px; margin: 100px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style></div>`)
     } else {
         jQuery("body").append(`<div id="dtpsNativeAlert" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-dialog-buttons" tabindex="-1" aria-hidden="false" style="outline: 0px; z-index: 5000; height: auto; width: 500px; margin-top: 100px; top: 0; margin-left: calc(50% - 250px); display: block;">
 <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-1" class="ui-dialog-title" role="heading">Power+</span></div>
@@ -387,11 +387,7 @@ dtps.loadPages = function (num) {
     if ((dtps.selectedClass == num) && (dtps.selectedContent == "pages")) {
         jQuery(".sidebar").html(`
 <div class="classDivider"></div>
-<div class="spinner">
-  <div class="bounce1"></div>
-  <div class="bounce2"></div>
-  <div class="bounce3"></div>
-</div>
+<div class="spinner"></div>
 `);
         jQuery(".classContent").html("");
     }
@@ -460,11 +456,7 @@ dtps.classStream = function (num, renderOv) {
     if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
         if (!renderOv) {
             jQuery(".classContent").html(`
-    <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-    </div>
+    <div class="spinner"></div>
   `);
         }
     }
@@ -614,11 +606,7 @@ dtps.masterStream = function (doneLoading) {
     dtps.showClasses();
     if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
         jQuery(".classContent").html(`
-    <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-    </div>
+    <div class="spinner"></div>
   `);
     }
     var buffer = [];
@@ -631,11 +619,7 @@ dtps.masterStream = function (doneLoading) {
     }
     var loadingDom = "";
     if (!doneLoading) {
-        loadingDom = `<div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-    </div>`;
+        loadingDom = `<div class="spinner"></div>`;
     } else {
         dtps.logGrades();
     }
@@ -707,13 +691,7 @@ gapi.client.init({
 dtps.getPage = function (classID, id) {
     if (id == undefined) var id = dtps.selectedPage;
     if ((dtps.classes[dtps.selectedClass].id == classID) && (dtps.selectedContent == "pages")) {
-        jQuery(".classContent").html(`
-    <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-    </div>
-  `);
+        jQuery(".classContent").html(`<div class="spinner"></div>`);
     }
     var spinnerTmp = true;
     dtps.webReq("canvas", "/api/v1/courses/" + classID + "/pages/" + id, function (resp) {
@@ -1390,11 +1368,7 @@ dtps.render = function () {
     </div>
     </div>
 	<div class="classContent">
-    <div class="spinner">
-      <div class="bounce1"></div>
-      <div class="bounce2"></div>
-      <div class="bounce3"></div>
-    </div>
+    <div class="spinner"></div>
     </div>
 <div style="height: calc(100vh - 50px); overflow: auto !important;" class="card withnav focus close container abt-new">
 <i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
