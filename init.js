@@ -56,8 +56,9 @@ dtps.firstrun = function () {
 <h5>` + dtps.readableVer + `</h5>
 <p>Things to keep in mind when testing Power+` + dtps.trackSuffix + `</p>
 <li>Power+` + dtps.trackSuffix + ` can't fully replace Canvas yet. Many Canvas features are not included in Power+` + dtps.trackSuffix + `.</li>
-<li style="color: red;"><b>Power+` + dtps.trackSuffix + ` is still in early stages of development and hasn't been publicly released yet. Things will break.</b></li>
-<li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display an inaccurate representation of your grades and assignments. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
+<li>The Power+ gradebook is being temporarily disabled and will return later this year.</li>
+<li style="color: red;"><b>Power+` + dtps.trackSuffix + ` is still in development. There will be a lot of bugs and missing features, especially in the first month of the school year.</b></li>
+<li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display inaccurate information. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
 </form><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" type="button" data-text-while-loading="Cancel" class="btn dialog_closer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span></button><button onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" data-text-while-loading="Loading Power+..." class="btn btn-primary button_type_submit ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Continue</span></button></div></div></div>
 <div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%; height: 100%; z-index: 500;"></div>`)
 };
