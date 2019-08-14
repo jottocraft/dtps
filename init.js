@@ -225,17 +225,15 @@ dtps.init = function () {
         fluidThemes = [["midnight", "nitro", "aquatic"]];
         dtps.user = JSON.parse(user);
         //TEMPORARY
-        jQuery("body").addClass("sudo");
+        //jQuery("body").addClass("sudo");
 
-        sudoers = ["10837719", "10838212", "10894474", "10463823"]
+        sudoers = ["669"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        og = ["10894474", "10837719"]
+        og = ["669"]
         if (og.includes(dtps.user.id)) { jQuery("body").addClass("og"); }
-        highFlyers = ["10894474", "10837719"]
-        if (highFlyers.includes(dtps.user.id)) { jQuery("body").addClass("highFlyer"); }
-        contributors = ["10837719", "10463823", "10894474"]
+        contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
-        if (/*dtps.user.id == "10837719"*/true) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+        if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
         if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
         if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
         $ = jQuery;
@@ -1436,7 +1434,7 @@ dtps.render = function () {
     <i class="material-icons">insert_drive_file</i>
     Pages
     </button>
-    <button onclick="dtps.selectedContent = 'grades'; dtps.chroma(); $('.cacaoBar .tab.active i').html('assessment'); dtps.gradebook(dtps.selectedClass);" class="btn grades">
+    <button onclick="dtps.selectedContent = 'grades'; dtps.chroma(); $('.cacaoBar .tab.active i').html('assessment'); dtps.gradebook(dtps.selectedClass);" class="btn grades sudo">
     <i class="material-icons">assessment</i>
     Grades
     </button>
@@ -1474,7 +1472,7 @@ dtps.render = function () {
     <div onclick="$('.abtpage').hide();$('.abtpage.debug').show();" class="item dev">
       <i class="material-icons">bug_report</i> Debugging
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.about').show(); if ($('body').hasClass('prerelease')) { $('.advancedOptions').show(); $('.advOp').hide(); } else { $('.advancedOptions').hide(); $('.advOp').show(); }" class="item">
+    <div onclick="$('.abtpage').hide();$('.abtpage.about').show(); if ($('body').hasClass('sudo')) { $('.advancedOptions').show(); $('.advOp').hide(); } else { $('.advancedOptions').hide(); $('.advOp').show(); }" class="item">
       <i class="material-icons">info</i> About
     </div>
   </div>
@@ -1488,9 +1486,9 @@ dtps.render = function () {
     <p>Grades</p>
     <div onclick="fluid.set('pref-hideGrades')" class="switch pref-hideGrades"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
-    <br /><br />
+    <!-- <br /><br />
     <div onclick="dtps.gradeTrend(this);" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">timeline</i> Show grade trend</div>
+    <div class="label"><i class="material-icons">timeline</i> Show grade trend</div> -->
     <br /><br />
     <div onclick="fluid.set('pref-letterGrades')" class="switch pref-letterGrades"><span class="head"></span></div>
     <div class="label"><i class="material-icons">font_download</i> Prefer letter grades on assignments</div>
@@ -1500,27 +1498,27 @@ dtps.render = function () {
     <div class="label"><i class="material-icons">title</i> Show full class names</div>
 	<br style="display: none;" class="razerChroma" /><br style="display: none;" class="razerChroma" />
     <div style="display: none" onclick="fluid.set('pref-chromaEffects')" class="switch pref-chromaEffects razerChroma"><span class="head"></span></div>
-    <div class="label razerChroma" style="display: none;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /img> Razer Chroma Effects</div>
+    <div class="label razerChroma" style="display: none;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /img> Razer Chroma Effects (beta)</div>
     <br /><br />
     <p>Power+</p>
     <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
     <div class="label"><i class="material-icons">code</i> Automatically load Power+</div>
-    <br /><br />
+    <!-- <br /><br />
     <div onclick="fluid.set('pref-devChannel')" class="switch pref-devChannel"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div>
+    <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div> -->
 </div>
 <div style="display: none;" class="abtpage classes">
 <h5>Canvas Classes</h5>
 <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule classes</button>
 <br /><br />
-<div class="googleClassroom prerelease">
+<div class="googleClassroom sudo">
     <h5>google_logo Classes</h5>
     <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">link_off</i>Unlink Google Classroom</button>
     <br /><br />
     <p>Classes listed below could not be associated with a Canvas class. You can choose which classes to show in the sidebar.</p>
     <div class="isolatedGClassList"><p>Loading...</p></div>
 </div>
-<div class="googleSetup prerelease">
+<div class="googleSetup sudo">
     <h5>google_logo Classroom <div class="badge">beta</div></h5>
     <p>Link google_logo Classroom to see assignments and classes from both Canvas and Google.</p>
     <p>If Power+ thinks one of your Canvas classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
