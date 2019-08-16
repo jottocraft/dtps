@@ -1577,7 +1577,7 @@ dtps.render = function () {
             window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
         });
     })
-    jQuery.getScript("https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js", function () {
+    jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js", function () {
         markdown = new showdown.Converter();
         jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function (data) {
             jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
