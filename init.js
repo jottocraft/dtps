@@ -1493,7 +1493,7 @@ dtps.render = function () {
 <a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps"><i class="material-icons" style="vertical-align: middle">code</i> GitHub</a></div>
 </div>
      <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
-<img src="` + dtps.user.avatar_url + `" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
+<img src="` + dtps.user.avatar_url + `" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px; border-radius: 50%;" />
 <div style="display: inline-block; vertical-align: middle;">
 <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">` + dtps.user.name + ` <span style="font-size: 12px;">` + dtps.user.id + `</span></h4>
 
