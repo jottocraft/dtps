@@ -306,7 +306,7 @@ dtps.init = function () {
                             if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" }; if (name.includes("Environmental")) { var subject = "Environmental Science" };
                             if (name.includes("Robotics")) { var subject = "Robotics" }; if (name.includes("Biology")) { var subject = "Biology" }; if (name.includes("Engineering")) { var subject = "Engineering" }; if (name.includes("Geometry")) { var subject = "Geometry" };
                             if (name.includes("Photography")) { var subject = "Photography" }; if (name.includes("World History")) { var subject = "World History" }; if (name.includes("U.S. History")) { var subject = "US History" };
-                            if (name.includes("Calculus")) { var subject = "Calculus" }; if (name.includes("Precalculus")) { var subject = "Precalculus" }; if (name.includes("Statistics")) { var subject = "Advanced Statistics" };
+                            if (name.includes("Calculus")) { var subject = "Calculus" }; if (name.toUpperCase().includes("CALCULUS") && name.toUpperCase().includes("PRE")) { var subject = "Pre-Calc" }; if (name.includes("Statistics")) { var subject = "Advanced Statistics" };
                             if (name.includes("Model United Nations")) { var subject = "Model UN" }; if (name.includes("Government")) { var subject = "Government" }; if (name.includes("Economics")) { var subject = "Economics" };
                             if (subject == null) var subject = name;
                             var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
