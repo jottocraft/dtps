@@ -848,7 +848,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 ` + (assignment.outcome ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">adjust</i><b>Outcome</b>:  ` + assignment.outcome + `</div>` : "") + `
 ` + (assignment.locked && assignment.lockedReason ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i style="font-family: 'Material Icons Extended';" class="material-icons">lock_outline</i>` + assignment.lockedReason + `</div>` : "") + `
 <div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">class</i><b>Class</b>:  ` + assignment.subject + `</div>
-` + `</div><br /><br />` + (assignment.body ? assignment.body : "") + `<br /><br />
+` + `</div><br /><br /><div>` + (assignment.body ? assignment.body : "") + `</div><br /><br />
 ` + (assignment.types.includes("online_text_entry") ? (assignment.turnedIn ? `<div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, 'handIN')"><i class="material-icons">assignment_returned</i> Resubmit</div>` : `<div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, 'handIN')"><i class="material-icons">assignment</i> Hand In</div>`) : ``) + `
 <div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, true)"><i class="material-icons">assignment</i> Submissions</div>
 <div class="btn" onclick="window.open('` + assignment.url + `')"><i class="material-icons">link</i> View on Canvas</div>
