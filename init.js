@@ -1476,7 +1476,7 @@ dtps.render = function () {
         <div id="dtpsLocal" onclick="fluid.set('pref-localDtps')" class="switch pref-localDtps"><span class="head"></span></div>
         <div class="label"><i class="material-icons">public</i> Use local copy of Project DTPS</div>
 <br /><br>
-<button onclick="$('body').removeClass('sudo');">Remove badges</button>
+<button onclick="$('body').removeClass('sudo');$('body').removeClass('contributor');$('body').removeClass('og');$('body').removeClass('dev');">Remove badges</button>
     <br /><br>
 <span class="log">
 </span>
