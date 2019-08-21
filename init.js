@@ -1386,7 +1386,7 @@ dtps.render = function () {
     <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
       <i class="material-icons">book</i> Classes
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
+    <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item gradesTab">
       <i class="material-icons">assessment</i> Grades
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
@@ -1475,6 +1475,8 @@ dtps.render = function () {
     <br>
         <div id="dtpsLocal" onclick="fluid.set('pref-localDtps')" class="switch pref-localDtps"><span class="head"></span></div>
         <div class="label"><i class="material-icons">public</i> Use local copy of Project DTPS</div>
+<br /><br>
+<button onclick="$('body').removeClass('sudo');">Remove badges</button>
     <br /><br>
 <span class="log">
 </span>
@@ -1504,7 +1506,7 @@ dtps.render = function () {
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a style="color: var(--lightText); margin: 0px 5px;" href="/logout"><i class="material-icons" style="vertical-align: middle">exit_to_app</i> Logout</a></div>
 </div>
-<div class="card advancedOptions" style="padding: 8px 16px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 10px; display: none;">
+<div class="card advancedOptions" style="padding: 8px 16px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px; display: none;">
 <div style="display: inline-block; vertical-align: middle;">
 <h4 style="font-weight: bold; font-size: 28px; margin-bottom: 0px;">Advanced Options</h4>
     <br />
@@ -1531,7 +1533,7 @@ dtps.render = function () {
     <h4>` + dtps.user.name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
-    <i onclick="$('.gradeDom').html(dtps.gradeHTML.join('')); fluid.modal('.abt-new')" class="material-icons">settings</i>
+    <i onclick="$('.gradeDom').html(dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('.sidenav .item.gradesTab').hide(); }; fluid.modal('.abt-new')" class="material-icons">settings</i>
     </div>
 <div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
