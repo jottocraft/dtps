@@ -593,7 +593,7 @@ dtps.renderStream = function (stream, searchRes) {
 <div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />
 ` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<br class="sudo dev" />
 <div class="btns row small sudo dev acrylicMaterial assignmentPicker" style="margin: 20px 80px 20px 0px !important;">
-  <button class="btn active"><i class="material-icons">assignment</i>All Assignments</button>
+  <button class="btn active"><i class="material-icons">assignment</i>Assignments</button>
   <button class="btn"><i class="material-icons">view_module</i>Modules</button>
 </div><script>fluid.init();</script>` : "") + `
 </div>` : "") + streamlist.join(""));
