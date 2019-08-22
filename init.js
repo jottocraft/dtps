@@ -231,7 +231,7 @@ dtps.init = function () {
             fluid.init();
             document.addEventListener("fluidTheme", function () {
                 var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-                if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--flex-bg, #252525)" : "var(--flex-bg, white)") + ")"
+                if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--background, #252525)" : "var(--background, white)") + ")"
                 if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
                 $(".background").css("background", next)
                 dtps.chroma();
@@ -554,7 +554,7 @@ dtps.renderStream = function (stream, searchRes) {
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
         ` + (stream[i].late ? `<i title="Assignment is late" class="material-icons floatingIcon" style="color: #c44848;">assignment_late</i>` : ``) + `
-        ` + (stream[i].locked ? `<i title="Assignment submissions are locked" class="material-icons floatingIcon" style="font-family: 'Material Icons Extended'; color: var(--flex-sectext, gray);">lock_outline</i>` : ``) + `
+        ` + (stream[i].locked ? `<i title="Assignment submissions are locked" class="material-icons floatingIcon" style="font-family: 'Material Icons Extended'; color: var(--secText, gray);">lock_outline</i>` : ``) + `
         ` + (stream[i].status == "pending_review" ? `<i title="Grade is unpublished and is pending review" class="material-icons floatingIcon" style="color: #b3b70b;">rate_review</i>` : ``) + `
         <div class="points">
         <div class="earned numbers">` + (stream[i].letter ? (!"ABC0123456789".includes(stream[i].letter.split("")[0]) ? stream[i].letter : stream[i].grade.split("/")[0]) : "") + `</div>
@@ -766,7 +766,7 @@ dtps.gradebook = function (num, type) {
                             if (parts[parts.length - 1].includes("INC")) DVs++;
                         }
                     }
-                    weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--flex-sectext, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>`);
+                    weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--secText, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>`);
                     weightOverview.push(`<div onclick="$('.weight').hide(); $('.weight.` + i + `').show();" class="progressBar big"><div class="progressLabel">` + dtps.classes[num].weights[i].weight + `</div><div class="progress" style="width: calc(` + dtps.classes[num].weights[i].grade + ` - 300px);"></div></div>`)
                 }
                 var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">check_circle_outline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">On track to pass&nbsp;&nbsp;<span style="font-size: 18px;">Power+ didn't detect any DVs in any of your CCs or PTs</span></h5></div>`
@@ -1536,7 +1536,7 @@ dtps.render = function () {
 <a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps/issues/new/choose"><i class="material-icons" style="vertical-align: middle">feedback</i> Send feedback</a></div>
 </div>
 <br />
-<p style="cursor: pointer; color: var(--flex-sectext, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
+<p style="cursor: pointer; color: var(--secText, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
 <p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
   </div>
