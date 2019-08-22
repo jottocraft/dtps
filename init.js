@@ -582,22 +582,13 @@ dtps.renderStream = function (stream, searchRes) {
             searchRes = "";
         }
     }
-    return (dtps.selectedClass !== "dash" ? `<div class="acrylicMaterial sudo dev" style="
-    position: absolute;
-    display:  inline-block;
-    border-radius: 20px;
-    margin: 82px;
-    "><img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="
-    width: 40px;
-    border-radius: 50%;
-    vertical-align: middle;
-"> <div style="
-    font-size: 16px;
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0px 10px;
-">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>` : "") + ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ((typeof Fuse !== "undefined" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />
-` + (dtps.selectedClass !== "dash" ? `<br class="sudo dev" />
+    return  ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ?  `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ((typeof Fuse !== "undefined" ? `
+
+` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<div class="acrylicMaterial sudo dev" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
+<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px;border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>` ? : "" ) + `
+
+<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />
+` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<br class="sudo dev" />
 <div class="btns row small sudo dev acrylicMaterial assignmentPicker" style="margin: 20px 80px 20px 0px !important;">
   <button class="btn active"><i class="material-icons">assignment</i>All Assignments</button>
   <button class="btn"><i class="material-icons">view_module</i>Modules</button>
