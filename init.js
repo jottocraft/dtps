@@ -147,7 +147,7 @@ dtps.computeLetterGrade = function (earned, total, standard) {
     }
 }
 
-//Calculates the class grade as a percentage based on weights and assignment grades
+//Calculates the class grade based on Outcomes (w/ decaying avg support) and other things
 dtps.computeClassGrade = function (data) {
     var weights = [];
     var total = 0;
@@ -280,7 +280,7 @@ dtps.init = function () {
         jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js", function () {
             dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
                 dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
-                    dtps.webReq("canvas", "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers", function (resp) {
+                    dtps.webReq("canvas", "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image", function (resp) {
                         dtps.classes = [];
                         dtps.classesReady = 0;
                         dtps.colorCSS = [];
@@ -325,6 +325,7 @@ dtps.init = function () {
                                 grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
                                 letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : "--"),
                                 num: i,
+				image: data[i].image_download_url,
 				teacher: {
 					name: data[i].teachers[0].display_name,
 					prof: data[i].teachers[0].avatar_image_url
@@ -1027,6 +1028,15 @@ dtps.showClasses = function (override) {
             $('body').removeClass('isolatedGoogleClass');
             $(".btn.google").hide();
             $(".background").addClass("trans");
+	    if (dtps.classes[dtps.selectedClass]) {
+		    if (dtps.classes[dtps.selectedClass].image && (fluid.get("pref-classImages") !== "true")) {
+			    $(".cover.image").css("background-image", 'url("' + dtps.classes[dtps.selectedClass].image + '")');
+			    $(".background").css("opacity", '0.90');
+		    } else {
+			    $(".cover.image").css("background-image", 'none');
+			    $(".background").css("opacity", '1');
+		    }
+	    }
             clearTimeout(dtps.bgTimeout);
             dtps.bgTimeout = setTimeout(function () {
                 document.dispatchEvent(new CustomEvent('fluidTheme'))
@@ -1362,6 +1372,7 @@ dtps.render = function () {
     jQuery("body").html(`
     <div style="line-height: 0;" class="sidebar">
     </div>
+    <div class="cover image"></div>
     <div class="background trans"></div>
 <div class="header">
     <h1 id="headText">Dashboard</h1>
@@ -1436,6 +1447,9 @@ dtps.render = function () {
     <p>Classes</p>
     <div onclick="fluid.set('pref-fullNames')" class="switch pref-fullNames"><span class="head"></span></div>
     <div class="label"><i class="material-icons">title</i> Show full class names</div>
+	<br /><br />
+    <div onclick="fluid.set('pref-classImages')" class="switch pref-classImages"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">image</i> Hide class images</div>
 	<br style="display: none;" class="razerChroma" /><br style="display: none;" class="razerChroma" />
     <div style="display: none" onclick="fluid.set('pref-chromaEffects')" class="switch pref-chromaEffects razerChroma"><span class="head"></span></div>
     <div class="label razerChroma" style="display: none;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /img> Razer Chroma Effects (beta)</div>
