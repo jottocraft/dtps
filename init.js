@@ -558,7 +558,7 @@ dtps.renderStream = function (stream, searchRes) {
         ` + (stream[i].locked ? `<i title="Assignment submissions are locked" class="material-icons floatingIcon" style="font-family: 'Material Icons Extended'; color: var(--secText, gray);">lock_outline</i>` : ``) + `
         ` + (stream[i].status == "pending_review" ? `<i title="Grade is unpublished and is pending review" class="material-icons floatingIcon" style="color: #b3b70b;">rate_review</i>` : ``) + `
         <div class="points">
-        <div class="earned numbers">` + (stream[i].letter ? (!"ABC0123456789".includes(stream[i].letter.split("")[0]) ? stream[i].letter : stream[i].grade.split("/")[0]) : "") + `</div>
+        <div class="earned numbers">` + (stream[i].letter ? stream[i].grade.split("/")[0] : "") + `</div>
 	<div class="earned letters">` + stream[i].letter + `</div>
         ` + (stream[i].grade ? (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") : "") + `
 	` + (stream[i].grade ? (stream[i].grade.split("/")[1] !== undefined ? `<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>` : "") : "") + `
@@ -1282,17 +1282,6 @@ dtps.render = function () {
     jQuery("head").html("");
     document.title = "Power+" + dtps.trackSuffix;
 
-    //Letter grades pref
-    if (fluid.get("pref-letterGrades") == "true") { $("body").addClass("letterGrades"); }
-    document.addEventListener("pref-letterGrades", function (e) {
-        console.log(e)
-        if (String(e.detail) == "true") {
-            $("body").addClass("letterGrades");
-        } else {
-            $("body").removeClass("letterGrades");
-        }
-    })
-
     //Cacao pref
     if (fluid.get("pref-cacao") == "true") { $("body").addClass("cacao"); $('.sidebar').addClass("acrylicMaterial"); }
     document.addEventListener("pref-cacao", function (e) {
@@ -1442,9 +1431,6 @@ dtps.render = function () {
     <!-- <br /><br />
     <div onclick="dtps.gradeTrend(this);" class="switch` + (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? " active" : "") + `"><span class="head"></span></div>
     <div class="label"><i class="material-icons">timeline</i> Show grade trend</div> -->
-    <br /><br />
-    <div onclick="fluid.set('pref-letterGrades')" class="switch pref-letterGrades"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">font_download</i> Prefer letter grades on assignments</div>
     <br /><br />
     <p>Classes</p>
     <div onclick="fluid.set('pref-fullNames')" class="switch pref-fullNames"><span class="head"></span></div>
