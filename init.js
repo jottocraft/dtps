@@ -533,6 +533,48 @@ dtps.classStream = function (num, renderOv) {
     });
 }
 
+//Fetches module stream for a class
+dtps.moduleStream = function(num) {
+	var moduleRootHTML = `
+<div class="acrylicMaterial sudo dev" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
+<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>
+<div style="text-align: right;">
+<br class="sudo dev" />
+<div class="btns row small sudo dev acrylicMaterial assignmentPicker" style="margin: 63px 80px 20px 0px !important;">
+  <button class="btn" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
+  <button class="btn active" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
+</div><script>fluid.init();</script>
+</div>
+</div>`
+	jQuery(".classContent").html(moduleRootHTML + `<div class="spinner"></div>`);
+	streamData = [];
+	dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/modules?include[]=items&include[]=content_details", function (resp) {
+		var data = JSON.parse(resp);
+		for (var i = 0; i < data.length; i++) {
+			var subsetData = [];
+			for (var ii = 0; ii < data[i].items.length; ii++) {
+				var icon = "star_border";
+				if (data[i].items[ii].type == "ExternalTool") icon = "insert_link";
+				if (data[i].items[ii].type == "Assignment") icon = "assignment";
+				if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
+				if (data[i].items[ii].type == "Discussion") icon = "chat";
+				if (data[i].items[ii].type == "Quiz") icon = "assessment";
+				if (data[i].items[ii].type == "SubHeader") icon = "format_size";
+				var open = `window.open('` + data[i].items[ii].html_url + `')`;
+				if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
+				subsetData.push(`<div onclick="` + open + `" style="background-color:var(--dark);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
+<i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
+			}
+			streamData.push(`<div class="card">
+<h4 style="margin-top: 5px;">` + data[i].name + `</h4>
+` + subsetData.join("") + `
+</div>`)
+		}
+		jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
+		
+	});
+}
+
 //Asks the user when they have each class to load the class automatically
 dtps.schedule = function () {
     var schedule = {}
@@ -593,8 +635,8 @@ dtps.renderStream = function (stream, searchRes) {
 <div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />
 ` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<br class="sudo dev" />
 <div class="btns row small sudo dev acrylicMaterial assignmentPicker" style="margin: 20px 80px 20px 0px !important;">
-  <button class="btn active"><i class="material-icons">assignment</i>Assignments</button>
-  <button class="btn"><i class="material-icons">view_module</i>Modules</button>
+  <button class="btn active" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
+  <button class="btn" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
 </div><script>fluid.init();</script>` : "") + `
 </div>` : "") + streamlist.join(""));
     //return streamlist.join("");
@@ -1563,6 +1605,13 @@ dtps.render = function () {
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <p>An error occured</p>
 </div>
+
+<div style="width: calc(80%); border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close moduleURL">
+<i style="color: black !important;" onclick="fluid.cards.close('.card.moduleURL')" class="material-icons close">close</i>
+<br /><br />
+<iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="moduleIFrame"></iframe>
+</div>
+
 <style id="colorCSS">` + (dtps.colorCSS ? dtps.colorCSS.join("") : "") + `</style>
 <script>fluid.init();</script>
   `);
