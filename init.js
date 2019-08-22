@@ -1032,9 +1032,11 @@ dtps.showClasses = function (override) {
 		    if (dtps.classes[dtps.selectedClass].image && (fluid.get("pref-classImages") !== "true")) {
 			    $(".cover.image").css("background-image", 'url("' + dtps.classes[dtps.selectedClass].image + '")');
 			    $(".background").css("opacity", '0.90');
+			    $(".background").css("filter", 'none');
 		    } else {
 			    $(".cover.image").css("background-image", 'none');
 			    $(".background").css("opacity", '1');
+			    $(".background").css("filter", 'blur(10px)');
 		    }
 	    }
             clearTimeout(dtps.bgTimeout);
