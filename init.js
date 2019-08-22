@@ -509,7 +509,7 @@ dtps.classStream = function (num, renderOv) {
                         worth: data[i].assignments[ii].points_possible
                     });
                     dtps.classes[num].streamitems.push(data[i].assignments[ii].id);
-                    if (data[i].assignments[ii].submission.score !== null) {
+                    if ((data[i].assignments[ii].submission.score !== null) && (data[i].assignments[ii].submission.score !== undefined)) {
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].status = data[i].assignments[ii].submission.workflow_state;
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].late = data[i].assignments[ii].submission.late;
