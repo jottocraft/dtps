@@ -562,12 +562,6 @@ body.dark .tabs.btns .btn:not(.active) {
     filter: blur(10px);
 }
 
-.cover.image {
-    width: calc(100% - 50px);
-    height: calc(500px - 50px);
-    margin: calc(50px / 2);
-}
-
 .header {
     margin-left: 275px;
     text-align: center;
