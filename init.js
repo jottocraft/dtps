@@ -578,7 +578,12 @@ dtps.renderStream = function (stream, searchRes) {
             searchRes = "";
         }
     }
-    return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ((typeof Fuse !== "undefined" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + streamlist.join(""));
+    return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ? (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>` : ((typeof Fuse !== "undefined" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>
+<br class="sudo dev" />
+<div class="btns row small sudo dev acrylicMaterial assignmentPicker" style="margin-right: 80px;">
+  <button class="btn active"><i class="material-icons">assignment</i>All Assignments</button>
+  <button class="btn"><i class="material-icons">view_module</i>Modules</button>
+</div>` : "") + streamlist.join(""));
     //return streamlist.join("");
 }
 
