@@ -536,11 +536,11 @@ dtps.classStream = function (num, renderOv) {
 //Fetches module stream for a class
 dtps.moduleStream = function(num) {
 	var moduleRootHTML = `
-<div class="acrylicMaterial sudo dev" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
+<div class="acrylicMaterial" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
 <img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>
 <div style="text-align: right;">
-<br class="sudo dev" />
-<div class="btns row small sudo dev acrylicMaterial assignmentPicker" style="margin: 63px 80px 20px 0px !important;">
+<br />
+<div class="btns row small acrylicMaterial assignmentPicker" style="margin: 63px 80px 20px 0px !important;">
   <button class="btn" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
   <button class="btn active" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
 </div><script>fluid.init();</script>
