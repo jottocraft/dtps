@@ -562,6 +562,7 @@ dtps.moduleStream = function(num) {
 				if (data[i].items[ii].type == "SubHeader") icon = "format_size";
 				var open = `window.open('` + data[i].items[ii].html_url + `')`;
 				if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
+				if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
 				subsetData.push(`<div onclick="` + open + `" style="background-color:var(--dark);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
 <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
 			}
