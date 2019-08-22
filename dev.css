@@ -558,6 +558,12 @@ body.dark .tabs.btns .btn:not(.active) {
     height: 500px;
 }
 
+.cover.image {
+    width: calc(100% - 50px);
+    height: calc(500px - 50px);
+    margin: calc(50px / 2);
+}
+
 .header {
     margin-left: 275px;
     text-align: center;
