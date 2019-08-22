@@ -555,6 +555,7 @@ dtps.moduleStream = function(num) {
 			for (var ii = 0; ii < data[i].items.length; ii++) {
 				var icon = "star_border";
 				if (data[i].items[ii].type == "ExternalTool") icon = "insert_link";
+				if (data[i].items[ii].type == "ExternalUrl") icon = "open_in_new";
 				if (data[i].items[ii].type == "Assignment") icon = "assignment";
 				if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
 				if (data[i].items[ii].type == "Discussion") icon = "chat";
