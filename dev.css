@@ -287,6 +287,11 @@ body {
     margin: 15px 25px 0px 10px !important;
 }
 
+.classContent .assignmentPicker .btn.active {
+    background: #7b7b7b45 !important;
+    color: inherit !important;
+}
+
 .class .dot {
     position: absolute;
     height: 30px;
