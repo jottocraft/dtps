@@ -442,11 +442,13 @@ body.noSidebar .header {
     margin-left: 0px;
 }
 
-body.titlebar .background {
+body.titlebar .background, body.titlebar .cover.image {
     position: fixed;
     height: 75px;
     z-index: 10;
 }
+
+
 
 .sticky {
     position: fixed;
@@ -549,7 +551,7 @@ body.dark .tabs.btns .btn:not(.active) {
     display: none;
 }
 
-.background {
+.background, .cover.image {
     position: absolute;
     top: 0;
     width: 100%;
@@ -855,7 +857,7 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 .filter_21 {
     --light: #c9d63b; --norm: #88920f; --dark: #525808; --grad: linear-gradient(to bottom right, #c9d63b, #525808); }
 
-.background {
+.background, .cover.image {
     background-size: 100%;
     position: absolute;
     z-index: -90;
