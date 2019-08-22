@@ -558,6 +558,10 @@ body.dark .tabs.btns .btn:not(.active) {
     height: 500px;
 }
 
+.background {
+    filter: blur(10px);
+}
+
 .cover.image {
     width: calc(100% - 50px);
     height: calc(500px - 50px);
