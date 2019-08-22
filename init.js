@@ -583,8 +583,8 @@ dtps.renderStream = function (stream, searchRes) {
 <div class="btns row small sudo dev acrylicMaterial assignmentPicker" style="margin: 20px 80px 20px 0px !important;">
   <button class="btn active"><i class="material-icons">assignment</i>All Assignments</button>
   <button class="btn"><i class="material-icons">view_module</i>Modules</button>
-</div> ` : "") + `
-</div>` : "") + streamlist.join("") + `<script>fluid.init();</script>`);
+</div><script>fluid.init();</script>` : "") + `
+</div>` : "") + streamlist.join(""));
     //return streamlist.join("");
 }
 
@@ -1551,6 +1551,7 @@ dtps.render = function () {
 <p>An error occured</p>
 </div>
 <style id="colorCSS">` + (dtps.colorCSS ? dtps.colorCSS.join("") : "") + `</style>
+<script>fluid.init();</script>
   `);
     var idleTime = 0;
     $(document).ready(function () {
