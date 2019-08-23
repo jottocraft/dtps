@@ -229,12 +229,17 @@ dtps.init = function () {
         if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) { dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period]; }
         jQuery.getScript('https://dtps.js.org/fluid.js', function () {
             fluid.init();
-            document.addEventListener("fluidTheme", function () {
-                var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-                if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--background, #252525)" : "var(--background, white)") + ")"
-                if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
-                $(".background").css("background", next)
-                dtps.chroma();
+            document.addEventListener("fluidTheme", function (data) {
+                if (dtps.oldTheme !== data.detail) {
+                    //theme change
+                    console.log("[DTPS] Fluid UI Theme Change")
+                    dtps.oldTheme = data.detail;
+                    var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+                    if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--background, #252525)" : "var(--background, white)") + ")"
+                    if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+                    $(".background").css("background", next)
+                    dtps.chroma();
+                }
             })
         });
         jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
@@ -325,11 +330,11 @@ dtps.init = function () {
                                 grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
                                 letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : "--"),
                                 num: i,
-				image: data[i].image_download_url,
-				teacher: {
-					name: data[i].teachers[0].display_name,
-					prof: data[i].teachers[0].avatar_image_url
-				}
+                                image: data[i].image_download_url,
+                                teacher: {
+                                    name: data[i].teachers[0].display_name,
+                                    prof: data[i].teachers[0].avatar_image_url
+                                }
                             })
                             if (!dtps.filter(colors.custom_colors["course_" + data[i].id])) {
                                 dtps.colorCSS.push(`\n.` + dtps.classes[i].col + ` {
@@ -534,8 +539,8 @@ dtps.classStream = function (num, renderOv) {
 }
 
 //Fetches module stream for a class
-dtps.moduleStream = function(num) {
-	var moduleRootHTML = `
+dtps.moduleStream = function (num) {
+    var moduleRootHTML = `
 <div class="acrylicMaterial" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
 <img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>
 <div style="text-align: right;">
@@ -546,35 +551,35 @@ dtps.moduleStream = function(num) {
 </div><script>fluid.init();</script>
 </div>
 </div>`
-	jQuery(".classContent").html(moduleRootHTML + `<div class="spinner"></div>`);
-	streamData = [];
-	dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/modules?include[]=items&include[]=content_details", function (resp) {
-		var data = JSON.parse(resp);
-		for (var i = 0; i < data.length; i++) {
-			var subsetData = [];
-			for (var ii = 0; ii < data[i].items.length; ii++) {
-				var icon = "star_border";
-				if (data[i].items[ii].type == "ExternalTool") icon = "insert_link";
-				if (data[i].items[ii].type == "ExternalUrl") icon = "open_in_new";
-				if (data[i].items[ii].type == "Assignment") icon = "assignment";
-				if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
-				if (data[i].items[ii].type == "Discussion") icon = "chat";
-				if (data[i].items[ii].type == "Quiz") icon = "assessment";
-				if (data[i].items[ii].type == "SubHeader") icon = "format_size";
-				var open = `window.open('` + data[i].items[ii].html_url + `')`;
-				if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
-				if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
-				subsetData.push(`<div onclick="` + open + `" style="background-color:var(--dark);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
+    jQuery(".classContent").html(moduleRootHTML + `<div class="spinner"></div>`);
+    streamData = [];
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/modules?include[]=items&include[]=content_details", function (resp) {
+        var data = JSON.parse(resp);
+        for (var i = 0; i < data.length; i++) {
+            var subsetData = [];
+            for (var ii = 0; ii < data[i].items.length; ii++) {
+                var icon = "star_border";
+                if (data[i].items[ii].type == "ExternalTool") icon = "insert_link";
+                if (data[i].items[ii].type == "ExternalUrl") icon = "open_in_new";
+                if (data[i].items[ii].type == "Assignment") icon = "assignment";
+                if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
+                if (data[i].items[ii].type == "Discussion") icon = "chat";
+                if (data[i].items[ii].type == "Quiz") icon = "assessment";
+                if (data[i].items[ii].type == "SubHeader") icon = "format_size";
+                var open = `window.open('` + data[i].items[ii].html_url + `')`;
+                if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
+                if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
+                subsetData.push(`<div onclick="` + open + `" style="background-color:var(--dark);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
 <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
-			}
-			streamData.push(`<div class="card">
+            }
+            streamData.push(`<div class="card">
 <h4 style="margin-top: 5px;">` + data[i].name + `</h4>
 ` + subsetData.join("") + `
 </div>`)
-		}
-		jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
-		
-	});
+        }
+        jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
+
+    });
 }
 
 //Asks the user when they have each class to load the class automatically
@@ -628,21 +633,18 @@ dtps.renderStream = function (stream, searchRes) {
         }
     }
     return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ?
-    (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>`
-    : ((typeof Fuse !== "undefined" ? `
+        (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>`
+        : ((typeof Fuse !== "undefined" ? `
 
 ` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<div class="acrylicMaterial" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
-<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>` : "" ) + `
+<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>` : "") + `
 
 <div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />
 ` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<br />
 <div class="btns row small acrylicMaterial assignmentPicker" style="margin: 20px 80px 20px 0px !important;">
   <button class="btn active" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
   <button class="btn" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
-</div><script>fluid.init();</script>` : ((dtps.selectedClass == "dash") && (searchRes == "")) ? `<br class="dev" /><div class="btns row small dev acrylicMaterial assignmentPicker" style="margin: 20px 25px 20px 0px !important;">
-  <button class="btn active" onclick=""><i class="material-icons">watch_later</i>Upcoming</button>
-  <button class="btn" onclick=""><i class="material-icons">more_horiz</i>All</button>
-</div><script>fluid.init();</script>`: "") + `
+</div><script>fluid.init();</script>` : "") + `
 </div>` : "") + streamlist.join(""));
     //return streamlist.join("");
 }
@@ -666,7 +668,7 @@ dtps.search = function () {
 }
 
 //Renders the Power+ master stream / dashboard showing an overview of all classes
-dtps.masterStream = function (doneLoading) {
+dtps.masterStream = function (doneLoading, omitOldAssignments) {
     dtps.log("RENDERING DASHBOARD")
     dtps.showClasses();
     if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
@@ -703,10 +705,13 @@ dtps.masterStream = function (doneLoading) {
 
     dtps.announcements();
     jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function (a, b) {
-        var keyA = new Date(a.dueDate),
-            keyB = new Date(b.dueDate);
-	if (a.dueDate == null) keyA = 999999999999999999;
-	if (b.dueDate == null) keyB = 999999999999999999;
+        var keyA = new Date(String(a.dueDate).replace("2019-08-23T06:59:59Z", 1566351852668)).getTime(),
+            keyB = new Date(String(b.dueDate).replace("2019-08-23T06:59:59Z", 1566351852668)).getTime();
+        var now = new Date().getTime();
+        if (a.dueDate == null) keyA = Infinity;
+        if (b.dueDate == null) keyB = Infinity;
+        if (keyB > now) keyA += 9999999999999;
+        if (keyB > now) keyB += 9999999999999;
         // Compare the 2 dates
         if (keyA > keyB) return 1;
         if (keyA < keyB) return -1;
@@ -1077,23 +1082,24 @@ dtps.showClasses = function (override) {
             $('body').removeClass('isolatedGoogleClass');
             $(".btn.google").hide();
             $(".background").addClass("trans");
-	    if (dtps.classes[dtps.selectedClass]) {
-		    if (dtps.classes[dtps.selectedClass].image && (fluid.get("pref-classImages") !== "true")) {
-			    $(".cover.image").css("background-image", 'url("' + dtps.classes[dtps.selectedClass].image + '")');
-			    $(".background").css("opacity", '0.90');
-			    $(".background").css("filter", 'none');
-		    } else {
-			    $(".cover.image").css("background-image", 'none');
-			    $(".background").css("opacity", '1');
-			    $(".background").css("filter", 'blur(10px)');
-		    }
-	    } else {
-		    $(".cover.image").css("background-image", 'none');
-			    $(".background").css("opacity", '1');
-			    $(".background").css("filter", 'blur(10px)');
-	    }
+            if (dtps.classes[dtps.selectedClass]) {
+                if (dtps.classes[dtps.selectedClass].image && (fluid.get("pref-classImages") !== "true")) {
+                    $(".cover.image").css("background-image", 'url("' + dtps.classes[dtps.selectedClass].image + '")');
+                    $(".background").css("opacity", '0.90');
+                    $(".background").css("filter", 'none');
+                } else {
+                    $(".cover.image").css("background-image", 'none');
+                    $(".background").css("opacity", '1');
+                    $(".background").css("filter", 'blur(10px)');
+                }
+            } else {
+                $(".cover.image").css("background-image", 'none');
+                $(".background").css("opacity", '1');
+                $(".background").css("filter", 'blur(10px)');
+            }
             clearTimeout(dtps.bgTimeout);
             dtps.bgTimeout = setTimeout(function () {
+                dtps.oldTheme = "squidward theme park";
                 document.dispatchEvent(new CustomEvent('fluidTheme'))
                 $(".background").removeClass("trans");
             }, 500);
@@ -1338,7 +1344,6 @@ dtps.render = function () {
     //Cacao pref
     if (fluid.get("pref-cacao") == "true") { $("body").addClass("cacao"); $('.sidebar').addClass("acrylicMaterial"); }
     document.addEventListener("pref-cacao", function (e) {
-        console.log(e)
         if (String(e.detail) == "true") {
             $("body").addClass("cacao");
             $('.sidebar').addClass("acrylicMaterial");
@@ -1351,7 +1356,6 @@ dtps.render = function () {
     //Full names pref
     if (fluid.get("pref-fullNames") == "true") { dtps.fullNames = true; }
     document.addEventListener("pref-fullNames", function (e) {
-        console.log(e)
         if (String(e.detail) == "true") { dtps.fullNames = true; } else { dtps.fullNames = false; }
         dtps.showClasses(true);
     })
@@ -1365,7 +1369,6 @@ dtps.render = function () {
                 //Razer Chroma pref
                 if (fluid.get("pref-chromaEffects") == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } }
                 document.addEventListener("pref-chromaEffects", function (e) {
-                    console.log(e)
                     if (String(e.detail) == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } } else { fluid.chroma.disable(); }
                 })
             }
@@ -1375,7 +1378,6 @@ dtps.render = function () {
     //Hide grades pref
     if (fluid.get("pref-hideGrades") == "true") { jQuery('body').addClass('hidegrades'); }
     document.addEventListener("pref-hideGrades", function (e) {
-        console.log(e)
         if (String(e.detail) == "true") { jQuery('body').addClass('hidegrades'); } else { jQuery('body').removeClass('hidegrades'); }
         dtps.showClasses(true);
     })
