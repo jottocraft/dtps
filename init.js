@@ -640,7 +640,10 @@ dtps.renderStream = function (stream, searchRes) {
   <button class="btn active" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
   <button class="btn" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
 </div><script>fluid.init();</script>` : "") + `
-</div>` : "") + streamlist.join(""));
+</div>` : ((dtps.selectedClass == "dash") && (searchRes == "")) ? `<br class="dev" /><div class="btns row small dev acrylicMaterial dashboardPicker" style="margin: 20px 25px 20px 0px !important;">
+  <button class="btn active" onclick=""><i class="material-icons">watch_later</i>Upcoming</button>
+  <button class="btn" onclick=""><i class="material-icons">more_horiz</i>All</button>
+</div>`: "") + streamlist.join(""));
     //return streamlist.join("");
 }
 
