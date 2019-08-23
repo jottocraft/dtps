@@ -1084,6 +1084,10 @@ dtps.showClasses = function (override) {
 			    $(".background").css("opacity", '1');
 			    $(".background").css("filter", 'blur(10px)');
 		    }
+	    } else {
+		    $(".cover.image").css("background-image", 'none');
+			    $(".background").css("opacity", '1');
+			    $(".background").css("filter", 'blur(10px)');
 	    }
             clearTimeout(dtps.bgTimeout);
             dtps.bgTimeout = setTimeout(function () {
