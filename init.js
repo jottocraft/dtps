@@ -639,11 +639,11 @@ dtps.renderStream = function (stream, searchRes) {
 <div class="btns row small acrylicMaterial assignmentPicker" style="margin: 20px 80px 20px 0px !important;">
   <button class="btn active" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
   <button class="btn" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
-</div><script>fluid.init();</script>` : "") + `
-</div>` : ((dtps.selectedClass == "dash") && (searchRes == "")) ? `<br class="dev" /><div class="btns row small dev acrylicMaterial dashboardPicker" style="margin: 20px 25px 20px 0px !important;">
+</div><script>fluid.init();</script>` : ((dtps.selectedClass == "dash") && (searchRes == "")) ? `<br class="dev" /><div class="btns row small dev acrylicMaterial assignmentPicker" style="margin: 20px 25px 20px 0px !important;">
   <button class="btn active" onclick=""><i class="material-icons">watch_later</i>Upcoming</button>
   <button class="btn" onclick=""><i class="material-icons">more_horiz</i>All</button>
-</div>`: "") + streamlist.join(""));
+</div><script>fluid.init();</script>`: "") + `
+</div>` : "") + streamlist.join(""));
     //return streamlist.join("");
 }
 
