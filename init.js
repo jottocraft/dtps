@@ -569,7 +569,7 @@ dtps.moduleStream = function (num) {
                 var open = `window.open('` + data[i].items[ii].html_url + `')`;
                 if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
                 if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
-                subsetData.push(`<div onclick="` + open + `" style="background-color:var(--dark);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
+                subsetData.push(`<div onclick="` + open + `" style="background-color:var(--elements);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
 <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
             }
             streamData.push(`<div class="card">
@@ -783,15 +783,6 @@ dtps.getPage = function (classID, id) {
 //Loads the gradebook for a class. The type paramater specifies if it should load the mastery gradebook or not
 dtps.gradebook = function (num, type) {
     dtps.showClasses();
-    var underConstruction = false;
-    if (underConstruction) {
-        jQuery(".classContent").html(`
-<div class="card">
-<h4>Under Construction</h4>
-<p>d.tech is switching to a new objective mastery based grading. Because of these changes, the Power+ gradebook is being completely rewritten. I want to make sure the gradebook is 100% accurate before releasing it, so it may take some time before it is released. For the latest features, try the Power+ dev release channel.</p>
-</div>
-`)
-    } else {
         if (dtps.classes[num].weights) {
             if (dtps.classes[num].weights.length) {
                 $(".btns .btn.grades").show();
@@ -828,9 +819,10 @@ dtps.gradebook = function (num, type) {
                 if (DVs > 0) {
                     headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
                 }
-                headsUp = `<div class="card" style="background-color: #e5bf27;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">build</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">Under construction&nbsp;&nbsp;<span style="font-size: 18px;">The Power+ gradebook is still being developed. Use at your own risk.</span></h5></div>`
+                headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
+                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">!! UNDER CONSTRUCTION !!</div></div>`
                 if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
-                jQuery(".classContent").html(headsUp + `
+                /*jQuery(".classContent").html(headsUp + `
 `+ (dtps.classes[dtps.selectedClass].grade !== "--" ? (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;">
 <i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px; vertical-align: middle;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + `%</span></h5></div>` : "") : "") : "") + `
 <div style="height: 1000px;" class="card withnav">
@@ -857,7 +849,16 @@ dtps.gradebook = function (num, type) {
 </div>
   </div>
 </div>
-  `);
+  `);*/
+  $(".classContent").html(headsUp + `
+  <div class="card">
+  <h3 style="margin-top: 10px;">Gradebook</h3>
+
+  <div style="background-color: red; border-radius: 20px; padding: 10px; font-weight: bold;">
+  <h5>TEST OUTCOME</h5>
+
+  </div>
+  </div>`)
             } else {
                 $(".btns .btn.grades").hide();
                 $(".btns .btn").removeClass("active");
@@ -867,7 +868,6 @@ dtps.gradebook = function (num, type) {
                 dtps.classStream(num);
             }
         }
-    }
 }
 
 //Shows details for an assignment given the assignment ID and class number
