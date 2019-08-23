@@ -190,7 +190,7 @@ dtps.init = function () {
         //TEMPORARY
         //jQuery("body").addClass("sudo");
 
-        sudoers = ["669", "672"]
+        sudoers = ["669", "672", "209"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
         og = ["669"]
         if (og.includes(dtps.user.id)) { jQuery("body").addClass("og"); }
