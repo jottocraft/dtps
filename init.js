@@ -330,6 +330,7 @@ dtps.init = function () {
                                 grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
                                 letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : "--"),
                                 num: i,
+                                tmp: {},
                                 image: data[i].image_download_url,
                                 teacher: {
                                     name: data[i].teachers[0].display_name,
@@ -512,6 +513,7 @@ dtps.classStream = function (num, renderOv) {
                         lockedReason: data[i].assignments[ii].lock_explanation,
                         submissions: data[i].assignments[ii].submission.preview_url,
                         body: data[i].assignments[ii].description,
+                        rubric: data[i].assignments[ii].rubric,
                         worth: data[i].assignments[ii].points_possible
                     });
                     dtps.classes[num].streamitems.push(data[i].assignments[ii].id);
@@ -705,8 +707,8 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
 
     dtps.announcements();
     jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function (a, b) {
-        var keyA = new Date(String(a.dueDate).replace("2019-08-23T06:59:59Z", 1566351852668)).getTime(),
-            keyB = new Date(String(b.dueDate).replace("2019-08-23T06:59:59Z", 1566351852668)).getTime();
+        var keyA = new Date(a.dueDate).getTime(),
+            keyB = new Date(b.dueDate).getTime();
         var now = new Date().getTime();
         if (a.dueDate == null) keyA = Infinity;
         if (b.dueDate == null) keyB = Infinity;
@@ -783,74 +785,74 @@ dtps.getPage = function (classID, id) {
 //Loads the gradebook for a class. The type paramater specifies if it should load the mastery gradebook or not
 dtps.gradebook = function (num, type) {
     dtps.showClasses();
-        if (dtps.classes[num].weights) {
-            if (dtps.classes[num].weights.length) {
-                $(".btns .btn.grades").show();
-                var weightsTmp = [];
-                var weightOverview = [];
-                var revisable = [];
-                var DVs = 0;
-                for (var i = 0; i < dtps.classes[num].weights.length; i++) {
-                    var assignTmp = [];
-                    for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-                        assignTmp.push(`<div onclick="dtps.assignment(` + dtps.classes[num].weights[i].assignments[ii].id + `, ` + num + `)" class="progressBar">
+    if (dtps.classes[num].weights) {
+        if (dtps.classes[num].weights.length) {
+            $(".btns .btn.grades").show();
+            var weightsTmp = [];
+            var weightOverview = [];
+            var revisable = [];
+            var DVs = 0;
+            for (var i = 0; i < dtps.classes[num].weights.length; i++) {
+                var assignTmp = [];
+                for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
+                    assignTmp.push(`<div onclick="dtps.assignment(` + dtps.classes[num].weights[i].assignments[ii].id + `, ` + num + `)" class="progressBar">
 <div class="progressLabel">` + dtps.classes[num].weights[i].assignments[ii].disp + `</div><div style="width: calc(` + (dtps.classes[num].weights[i].assignments[ii].percentage * 100) + `% - 280px);" class="progress"></div></div>`)
-                        //var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * (dtps.classes[num].weights[i].assignments[ii].percentage * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints))) * 100).toFixed(2)
-                        var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints)) * 100).toFixed(2)
-                        if (reviseBy > 1) { revisable.push({ dom: `<p>Revising ` + dtps.classes[num].weights[i].assignments[ii].disp + ` could boost your grade by up to ` + reviseBy + `%</p>`, rv: Number(reviseBy) }) }
-                        revisable.sort(function (a, b) {
-                            var keyA = a.rv,
-                                keyB = b.rv;
-                            if (keyA < keyB) return -1;
-                            if (keyA > keyB) return 1;
-                            return 0;
-                        });
-                        if (!((dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS")) || (dtps.classes[num].weights[i].weight.toUpperCase().includes("SS")))) {
-                            var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");
-                            if (parts[parts.length - 1].includes("DV")) DVs++;
-                            if (parts[parts.length - 1].includes("M")) DVs++;
-                            if (parts[parts.length - 1].includes("INC")) DVs++;
-                        }
+                    //var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * (dtps.classes[num].weights[i].assignments[ii].percentage * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints))) * 100).toFixed(2)
+                    var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints)) * 100).toFixed(2)
+                    if (reviseBy > 1) { revisable.push({ dom: `<p>Revising ` + dtps.classes[num].weights[i].assignments[ii].disp + ` could boost your grade by up to ` + reviseBy + `%</p>`, rv: Number(reviseBy) }) }
+                    revisable.sort(function (a, b) {
+                        var keyA = a.rv,
+                            keyB = b.rv;
+                        if (keyA < keyB) return -1;
+                        if (keyA > keyB) return 1;
+                        return 0;
+                    });
+                    if (!((dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS")) || (dtps.classes[num].weights[i].weight.toUpperCase().includes("SS")))) {
+                        var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");
+                        if (parts[parts.length - 1].includes("DV")) DVs++;
+                        if (parts[parts.length - 1].includes("M")) DVs++;
+                        if (parts[parts.length - 1].includes("INC")) DVs++;
                     }
-                    weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--secText, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>`);
-                    weightOverview.push(`<div onclick="$('.weight').hide(); $('.weight.` + i + `').show();" class="progressBar big"><div class="progressLabel">` + dtps.classes[num].weights[i].weight + `</div><div class="progress" style="width: calc(` + dtps.classes[num].weights[i].grade + ` - 300px);"></div></div>`)
                 }
-                var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">check_circle_outline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">On track to pass&nbsp;&nbsp;<span style="font-size: 18px;">Power+ didn't detect any DVs in any of your CCs or PTs</span></h5></div>`
-                if (DVs > 0) {
-                    headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
-                }
-                headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
+                weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--secText, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>`);
+                weightOverview.push(`<div onclick="$('.weight').hide(); $('.weight.` + i + `').show();" class="progressBar big"><div class="progressLabel">` + dtps.classes[num].weights[i].weight + `</div><div class="progress" style="width: calc(` + dtps.classes[num].weights[i].grade + ` - 300px);"></div></div>`)
+            }
+            var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">check_circle_outline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">On track to pass&nbsp;&nbsp;<span style="font-size: 18px;">Power+ didn't detect any DVs in any of your CCs or PTs</span></h5></div>`
+            if (DVs > 0) {
+                headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
+            }
+            headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
                 <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">!! UNDER CONSTRUCTION !!</div></div>`
-                if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
-                /*jQuery(".classContent").html(headsUp + `
+            if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
+            /*jQuery(".classContent").html(headsUp + `
 `+ (dtps.classes[dtps.selectedClass].grade !== "--" ? (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;">
 <i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px; vertical-align: middle;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + `%</span></h5></div>` : "") : "") : "") + `
 <div style="height: 1000px;" class="card withnav">
-  <div class="sidenav">
-    <div class="title">
-      <h5>` + (type == "mastery" ? "Mastery" : "Gradebook") + `</h5>
-      <p>` + dtps.classes[num].name + `</p>
-    </div>
+<div class="sidenav">
+<div class="title">
+  <h5>` + (type == "mastery" ? "Mastery" : "Gradebook") + `</h5>
+  <p>` + dtps.classes[num].name + `</p>
+</div>
 <div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.overview').show();" style="margin-top: -15px;" class="item active"><i class="material-icons">dashboard</i> Overview</div>
 <div style="margin-bottom: 20px;" onclick="dtps.gradebook(` + num + `, '` + (type == "mastery" ? "gradebook" : "mastery") + `')" class="item"><i class="material-icons">compare_arrows</i> Show ` + (type == "mastery" ? "gradebook" : "mastery") + `</div>
-    ` + dtps.classes[num].weights.map(function (key, i) {
-                    return `<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
-       ` + key.icon + key.weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
-    </div>` }).join("") + `
-  </div>
-  <div class="content">
-    ` + weightsTmp.join("") + `
-    <div class="weight overview">
+` + dtps.classes[num].weights.map(function (key, i) {
+                return `<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
+   ` + key.icon + key.weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
+</div>` }).join("") + `
+</div>
+<div class="content">
+` + weightsTmp.join("") + `
+<div class="weight overview">
 <h4>` + dtps.classes[num].name + `</h4>
 ` + weightOverview.join("") + `
 <br />
 <h5><i class="material-icons" style="vertical-align: middle; margin-right: 10px;">trending_up</i>Boost your grade <div class="badge">beta</div></h5>
 <p>` + revisable.map((key) => key.dom).join("") + `</p>
 </div>
-  </div>
 </div>
-  `);*/
-  $(".classContent").html(headsUp + `
+</div>
+`);*/
+            $(".classContent").html(headsUp + `
   <div class="card">
   <h3 style="margin-top: 10px;">Gradebook</h3>
 
@@ -859,15 +861,15 @@ dtps.gradebook = function (num, type) {
 
   </div>
   </div>`)
-            } else {
-                $(".btns .btn.grades").hide();
-                $(".btns .btn").removeClass("active");
-                $(".btns .btn.stream").addClass("active");
-                dtps.selectedContent = "stream";
-                dtps.chroma();
-                dtps.classStream(num);
-            }
+        } else {
+            $(".btns .btn.grades").hide();
+            $(".btns .btn").removeClass("active");
+            $(".btns .btn.stream").addClass("active");
+            dtps.selectedContent = "stream";
+            dtps.chroma();
+            dtps.classStream(num);
         }
+    }
 }
 
 //Shows details for an assignment given the assignment ID and class number
@@ -908,19 +910,42 @@ Power+ currently only supports assignments that use online text entry. Other ass
             } else {
                 $(".card.details").css("background-color", "")
                 $(".card.details").css("color", "")
-                $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i><h3>` + assignment.title + `</h3><br /><div class="list">` + `
+                $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i><h4 style="font-weight: bold;">` + assignment.title + `</h4><br /><div class="list">` + `
 <div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">add_box</i><b>Posted</b>:  ` + assignment.published + `</div>
 ` + (assignment.due ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">access_time</i><b>Due</b>:  ` + assignment.due + `</div>` : "") + `
 ` + (assignment.locksAt ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons" style="font-family: 'Material Icons Extended'">lock_outline</i><b>Locks</b>:  ` + new Date(assignment.locksAt).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(assignment.locksAt)) + `</div>` : "") + `
 ` + (assignment.unlocksAt ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">lock_open</i><b>Unlocks</b>:  ` + new Date(assignment.unlocksAt).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(assignment.unlocksAt)) + `</div>` : "") + `
 ` + (assignment.status ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">assignment_return</i><b>Status</b>:  ` + (assignment.status == "submitted" ? "Submitted" : (assignment.status == "unsubmitted" ? "Unsubmitted" : (assignment.status == "graded" ? "Graded" : (assignment.status == "pending_review" ? "Pending Review" : assignment.status)))) + `</div>` : "") + `
-<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">bar_chart</i><b>Total Points</b>:  ` + assignment.worth + `</div>
+` + (assignment.worth ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">bar_chart</i><b>Total Points</b>:  ` + assignment.worth + `</div>` : "") + `
 ` + (assignment.grade ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">assessment</i><b>Points earned</b>:  ` + assignment.grade + ` (` + assignment.letter + `)</div>` : "") + `
 <div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">category</i><b>Group</b>:  ` + assignment.weight + `</div>
 ` + (assignment.outcome ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">adjust</i><b>Outcome</b>:  ` + assignment.outcome + `</div>` : "") + `
 ` + (assignment.locked && assignment.lockedReason ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i style="font-family: 'Material Icons Extended';" class="material-icons">lock_outline</i>` + assignment.lockedReason + `</div>` : "") + `
 <div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">class</i><b>Class</b>:  ` + assignment.subject + `</div>
-` + `</div><br /><br /><div>` + (assignment.body ? assignment.body : "") + `</div><br /><br />
+` + `</div>
+
+<br />
+<div id="activeAssignmentRubrics">
+` + assignment.rubric.map(function(rubric) {
+    dtps.classes[classNum].tmp[rubric.id] = rubric.long_description
+return `<br />
+<h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rubric.description + `</h5>
+<p style="color: var(--secText);" class="` + rubric.id + `"><a onclick="$('p.` + rubric.id + `').html(dtps.classes[` + classNum + `].tmp['` + rubric.id + `'])" href="#">Rubric details</a></p>
+<div>
+
+` + rubric.ratings.map(function(rating) {
+    return  `
+    <div style="width: calc(25% - 14px); max-width: 200px; margin: 0px 5px; height: 82px; background-color: var(--elements); border-radius: 20px; padding: 15px; display: inline-block; overflow: hidden;">
+    <h5 style="font-weight: bold; font-size: 22px; margin: 0px; margin-top: 4px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rating.description + `</h5>
+    <p style="margin-top: 5px;">Level ` + rating.points + `</p>
+    </div>`
+}).join("") + `</div>`
+}).join("") + `
+</div>
+<br />
+<div style="height: 1px; background-color: var(--secText);"></div>
+<br />
+<div>` + (assignment.body ? assignment.body : "") + `</div><br /><br />
 ` + (assignment.types.includes("online_text_entry") ? (assignment.turnedIn ? `<div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, 'handIN')"><i class="material-icons">assignment_returned</i> Resubmit</div>` : `<div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, 'handIN')"><i class="material-icons">assignment</i> Hand In</div>`) : ``) + `
 <div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, true)"><i class="material-icons">assignment</i> Submissions</div>
 <div class="btn" onclick="window.open('` + assignment.url + `')"><i class="material-icons">link</i> View on Canvas</div>
