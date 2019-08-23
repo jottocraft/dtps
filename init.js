@@ -702,9 +702,11 @@ dtps.masterStream = function (doneLoading) {
     jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function (a, b) {
         var keyA = new Date(a.dueDate),
             keyB = new Date(b.dueDate);
+	if (a.dueDate == null) keyA = 999999999999999999;
+	if (b.dueDate == null) keyB = 999999999999999999;
         // Compare the 2 dates
-        if (keyA < keyB) return 1;
-        if (keyA > keyB) return -1;
+        if (keyA > keyB) return 1;
+        if (keyA < keyB) return -1;
         return 0;
     })));
     $(".card.assignment").addClass("color");
