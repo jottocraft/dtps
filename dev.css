@@ -94,6 +94,7 @@ body.cacao .classContent {
     display: inline-block;
     border-radius: 20px;
     line-height: 24px;
+    margin: 0px 2px;
 }
 
 .assignmentChip i {
