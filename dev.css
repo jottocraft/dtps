@@ -88,6 +88,18 @@ body.cacao .classContent {
     line-height: 20px;
 }
 
+.assignmentChip {
+    padding: 5px 10px;
+    background-color: var(--elements);
+    display: inline-block;
+    border-radius: 20px;
+    line-height: 24px;
+}
+
+.assignmentChip i {
+    vertical-align: middle;
+}
+
 .progressBar {
     padding: 5px;
     background-color: var(--elements);
