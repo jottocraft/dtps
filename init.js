@@ -600,8 +600,9 @@ dtps.schedule = function () {
 //Converts a Power+ stream array into HTML for displaying the assignment list
 dtps.renderStream = function (stream, searchRes) {
     var streamlist = [];
+    var oldDiv = false;
     for (var i = 0; i < stream.length; i++) {
-        streamlist.push(`
+        streamlist.push((stream[i].old && !oldDiv ? `<h5 style="text-align: center; margin: 75px 25px 10px 75px; font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
@@ -622,6 +623,7 @@ dtps.renderStream = function (stream, searchRes) {
         </h5>
         </div>
       `);
+      if (stream[i].old) oldDiv = true;
     }
     if (typeof Fuse !== "undefined") {
         if (searchRes == undefined) {
@@ -710,10 +712,10 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
         var keyA = new Date(a.dueDate).getTime(),
             keyB = new Date(b.dueDate).getTime();
         var now = new Date().getTime();
-        if (a.dueDate == null) keyA = Infinity;
-        if (b.dueDate == null) keyB = Infinity;
-        if (keyB > now) keyA += 9999999999999;
-        if (keyB > now) keyB += 9999999999999;
+        if (a.dueDate == null) { keyA = Infinity; a.old = true; }
+        if (b.dueDate == null) { keyB = Infinity; b.old = true; }
+        if (keyA < now) { keyA += 9999999999999; a.old = true; }
+        if (keyB < now) { keyB += 9999999999999; b.old = true; }
         // Compare the 2 dates
         if (keyA > keyB) return 1;
         if (keyA < keyB) return -1;
@@ -926,7 +928,8 @@ Power+ currently only supports assignments that use online text entry. Other ass
 
 <br />
 <div id="activeAssignmentRubrics">
-` + assignment.rubric.map(function(rubric) {
+` + (assignment.rubric ? assignment.rubric.map(function(rubric) {
+			if (rubric.ratings) {
     dtps.classes[classNum].tmp[rubric.id] = rubric.long_description
 return `<br />
 <h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rubric.description + `</h5>
@@ -940,7 +943,7 @@ return `<br />
     <p style="margin-top: 5px;">Level ` + rating.points + `</p>
     </div>`
 }).join("") + `</div>`
-}).join("") + `
+		} else { return ""; } }).join("") : "") + `
 </div>
 <br />
 <div style="height: 1px; background-color: var(--secText);"></div>
