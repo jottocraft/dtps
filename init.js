@@ -971,7 +971,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">class</i> Class: ` + assignment.subject + `</p>
 <br />
 <div class="btn small outline" onclick="dtps.assignment(` + id + `, ` + classNum + `, true)"><i class="material-icons">assignment</i> Submissions</div>
-<div class="btn small outline" onclick="window.open('` + assignment.url + `')"><i class="material-icons">open_in_new</i> View on Canvas</div>
+<div class="btn small outline" onclick="window.open('` + assignment.url + `')"><i class="material-icons">open_in_new</i> Open in Canvas</div>
 </div>
 <div style="width: calc(60% - 7px); margin-top: 20px; margin-left: 5px; display: inline-block; overflow: hidden; vertical-align: middle;">
 ` + (assignment.rubric ? assignment.rubric.map(function (rubric) {
