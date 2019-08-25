@@ -505,8 +505,8 @@ dtps.classStream = function (num, renderOv) {
                         weightIcon: dtps.classes[num].weights[i].icon,
                         uniqueWeight: data.length > 1,
                         published: new Date(data[i].assignments[ii].created_at).toDateString(),
-                        outcome: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric[0].description : undefined),
-                        outcomeID: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric[0].outcome_id : undefined),
+                        outcomes: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric.map(function (key) { return key.description }) : undefined),
+                        outcomeIDs: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric.map(function (key) { return key.outcome_id }) : undefined),
                         locksAt: data[i].assignments[ii].lock_at,
                         unlocksAt: data[i].assignments[ii].unlock_at,
                         locked: data[i].assignments[ii].locked_for_user,
@@ -516,6 +516,23 @@ dtps.classStream = function (num, renderOv) {
                         rubric: data[i].assignments[ii].rubric,
                         worth: data[i].assignments[ii].points_possible
                     });
+                    if (data[i].assignments[ii].rubric) {
+                        for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
+                            if (data[i].assignments[ii].rubric[iii].ratings) {
+                                for (var iiii = 0; iiii < data[i].assignments[ii].rubric[iii].ratings.length; iiii++) {
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("EMERGING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Emerging";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("DEVELOPING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Developing";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PROFICIENT")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Proficient";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PIONEERING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Pioneering";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 1) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#c44848";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 2) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#c47c48";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 3) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#ccc54d";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 4) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#0bb75b";
+                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = data[i].assignments[ii].rubric[iii].ratings[iiii].description;
+                                }
+                            }
+                        }
+                    }
                     dtps.classes[num].streamitems.push(data[i].assignments[ii].id);
                     if ((data[i].assignments[ii].submission.score !== null) && (data[i].assignments[ii].submission.score !== undefined)) {
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
@@ -528,6 +545,9 @@ dtps.classStream = function (num, renderOv) {
                             dtps.classes[num].weights[i].earnedPoints = dtps.classes[num].weights[i].earnedPoints + data[i].assignments[ii].submission.score;
                             dtps.classes[num].weights[i].assignments.push({ id: data[i].assignments[ii].id, disp: data[i].assignments[ii].name + ": " + data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible, percentage: (data[i].assignments[ii].submission.score / data[i].assignments[ii].points_possible).toFixed(2), possible: data[i].assignments[ii].points_possible, earned: data[i].assignments[ii].submission.score });
                         }
+                    }
+                    if (data[i].assignments[ii].submission !== undefined) {
+                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].missing = data[i].assignments[ii].submission.missing;
                     }
                 }
                 if (dtps.classes[num].weights[i].possiblePoints !== 0) { dtps.classes[num].weights[i].grade = ((dtps.classes[num].weights[i].earnedPoints / dtps.classes[num].weights[i].possiblePoints) * 100).toFixed(2) + "%" } else { dtps.classes[num].weights[i].grade = "" }
@@ -606,9 +626,10 @@ dtps.renderStream = function (stream, searchRes) {
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
+        ` + (stream[i].missing ? `<i title="Assignment is missing" class="material-icons floatingIcon" style="color: #c44848;">remove_circle_outline</i>` : ``) + `
         ` + (stream[i].late ? `<i title="Assignment is late" class="material-icons floatingIcon" style="color: #c44848;">assignment_late</i>` : ``) + `
         ` + (stream[i].locked ? `<i title="Assignment submissions are locked" class="material-icons floatingIcon" style="font-family: 'Material Icons Extended'; color: var(--secText, gray);">lock_outline</i>` : ``) + `
-        ` + (stream[i].status == "pending_review" ? `<i title="Grade is unpublished and is pending review" class="material-icons floatingIcon" style="color: #b3b70b;">rate_review</i>` : ``) + `
+        ` + (stream[i].status == "pending_review" ? `<i title="Grade is pending review" class="material-icons floatingIcon" style="color: #b3b70b;">rate_review</i>` : ``) + `
         <div class="points">
         <div class="earned numbers">` + (stream[i].letter ? stream[i].grade.split("/")[0] : "") + `</div>
 	<div class="earned letters">` + stream[i].letter + `</div>
@@ -619,11 +640,11 @@ dtps.renderStream = function (stream, searchRes) {
       	<h5>
          ` + (stream[i].due ? `<div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due ` + stream[i].due + `</div>` : "") + ` 
         ` + ((stream[i].weight !== undefined) && stream[i].uniqueWeight ? `<div class="infoChip weighted">` + stream[i].weightIcon + stream[i].weight.replace("Comprehension Checks", "CC").replace("Success Skills", "SS").replace("Performance Tasks", "PT") + `</div>` : "") + `
-        ` + (stream[i].outcome !== undefined ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + stream[i].outcome + `</div>` : "") + `
+        ` + (stream[i].outcomes !== undefined ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + stream[i].outcomes.length + `</div>` : "") + `
         </h5>
         </div>
       `);
-      if (stream[i].old) oldDiv = true;
+        if (stream[i].old) oldDiv = true;
     }
     if (typeof Fuse !== "undefined") {
         if (searchRes == undefined) {
@@ -912,53 +933,82 @@ Power+ currently only supports assignments that use online text entry. Other ass
             } else {
                 $(".card.details").css("background-color", "")
                 $(".card.details").css("color", "")
-                $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i><h4 style="font-weight: bold;">` + assignment.title + `</h4><br /><div class="list">` + `
-<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">add_box</i><b>Posted</b>:  ` + assignment.published + `</div>
-` + (assignment.due ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">access_time</i><b>Due</b>:  ` + assignment.due + `</div>` : "") + `
-` + (assignment.locksAt ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons" style="font-family: 'Material Icons Extended'">lock_outline</i><b>Locks</b>:  ` + new Date(assignment.locksAt).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(assignment.locksAt)) + `</div>` : "") + `
-` + (assignment.unlocksAt ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">lock_open</i><b>Unlocks</b>:  ` + new Date(assignment.unlocksAt).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(assignment.unlocksAt)) + `</div>` : "") + `
-` + (assignment.status ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">assignment_return</i><b>Status</b>:  ` + (assignment.status == "submitted" ? "Submitted" : (assignment.status == "unsubmitted" ? "Unsubmitted" : (assignment.status == "graded" ? "Graded" : (assignment.status == "pending_review" ? "Pending Review" : assignment.status)))) + `</div>` : "") + `
-` + (assignment.worth ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">bar_chart</i><b>Total Points</b>:  ` + assignment.worth + `</div>` : "") + `
-` + (assignment.grade ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">assessment</i><b>Points earned</b>:  ` + assignment.grade + ` (` + assignment.letter + `)</div>` : "") + `
-<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">category</i><b>Group</b>:  ` + assignment.weight + `</div>
-` + (assignment.outcome ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">adjust</i><b>Outcome</b>:  ` + assignment.outcome + `</div>` : "") + `
-` + (assignment.locked && assignment.lockedReason ? `<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i style="font-family: 'Material Icons Extended';" class="material-icons">lock_outline</i>` + assignment.lockedReason + `</div>` : "") + `
-<div style="cursor: auto;margin: 0px; padding: 10px 15px;" class="item"><i class="material-icons">class</i><b>Class</b>:  ` + assignment.subject + `</div>
-` + `</div>
 
-<br />
-<div id="activeAssignmentRubrics">
-` + (assignment.rubric ? assignment.rubric.map(function(rubric) {
-			if (rubric.ratings) {
-    dtps.classes[classNum].tmp[rubric.id] = rubric.long_description
-return `<br />
-<h5 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rubric.description + `</h5>
-<p style="color: var(--secText);" class="` + rubric.id + `"><a onclick="$('p.` + rubric.id + `').html(dtps.classes[` + classNum + `].tmp['` + rubric.id + `'])" href="#">Rubric details</a></p>
+                if (assignment.body) {
+                    var blob = new Blob([`<link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+    <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + assignment.body], { type: 'text/html' });
+                    var newurl = window.URL.createObjectURL(blob);
+                }
+
+                $(".card.details").html(`<i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close</i>
+<h4 style="font-weight: bold;">` + assignment.title + `</h4>
+
 <div>
-
-` + rubric.ratings.map(function(rating) {
-    return  `
-    <div style="width: calc(25% - 14px); max-width: 200px; margin: 0px 5px; height: 82px; background-color: var(--elements); border-radius: 20px; padding: 15px; display: inline-block; overflow: hidden;">
-    <h5 style="font-weight: bold; font-size: 22px; margin: 0px; margin-top: 4px;white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rating.description + `</h5>
-    <p style="margin-top: 5px;">Level ` + rating.points + `</p>
-    </div>`
-}).join("") + `</div>`
-		} else { return ""; } }).join("") : "") + `
+` + (assignment.due ? `<div class="assignmentChip"><i class="material-icons">alarm</i>Due ` + assignment.due + `</div>` : "") + `
+` + (assignment.outcomes ? `<div class="assignmentChip"><i class="material-icons">adjust</i> ` + assignment.outcomes.length + `</div>` : "") + `
+` + (assignment.turnedIn && (assignment.status !== "unsubmitted") ? `<div  title="Assignment submitted" class="assignmentChip" style="background-color: #0bb75b"><i style="color:white;" class="material-icons">assignment_turned_in</i></div>` : "") + `
+` + (assignment.status == "unsubmitted" ? `<div  title="Assignment unsubmitted" class="assignmentChip" style="background-color: #b3b70b"><i style="color:white;" class="material-icons">warning</i></div>` : "") + `
+` + (assignment.missing ? `<div  title="Assignment is missing" class="assignmentChip" style="background-color: #c44848"><i style="color:white;" class="material-icons">remove_circle_outline</i></div>` : "") + `
+` + (assignment.late ? `<div title="Assignment is late" class="assignmentChip" style="background-color: #c44848"><i style="color:white;" class="material-icons">assignment_late</i></div>` : "") + `
+` + (assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="background-color: var(--secText, gray);"><i style="color:white;" class="material-icons">lock_outline</i></div>` : "") + `
+` + (assignment.status == "pending_review" ? `<div title="Grade is pending review" class="assignmentChip" style="background-color: #b3b70b"><i style="color:white;" class="material-icons">rate_review</i></div>` : "") + `
 </div>
+
+<div style="margin-top: 20px;" class="assignmentBody">` + (assignment.body ? `<iframe id="assignmentIframe" onload="dtps.iframeLoad()" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
+
+<div style="margin: 5px 0px; background-color: var(--secText); height: 1px; width: 100%;" class="divider"></div>
+<div style="width: calc(40% - 2px); margin-top: 20px; display: inline-block; overflow: hidden; vertical-align: middle;">
+<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">add_box</i> Posted: ` + assignment.published + `</p>
+` + (assignment.due ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">alarm</i> Due: ` + assignment.due + `</p>` : "") + `
+` + (assignment.locksAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> Locks: ` + new Date(assignment.locksAt).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(assignment.locksAt)) + `</p>` : "") + `
+` + (assignment.unlocksAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">lock_open</i> Unlocks: ` + new Date(assignment.unlocksAt).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(assignment.unlocksAt)) + `</p>` : "") + `
+` + (assignment.status ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assignment_return</i> Status: ` + (assignment.status == "submitted" ? "Submitted" : (assignment.status == "unsubmitted" ? "Unsubmitted" : (assignment.status == "graded" ? "Graded" : (assignment.status == "pending_review" ? "Pending Review" : assignment.status)))) + `</p>` : "") + `
+` + ((assignment.worth !== undefined) && (assignment.worth !== null) ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">bar_chart</i> Total Points: ` + assignment.worth + `</p>` : "") + `
+` + (assignment.grade ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assessment</i> Points Earned: ` + assignment.grade + ` (` + assignment.letter + `)</p>` : "") + `
+<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">category</i> Group: ` + assignment.weight + `</p>
+` + (assignment.outcomes ? assignment.outcomes.map(function (key) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">adjust</i> ` + key + `</p>`; }).join("") : "") + `
+` + (assignment.locked && assignment.lockedReason ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> ` + assignment.lockedReason + `</p>` : "") + `
+<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">class</i> Class: ` + assignment.subject + `</p>
 <br />
-<div style="height: 1px; background-color: var(--secText);"></div>
-<br />
-<div>` + (assignment.body ? assignment.body : "") + `</div><br /><br />
-` + (assignment.types.includes("online_text_entry") ? (assignment.turnedIn ? `<div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, 'handIN')"><i class="material-icons">assignment_returned</i> Resubmit</div>` : `<div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, 'handIN')"><i class="material-icons">assignment</i> Hand In</div>`) : ``) + `
-<div class="btn" onclick="dtps.assignment(` + id + `, ` + classNum + `, true)"><i class="material-icons">assignment</i> Submissions</div>
-<div class="btn" onclick="window.open('` + assignment.url + `')"><i class="material-icons">link</i> View on Canvas</div>
-` + (fluid.get("pref-canvasRAW") == "true" ? `<div class="btn" onclick="alert('Coming soon')"><i class="material-icons">description</i> Raw Data</div>` : ``) + `
-`);
+<div class="btn small outline" onclick="dtps.assignment(` + id + `, ` + classNum + `, true)"><i class="material-icons">assignment</i> Submissions</div>
+<div class="btn small outline" onclick="window.open('` + assignment.url + `')"><i class="material-icons">open_in_new</i> View on Canvas</div>
+</div>
+<div style="width: calc(60% - 7px); margin-top: 20px; margin-left: 5px; display: inline-block; overflow: hidden; vertical-align: middle;">
+` + (assignment.rubric ? assignment.rubric.map(function (rubric) {
+                    if (rubric.ratings) {
+                        dtps.classes[classNum].tmp[rubric.id] = rubric.long_description
+                        return `
+                        <div style="margin: 20px 0px;">
+                        <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rubric.description + `</h6>
+        <div style="display: inline-block; margin-right: 20px; vertical-align: middle;">
+<p style="color: var(--secText);" class="` + rubric.id + `"><a onclick="$('p.` + rubric.id + `').html(dtps.classes[` + classNum + `].tmp['` + rubric.id + `'])" href="#">Rubric details</a></p>
+</div>
+
+<div style="display: inline-block; border-radius: 20px; overflow: hidden; font-size: 0; vertical-align: middle;">
+` + rubric.ratings.map(function (rating) {
+                            return `
+<div style="padding: 3px 10px; font-size: 18px; background-color: ` + rating.color + `; color: white; display: inline-block;">
+` + rating.name + `
+</div>`
+                        }).join("") + `</div></div>`
+                    } else { return ""; }
+                }).join("") : "") + `
+</div>
+`)
             }
         }
     }
     fluid.cards.close(".card.focus");
     fluid.modal(".card.details");
+}
+
+dtps.iframeLoad = function () {
+    var iFrameID = document.getElementById('assignmentIframe');
+    if (iFrameID) {
+        // here you can make the height, I delete it first, then I make it again
+        iFrameID.height = "";
+        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
+    }
 }
 
 //Fetches and displays announcements
@@ -1637,17 +1687,17 @@ dtps.render = function () {
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
     <i onclick="$('.gradeDom').html(dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('.sidenav .item.gradesTab').hide(); }; fluid.modal('.abt-new')" class="material-icons">settings</i>
     </div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus changelog close">
+<div  style="border-radius: 30px;" class="card focus changelog close container">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
 <h3>What's new in Power+</h3>
 <h5>There was an error loading the changelog. Try again later.</h5>
 </div>
-<div  style="width: calc(80%);border-radius: 30px;" class="card focus details close">
+<div  style="border-radius: 30px;" class="card focus details close container">
 <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <p>An error occured</p>
 </div>
 
-<div style="width: calc(80%); border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close moduleURL">
+<div style="border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close moduleURL container">
 <i style="color: black !important;" onclick="fluid.cards.close('.card.moduleURL')" class="material-icons close">close</i>
 <br /><br />
 <iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="moduleIFrame"></iframe>
