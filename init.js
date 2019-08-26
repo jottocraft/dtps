@@ -524,10 +524,10 @@ dtps.classStream = function (num, renderOv) {
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("DEVELOPING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Developing";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PROFICIENT")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Proficient";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PIONEERING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Pioneering";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 1) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#c44848";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 2) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#c47c48";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 3) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#ccc54d";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 4) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#0bb75b";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 1) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#b90000";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 2) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#cc8400";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 3) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#b5b500";
+                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 4) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#007700";
                                     if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = data[i].assignments[ii].rubric[iii].ratings[iiii].description;
                                 }
                             }
@@ -986,10 +986,10 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <p style="color: var(--secText);" class="` + rubric.id + `"><a onclick="$('p.` + rubric.id + `').html(dtps.classes[` + classNum + `].tmp['` + rubric.id + `'])" href="#">Rubric details</a></p>
 </div>
 
-<div style="display: inline-block; border-radius: 20px; overflow: hidden; font-size: 0; vertical-align: middle;">
+<div style="display: inline-block; border-radius: 10px; overflow: hidden; font-size: 0; vertical-align: middle; background: linear-gradient(90deg, ` + rubric.ratings.map(function (rating) { return rating.color + ","; }).join("").slice(0,-1) + `);">
 ` + rubric.ratings.map(function (rating) {
                             return `
-<div style="padding: 3px 10px; font-size: 18px; background-color: ` + rating.color + `; color: white; display: inline-block;">
+<div style="padding: 5px 10px; font-size: 18px; background-color: transparent; color: white; font-weight: bold; width: 120px; text-align: center; display: inline-block;">
 ` + rating.name + `
 </div>`
                         }).join("") + `</div></div>`
