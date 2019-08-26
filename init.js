@@ -591,6 +591,7 @@ dtps.moduleStream = function (num) {
                 var open = `window.open('` + data[i].items[ii].html_url + `')`;
                 if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
                 if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
+		if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
                 subsetData.push(`<div onclick="` + open + `" style="background-color:var(--elements);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
 <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
             }
@@ -785,17 +786,18 @@ gapi.client.init({
 }
 
 //Loads a page
-dtps.getPage = function (classID, id) {
+dtps.getPage = function (classID, id, fromModuleStream) {
     if (id == undefined) var id = dtps.selectedPage;
-    if ((dtps.classes[dtps.selectedClass].id == classID) && (dtps.selectedContent == "pages")) {
+    if ((dtps.classes[dtps.selectedClass].id == classID) && ((dtps.selectedContent == "pages") || fromModuleStream)) {
         jQuery(".classContent").html(`<div class="spinner"></div>`);
     }
     var spinnerTmp = true;
     dtps.webReq("canvas", "/api/v1/courses/" + classID + "/pages/" + id, function (resp) {
         var data = JSON.parse(resp);
-        if ((dtps.classes[dtps.selectedClass].id == classID) && (dtps.selectedContent == "pages")) {
+        if ((dtps.classes[dtps.selectedClass].id == classID) && ((dtps.selectedContent == "pages") || fromModuleStream)) {
             $(".cacaoBar .tab.active span").html(data.title)
-            jQuery(".classContent").html(`
+            jQuery(".classContent").html((fromModuleStream ? `<div class="acrylicMaterial" onclick="dtps.moduleStream(dtps.selectedClass)" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
+                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="display: inline-block;" class="material-icons">keyboard_arrow_left</i> Back</div></div>` : "") + `
         <div class="card">
        <h4>` + data.title + `</h4>
         ` + data.body + `
