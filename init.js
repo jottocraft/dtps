@@ -1503,7 +1503,7 @@ dtps.render = function () {
         dtps.showClasses(true);
     })
 
-    document.addEventListener("pref-calcGrades", function (e) {
+    /*document.addEventListener("pref-calcGrades", function (e) {
         if (String(e.detail) == "true") {
             swal({ title: 'Calculate Class Grades (beta)', text: 'GRADES CALCULATED IN POWER+ ARE NOT YOUR OFFICIAL CLASS GRADES. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY AN INACCURATE CLASS GRADE. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
                 if (enable) {
@@ -1514,7 +1514,7 @@ dtps.render = function () {
                 }
             });
         }
-    })
+    })*/
 
     $("body").addClass("dashboard");
     if (!dtps.currentClass) {
