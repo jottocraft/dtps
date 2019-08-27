@@ -133,7 +133,7 @@ dtps.webReq = function (req, url, callback, q) {
 }
 
 //Calculates the class grade based on Outcomes results from Canvas
-dtps.computeClassGrade = function (num) {
+dtps.computeClassGrade = function (num, renderSidebar) {
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id, function (resp, classNum) {
         var rollups = JSON.parse(resp).rollups[0];
 
@@ -178,6 +178,8 @@ dtps.computeClassGrade = function (num) {
         if ((number75 >= 3.5) && (lowestValue >= 3)) letter = "A";
 
         if (fluid.get('pref-calcGrades') == "true") dtps.classes[classNum].letter = letter;
+        dtps.computedClassGrades++;
+        if ((dtps.computedClassGrades == dtps.classes.length) && renderSidebar) dtps.showClasses(true);
         console.log(letter);
     }, num);
 }
@@ -257,7 +259,6 @@ dtps.init = function () {
                 }
             })
         });
-        jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
         jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function () {
             jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
         })
@@ -364,7 +365,8 @@ dtps.init = function () {
 }`);
                             }
                             dtps.classStream(i, true);
-                            if (fluid.set('pref-calcGrades') == "true") dtps.computeClassGrade(i)
+                            dtps.computedClassGrades = 0;
+                            if (fluid.get('pref-calcGrades') == "true") dtps.computeClassGrade(i, true)
                             if (data[i].enrollments[0].computed_current_score) {
                                 dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + filter + `"><div style="color: var(--dark);" class="progressLabel">` + subject + `</div><div class="progress" style="background-color: var(--light); width: calc(` + data[i].enrollments[0].computed_current_score + `% - 300px);"></div></div>`)
                             }
@@ -1501,6 +1503,19 @@ dtps.render = function () {
         dtps.showClasses(true);
     })
 
+    document.addEventListener("pref-calcGrades", function (e) {
+        if (String(e.detail) == "true") {
+            swal({ title: 'Calculate Class Grades (beta)', text: 'GRADES CALCULATED IN POWER+ ARE NOT YOUR OFFICIAL CLASS GRADES. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY AN INACCURATE CLASS GRADE. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
+                if (enable) {
+                    dtps.computedClassGrades = 0;
+                    if (fluid.get('pref-calcGrades') == "true") dtps.computeClassGrade(i, true)
+                } else {
+                    fluid.set("pref-calcGrades", false)
+                }
+            });
+        }
+    })
+
     $("body").addClass("dashboard");
     if (!dtps.currentClass) {
         dtps.selectedClass = "dash";
@@ -1600,13 +1615,9 @@ dtps.render = function () {
     <div class="btns row themeSelector"></div>
     <br />
     <p>Grades</p>
-
-    <div class="sudo dev">
     <div onclick="fluid.set('pref-calcGrades')" class="switch pref-calcGrades"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">functions</i> Calculate class grades (DEV)</div>
+    <div class="label"><i class="material-icons">functions</i> Calculate class grades (beta)</div>
     <br /><br />
-    </div>
-
     <div onclick="fluid.set('pref-hideGrades')" class="switch pref-hideGrades"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <!-- <br /><br />
@@ -1801,8 +1812,9 @@ dtps.render = function () {
 
     fluid.theme();
     dtps.showClasses("first");
-    dtps.gapis();
+    //dtps.gapis();
     $("link").remove();
+    jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
     jQuery("<link/>", {
         rel: "shortcut icon",
         type: "image/png",
@@ -1818,6 +1830,7 @@ dtps.render = function () {
         type: "text/css",
         href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
     }).appendTo("head");
+
     if (dtps.trackSuffix !== "") {
         jQuery("<link/>", {
             rel: "stylesheet",
@@ -1831,11 +1844,13 @@ dtps.render = function () {
             href: "https://dtps.js.org/dtps.css"
         }).appendTo("head");
     }
+
     jQuery("<link/>", {
         rel: "stylesheet",
         type: "text/css",
         href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
     }).appendTo("head");
+
     jQuery('.classContent').bind('heightChange', function () {
         jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
     });
