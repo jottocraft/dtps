@@ -132,22 +132,7 @@ dtps.webReq = function (req, url, callback, q) {
     }
 }
 
-//Calculates the letter grade given the points earned, total points, and grading standard data from the Canvas API
-//If using this to calculate letter grades for a class, set total to 1 and earned to the percentage
-dtps.computeLetterGrade = function (earned, total, standard) {
-    var letter = null
-    var percent = earned / total;
-    if (standard) {
-        for (var i = 0; i < standard.grading_scheme.length; i++) {
-            if ((percent >= standard.grading_scheme[i].value) && (letter == null)) letter = standard.grading_scheme[i].name
-        }
-        return letter;
-    } else {
-        return String(earned);
-    }
-}
-
-//Calculates the class grade based on Outcomes (w/ decaying avg support) and other things
+//Calculates the class grade based on Outcomes (w/ decaying avg support) and other things COMING SOON
 dtps.computeClassGrade = function (data) {
     var weights = [];
     var total = 0;
@@ -473,15 +458,14 @@ dtps.classStream = function (num, renderOv) {
     }
     var allData = [];
     var total = null;
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/grading_standards", function (respp) {
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?user_ids[]=" + dtps.user.id, function (respp) {
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/assignment_groups?include[]=assignments&include[]=submissions&include[]=submission", function (resp) {
             var data = JSON.parse(resp);
-            var standards = JSON.parse(respp);
+            var outcomes = JSON.parse(respp).outcome_results;
             dtps.classes[num].stream = [];
             dtps.classes[num].rawStream = data;
             dtps.classes[num].streamitems = [];
             dtps.classes[num].weights = [];
-            dtps.classes[num].standards = standards;
             for (var i = 0; i < data.length; i++) {
                 dtps.classes[num].weights.push({ weight: data[i].name + " (" + ((data.length == 1) && (data[i].group_weight == 0) ? 100 : data[i].group_weight) + "%)", assignments: [], possiblePoints: 0, earnedPoints: 0, icon: `<i class="material-icons">category</i> ` });
                 if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
@@ -514,11 +498,14 @@ dtps.classStream = function (num, renderOv) {
                         submissions: data[i].assignments[ii].submission.preview_url,
                         body: data[i].assignments[ii].description,
                         rubric: data[i].assignments[ii].rubric,
+                        rubricItems: [],
                         worth: data[i].assignments[ii].points_possible
                     });
                     if (data[i].assignments[ii].rubric) {
                         for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
+                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].rubricItems.push(data[i].assignments[ii].rubric[iii].outcome_id);
                             if (data[i].assignments[ii].rubric[iii].ratings) {
+                                data[i].assignments[ii].rubric[iii].ratingItems = [];
                                 for (var iiii = 0; iiii < data[i].assignments[ii].rubric[iii].ratings.length; iiii++) {
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("EMERGING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Emerging";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("DEVELOPING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Developing";
@@ -528,6 +515,7 @@ dtps.classStream = function (num, renderOv) {
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 2) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#cc8400";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 3) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#b5b500";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 4) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#007700";
+                                    data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
                                     if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = data[i].assignments[ii].rubric[iii].ratings[iiii].description;
                                 }
                             }
@@ -538,7 +526,7 @@ dtps.classStream = function (num, renderOv) {
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].status = data[i].assignments[ii].submission.workflow_state;
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].late = data[i].assignments[ii].submission.late;
-                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].letter = (data[i].assignments[ii].submission.grade.match(/[a-z]/i) ? data[i].assignments[ii].submission.grade : dtps.computeLetterGrade(data[i].assignments[ii].submission.score, data[i].assignments[ii].points_possible, standards[0]));
+                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].letter = (data[i].assignments[ii].submission.grade.match(/[a-z]/i) ? data[i].assignments[ii].submission.grade : data[i].assignments[ii].submission.score);
                         //Only treat assignment as graded in the gradebook if the assignment status says the grades are published. Scores are still shown with a pending review icon. This is to match native Canvas behavior.
                         if (data[i].assignments[ii].submission.workflow_state == "graded") {
                             dtps.classes[num].weights[i].possiblePoints = dtps.classes[num].weights[i].possiblePoints + data[i].assignments[ii].points_possible;
@@ -551,6 +539,18 @@ dtps.classStream = function (num, renderOv) {
                     }
                 }
                 if (dtps.classes[num].weights[i].possiblePoints !== 0) { dtps.classes[num].weights[i].grade = ((dtps.classes[num].weights[i].earnedPoints / dtps.classes[num].weights[i].possiblePoints) * 100).toFixed(2) + "%" } else { dtps.classes[num].weights[i].grade = "" }
+            }
+            for (var i = 0; i < outcomes.length; i++) {
+                var streamItem = dtps.classes[num].streamitems.indexOf(outcomes[i].links.assignment.match(/\d+/)[0]);
+                console.log("streamItem ", streamItem)
+                if (streamItem !== -1) {
+                    var rubricItem = dtps.classes[num].stream[streamItem].rubricItems.indexOf(outcomes[i].links.learning_outcome);
+                    console.log("rubricItem ", rubricItem)
+                    if (rubricItem !== -1) {
+                        dtps.classes[num].stream[streamItem].rubric[rubricItem].score = outcomes[i].score
+                        dtps.classes[num].stream[streamItem].rubric[rubricItem].scoreName = outcomes[i].score
+                    }
+                }
             }
             if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream)); } }
             if (dtps.selectedClass == num) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } }
@@ -591,7 +591,7 @@ dtps.moduleStream = function (num) {
                 var open = `window.open('` + data[i].items[ii].html_url + `')`;
                 if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
                 if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
-		if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
+                if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
                 subsetData.push(`<div onclick="` + open + `" style="background-color:var(--elements);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
 <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
             }
@@ -986,13 +986,16 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <p style="color: var(--secText);" class="` + rubric.id + `"><a onclick="$('p.` + rubric.id + `').html(dtps.classes[` + classNum + `].tmp['` + rubric.id + `'])" href="#">Rubric details</a></p>
 </div>
 
-<div style="display: inline-block; border-radius: 10px; overflow: hidden; font-size: 0; vertical-align: middle; background: linear-gradient(90deg, ` + rubric.ratings.map(function (rating) { return rating.color + ","; }).join("").slice(0,-1) + `);">
-` + rubric.ratings.map(function (rating) {
+<div style="display: inline-block; border-radius: 10px; overflow: hidden; font-size: 0; vertical-align: middle; background: ` + (rubric.score ? rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].color : `linear-gradient(90deg, ` + rubric.ratings.map(function (rating) { return rating.color + ","; }).join("").slice(0, -1) + `)`) + `;">
+` + (rubric.score !== undefined ? `
+<div style="padding: 5px 10px; font-size: 18px; background-color: transparent; color: white; font-weight: bold; width: 200px; text-align: center; display: inline-block;">
+` + rubric.score + "/" + rubric.points + " " + rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name + `
+</div>` : rubric.ratings.map(function (rating) {
                             return `
 <div style="padding: 5px 10px; font-size: 18px; background-color: transparent; color: white; font-weight: bold; width: 120px; text-align: center; display: inline-block;">
 ` + rating.name + `
 </div>`
-                        }).join("") + `</div></div>`
+                        }).join("")) + `</div></div>`
                     } else { return ""; }
                 }).join("") : "") + `
 </div>
