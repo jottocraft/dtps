@@ -132,24 +132,54 @@ dtps.webReq = function (req, url, callback, q) {
     }
 }
 
-//Calculates the class grade based on Outcomes (w/ decaying avg support) and other things COMING SOON
-dtps.computeClassGrade = function (data) {
-    var weights = [];
-    var total = 0;
-    for (var i = 0; i < data.weights.length; i++) {
-        weights.push({ total: 0, earned: 0, weighted: 0, weight: (Number(data.weights[i].weight.match(/\(([^)]+)\)/)[1].replace("%", "")) / 100) })
-        if (data.weights[i].assignments) {
-            for (var ii = 0; ii < data.weights[i].assignments.length; ii++) {
-                var grade = data.stream[data.streamitems.indexOf(data.weights[i].assignments[ii].id)].grade.split("/")
-                if (data.stream[data.streamitems.indexOf(data.weights[i].assignments[ii].id)].whatif) grade = data.stream[data.streamitems.indexOf(data.weights[i].assignments[ii].id)].whatif.split("/")
-                weights[i].total = weights[i].total + Number(grade[1])
-                weights[i].earned = weights[i].earned + Number(grade[0])
+//Calculates the class grade based on Outcomes results from Canvas
+dtps.computeClassGrade = function (num) {
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id, function (resp, classNum) {
+        var rollups = JSON.parse(resp).rollups[0];
+
+        //array of outcome averages sorted from highest to lowest
+        var rollupScores = rollups.scores.map(function (score) { return score.score; }).sort((a, b) => b - a);
+
+        //the highest value 75% of outcomes are greater than or equal to
+        var number75 = null;
+
+        //test values
+        var testValues = [3.5, 3, 2.5]
+
+        for (var i = 0; i < testValues.length; i++) {
+            //make sure a higher number for number75 isn't already found
+            if (number75 == null) {
+                //array of numbers equal to or greater than the testing value
+                var equalOrGreater = [];
+
+                //check every score to see if it is >= the test value
+                for (var ii = 0; ii < rollupScores.length; ii++) {
+                    if (rollupScores[ii] >= testValues[i]) equalOrGreater.push(rollupScores[ii]);
+                }
+
+                //if at least 75% of the outcomes are >= test value, number75 is the test value
+                if ((equalOrGreater.length / rollupScores.length) >= 0.75) {
+                    number75 = testValues[i];
+                }
             }
         }
-        weights[i].weighted = (weights[i].earned / weights[i].total) * weights[i].weight
-        total = total + weights[i].weighted
-    }
-    return total;
+
+        //since rollupScores is sorted greatest to least, the last value is the smallest
+        var lowestValue = rollupScores[rollupScores.length - 1];
+
+        //get letter grade
+        var letter = "I";
+        if (rollupScores.length == 0) letter = "--";
+        if ((number75 >= 2.5) && (lowestValue >= 2)) letter = "C";
+        if ((number75 >= 3) && (lowestValue >= 2)) letter = "B-";
+        if ((number75 >= 3) && (lowestValue >= 2.25)) letter = "B";
+        if ((number75 >= 3) && (lowestValue >= 2.5)) letter = "B+";
+        if ((number75 >= 3.5) && (lowestValue >= 2.5)) letter = "A-";
+        if ((number75 >= 3.5) && (lowestValue >= 3)) letter = "A";
+
+        if (fluid.get('pref-calcGrades') == "true") dtps.classes[classNum].letter = letter;
+        console.log(letter);
+    }, num);
 }
 
 //Convert default Canvas colors to optimized Power+ filters based on hex values for default colors
@@ -312,8 +342,10 @@ dtps.init = function () {
                                 dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
                                 isBright: (dtps.filter(colors.custom_colors["course_" + data[i].id]) ? false : !tinycolor(colors.custom_colors["course_" + data[i].id]).isDark()),
                                 id: data[i].id,
+                                //collection of data used to calculate a letter grade
+                                grades: {},
                                 grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
-                                letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : "--"),
+                                letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") == "true" ? false : "--")),
                                 num: i,
                                 tmp: {},
                                 image: data[i].image_download_url,
@@ -332,6 +364,7 @@ dtps.init = function () {
 }`);
                             }
                             dtps.classStream(i, true);
+                            if (fluid.set('pref-calcGrades') == "true") dtps.computeClassGrade(i)
                             if (data[i].enrollments[0].computed_current_score) {
                                 dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + filter + `"><div style="color: var(--dark);" class="progressLabel">` + subject + `</div><div class="progress" style="background-color: var(--light); width: calc(` + data[i].enrollments[0].computed_current_score + `% - 300px);"></div></div>`)
                             }
@@ -549,6 +582,8 @@ dtps.classStream = function (num, renderOv) {
                     if (rubricItem !== -1) {
                         dtps.classes[num].stream[streamItem].rubric[rubricItem].score = outcomes[i].score
                         dtps.classes[num].stream[streamItem].rubric[rubricItem].scoreName = outcomes[i].score
+                        if (dtps.classes[num].grades[outcomes[i].links.learning_outcome] == undefined) dtps.classes[num].grades[outcomes[i].links.learning_outcome] = [];
+                        dtps.classes[num].grades[outcomes[i].links.learning_outcome].push({ score: outcomes[i].score, possible: outcomes[i].possible })
                     }
                 }
             }
@@ -1135,7 +1170,8 @@ dtps.showClasses = function (override) {
         dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
       <div class="name">` + name + `</div>
-      <div class="grade val"><span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span></div>
+      <div class="grade val">` + (dtps.classes[i].letter !== false ? `<span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span>` : `
+      <div class="spinner" style=" background-color: var(--norm); margin: 5px; "></div>`) + `</div>
       </div>
     `);
     }
@@ -1564,6 +1600,13 @@ dtps.render = function () {
     <div class="btns row themeSelector"></div>
     <br />
     <p>Grades</p>
+
+    <div class="sudo dev">
+    <div onclick="fluid.set('pref-calcGrades')" class="switch pref-calcGrades"><span class="head"></span></div>
+    <div class="label"><i class="material-icons">functions</i> Calculate class grades (DEV)</div>
+    <br /><br />
+    </div>
+
     <div onclick="fluid.set('pref-hideGrades')" class="switch pref-hideGrades"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
     <!-- <br /><br />
