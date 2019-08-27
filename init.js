@@ -209,8 +209,6 @@ dtps.init = function () {
 
         sudoers = ["669", "672", "209"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        og = ["669"]
-        if (og.includes(dtps.user.id)) { jQuery("body").addClass("og"); }
         contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
         if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
@@ -1687,7 +1685,7 @@ dtps.render = function () {
         <div id="dtpsLocal" onclick="fluid.set('pref-localDtps')" class="switch pref-localDtps"><span class="head"></span></div>
         <div class="label"><i class="material-icons">public</i> Use local copy of Project DTPS</div>
 <br /><br>
-<button onclick="$('body').removeClass('sudo');$('body').removeClass('contributor');$('body').removeClass('og');$('body').removeClass('dev');">Remove badges</button>
+<button onclick="$('body').removeClass('sudo');$('body').removeClass('contributor');$('body').removeClass('dev');">Remove badges</button>
     <br /><br>
 <span class="log">
 </span>
@@ -1712,7 +1710,6 @@ dtps.render = function () {
 
 <div style="display:inline-block;" class="badge sudo">tester<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
 <div style="display:inline-block;" class="badge contributor">contributor<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
-<div style="display:inline-block;" class="badge og">OG<i style="vertical-align: middle;" class="material-icons og">star_border</i></div>
 <div style="display:inline-block;" class="badge dev">developer<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a style="color: var(--lightText); margin: 0px 5px;" href="/logout"><i class="material-icons" style="vertical-align: middle">exit_to_app</i> Logout</a></div>
