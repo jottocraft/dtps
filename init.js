@@ -1754,7 +1754,7 @@ dtps.render = function () {
 </div>
 
 <div style="border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close moduleURL container">
-<i style="color: black !important;" onclick="fluid.cards.close('.card.moduleURL')" class="material-icons close">close</i>
+<i style="color: black !important;" onclick="fluid.cards.close('.card.moduleURL'); $('#moduleIFrame').attr('src', '');" class="material-icons close">close</i>
 <br /><br />
 <iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="moduleIFrame"></iframe>
 </div>
