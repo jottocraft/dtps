@@ -972,7 +972,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
                 $(".card.details").css("color", "")
 
                 if (assignment.body) {
-                    var blob = new Blob([`<link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                    var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
     <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + assignment.body], { type: 'text/html' });
                     var newurl = window.URL.createObjectURL(blob);
                 }
