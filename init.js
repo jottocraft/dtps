@@ -180,7 +180,7 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         if (fluid.get('pref-calcGrades') == "true") dtps.classes[classNum].letter = letter;
         dtps.computedClassGrades++;
         if ((dtps.computedClassGrades == dtps.classes.length) && renderSidebar) dtps.showClasses(true);
-        console.log(letter);
+        console.log(dtps.classes[classNum].subject + " grade is " + letter);
     }, num);
 }
 
@@ -987,7 +987,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 ` + (assignment.status == "unsubmitted" ? `<div  title="Assignment unsubmitted" class="assignmentChip" style="background-color: #b3b70b"><i style="color:white;" class="material-icons">warning</i></div>` : "") + `
 ` + (assignment.missing ? `<div  title="Assignment is missing" class="assignmentChip" style="background-color: #c44848"><i style="color:white;" class="material-icons">remove_circle_outline</i></div>` : "") + `
 ` + (assignment.late ? `<div title="Assignment is late" class="assignmentChip" style="background-color: #c44848"><i style="color:white;" class="material-icons">assignment_late</i></div>` : "") + `
-` + (assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="background-color: var(--secText, gray);"><i style="color:white;" class="material-icons">lock_outline</i></div>` : "") + `
+` + (assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="background-color: var(--secText, gray);"><i style="color:white;font-family: 'Material Icons Extended';" class="material-icons">lock_outline</i></div>` : "") + `
 ` + (assignment.status == "pending_review" ? `<div title="Grade is pending review" class="assignmentChip" style="background-color: #b3b70b"><i style="color:white;" class="material-icons">rate_review</i></div>` : "") + `
 </div>
 
