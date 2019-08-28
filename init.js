@@ -832,7 +832,7 @@ dtps.getPage = function (classID, id, fromModuleStream) {
         if ((dtps.classes[dtps.selectedClass].id == classID) && ((dtps.selectedContent == "pages") || fromModuleStream)) {
             $(".cacaoBar .tab.active span").html(data.title)
             jQuery(".classContent").html((fromModuleStream ? `<div class="acrylicMaterial" onclick="dtps.moduleStream(dtps.selectedClass)" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
-                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="display: inline-block;" class="material-icons">keyboard_arrow_left</i> Back</div></div>` : "") + `
+                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div></div>` : "") + `
         <div class="card">
        <h4>` + data.title + `</h4>
         ` + data.body + `
