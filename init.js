@@ -342,7 +342,11 @@ dtps.init = function () {
                             if (name.includes("Photography")) { var subject = "Photography" }; if (name.includes("World History")) { var subject = "World History" }; if (name.includes("U.S. History")) { var subject = "US History" };
                             if (name.includes("Calculus")) { var subject = "Calculus" }; if (name.toUpperCase().includes("CALCULUS") && name.toUpperCase().includes("PRE")) { var subject = "Precalculus" }; if (name.includes("Statistics")) { var subject = "Advanced Statistics" };
                             if (name.includes("Model United Nations")) { var subject = "Model UN" }; if (name.includes("Government")) { var subject = "Government" }; if (name.includes("Economics")) { var subject = "Economics" };
-                            if (subject == null) var subject = name;
+                            if (data[i].name !== data[i].course_code) {
+				    //Canvas class manually renamed
+				    subject = null;
+			    }
+			    if (subject == null) var subject = name;
                             var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
                             //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
                             if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
