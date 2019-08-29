@@ -11,6 +11,7 @@ var dtps = {
     showLetters: false,
     fullNames: false,
     latestStream: [],
+    explorer: [],
     chromaProfile: {
         title: "Power+",
         description: "Razer Chroma effects for Power+ (beta)",
@@ -184,6 +185,13 @@ dtps.computeClassGrade = function (num, renderSidebar) {
     }, num);
 }
 
+dtps.explore = function(path) {
+	dtps.webReq("canvas", path, function (resp) {
+        var data = JSON.parse(resp);
+	$("#explorerData").html(JSON.stringify(data, null, "\t"))
+	});
+}
+
 //Convert default Canvas colors to optimized Power+ filters based on hex values for default colors
 //Not all Canvas colors are listed here. Only existing Power+ colors and colors that look bad have optimized filters.  
 dtps.filter = function (color) {
@@ -201,6 +209,13 @@ dtps.filter = function (color) {
 //Starts Power+
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
+    
+    //add basic explorer items
+    dtps.explorer.push({name: "/users/self", path: "/api/v1/users/self"});
+	dtps.explorer.push({name: "/users/self/dashboard_positions", path: "/api/v1/users/self/dashboard_positions"});
+	dtps.explorer.push({name: "/users/self/colors", path: "/api/v1/users/self/colors"});
+	dtps.explorer.push({name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image"});
+	
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
         fluidThemes = [["rainbow"]];
         dtps.user = JSON.parse(user);
@@ -1667,6 +1682,15 @@ dtps.render = function () {
     <h5>Extension</h5>
     <div class="extensionDom" ></div>
 </div>
+<div style="display: none;" class="abtpage apiExplorer">
+    <h5>API Explorer</h5>
+    <ul>` + dtps.explorer.map(function(item) {
+	    return `<li style="cursor: pointer;" onclick="dtps.explore('` + item.path + `')">` + item.name + `</li>`
+    }).join("") + `</ul>
+<br />
+<pre><code id="explorerData">Select an item
+</code></pre>
+</div>
 <div style="display: none;" class="abtpage experiments">
 <div class="sudo">
     <h5>Experiments</h5>
@@ -1717,13 +1741,10 @@ dtps.render = function () {
 <div class="card advancedOptions" style="padding: 8px 16px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px; display: none;">
 <div style="display: inline-block; vertical-align: middle;">
 <h4 style="font-weight: bold; font-size: 28px; margin-bottom: 0px;">Advanced Options</h4>
-    <br />
-    <div onclick="fluid.set('pref-canvasRAW')" class="switch pref-canvasRAW"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">description</i> Show raw Canvas data for assignments</div>
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;">
 <a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.clearData();" href="#"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
-<a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.render();" href="#"><i class="material-icons" style="vertical-align: middle">aspect_ratio</i> Re-render Power+</a>
+<a style="color: var(--lightText); margin: 0px 5px;" onclick="$('.abtpage').hide();$('.abtpage.apiExplorer').show();" href="#"><i class="material-icons" style="vertical-align: middle">folder_shared</i> API Explorer</a>
 <a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps/issues/new/choose"><i class="material-icons" style="vertical-align: middle">feedback</i> Send feedback</a></div>
 </div>
 <br />
