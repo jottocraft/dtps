@@ -1582,6 +1582,10 @@ dtps.render = function () {
     <i class="material-icons">class</i>
     google_logo Classroom
     </button>
+    <button onclick="dtps.selectedContent = 'discuss'; dtps.chroma(); $('.cacaoBar .tab.active i').html('group');" class="btn dev">
+    <i class="material-icons">group</i>
+    Discussions
+    </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.chroma(); $('.cacaoBar .tab.active i').html('insert_drive_file'); dtps.loadPages(dtps.selectedClass);" class="btn pages">
     <i class="material-icons">insert_drive_file</i>
     Pages
