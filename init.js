@@ -218,6 +218,7 @@ dtps.init = function () {
 	
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
         fluidThemes = [["rainbow"]];
+	fluidAutoLoad = false;
         dtps.user = JSON.parse(user);
         //TEMPORARY
         //jQuery("body").addClass("sudo");
@@ -258,7 +259,6 @@ dtps.init = function () {
         }
         if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) { dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period]; }
         jQuery.getScript('https://dtps.js.org/fluid.js', function () {
-            fluid.init();
             document.addEventListener("fluidTheme", function (data) {
                 if (dtps.oldTheme !== data.detail) {
                     //theme change
@@ -1881,7 +1881,7 @@ dtps.render = function () {
         jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
     });
 
-    fluid.init();
+    fluid.onLoad();
 }
 
 dtps.init();
