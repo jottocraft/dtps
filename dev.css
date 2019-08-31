@@ -2,10 +2,7 @@
 Power+ CSS v2.0.0 (beta)
 (c) jottocraft 2018-2019
 */
-
-
 /* cacao */
-
 body.cacao .cacaoBar {
     display: block !important;
     position: absolute;
@@ -19,6 +16,7 @@ body.cacao .cacaoBar {
     overflow-x: auto;
     white-space: nowrap;
 }
+
 body.cacao .cacaoBar .tab {
     background-color: var(--norm);
     color: var(--light);
@@ -32,10 +30,12 @@ body.cacao .cacaoBar .tab {
     margin: 0px 5px;
     transition: var(--trans);
 }
+
 body.cacao .cacaoBar .tab.active {
     background-color: var(--dark);
     color: white;
 }
+
 body.cacao .cacaoBar .tab.new {
     background-color: var(--theme);
     color: var(--themeText);
@@ -45,19 +45,24 @@ body.cacao .cacaoBar .tab.new {
     padding: 0px;
     text-align: center;
 }
+
 body.cacao .cacaoBar .tab i {
     vertical-align: middle;
 }
+
 body.cacao .cacaoBar .tab:not(.icon) i {
     margin-right: 10px;
 }
+
 body.cacao .sidebar {
     top: 80px;
     border-top-right-radius: 15px;
 }
+
 body.cacao .header {
     padding-top: 150px;
 }
+
 body.cacao .classContent {
     padding-top: 350px;
 }
@@ -186,9 +191,11 @@ body.isolatedGoogleClass .background {
     border: none !important;
 }
 
-.card.focus {
-    max-height: calc(100vh - 50px);
-    top: 25px !important;
+@media (min-width: 1001px) {
+    .card.focus {
+        max-height: calc(100vh - 50px);
+        top: 25px !important;
+    }
 }
 
 #calendar h2 {
@@ -461,8 +468,6 @@ body.titlebar .background, body.titlebar .cover.image {
     z-index: 10;
 }
 
-
-
 .sticky {
     position: fixed;
     top: 0;
@@ -613,33 +618,37 @@ body.dark .tabs.btns .btn:not(.active) {
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  margin: 100px auto;
-  background-color: var(--secText);
-
-  border-radius: 100%;  
-  -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
-  animation: sk-scaleout 1.0s infinite ease-in-out;
+    width: 40px;
+    height: 40px;
+    margin: 100px auto;
+    background-color: var(--secText);
+    border-radius: 100%;
+    -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+    animation: sk-scaleout 1.0s infinite ease-in-out;
 }
 
 @-webkit-keyframes sk-scaleout {
-  0% { -webkit-transform: scale(0) }
-  100% {
-    -webkit-transform: scale(1.0);
-    opacity: 0;
-  }
+    0% {
+        -webkit-transform: scale(0)
+    }
+
+    100% {
+        -webkit-transform: scale(1.0);
+        opacity: 0;
+    }
 }
 
 @keyframes sk-scaleout {
-  0% { 
-    -webkit-transform: scale(0);
-    transform: scale(0);
-  } 100% {
-    -webkit-transform: scale(1.0);
-    transform: scale(1.0);
-    opacity: 0;
-  }
+    0% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+
+    100% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+        opacity: 0;
+    }
 }
 
 .classContent .card .points {
@@ -809,18 +818,10 @@ body.dark .tabs.btns .btn:not(.active) {
 }
 
 body:not(.dark) {
-    --light: var(--flex-light, #efefef);
-    --norm: var(--flex-layer1, #929292);
-    --dark: var(--flex-layer3, #5f5f5f);
-    --grad: linear-gradient(to bottom right, var(--cards), var(--background));
-    }
+    --light: var(--flex-light, #efefef); --norm: var(--flex-layer1, #929292); --dark: var(--flex-layer3, #5f5f5f); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
 
 body.dark {
-    --light: var(--flex-light, #949494);
-    --norm: var(--flex-layer1, #444444);
-    --dark: var(--flex-layer3, #292929);
-    --grad: linear-gradient(to bottom right, var(--cards), var(--background));
-    }
+    --light: var(--flex-light, #949494); --norm: var(--flex-layer1, #444444); --dark: var(--flex-layer3, #292929); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
 
 body:not(.dark) .background, body:not(.dark) .header h1 {
     --grad: linear-gradient(to bottom right, var(--darker), var(--background)) !important; color: black !important;
