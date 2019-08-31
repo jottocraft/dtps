@@ -1,9 +1,11 @@
 /*!
-Fluid UI Elements v3.9.1
+Fluid UI Elements v3.9.1-1-1 GM
 Copyright (c) 2017-2019 jottocraft
-Licenced under the MIT License (https://github.com/jottocraft/fluid/blob/master/LICENSE)
+Licenced under the GNU General Public License v3.0 (https://github.com/jottocraft/fluid/blob/master/LICENSE)
 
 Skeleton CSS components (c) 2014 Dave Gamache. All rights reserved.
+
+THIS VERSION OF FLUID UI IS FOR TESTING PURPOSES ONLY
  */
 
 /* Table of contents
@@ -452,7 +454,7 @@ body.hasSidebar.collapsedSidebar {
   font-display: auto;
   font-style: normal;
   font-weight: 400;
-  src: url(https://fluid.js.org/product-sans.ttf) format('truetype');
+  src: url(https://cdn.jottocraft.com/fluid/assets/product-sans.ttf) format('truetype');
 }
 
 @font-face {
@@ -460,7 +462,7 @@ body.hasSidebar.collapsedSidebar {
   font-display: auto;
   font-style: normal;
   font-weight: 400;
-  src: url(https://fluid.js.org/gsans.ttf) format('truetype');
+  src: url(https://cdn.jottocraft.com/fluid/assets/gsans.ttf) format('truetype');
 }
 
 /* Title Font Styling */
@@ -655,7 +657,7 @@ body.acrylic.demo {
     background-repeat:   no-repeat;
     background-position: center center;  
     background-attachment: fixed;
-    transition: background-image 0.2s ease-in-out, var(--trans);
+    transition: background-image 0.2s ease-in-out;
 }
 body.acrylic .card, .card.acrylic {
   background-color: transparent !important;
@@ -696,7 +698,7 @@ body.acrylic .sidenav .item:not(.active), .card.acrylic .sidenav .item:not(.acti
 ––––––––––––––––––––––––––––––––––––––––––––––––––  */
 
 .btn, button, select {
-  font-family: "Google Sans";
+  font-family: var(--textFont);
   cursor: pointer;
   border: none;
   outline: none;
@@ -1314,6 +1316,21 @@ body.hasSidebar:not(.collapsedSidebar) .sidebar img {
   overflow: auto;
 }
 
+@media (max-width: 1000px) {
+  .card.focus {
+    position: fixed;
+    top: 0px !important;
+    left: 0px !important;
+    width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0px !important;
+  }
+  .card.focus .sidenav {
+    border-radius: 0px !important;
+  }
+}
+
 .card.withnav .content {
   padding: 20px;
   padding-left: 260px;
@@ -1494,133 +1511,6 @@ body.hasSidebar:not(.collapsedSidebar) .sidebar img {
   background-color: var(--elements);
   height: 3px;
   border-radius: 100px;
-}
-
-/* Fluid CSS Loader */
-
-.bubblingG {
-  text-align: center;
-  width: 250px;
-  height: 156px;
-  margin: auto;
-}
-
-.bubblingG span {
-  display: inline-block;
-  vertical-align: middle;
-  width: 31px;
-  height: 31px;
-  margin: 78px auto;
-  background: #00ff6a;
-  border-radius: 156px;
-  -o-border-radius: 156px;
-  -ms-border-radius: 156px;
-  -webkit-border-radius: 156px;
-  -moz-border-radius: 156px;
-  animation: bubblingG 0.975s infinite alternate;
-  -o-animation: bubblingG 0.975s infinite alternate;
-  -ms-animation: bubblingG 0.975s infinite alternate;
-  -webkit-animation: bubblingG 0.975s infinite alternate;
-  -moz-animation: bubblingG 0.975s infinite alternate;
-}
-
-#bubblingG_1 {
-  animation-delay: 0s;
-  -o-animation-delay: 0s;
-  -ms-animation-delay: 0s;
-  -webkit-animation-delay: 0s;
-  -moz-animation-delay: 0s;
-}
-
-#bubblingG_2 {
-  animation-delay: 0.2895s;
-  -o-animation-delay: 0.2895s;
-  -ms-animation-delay: 0.2895s;
-  -webkit-animation-delay: 0.2895s;
-  -moz-animation-delay: 0.2895s;
-}
-
-#bubblingG_3 {
-  animation-delay: 0.589s;
-  -o-animation-delay: 0.589s;
-  -ms-animation-delay: 0.589s;
-  -webkit-animation-delay: 0.589s;
-  -moz-animation-delay: 0.589s;
-}
-
-@keyframes bubblingG {
-  0% {
-    width: 31px;
-    height: 31px;
-    background-color: #00ff6a;
-    transform: translateY(0);
-  }
-  100% {
-    width: 75px;
-    height: 75px;
-    opacity: 0;
-    transform: translateY(-66px);
-  }
-}
-
-@-o-keyframes bubblingG {
-  0% {
-    width: 31px;
-    height: 31px;
-    background-color: #00ff6a;
-    -o-transform: translateY(0);
-  }
-  100% {
-    width: 75px;
-    height: 75px;
-    opacity: 0;
-    -o-transform: translateY(-66px);
-  }
-}
-
-@-ms-keyframes bubblingG {
-  0% {
-    width: 31px;
-    height: 31px;
-    background-color: #00ff6a;
-    -ms-transform: translateY(0);
-  }
-  100% {
-    width: 75px;
-    height: 75px;
-    opacity: 0;
-    -ms-transform: translateY(-66px);
-  }
-}
-
-@-webkit-keyframes bubblingG {
-  0% {
-    width: 31px;
-    height: 31px;
-    background-color: #00ff6a;
-    -webkit-transform: translateY(0);
-  }
-  100% {
-    width: 75px;
-    height: 75px;
-    opacity: 0;
-    -webkit-transform: translateY(-66px);
-  }
-}
-
-@-moz-keyframes bubblingG {
-  0% {
-    width: 31px;
-    height: 31px;
-    background-color: #00ff6a;
-    -moz-transform: translateY(0);
-  }
-  100% {
-    width: 75px;
-    height: 75px;
-    opacity: 0;
-    -moz-transform: translateY(-66px);
-  }
 }
 
 /* SweetAlert dark theme */
