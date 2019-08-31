@@ -561,7 +561,15 @@ fluid.init = function () {
 
 
 
-$(document).ready(fluid.onLoad);
+$(document).ready(function() {
+  if (typeof fluidAutoLoad !== "undefined") {
+    if (fluidAutoLoad !== false) {
+      fluidAutoLoad();
+    }
+  } else {
+    fluidAutoLoad();
+  }
+});
 
 $(window).resize(function () {
   fluid.exitContextMenu(true);
