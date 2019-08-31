@@ -233,7 +233,8 @@ body.isolatedGoogleClass .background {
 }
 
 .announcement a {
-    color: var(--norm);
+    color: var(--dark);
+    opacity: 0.6;
 }
 
 body {
