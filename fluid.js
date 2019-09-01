@@ -190,7 +190,7 @@ fluid.chroma.session = {};
 fluid.chroma.supported = function (cb) {
   $.ajax({
     type: "GET",
-    url: 'http://localhost:54235/razer/chromasdk',
+    url: 'https://chromasdk.io:54236/razer/chromasdk',
     success: function () {
       if (cb) cb(true);
     },
@@ -202,7 +202,7 @@ fluid.chroma.supported = function (cb) {
 fluid.chroma.init = function (profile, cb) {
   $.ajax({
     type: "POST",
-    url: 'http://localhost:54235/razer/chromasdk',
+    url: 'https://chromasdk.io:54236/razer/chromasdk',
     dataType: 'json',
     contentType: 'application/json',
     data: `{
