@@ -604,15 +604,15 @@ dtps.getTopic = function (num, id, fromModuleStream) {
             ` + comment.message + `
             ` + (comment.replies ? comment.replies.map(function (reply) {
                         return `<div style="padding: 10px 20px;background-color: var(--elements);border-radius: 10px; margin: 20px 0px;"><h6>` + people[reply.user_id].display_name + `
-                        ` + (comment.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + comment.rating_sum + `</div>` : "") + `</h6>
+                        ` + (reply.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + reply.rating_sum + `</div>` : "") + `</h6>
                         <p>` + reply.message + `</p>
                 ` + (reply.replies ? reply.replies.map(function (replyLayer) {
                             return `<div style="padding: 10px 20px;background-color: var(--darker);border-radius: 10px; margin: 20px 0px; margin-left: 20px;"><h6>` + people[replyLayer.user_id].display_name + `
-                            ` + (comment.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + comment.rating_sum + `</div>` : "") + `</h6>
+                            ` + (replyLayer.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + replyLayer.rating_sum + `</div>` : "") + `</h6>
                             <p>` + replyLayer.message + `</p>
                 ` + (replyLayer.replies ? replyLayer.replies.map(function (replyLayerLayer) {
                                 return `<div style="padding: 10px 20px;background-color: var(--darkest);border-radius: 10px; margin: 20px 0px; margin-left: 20px;"><h6>` + people[replyLayerLayer.user_id].display_name + `
-                                ` + (comment.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + comment.rating_sum + `</div>` : "") + `</h6>
+                                ` + (replyLayerLayer.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + replyLayerLayer.rating_sum + `</div>` : "") + `</h6>
                                 <p>` + replyLayerLayer.message + `</p></div>`
                             }) : "") + `</div>`
                         }) : "") + `
