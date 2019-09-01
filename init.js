@@ -528,6 +528,7 @@ dtps.loadTopics = function (num) {
                         prof: data[i].author.avatar_image_url
                     },
                     locked: data[i].locked_for_user,
+                    requirePost: data[i].require_initial_post,
                     num: i
                 };
                 dtps.classes[num].topicList.push(`
@@ -547,6 +548,7 @@ dtps.loadTopics = function (num) {
     <div class="grade"><i class="material-icons">add</i></div>
     </div>
       <div class="classDivider"></div>
+      <h6 style=" margin-left: -10px; text-align: center; margin: 10px 0px; ">Discussions (beta)</h6>
     ` + dtps.classes[num].topicList.join(""))
             }
 
@@ -579,36 +581,45 @@ dtps.getTopic = function (num, id, fromModuleStream) {
                 <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + dtps.classes[num].topics[id].content], { type: 'text/html' });
                 var newurl = window.URL.createObjectURL(blob);
                 var people = {};
-                data.participants.forEach((person) => people[person.id] = person);
+                (data.participants ? data.participants.forEach((person) => people[person.id] = person) : "");
                 jQuery(".classContent").html((fromModuleStream ? `<div class="acrylicMaterial" onclick="dtps.moduleStream(dtps.selectedClass)" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
                 <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div></div>` : "") + `
-        
-                <div class="acrylicMaterial" style="border-radius: 20px; display: inline-block; margin: 10px 82px; margin-top: 25px;">
-<img src="` + dtps.classes[num].topics[id].author.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[num].topics[id].author.name + `</div></div>
+
+                ` + (dtps.classes[num].topics[id].requirePost && !data.view ? `<div class="acrylicMaterial" style="border-radius: 20px;display: inline-block;margin: 10px 82px;margin-top: 25px;height: 40px;line-height: 40px;padding: 0px 20px;">
+                Replies are only visible to those who have posted at least one reply</div>` : "") + `
 
                 <div class="card" style="margin-top: 0px;">
-       <h4 style="font-weight: bold;">` + dtps.classes[num].topics[id].title + `</h4>
+       <h4 style="font-weight: bold; margin: 0px; margin-top: 10px;">` + dtps.classes[num].topics[id].title + `</h4>
+       <img style="width: 25px; vertical-align: middle; border-radius: 50%;" src="` + dtps.classes[num].topics[id].author.prof + `" />
+            <h5 style="display: inline-block; vertical-align: middle;color: var(--lightText); font-size: 22px;">` + dtps.classes[num].topics[id].author.name + `</h5>
+
        <iframe id="classPageIframe" onload="dtps.iframeLoad('classPageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />
         </div>
 
-        ` + data.view.map(function (comment) {
+        ` + (data.view ? data.view.map(function (comment) {
                     return `<div class="card" style="padding: 20px;">
             <img style="width: 25px; vertical-align: middle; border-radius: 50%;" src="` + people[comment.user_id].avatar_image_url + `" />
-            <h5 style="display: inline-block; vertical-align: middle;">` + people[comment.user_id].display_name + `</h5>
-            ` + (comment.rating_sum ? `<br /><p style="color: var(--secText); margin: 2px 0px; display: inline-block;"><i class="material-icons">thumb_up_alt</i> ` + comment.rating_sum + `</p><br />` : "") + `
+            <h5 style="display: inline-block; vertical-align: middle;">` + people[comment.user_id].display_name + `
+            ` + (comment.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; position: absolute; top: 30px; right: 20px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + comment.rating_sum + `</div>` : "") + `</h5>
             ` + comment.message + `
             ` + (comment.replies ? comment.replies.map(function (reply) {
-                        return `<div style="padding: 5px 10px;background-color: var(--elements);border-radius: 10px; margin: 5px 0px;"><h6>` + people[reply.user_id].display_name + `</h6><p>` + reply.message + `</p>
+                        return `<div style="padding: 10px 20px;background-color: var(--elements);border-radius: 10px; margin: 20px 0px;"><h6>` + people[reply.user_id].display_name + `
+                        ` + (comment.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + comment.rating_sum + `</div>` : "") + `</h6>
+                        <p>` + reply.message + `</p>
                 ` + (reply.replies ? reply.replies.map(function (replyLayer) {
-                            return `<div style="padding: 5px 10px;background-color: var(--darker);border-radius: 10px; margin: 5px 0px; margin-left: 20px;"><h6>` + people[replyLayer.user_id].display_name + `</h6><p>` + replyLayer.message + `</p>
+                            return `<div style="padding: 10px 20px;background-color: var(--darker);border-radius: 10px; margin: 20px 0px; margin-left: 20px;"><h6>` + people[replyLayer.user_id].display_name + `
+                            ` + (comment.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + comment.rating_sum + `</div>` : "") + `</h6>
+                            <p>` + replyLayer.message + `</p>
                 ` + (replyLayer.replies ? replyLayer.replies.map(function (replyLayerLayer) {
-                                return `<div style="padding: 5px 10px;background-color: var(--darkest);border-radius: 10px; margin: 5px 0px; margin-left: 20px;"><h6>` + people[replyLayerLayer.user_id].display_name + `</h6><p>` + replyLayerLayer.message + `</p></div>`
+                                return `<div style="padding: 10px 20px;background-color: var(--darkest);border-radius: 10px; margin: 20px 0px; margin-left: 20px;"><h6>` + people[replyLayerLayer.user_id].display_name + `
+                                ` + (comment.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + comment.rating_sum + `</div>` : "") + `</h6>
+                                <p>` + replyLayerLayer.message + `</p></div>`
                             }) : "") + `</div>`
                         }) : "") + `
                 </div>`
                     }) : "") + `
             </div>`
-                }).join("") + `
+                }).join("") : "") + `
       `);
             }
         });
@@ -1734,7 +1745,7 @@ dtps.render = function () {
     <i class="material-icons">class</i>
     google_logo Classroom
     </button>
-    <button onclick="dtps.selectedContent = 'discuss'; dtps.chroma(); $('.cacaoBar .tab.active i').html('group'); dtps.loadTopics(dtps.selectedClass);" class="btn discuss dev">
+    <button onclick="dtps.selectedContent = 'discuss'; dtps.chroma(); $('.cacaoBar .tab.active i').html('group'); dtps.loadTopics(dtps.selectedClass);" class="btn discuss">
     <i class="material-icons">forum</i>
     Discussions
     </button>
