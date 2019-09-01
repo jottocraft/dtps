@@ -135,7 +135,7 @@ dtps.webReq = function (req, url, callback, q) {
 
 //Calculates the class grade based on Outcomes results from Canvas
 dtps.computeClassGrade = function (num, renderSidebar) {
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id, function (resp, classNum) {
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (resp, classNum) {
         var rollups = JSON.parse(resp).rollups[0];
 
         //array of outcome averages sorted from highest to lowest
@@ -185,11 +185,11 @@ dtps.computeClassGrade = function (num, renderSidebar) {
     }, num);
 }
 
-dtps.explore = function(path) {
-	dtps.webReq("canvas", path, function (resp) {
+dtps.explore = function (path) {
+    dtps.webReq("canvas", path, function (resp) {
         var data = JSON.parse(resp);
-	$("#explorerData").html(JSON.stringify(data, null, "\t"))
-	});
+        $("#explorerData").html(JSON.stringify(data, null, "\t"))
+    });
 }
 
 //Convert default Canvas colors to optimized Power+ filters based on hex values for default colors
@@ -209,16 +209,16 @@ dtps.filter = function (color) {
 //Starts Power+
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
-    
+
     //add basic explorer items
-    dtps.explorer.push({name: "/users/self", path: "/api/v1/users/self"});
-	dtps.explorer.push({name: "/users/self/dashboard_positions", path: "/api/v1/users/self/dashboard_positions"});
-	dtps.explorer.push({name: "/users/self/colors", path: "/api/v1/users/self/colors"});
-	dtps.explorer.push({name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image"});
-	
+    dtps.explorer.push({ name: "/users/self", path: "/api/v1/users/self" });
+    dtps.explorer.push({ name: "/users/self/dashboard_positions", path: "/api/v1/users/self/dashboard_positions" });
+    dtps.explorer.push({ name: "/users/self/colors", path: "/api/v1/users/self/colors" });
+    dtps.explorer.push({ name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs" });
+
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
         fluidThemes = [["rainbow"]];
-	fluidAutoLoad = false;
+        fluidAutoLoad = false;
         dtps.user = JSON.parse(user);
         //TEMPORARY
         //jQuery("body").addClass("sudo");
@@ -314,7 +314,7 @@ dtps.init = function () {
         jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js", function () {
             dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
                 dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
-                    dtps.webReq("canvas", "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image", function (resp) {
+                    dtps.webReq("canvas", "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
                         dtps.classes = [];
                         dtps.classesReady = 0;
                         dtps.colorCSS = [];
@@ -343,18 +343,28 @@ dtps.init = function () {
                             if (name.includes("Calculus")) { var subject = "Calculus" }; if (name.toUpperCase().includes("CALCULUS") && name.toUpperCase().includes("PRE")) { var subject = "Precalculus" }; if (name.includes("Statistics")) { var subject = "Advanced Statistics" };
                             if (name.includes("Model United Nations")) { var subject = "Model UN" }; if (name.includes("Government")) { var subject = "Government" }; if (name.includes("Economics")) { var subject = "Economics" };
                             if (data[i].name !== data[i].course_code) {
-				    //Canvas class manually renamed
-				    subject = null;
-			    }
-			    if (subject == null) var subject = name;
+                                //Canvas class manually renamed
+                                subject = null;
+                            }
+                            if (subject == null) var subject = name;
                             var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
                             //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
                             if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+                            pagesTab = false;
+                            for (var ii = 0; ii < data[i].tabs.length; ii++) {
+                                if (data[i].tabs[ii].id == "pages") pagesTab = true;
+                            }
                             dtps.classes.push({
                                 name: name,
                                 subject: subject,
+                                description: data[i].public_description,
+                                totalStudents: data[i].total_students,
+                                favorite: data[i].is_favorite,
+                                defaultView: data[i].default_view,
                                 icon: icon,
                                 col: filter,
+                                pagesTab: pagesTab,
+                                syllabus: data[i].syllabus_body,
                                 norm: colors.custom_colors["course_" + data[i].id],
                                 light: tinycolor(colors.custom_colors["course_" + data[i].id]).brighten(20).toHexString(),
                                 dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
@@ -551,6 +561,7 @@ dtps.classStream = function (num, renderOv) {
                         body: data[i].assignments[ii].description,
                         rubric: data[i].assignments[ii].rubric,
                         rubricItems: [],
+                        submissionTypes: data[i].assignments[ii].submission_types,
                         worth: data[i].assignments[ii].points_possible
                     });
                     if (data[i].assignments[ii].rubric) {
@@ -639,7 +650,7 @@ dtps.moduleStream = function (num) {
                 if (data[i].items[ii].type == "ExternalUrl") icon = "open_in_new";
                 if (data[i].items[ii].type == "Assignment") icon = "assignment";
                 if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
-                if (data[i].items[ii].type == "Discussion") icon = "chat";
+                if (data[i].items[ii].type == "Discussion") icon = "forum";
                 if (data[i].items[ii].type == "Quiz") icon = "assessment";
                 if (data[i].items[ii].type == "SubHeader") icon = "format_size";
                 var open = `window.open('` + data[i].items[ii].html_url + `')`;
@@ -670,6 +681,49 @@ dtps.schedule = function () {
         localStorage.setItem("dtpsSchedule", JSON.stringify(schedule));
         alert("Your schedule has been saved. When loading Power+, Power+ will try to load the class that you are in instead of the dashboard, if you are visiting during school hours.")
     }
+}
+
+//Displays class info & syllabus
+dtps.classInfo = function (num) {
+    if ((dtps.classes[num].syllabus !== "") && dtps.classes[num].syllabus !== null) {
+        var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+    <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + dtps.classes[num].syllabus], { type: 'text/html' });
+        var newurl = window.URL.createObjectURL(blob);
+    }
+    $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+    <h4 style="font-weight: bold;">` + dtps.classes[num].name + `</h4>
+    <p style="color: var(--secText)">` + (dtps.classes[num].description ? dtps.classes[num].description : "") + `</p>
+    <div class="assignmentChip"><i class="material-icons">group</i>` + dtps.classes[num].totalStudents + ` students</div>
+    ` + (dtps.classes[num].favorite ? `<div title="Favorited class" class="assignmentChip" style="background-color: #daa520"><i style="color:white;font-family: 'Material Icons Outline'" class="material-icons">star_border</i></div>` : "") + `
+    <br />
+    <div style="margin-top: 20px;" class="syllabusBody">` + ((dtps.classes[num].syllabus !== "") && dtps.classes[num].syllabus !== null ? `<iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
+    `)
+    fluid.modal(".card.classInfoCard")
+}
+
+//Displays class homepage
+dtps.classHome = function (num) {
+    $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+    <h4 style="font-weight: bold;">` + dtps.classes[num].subject + ` Homepage</h4>
+    <br />
+    <p>Loading...</p>`)
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/front_page", function (resp) {
+        var data = JSON.parse(resp);
+        if (!data.message) {
+            var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+        <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + data.body], { type: 'text/html' });
+            var newurl = window.URL.createObjectURL(blob);
+            $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+        <h4 style="font-weight: bold;">` + data.title + `</h4>
+        <br />
+        <div style="margin-top: 20px;" class="homepageBody"><iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" /></div>
+        `)
+            fluid.modal(".card.classInfoCard")
+        } else {
+            alert("Error: No homepage found for this class")
+            fluid.cards.close('.card.classInfoCard')
+        }
+    })
 }
 
 //Converts a Power+ stream array into HTML for displaying the assignment list
@@ -716,8 +770,22 @@ dtps.renderStream = function (stream, searchRes) {
         (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>`
         : ((typeof Fuse !== "undefined" ? `
 
-` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<div class="acrylicMaterial" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
-<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>` : "") + `
+` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `
+
+<div style="position: absolute;display:  inline-block;margin: 82px;">
+<div class="acrylicMaterial" style="border-radius: 20px; display: inline-block; margin-right: 5px;">
+<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>
+
+<div onclick="dtps.classInfo(` + dtps.selectedClass + `)" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
+<i style="line-height: 40px;" class="material-icons">info</i>
+</div>
+
+` + (dtps.classes[dtps.selectedClass].defaultView == "wiki" ? `<div onclick="dtps.classHome(` + dtps.selectedClass + `)" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer;">
+<i style="line-height: 40px;" class="material-icons">home</i>
+</div>` : "") + `
+
+</div>
+` : "") + `
 
 <div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />
 ` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<br />
@@ -850,11 +918,15 @@ dtps.getPage = function (classID, id, fromModuleStream) {
         var data = JSON.parse(resp);
         if ((dtps.classes[dtps.selectedClass].id == classID) && ((dtps.selectedContent == "pages") || fromModuleStream)) {
             $(".cacaoBar .tab.active span").html(data.title)
+            var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + data.body], { type: 'text/html' });
+            var newurl = window.URL.createObjectURL(blob);
             jQuery(".classContent").html((fromModuleStream ? `<div class="acrylicMaterial" onclick="dtps.moduleStream(dtps.selectedClass)" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
                 <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div></div>` : "") + `
         <div class="card">
-       <h4>` + data.title + `</h4>
-        ` + data.body + `
+       <h4 style="font-weight: bold;">` + data.title + `</h4>
+       <br />
+       <iframe id="classPageIframe" onload="dtps.iframeLoad('classPageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />
         </div>
       `);
         }
@@ -862,93 +934,53 @@ dtps.getPage = function (classID, id, fromModuleStream) {
 }
 
 //Loads the gradebook for a class. The type paramater specifies if it should load the mastery gradebook or not
-dtps.gradebook = function (num, type) {
+dtps.gradebook = function (num) {
     dtps.showClasses();
-    if (dtps.classes[num].weights) {
-        if (dtps.classes[num].weights.length) {
-            $(".btns .btn.grades").show();
-            var weightsTmp = [];
-            var weightOverview = [];
-            var revisable = [];
-            var DVs = 0;
-            for (var i = 0; i < dtps.classes[num].weights.length; i++) {
-                var assignTmp = [];
-                for (var ii = 0; ii < dtps.classes[num].weights[i].assignments.length; ii++) {
-                    assignTmp.push(`<div onclick="dtps.assignment(` + dtps.classes[num].weights[i].assignments[ii].id + `, ` + num + `)" class="progressBar">
-<div class="progressLabel">` + dtps.classes[num].weights[i].assignments[ii].disp + `</div><div style="width: calc(` + (dtps.classes[num].weights[i].assignments[ii].percentage * 100) + `% - 280px);" class="progress"></div></div>`)
-                    //var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * (dtps.classes[num].weights[i].assignments[ii].percentage * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints))) * 100).toFixed(2)
-                    var reviseBy = (((Number(dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1].slice(0, -1)) / 100) * ((dtps.classes[num].weights[i].assignments[ii].possible - dtps.classes[num].weights[i].assignments[ii].earned) / dtps.classes[num].weights[i].possiblePoints)) * 100).toFixed(2)
-                    if (reviseBy > 1) { revisable.push({ dom: `<p>Revising ` + dtps.classes[num].weights[i].assignments[ii].disp + ` could boost your grade by up to ` + reviseBy + `%</p>`, rv: Number(reviseBy) }) }
-                    revisable.sort(function (a, b) {
-                        var keyA = a.rv,
-                            keyB = b.rv;
-                        if (keyA < keyB) return -1;
-                        if (keyA > keyB) return 1;
-                        return 0;
-                    });
-                    if (!((dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS")) || (dtps.classes[num].weights[i].weight.toUpperCase().includes("SS")))) {
-                        var parts = dtps.classes[num].weights[i].assignments[ii].disp.split(":");
-                        if (parts[parts.length - 1].includes("DV")) DVs++;
-                        if (parts[parts.length - 1].includes("M")) DVs++;
-                        if (parts[parts.length - 1].includes("INC")) DVs++;
-                    }
+    headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
+                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">Gradebook Preview (beta)</div></div>`
+    $(".classContent").html(headsUp + `<div class="spinner"></div>`)
+
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
+        dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
+            var alignmentData = JSON.parse(resp);
+            var rollupData = JSON.parse(respp);
+            var outcomes = {};
+
+            for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
+                outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
+                outcomes[rollupData.linked.outcomes[i].id].alignments = []
+            }
+
+            for (var i = 0; i < alignmentData.length; i++) {
+                if (outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
+                    outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
+                } else {
+                    dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
                 }
-                weightsTmp.push(`<div style="display: none;" class="weight ` + i + `"><h4>` + dtps.classes[num].weights[i].weight + `<div style="color: var(--secText, gray); text-align: right; font-size: 24px; float: right; display: inline-block;">` + dtps.classes[num].weights[i].grade + `</div></h4>` + assignTmp.join("") + `</div>`);
-                weightOverview.push(`<div onclick="$('.weight').hide(); $('.weight.` + i + `').show();" class="progressBar big"><div class="progressLabel">` + dtps.classes[num].weights[i].weight + `</div><div class="progress" style="width: calc(` + dtps.classes[num].weights[i].grade + ` - 300px);"></div></div>`)
             }
-            var headsUp = `<div class="card" style="background-color: #3cc15b;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">check_circle_outline</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">On track to pass&nbsp;&nbsp;<span style="font-size: 18px;">Power+ didn't detect any DVs in any of your CCs or PTs</span></h5></div>`
-            if (DVs > 0) {
-                headsUp = `<div class="card" style="background-color: #c14d3c;color: white;padding: 10px 20px;"><i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">cancel</i><h5 style="display: inline-block;vertical-align: middle;margin-right: 5px;">You're at risk of failing this class&nbsp;&nbsp;<span style="font-size: 18px;">Power+ detected ` + DVs + ` DV(s) in your CCs/PTs</span></h5></div>`
+
+            for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
+                outcomes[rollupData.rollups[0].scores[i].links.outcome].score = rollupData.rollups[0].scores[i].score
             }
-            headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
-                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">!! UNDER CONSTRUCTION !!</div></div>`
-            if (String(window.localStorage.dtpsGradeTrend).startsWith("{") && (dtps.classes[dtps.selectedClass].grade !== "--")) var gradeDiff = Number((dtps.classes[dtps.selectedClass].grade - Number(JSON.parse(window.localStorage.dtpsGradeTrend)[dtps.classes[dtps.selectedClass].id].oldGrade)).toFixed(2));
-            /*jQuery(".classContent").html(headsUp + `
-`+ (dtps.classes[dtps.selectedClass].grade !== "--" ? (String(window.localStorage.dtpsGradeTrend).startsWith("{") ? (gradeDiff !== 0 ? `<div class="card" style="background-color: #4e4e4e;color: white;padding: 10px 20px;">
-<i class="material-icons" style="margin-right: 10px;font-size: 32px;display: inline-block;vertical-align: middle;">` + (gradeDiff > 0 ? "arrow_upward" : "arrow_downward") + `</i><span style="font-size: 18px; vertical-align: middle;">Your grade in this class has ` + (gradeDiff > 0 ? "increased" : "decreased") + ` by ` + String(gradeDiff).replace("-", "") + `%</span></h5></div>` : "") : "") : "") + `
-<div style="height: 1000px;" class="card withnav">
-<div class="sidenav">
-<div class="title">
-  <h5>` + (type == "mastery" ? "Mastery" : "Gradebook") + `</h5>
-  <p>` + dtps.classes[num].name + `</p>
-</div>
-<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.overview').show();" style="margin-top: -15px;" class="item active"><i class="material-icons">dashboard</i> Overview</div>
-<div style="margin-bottom: 20px;" onclick="dtps.gradebook(` + num + `, '` + (type == "mastery" ? "gradebook" : "mastery") + `')" class="item"><i class="material-icons">compare_arrows</i> Show ` + (type == "mastery" ? "gradebook" : "mastery") + `</div>
-` + dtps.classes[num].weights.map(function (key, i) {
-                return `<div onclick="$(this).siblings().removeClass('active'); $(this).addClass('active'); $('.weight').hide(); $('.weight.` + i + `').show();" class="item">
-   ` + key.icon + key.weight.replace("Comprehension Check", "CC").replace("Success Skills", "SS").replace("Performance Task", "PT") + `
-</div>` }).join("") + `
-</div>
-<div class="content">
-` + weightsTmp.join("") + `
-<div class="weight overview">
-<h4>` + dtps.classes[num].name + `</h4>
-` + weightOverview.join("") + `
-<br />
-<h5><i class="material-icons" style="vertical-align: middle; margin-right: 10px;">trending_up</i>Boost your grade <div class="badge">beta</div></h5>
-<p>` + revisable.map((key) => key.dom).join("") + `</p>
-</div>
-</div>
-</div>
-`);*/
+            
+            console.log(outcomes)
+
             $(".classContent").html(headsUp + `
-  <div class="card">
-  <h3 style="margin-top: 10px;">Gradebook</h3>
 
-  <div style="background-color: red; border-radius: 20px; padding: 10px; font-weight: bold;">
-  <h5>TEST OUTCOME</h5>
-
-  </div>
+  ` + Object.keys(outcomes).map(function(i) {
+    return `
+    <div style="border-radius: 20px;padding: 10px 20px;height: 160px;" class="card">
+          <h5 style=" font-weight: bold; ">` + outcomes[i].title + `</h5>
+          <div style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + outcomes[i].alignments.length + `</div> 
+          ` + (outcomes[i].calculation_method == "decaying_average" ? `<div style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + outcomes[i].calculation_int + "/" + (100 - outcomes[i].calculation_int) + `</div>` : "") + ` 
+          ` + (outcomes[i].score ? `<div style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + outcomes[i].score + `/4</div>` : "") + `
+      <br /><br />
+          <button onclick="alert('Coming soon')" class="btn small outline"><i class="material-icons">adjust</i> Outcome Details</button>
+      </div>`
+  }).join("") + `
   </div>`)
-        } else {
-            $(".btns .btn.grades").hide();
-            $(".btns .btn").removeClass("active");
-            $(".btns .btn.stream").addClass("active");
-            dtps.selectedContent = "stream";
-            dtps.chroma();
-            dtps.classStream(num);
-        }
-    }
+        });
+    })
 }
 
 //Shows details for an assignment given the assignment ID and class number
@@ -1010,7 +1042,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 ` + (assignment.status == "pending_review" ? `<div title="Grade is pending review" class="assignmentChip" style="background-color: #b3b70b"><i style="color:white;" class="material-icons">rate_review</i></div>` : "") + `
 </div>
 
-<div style="margin-top: 20px;" class="assignmentBody">` + (assignment.body ? `<iframe id="assignmentIframe" onload="dtps.iframeLoad()" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
+<div style="margin-top: 20px;" class="assignmentBody">` + (assignment.body ? `<iframe id="assignmentIframe" onload="dtps.iframeLoad('assignmentIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
 
 <div style="margin: 5px 0px; background-color: var(--secText); height: 1px; width: 100%;" class="divider"></div>
 <div style="width: calc(40% - 2px); margin-top: 20px; display: inline-block; overflow: hidden; vertical-align: middle;">
@@ -1021,6 +1053,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 ` + (assignment.status ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assignment_return</i> Status: ` + (assignment.status == "submitted" ? "Submitted" : (assignment.status == "unsubmitted" ? "Unsubmitted" : (assignment.status == "graded" ? "Graded" : (assignment.status == "pending_review" ? "Pending Review" : assignment.status)))) + `</p>` : "") + `
 ` + ((assignment.worth !== undefined) && (assignment.worth !== null) ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">bar_chart</i> Total Points: ` + assignment.worth + `</p>` : "") + `
 ` + (assignment.grade ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assessment</i> Points Earned: ` + assignment.grade + ` (` + assignment.letter + `)</p>` : "") + `
+` + (assignment.submissionTypes ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assignment</i> Submission Types: ` + assignment.submissionTypes.join(", ").replace(/online_/g, '').replace(/_/g, ' ') + `</p>` : "") + `
 <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">category</i> Group: ` + assignment.weight + `</p>
 ` + (assignment.outcomes ? assignment.outcomes.map(function (key) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">adjust</i> ` + key + `</p>`; }).join("") : "") + `
 ` + (assignment.locked && assignment.lockedReason ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> ` + assignment.lockedReason + `</p>` : "") + `
@@ -1061,10 +1094,9 @@ Power+ currently only supports assignments that use online text entry. Other ass
     fluid.modal(".card.details");
 }
 
-dtps.iframeLoad = function () {
-    var iFrameID = document.getElementById('assignmentIframe');
+dtps.iframeLoad = function (iframe) {
+    var iFrameID = document.getElementById(iframe);
     if (iFrameID) {
-        // here you can make the height, I delete it first, then I make it again
         iFrameID.height = "";
         iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
     }
@@ -1277,6 +1309,7 @@ dtps.showClasses = function (override) {
             if (dtps.selectedClass == "dash") dtps.masterStream(true);
             if (dtps.selectedClass == "announcements") dtps.announcements();
             if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
+            if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].pagesTab) { $(".btns .btn.pages").show(); } else { $(".btns .btn.pages").hide(); } }
         });
     }
     if (override == "first") {
@@ -1583,7 +1616,7 @@ dtps.render = function () {
     google_logo Classroom
     </button>
     <button onclick="dtps.selectedContent = 'discuss'; dtps.chroma(); $('.cacaoBar .tab.active i').html('group');" class="btn dev">
-    <i class="material-icons">group</i>
+    <i class="material-icons">forum</i>
     Discussions
     </button>
     <button onclick="dtps.selectedContent = 'pages'; dtps.chroma(); $('.cacaoBar .tab.active i').html('insert_drive_file'); dtps.loadPages(dtps.selectedClass);" class="btn pages">
@@ -1692,8 +1725,8 @@ dtps.render = function () {
 </div>
 <div style="display: none;" class="abtpage apiExplorer">
     <h5>API Explorer</h5>
-    <ul>` + dtps.explorer.map(function(item) {
-	    return `<li style="cursor: pointer;" onclick="dtps.explore('` + item.path + `')">` + item.name + `</li>`
+    <ul>` + dtps.explorer.map(function (item) {
+        return `<li style="cursor: pointer;" onclick="dtps.explore('` + item.path + `')">` + item.name + `</li>`
     }).join("") + `</ul>
 <br />
 <pre><code id="explorerData">Select an item
@@ -1786,6 +1819,11 @@ dtps.render = function () {
 <i style="color: black !important;" onclick="fluid.cards.close('.card.moduleURL'); $('#moduleIFrame').attr('src', '');" class="material-icons close">close</i>
 <br /><br />
 <iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="moduleIFrame"></iframe>
+</div>
+
+<div style="border-radius: 30px; top: 50px;" class="card focus close classInfoCard container">
+<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+<h4>An error occured</h4>
 </div>
 
 <style id="colorCSS">` + (dtps.colorCSS ? dtps.colorCSS.join("") : "") + `</style>
