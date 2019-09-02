@@ -136,7 +136,8 @@ dtps.webReq = function (req, url, callback, q) {
 //Calculates the class grade based on Outcomes results from Canvas
 dtps.computeClassGrade = function (num, renderSidebar) {
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (resp, classNum) {
-        var rollups = JSON.parse(resp).rollups[0];
+        var data = JSON.parse(resp);
+        var rollups = data.rollups[0];
 
         //array of outcome averages sorted from highest to lowest
         var rollupScores = rollups.scores.map(function (score) { return score.score; }).sort((a, b) => b - a);
@@ -179,9 +180,18 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         if ((number75 >= 3.5) && (lowestValue >= 3)) letter = "A";
 
         if (fluid.get('pref-calcGrades') == "true") dtps.classes[classNum].letter = letter;
+
+        //store grade calculation variables to show them in the gradebook
+        dtps.classes[classNum].gradeCalc = {
+            lowestValue: lowestValue,
+            number75: number75
+        }
+
+        //if there are no outcomes, remember this so the grades tab can be hidden
+        if (!data.linked.outcomes.length) dtps.classes[classNum].noOutcomes = true;
+
         dtps.computedClassGrades++;
         if ((dtps.computedClassGrades == dtps.classes.length) && renderSidebar) dtps.showClasses(true);
-        console.log(dtps.classes[classNum].subject + " grade is " + letter);
     }, num);
 }
 
@@ -548,7 +558,6 @@ dtps.loadTopics = function (num) {
     <div class="grade"><i class="material-icons">add</i></div>
     </div>
       <div class="classDivider"></div>
-      <h6 style=" margin-left: -10px; text-align: center; margin: 10px 0px; ">Discussions (beta)</h6>
     ` + dtps.classes[num].topicList.join(""))
             }
 
@@ -585,10 +594,13 @@ dtps.getTopic = function (num, id, fromModuleStream) {
                 jQuery(".classContent").html((fromModuleStream ? `<div class="acrylicMaterial" onclick="dtps.moduleStream(dtps.selectedClass)" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
                 <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div></div>` : "") + `
 
-                ` + (dtps.classes[num].topics[id].requirePost && !data.view ? `<div class="acrylicMaterial" style="border-radius: 20px;display: inline-block;margin: 10px 82px;margin-top: 25px;height: 40px;line-height: 40px;padding: 0px 20px;">
+                ` + (dtps.classes[num].topics[id].requirePost && !data.view ? `<div class="acrylicMaterial" style="border-radius: 20px;display: inline-block;margin: 10px 82px;margin-top: 25px;height: 40px;line-height: 40px;padding: 0px 20px; margin-right: -70px;">
                 Replies are only visible to those who have posted at least one reply</div>` : "") + `
 
-                <div class="card" style="margin-top: 0px;">
+                <div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
+                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">Discussions Preview (beta)</div></div>
+
+                <div class="card" style="margin-top: 20px;">
        <h4 style="font-weight: bold; margin: 0px; margin-top: 10px;">` + dtps.classes[num].topics[id].title + `</h4>
        <img style="width: 25px; vertical-align: middle; border-radius: 50%;" src="` + dtps.classes[num].topics[id].author.prof + `" />
             <h5 style="display: inline-block; vertical-align: middle;color: var(--lightText); font-size: 22px;">` + dtps.classes[num].topics[id].author.name + `</h5>
@@ -614,10 +626,10 @@ dtps.getTopic = function (num, id, fromModuleStream) {
                                 return `<div style="padding: 10px 20px;background-color: var(--darkest);border-radius: 10px; margin: 20px 0px; margin-left: 20px;"><h6>` + people[replyLayerLayer.user_id].display_name + `
                                 ` + (replyLayerLayer.rating_sum ? `<div style="color: var(--secText);margin: 2px 0px;display: inline-block;font-size: 18px;line-height: 18px; float:right;margin-top: -5px;"><i class="material-icons" style=" margin-right: 0px; vertical-align: middle; ">thumb_up_alt</i> ` + replyLayerLayer.rating_sum + `</div>` : "") + `</h6>
                                 <p>` + replyLayerLayer.message + `</p></div>`
-                            }) : "") + `</div>`
-                        }) : "") + `
+                            }).join("") : "") + `</div>`
+                        }).join("") : "") + `
                 </div>`
-                    }) : "") + `
+                    }).join("") : "") + `
             </div>`
                 }).join("") : "") + `
       `);
@@ -1064,6 +1076,27 @@ dtps.getPage = function (classID, id, fromModuleStream) {
     });
 }
 
+dtps.outcome = function (num, id) {
+    dtps.webReq("canvas", "/api/v1/outcomes/" + id, function (resp) {
+        var data = JSON.parse(resp);
+
+        if (data.description) {
+            var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+        <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + data.description], { type: 'text/html' });
+            var newurl = window.URL.createObjectURL(blob);
+        }
+
+        $(".card.outcomeCard").html(`<i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
+        <h4 style="font-weight: bold;">` + data.title + `</h4>
+        ` + data.ratings.map(function(rating) {
+            return `<h5>` + rating.points + ": " + rating.description + `</h5>`
+        }).join("") + `
+        <div style="margin-top: 20px;" class="syllabusBody">` + (data.description ? `<iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
+        `)
+        fluid.modal(".card.outcomeCard")
+    })
+}
+
 //Loads the gradebook for a class. The type paramater specifies if it should load the mastery gradebook or not
 dtps.gradebook = function (num) {
     dtps.showClasses();
@@ -1075,36 +1108,52 @@ dtps.gradebook = function (num) {
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
             var alignmentData = JSON.parse(resp);
             var rollupData = JSON.parse(respp);
-            var outcomes = {};
+            dtps.classes[num].outcomes = {};
 
             for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
-                outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
-                outcomes[rollupData.linked.outcomes[i].id].alignments = []
+                dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
+                dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
             }
 
             for (var i = 0; i < alignmentData.length; i++) {
-                if (outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
-                    outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
+                if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
+                    dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
                 } else {
                     dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
                 }
             }
 
             for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
-                outcomes[rollupData.rollups[0].scores[i].links.outcome].score = rollupData.rollups[0].scores[i].score
+                dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome].score = rollupData.rollups[0].scores[i].score
             }
-
-            console.log(outcomes)
 
             $(".classContent").html(headsUp + `
 
-  ` + Object.keys(outcomes).map(function (i) {
+            ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
+            <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].name + `
+            <div style="-webkit-text-fill-color: var(--light);display: inline-block;background-color: var(--norm);width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h4>
+            <h5 style="height: 60px; line-height: 60px;">75% of outcome averages are ≥ 
+            <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.number75 + `</div></h5>
+            <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than 
+            <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
+            </div>` : "") + `
+
+  ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
+                var keyA = dtps.classes[num].outcomes[a].score,
+                    keyB = dtps.classes[num].outcomes[b].score;
+                if (keyA == undefined) { keyA = Infinity; }
+                if (keyB == undefined) { keyB = Infinity; }
+                // Compare the 2 scores
+                if (keyA > keyB) return 1;
+                if (keyA < keyB) return -1;
+                return 0;
+            }).map(function (i) {
                 return `
-    <div style="border-radius: 20px;padding: 10px 20px;height: 110px;cursor: pointer;" class="card">
-          <h5 style="font-weight: bold;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + outcomes[i].title + `</h5>
-          <div style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + outcomes[i].alignments.length + `</div> 
-          ` + (outcomes[i].calculation_method == "decaying_average" ? `<div style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + outcomes[i].calculation_int + "/" + (100 - outcomes[i].calculation_int) + `</div>` : "") + ` 
-          ` + (outcomes[i].score ? `<div style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + outcomes[i].score + `/4</div>` : "") + `
+    <div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 110px;cursor: pointer;" class="card">
+          <h5 style="font-weight: bold;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
+          <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div> 
+          ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + ` 
+          ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `/4</div>` : "") + `
       </div>`
             }).join("") + `
   </div>`)
@@ -1412,13 +1461,17 @@ dtps.showClasses = function (override) {
             $(".header").removeClass(jQuery.grep($(".header").attr("class").split(" "), function (item, index) {
                 return item.trim().match(/^filter_/);
             })[0]);
+            $(".classContent").removeClass(jQuery.grep($(".classContent").attr("class").split(" "), function (item, index) {
+                return item.trim().match(/^filter_/);
+            })[0]);
             if (dtps.classes[dtps.selectedClass]) {
                 if (dtps.classes[dtps.selectedClass].google) {
                     $(".btn.google").show();
                 };
                 $(".background").addClass(dtps.classes[dtps.selectedClass].col);
                 $(".cacaoBar .tab.active").addClass(dtps.classes[dtps.selectedClass].col);
-                $(".header").addClass(dtps.classes[dtps.selectedClass].col)
+                $(".header").addClass(dtps.classes[dtps.selectedClass].col);
+                $(".classContent").addClass(dtps.classes[dtps.selectedClass].col);
             }
             $(this).siblings().removeClass("active")
             $(this).addClass("active")
@@ -1438,8 +1491,8 @@ dtps.showClasses = function (override) {
             if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
             if (dtps.selectedClass == "dash") dtps.masterStream(true);
             if (dtps.selectedClass == "announcements") dtps.announcements();
-            if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].weights) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } else { $(".btns .btn.grades").hide(); } } else { $(".btns .btn.grades").hide(); } }
             if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].pagesTab) { $(".btns .btn.pages").show(); } else { $(".btns .btn.pages").hide(); } }
+            if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].noOutcomes) { $(".btns .btn.grades").hide(); } else { $(".btns .btn.grades").show(); } }
         });
     }
     if (override == "first") {
@@ -1753,7 +1806,7 @@ dtps.render = function () {
     <i class="material-icons">insert_drive_file</i>
     Pages
     </button>
-    <button onclick="dtps.selectedContent = 'grades'; dtps.chroma(); $('.cacaoBar .tab.active i').html('assessment'); dtps.gradebook(dtps.selectedClass);" class="btn grades sudo">
+    <button onclick="dtps.selectedContent = 'grades'; dtps.chroma(); $('.cacaoBar .tab.active i').html('assessment'); dtps.gradebook(dtps.selectedClass);" class="btn grades">
     <i class="material-icons">assessment</i>
     Grades
     </button>
@@ -1953,6 +2006,11 @@ dtps.render = function () {
 
 <div style="border-radius: 30px; top: 50px;" class="card focus close classInfoCard container">
 <i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+<h4>An error occured</h4>
+</div>
+
+<div style="border-radius: 30px; top: 50px;" class="card focus close outcomeCard container">
+<i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
 <h4>An error occured</h4>
 </div>
 
