@@ -761,7 +761,6 @@ dtps.classStream = function (num, renderOv) {
                 }
             }
             if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream)); } }
-            if (dtps.selectedClass == num) { if (dtps.classes[dtps.selectedClass].weights.length) { $(".btns .btn.grades").show(); } }
             dtps.classesReady++;
             dtps.checkReady(num);
         });
@@ -1088,7 +1087,7 @@ dtps.outcome = function (num, id) {
 
         $(".card.outcomeCard").html(`<i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
         <h4 style="font-weight: bold;">` + data.title + `</h4>
-        ` + data.ratings.map(function(rating) {
+        ` + data.ratings.map(function (rating) {
             return `<h5>` + rating.points + ": " + rating.description + `</h5>`
         }).join("") + `
         <div style="margin-top: 20px;" class="syllabusBody">` + (data.description ? `<iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
@@ -1100,65 +1099,73 @@ dtps.outcome = function (num, id) {
 //Loads the gradebook for a class. The type paramater specifies if it should load the mastery gradebook or not
 dtps.gradebook = function (num) {
     dtps.showClasses();
-    headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
-                <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">Gradebook Preview (beta)</div></div>`
-    $(".classContent").html(headsUp + `<div class="spinner"></div>`)
+    if (dtps.classes[num].noOutcomes) {
+        $(".btns .btn.grades").hide();
+        $(".btns .btn").removeClass("active");
+        $(".btns .btn.stream").addClass("active");
+        dtps.selectedContent = "stream";
+        dtps.classStream(num);
+    } else {
+        headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
+        <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">Gradebook Preview (beta)</div></div>`
+        $(".classContent").html(headsUp + `<div class="spinner"></div>`)
 
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
-        dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
-            var alignmentData = JSON.parse(resp);
-            var rollupData = JSON.parse(respp);
-            dtps.classes[num].outcomes = {};
+        dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
+            dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
+                var alignmentData = JSON.parse(resp);
+                var rollupData = JSON.parse(respp);
+                dtps.classes[num].outcomes = {};
 
-            for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
-                dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
-                dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
-            }
-
-            for (var i = 0; i < alignmentData.length; i++) {
-                if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
-                    dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
-                } else {
-                    dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
+                for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
+                    dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
+                    dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
                 }
-            }
 
-            for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
-                dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome].score = rollupData.rollups[0].scores[i].score
-            }
+                for (var i = 0; i < alignmentData.length; i++) {
+                    if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
+                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
+                    } else {
+                        dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
+                    }
+                }
 
-            $(".classContent").html(headsUp + `
+                for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
+                    dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome].score = rollupData.rollups[0].scores[i].score
+                }
 
-            ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
-            <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].name + `
-            <div style="-webkit-text-fill-color: var(--light);display: inline-block;background-color: var(--norm);width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h4>
-            <h5 style="height: 60px; line-height: 60px;">75% of outcome averages are ≥ 
-            <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.number75 + `</div></h5>
-            <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than 
-            <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
-            </div>` : "") + `
+                $(".classContent").html(headsUp + `
 
-  ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
-                var keyA = dtps.classes[num].outcomes[a].score,
-                    keyB = dtps.classes[num].outcomes[b].score;
-                if (keyA == undefined) { keyA = Infinity; }
-                if (keyB == undefined) { keyB = Infinity; }
-                // Compare the 2 scores
-                if (keyA > keyB) return 1;
-                if (keyA < keyB) return -1;
-                return 0;
-            }).map(function (i) {
-                return `
-    <div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 110px;cursor: pointer;" class="card">
-          <h5 style="font-weight: bold;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
-          <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div> 
-          ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + ` 
-          ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `/4</div>` : "") + `
-      </div>`
-            }).join("") + `
-  </div>`)
-        });
-    })
+    ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
+    <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].name + `
+    <div style="-webkit-text-fill-color: var(--light);display: inline-block;background-color: var(--norm);width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h4>
+    <h5 style="height: 60px; line-height: 60px;">75% of outcome averages are ≥ 
+    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.number75 + `</div></h5>
+    <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than 
+    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
+    </div>` : "") + `
+
+` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
+                    var keyA = dtps.classes[num].outcomes[a].score,
+                        keyB = dtps.classes[num].outcomes[b].score;
+                    if (keyA == undefined) { keyA = Infinity; }
+                    if (keyB == undefined) { keyB = Infinity; }
+                    // Compare the 2 scores
+                    if (keyA > keyB) return 1;
+                    if (keyA < keyB) return -1;
+                    return 0;
+                }).map(function (i) {
+                    return `
+<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 110px;cursor: pointer;" class="card">
+  <h5 style="font-weight: bold;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
+  <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div> 
+  ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + ` 
+  ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `/4</div>` : "") + `
+</div>`
+                }).join("") + `
+</div>`)
+            });
+        })
+    }
 }
 
 //Shows details for an assignment given the assignment ID and class number
