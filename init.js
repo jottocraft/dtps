@@ -806,8 +806,10 @@ dtps.classStream = function (num, renderOv) {
                                         data.full_rubric_assessment.data.forEach((rubricData) => {
                                             var streamIndex = dtps.classes[q.num].streamitems.indexOf(data.assignment_id)
                                             var rubricIndex = dtps.classes[q.num].stream[streamIndex].rubricItems.indexOf(rubricData.learning_outcome_id)
-                                            dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].score = rubricData.points;
-                                            dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].assessedAt = data.graded_at;
+					    if (dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex]) {
+				                dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].score = rubricData.points;
+                                            	dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].assessedAt = data.graded_at;
+					    }
                                         })
                                     }
                                 }
