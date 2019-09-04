@@ -564,7 +564,7 @@ fluid.init = function () {
 $(document).ready(function() {
   if (typeof fluidAutoLoad !== "undefined") {
     if (fluidAutoLoad !== false) {
-      fluidAutoLoad();
+      fluid.onLoad();
     }
   } else {
     fluidAutoLoad();
