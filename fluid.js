@@ -567,7 +567,7 @@ $(document).ready(function() {
       fluid.onLoad();
     }
   } else {
-    fluidAutoLoad();
+    fluid.onLoad();
   }
 });
 
