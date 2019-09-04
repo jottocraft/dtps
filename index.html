@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <link rel="shortcut icon" href="/favicon.png" type="image/png">
   <!--Import Google Icon Font-->
        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Extended" rel="stylesheet">
-       <link type="text/css" rel="stylesheet" href="fluid.css"  media="screen,projection"/>
+       <link type="text/css" rel="stylesheet" href="/fluid.css"  media="screen,projection"/>
+	   <link type="text/css" rel="stylesheet" href="/dtps.css"  media="screen,projection"/>
        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -24,9 +25,7 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 
-<style>
-</style>
-<body>
+<body class="light" style="text-align: center;">
   <style>
 	  @font-face {
       font-family: 'Material Icons Outline';
@@ -37,66 +36,224 @@
   .material-icons {
     font-family: 'Material Icons Outline';
 }
-    body.dark #mainIMG {
-      background-image: url(https://i.imgur.com/aCrKRND.png);
-    }
-    body:not(.dark) #mainIMG {
-      background-image: url(https://i.imgur.com/auiCnxh.png);
-    }
-    .titlebar h3 {
-      display: inline-block; 
-      background: -webkit-linear-gradient(#ffbc00, #ece30f); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent; 
-      font-weight: bold;
-      vertical-align: middle;
-      margin-right: 20px;
-    }
-    .titlebar div {
-      display: inline-block;
-      font-size: 20px;
-      font-weight: bold;
-      vertical-align: middle;
-      margin: 0px 10px;
-      margin-bottom: -10px;
-      color: var(--flex-sectext, gray);
-      cursor: pointer;
-    }
-    .titlebar div i {
-      vertical-align: middle;
-    }
-    .titlebar img {
-      vertical-align: middle;
-      height: 24px;
-    }
-	.banner {
-		margin: 10px 0px;
-		text-align: center;
-		border-radius: 20px;
-		padding: 2px 20px;
-		background-color: #ceab20;
-		color: white;
-		font-size: 16px;
-		line-height: 30px;
-		vertical-align: middle;
+    .dtpsBtn {
+		font-size: 42px;
+		cursor: pointer;
+		font-weight: bold;
+		font-family: 'Product Sans';
+		color: var(--secText);
+		line-height: 42px;
 		display: inline-block;
+		margin: 0px 20px;
+	}
+	
+	.promoBox {
+		margin: 300px 0px;
+	}
+	
+	.promoBox h5 {
+		color: var(--secText);
+	}
+	
+	.promoBox .promoText {
+		display: inline-block;
+		width: 60%;
+		margin-bottom: 40px;
+	}
+	.promoBox .promoText i {
+		vertical-align: middle;
+		height: 30px;
+	}
+	.promoBox .promoDemo {
+		display: inline-block;
+		width: 70%;
+		text-align: left;
+	}
+	
+	.themeSelector .btn.arrow {
+		display: none;
 	}
   </style>
+  <script>fluidThemes = [];</script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script type="text/javascript" src="fluid.js"></script>
-  <div style="padding: 0px 20px;" class="titlebar">
-    <img style="width: auto; height: 36px; margin-bottom: -6px; margin-right: 10px;" src="https://dtps.js.org/outline.png" />
-    <h3>Power+</h3>
-	<div onclick="window.location.href = 'https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo';"><i class="material-icons">cloud_download</i> Install</div>
-  <div onclick="window.location.href = 'https://status.jottocraft.com';"><i class="material-icons">notifications</i> Status</div>
+  <script type="text/javascript" src="/fluid.js"></script>
+  
+  <div style="margin-top: 100px;" class="container">
+  <img src="https://i.imgur.com/jT3MNLV.png" style="width: 120px; border-radius: 30px; vertical-align: middle; margin-right: 20px;" />
+  <h1 style="font-size: 80px; display: inline-block; vertical-align: middle;">Power+</h1>
+  <br /><br /><br /><br />
+  
+  <a href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo" class="dtpsBtn" style="margin-left: 0px;"><i class="material-icons" style="font-family: 'Material Icons Extended'; font-size: 32px;">extension</i> Install</a>
+  
+  <br /><br /><br /><br />
+  
+  <div class="promoBox leftText">
+  
+  <div class="promoText">
+  <h3><i class="material-icons">functions</i> Grade Calculation</h3>
+  <h5>Power+ calculates your class grades for you</h5>
   </div>
-        <div style="text-align: center; margin-top: calc(50vh - 381px);">
-		<!-- <div style="margin-bottom: 50px;" class="banner"><i style="vertical-align: middle; margin-right: 5px;" class="material-icons">error_outline</i> As of July 1st, 2019, Power+ no longer supports PowerSchool Learning</div> -->
-        <div id="mainIMG" style="width: 798.44px;height: 511px;border-radius: 10px;margin-top: 50px;box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);margin: 50px auto;background-size: cover;"></div>
+  
+  <div class="promoDemo">
+  <div class="card filter_1">
+    <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">World History - S1
+    <div style="-webkit-text-fill-color: var(--light);display: inline-block;background-color: var(--norm);width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">A</div></h4>
+    <h5 style="height: 60px; line-height: 60px;">75% of outcome scores are ≥ 
+    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">3.5</div></h5>
+    <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than 
+    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">3</div></h5>
+    </div>
+  </div>
+  
+  </div>
+  
+   <div class="promoBox rightText">
+  
+  <div class="promoText">
+  <h3><i class="material-icons">invert_colors</i> Dark Theme</h3>
+  <h5>Power+ has a built-in dark theme</h5>
+  </div>
+  
+  <div class="promoDemo classContent" style="margin: 0px; padding: 0px; width: 60%; text-align: center;">
+  
+  
+	<div class="btns row themeSelector"></div>
+		
+		
+  </div>
+  
+  </div>
+  
+  <div class="promoBox rightText">
+  
+  <div class="promoText">
+  <h3><i class="material-icons">dashboard</i> Dashboard</h3>
+  <h5>The Power+ dashboard shows every assignment you need to do</h5>
+  </div>
+  
+  <div class="promoDemo classContent" style="margin: 0px; padding: 0px; width: 60%;">
+  
+  
+  <div class="card graded assignment filter_4 color" style="color: white !important; margin: 30px 0px; margin-top: 0px;">
+        <div class="points">
+        <div class="earned numbers"></div>
+	<div class="earned letters">undefined</div>
+        </div>
+        <h4>PT Personal Narrative</h4>
+      	<h5>
+         <div class="infoChip" style="color: white !important;"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Wed Sep 04</div>
+		 <div class="infoChip weighted"><i class="material-icons">category</i> Writing</div>
+		 <div class="infoChip weighted"><i class="material-icons">adjust</i> 6 outcomes</div>
+        </h5>
+        </div>
+		
+		<div class="card graded assignment filter_1 color" style="color: white !important; margin: 30px 0px;">
+        <div class="points">
+        <div class="earned numbers"></div>
+	<div class="earned letters">undefined</div>
+        </div>
+        <h4>Media Literacy Discussion</h4>
+      	<h5>
+         <div class="infoChip" style="color: white !important;"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Tue Sep 10</div> 
+		 <div class="infoChip weighted"><i class="material-icons">category</i> Perspectives of Our World</div>
+		 <div class="infoChip weighted"><i class="material-icons">adjust</i> 3 outcomes</div>
+        </h5>
+        </div>
+		
+		<div class="card graded assignment filter_3 color" style="color: white !important; margin: 30px 0px;">
+        <div class="points">
+        <div class="earned numbers"></div>
+	<div class="earned letters">undefined</div>
+        </div>
+        <h4>Understanding the Enigma</h4>
+      	<h5>
+         <div class="infoChip" style="color: white !important;"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Thu Sep 12</div>
+		 <div class="infoChip weighted"><i class="material-icons">category</i> Assignments</div>
+		 <div class="infoChip weighted"><i class="material-icons">adjust</i> 6 outcomes</div>
+        </h5>
+        </div>
+		
+		
+		
+  </div>
+  
+  </div>
+  
+  <div class="promoBox leftText">
+  
+  <div class="promoText">
+  <h3><i class="material-icons">book</i> Classes from Canvas</h3>
+  <h5>Power+ uses the class nicknames, colors, and arrangements from Canvas. If you haven't set class nicknames, Power+ will automatically shorten your classes' names</h5>
+  </div>
+  
+  <div class="promoDemo" style="text-align: center;">
+  
+  
+ <div class="class 0 filter_5" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">Innovation Diploma</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
       </div>
+	  
+	   <div class="class 0 filter_0" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">Algebra 2</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      </div>
+	  
+	  <div class="class 0 filter_1" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">History</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      </div>
+	  
+	  <div class="class 0 filter_2" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">Prototyping</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      </div>
+	  
+	  <div class="class 0 filter_4" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">English</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      </div>
+	  
+	  <div class="class 0 filter_3" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">Physics</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      </div>
+	  
+	  <div class="class 0 filter_8" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">Economics</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      </div>
+	  
+	  <div class="class 0 filter_10" style="display: inline-block; margin: 0px 10px; text-align: left;">
+      <div class="name">Spanish</div>
+      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      </div>
+		
+		
+		
+  </div>
+  
+  </div>
+  
+  
+  <div class="promoBox leftText" style="background-color: #02030c;background-image: url('https://i.imgur.com/oopsvNB.png');margin: 150px 0px;padding: 150px 30px;text-align: left;border-radius: 30px;background-size: 50%;background-position: right;background-repeat: no-repeat;">
+  
+  <div style="margin-top: -120px;" class="promoText">
+  <h3 style="color: white;">Razer Chroma Integration</h3>
+  <h5>You can use Razer Chroma devices with Power+ by enabling Razer Chroma effects in Power+ settings</h5>
+  <br />
+  <div class="switch active"><span class="head"></span></div>
+  <div class="label" style="color: #cccccc;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" img=""> Razer Chroma Effects (beta)</div>
+  </div>
+ 
+  
+  </div>
+  
+  
+  
+  </div>
 
-
-      <p style="text-align:center; position: absolute; top: calc(100vh + 50px); width: 100%; margin-bottom: 75px;">(c) 2018 - 2019 jottocraft&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/">source</a></p>
+      <p style="text-align:center; width: 100%; margin-bottom: 75px;">(c) 2018 - 2019 jottocraft&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/">source</a></p>
 
 </body>
 </html>
