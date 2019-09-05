@@ -294,15 +294,17 @@ dtps.init = function () {
             //Weekday
             if (new Date().getDay() == 3) {
                 //Wednesday
-                if ((time > 0929) && (time < 1018)) dtps.period = 1;
-                if ((time > 1019) && (time < 1108)) dtps.period = 2;
-                if ((time > 1109) && (time < 1158)) dtps.period = 3;
-                if ((time > 1229) && (time < 1318)) dtps.period = 4;
-                if ((time > 1319) && (time < 1408)) dtps.period = 5;
-                if ((time > 1409) && (time < 1458)) dtps.period = 6;
+		if ((time > 0844) && (time < 0911)) dtps.period = 7;
+                if ((time > 0912) && (time < 1003)) dtps.period = 1;
+                if ((time > 1004) && (time < 1056)) dtps.period = 2;
+                if ((time > 1057) && (time < 1149)) dtps.period = 3;
+                if ((time > 1220) && (time < 1312)) dtps.period = 4;
+                if ((time > 1313) && (time < 1405)) dtps.period = 5;
+                if ((time > 1406) && (time < 1458)) dtps.period = 6;
             } else {
                 if (new Date().getDay() !== 4) {
                     //M, TU, F
+		    if ((time > 0844) && (time < 0916)) dtps.period = 7;
                     if ((time > 0917) && (time < 1013)) dtps.period = 1;
                     if ((time > 1022) && (time < 1118)) dtps.period = 2;
                     if ((time > 1119) && (time < 1215)) dtps.period = 3;
@@ -904,13 +906,13 @@ dtps.moduleStream = function (num) {
 //Asks the user when they have each class to load the class automatically
 dtps.schedule = function () {
     var schedule = {}
-    if (confirm("Type in which period you have each class as a number (1-6). If the class is from a different semester or you don't have that class for a class period, leave the box blank")) {
+    if (confirm("Type in which period you have each class as a number (1-6, type 7 for @d.tech). If the class is from a different semester or you don't have that class for a class period, leave the box blank")) {
         for (var i = 0; i < dtps.classes.length; i++) {
-            var num = prompt("Which class period do you have '" + dtps.classes[i].name + "'? (Number 1-6 or leave blank)");
-            if ((Number(num) > 0) && (Number(num) < 7)) schedule[num] = dtps.classes[i].id;
+            var num = prompt("Which class period do you have '" + dtps.classes[i].name + "'? (Number 1-6, type 7 for @d.tech, or leave blank)");
+            if ((Number(num) > 0) && (Number(num) < 8)) schedule[num] = dtps.classes[i].id;
         }
         localStorage.setItem("dtpsSchedule", JSON.stringify(schedule));
-        alert("Your schedule has been saved. When loading Power+, Power+ will try to load the class that you are in instead of the dashboard, if you are visiting during school hours.")
+        alert("Your schedule has been saved. When loading Power+, Power+ will try to load the class that you are in instead of the dashboard, if you are using Power+ during school hours.")
     }
 }
 
