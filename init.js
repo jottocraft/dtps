@@ -1798,6 +1798,7 @@ dtps.loadState = function (stateKey) {
 }
 
 //Renders Power+ and removes all Canvas HTML
+//Seperated into static HTML and javascript-based things
 dtps.render = function () {
     jQuery("head").html("");
     document.title = "Power+" + dtps.trackSuffix;
@@ -1932,8 +1933,47 @@ dtps.render = function () {
 	<div class="classContent">
     <div class="spinner"></div>
     </div>
-<div style="height: calc(100vh - 50px); overflow: auto !important;" class="card withnav focus close container abt-new">
-<i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
+<div style="height: calc(100vh - 50px); overflow: auto !important;" class="card withnav focus close container abt-new"></div>
+
+<div style="display: none;" class="cacaoBar acrylicMaterial">
+    <div onclick="dtps.cacao('a')" state="a" class="tab a active"><i class="material-icons">dashboard</i><span>Dashboard</span></div>
+    <div onclick="dtps.cacao('new')" class="tab icon new"><i class="material-icons">add</i></div>
+</div>
+    <div class="items">
+    </div>
+<div  style="border-radius: 30px;" class="card focus changelog close container">
+<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
+<h3>What's new in Power+</h3>
+<h5>There was an error loading the changelog. Try again later.</h5>
+</div>
+<div  style="border-radius: 30px;" class="card focus details close container">
+<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+<p>An error occured</p>
+</div>
+
+<div style="border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close moduleURL container">
+<i style="color: black !important;" onclick="fluid.cards.close('.card.moduleURL'); $('#moduleIFrame').attr('src', '');" class="material-icons close">close</i>
+<br /><br />
+<iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="moduleIFrame"></iframe>
+</div>
+
+<div style="border-radius: 30px; top: 50px;" class="card focus close classInfoCard container">
+<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+<h4>An error occured</h4>
+</div>
+
+<div style="border-radius: 30px; top: 50px;" class="card focus close outcomeCard container">
+<i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
+<h4>An error occured</h4>
+</div>
+
+<style id="colorCSS">` + (dtps.colorCSS ? dtps.colorCSS.join("") : "") + `</style>
+<script>fluid.init();</script>
+  `);
+	
+	
+	
+	jQuery(".card.abt-new").html(`<i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
   <div class="sidenav" style="position: fixed; height: calc(100% - 50px); border-radius: 20px 0px 0px 20px;">
     <div class="title">
 	  <img src="https://dtps.js.org/outline.png" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
@@ -2097,48 +2137,14 @@ dtps.render = function () {
 <p style="cursor: pointer; color: var(--secText, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
 <p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
-  </div>
-</div>
-
-<div style="display: none;" class="cacaoBar acrylicMaterial">
-    <div onclick="dtps.cacao('a')" state="a" class="tab a active"><i class="material-icons">dashboard</i><span>Dashboard</span></div>
-    <div onclick="dtps.cacao('new')" class="tab icon new"><i class="material-icons">add</i></div>
-</div>
-    <div class="items">
-    <h4>` + dtps.user.name + `</h4>
+  </div>`)
+	jQuery(".items").html(`<h4>` + dtps.user.name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
-    <i onclick="$('.gradeDom').html(dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('.sidenav .item.gradesTab').hide(); }; fluid.modal('.abt-new')" class="material-icons">settings</i>
-    </div>
-<div  style="border-radius: 30px;" class="card focus changelog close container">
-<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
-<h3>What's new in Power+</h3>
-<h5>There was an error loading the changelog. Try again later.</h5>
-</div>
-<div  style="border-radius: 30px;" class="card focus details close container">
-<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
-<p>An error occured</p>
-</div>
-
-<div style="border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close moduleURL container">
-<i style="color: black !important;" onclick="fluid.cards.close('.card.moduleURL'); $('#moduleIFrame').attr('src', '');" class="material-icons close">close</i>
-<br /><br />
-<iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="moduleIFrame"></iframe>
-</div>
-
-<div style="border-radius: 30px; top: 50px;" class="card focus close classInfoCard container">
-<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
-<h4>An error occured</h4>
-</div>
-
-<div style="border-radius: 30px; top: 50px;" class="card focus close outcomeCard container">
-<i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
-<h4>An error occured</h4>
-</div>
-
-<style id="colorCSS">` + (dtps.colorCSS ? dtps.colorCSS.join("") : "") + `</style>
-<script>fluid.init();</script>
-  `);
+    <i onclick="$('.gradeDom').html(dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('.sidenav .item.gradesTab').hide(); }; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
+	
+	
+	
     var idleTime = 0;
     $(document).ready(function () {
         //Increment the idle time counter every minute.
@@ -2164,6 +2170,7 @@ dtps.render = function () {
             }
         }
     }
+	
     var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
     //if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
     jQuery.getJSON(getURL, function (data) {
@@ -2188,6 +2195,7 @@ dtps.render = function () {
     dtps.showClasses("first");
     //dtps.gapis();
     $("link").remove();
+	
     jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
     jQuery("<link/>", {
         rel: "shortcut icon",
