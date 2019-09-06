@@ -25,6 +25,11 @@ var dtps = {
     }
 };
 
+window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
+    if(window.localStorage.dtpsDebug == "true") alert("[DTPS] ERROR: " + errorMsg + "\n\n" + url + ":" + lineNumber);
+    return false;
+}
+
 //Load a better version of jQuery as soon as possible because of Canvas's weird included version of jQuery that breaks a lot of important things
 if (dtps.embedded) jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
 
@@ -277,7 +282,7 @@ dtps.explore = function (path) {
 }
 
 //Convert default Canvas colors to optimized Power+ filters based on hex values for default colors
-//Not all Canvas colors are listed here. Only existing Power+ colors and colors that look bad have optimized filters.  
+//Not all Canvas colors are listed here. Only existing Power+ colors and colors that look bad have optimized filters.
 dtps.filter = function (color) {
     var filter = undefined;
     if (color == "#009606") filter = "filter_3"
@@ -1031,7 +1036,7 @@ dtps.renderStream = function (stream, searchRes) {
         </div>
         <h4>` + stream[i].title + `</h4>
       	<h5>
-         ` + (stream[i].due ? `<div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due ` + stream[i].due + `</div>` : "") + ` 
+         ` + (stream[i].due ? `<div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due ` + stream[i].due + `</div>` : "") + `
         ` + ((stream[i].weight !== undefined) && stream[i].uniqueWeight ? `<div class="infoChip weighted">` + stream[i].weightIcon + stream[i].weight.replace("Comprehension Checks", "CC").replace("Success Skills", "SS").replace("Performance Tasks", "PT") + `</div>` : "") + `
         ` + (stream[i].outcomes !== undefined ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + stream[i].outcomes.length + `</div>` : "") + `
         </h5>
@@ -1288,9 +1293,9 @@ dtps.gradebook = function (num) {
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
     <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].name + `
     <div style="-webkit-text-fill-color: var(--light);display: inline-block;background-color: var(--norm);width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h4>
-    <h5 style="height: 60px; line-height: 60px;">75% of outcome scores are ≥ 
+    <h5 style="height: 60px; line-height: 60px;">75% of outcome scores are ≥
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.number75 + `</div></h5>
-    <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than 
+    <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
     ` + (fluid.get("pref-outcomeCalc") == "true" ? `<br /><p style="font-style: italic;color: var(--secText);">Outcome scores are being calculated by Power+ instead of Canvas. This may result in an inaccurate grade calculation.</p>` : "") + `
     </div>` : "") + `
@@ -1308,8 +1313,8 @@ dtps.gradebook = function (num) {
                     return `
 <div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 110px;cursor: pointer;" class="card">
   <h5 style="font-weight: bold;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
-  <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div> 
-  ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + ` 
+  <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
+  ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + `
   ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `/4</div>` : "") + `
 </div>`
                 }).join("") + `
@@ -1741,7 +1746,7 @@ dtps.googleAuth = function () {
     });
 }
 
-//Saves grade data locally for grade trend 
+//Saves grade data locally for grade trend
 dtps.logGrades = function () {
     if ((window.localStorage.dtpsGradeTrend !== "false") && (window.localStorage.dtpsGradeTrend !== undefined)) {
         if (window.localStorage.dtpsGradeTrend.startsWith("{")) {
