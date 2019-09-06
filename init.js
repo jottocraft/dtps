@@ -10,8 +10,13 @@ var dtps = {
     trackColor: "#ec9b06",
     showLetters: false,
     fullNames: false,
+    classes: [],
     latestStream: [],
     explorer: [],
+    embedded: window.location.href.includes("instructure.com"),
+    auth: {
+        accessToken: window.localStorage.accessToken
+    },
     chromaProfile: {
         title: "Power+",
         description: "Razer Chroma effects for Power+ (beta)",
@@ -21,7 +26,7 @@ var dtps = {
 };
 
 //Load a better version of jQuery as soon as possible because of Canvas's weird included version of jQuery that breaks a lot of important things
-jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+if (dtps.embedded) jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
 
 //Embedded Status Updates (load this before AND after rendering Power+ just in case something breaks in dtps.render)
 //REMOVED 8.13.2019
@@ -41,7 +46,8 @@ dtps.log = function (msg) {
 
 //Renders Power+ first run stuff
 dtps.firstrun = function () {
-    jQuery("body").append(`<div id="dtpsNativeAlert" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-dialog-buttons" tabindex="-1" aria-hidden="false" style="outline: 0px; z-index: 5000; height: auto; width: 500px; margin-top: 100px; top: 0; margin-left: calc(50% - 250px); display: block;">
+    if (dtps.embedded) {
+        jQuery("body").append(`<div id="dtpsNativeAlert" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-dialog-buttons" tabindex="-1" aria-hidden="false" style="outline: 0px; z-index: 5000; height: auto; width: 500px; margin-top: 100px; top: 0; margin-left: calc(50% - 250px); display: block;">
 <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-1" class="ui-dialog-title" role="heading">Welcome to Power+` + dtps.trackSuffix + `</span><button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" class="ui-dialog-titlebar-close ui-corner-all"><span class="ui-icon ui-icon-closethick">close</span></button></div>
 <form id="new_course_form" class="bootstrap-form form-horizontal ui-dialog-content ui-widget-content" data-turn-into-dialog="{&quot;width&quot;:500,&quot;resizable&quot;:false}" style="width: auto; min-height: 0px; height: auto; display: block;" action="/courses" accept-charset="UTF-8" method="post" aria-expanded="true" scrolltop="0" scrollleft="0">
 <h5>` + dtps.readableVer + `</h5>
@@ -52,15 +58,22 @@ dtps.firstrun = function () {
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display inaccurate information. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
 </form><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" type="button" data-text-while-loading="Cancel" class="btn dialog_closer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span></button><button onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" data-text-while-loading="Loading Power+..." class="btn btn-primary button_type_submit ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Continue</span></button></div></div></div>
 <div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%; height: 100%; z-index: 500;"></div>`)
+    } else {
+        $("#welcomeVer").html(dtps.readableVer)
+        fluid.splash("#welcomeToDtps")
+    }
 };
 
 //Displays a native Canvas alert (cannot be used after Power+ is rendered / dtps.render)
+//On non-embedded clients, this displays a Fluid UI Alert
 dtps.nativeAlert = function (text, sub, loadingSplash) {
     if (text == undefined) var text = "";
     if (sub == undefined) var sub = "";
     if (loadingSplash) {
-        jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
+        if (dtps.embedded) {
+            jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
 <style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner { width: 40px; height: 40px; margin: 100px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style></div>`)
+        }
     } else {
         jQuery("body").append(`<div id="dtpsNativeAlert" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-dialog-buttons" tabindex="-1" aria-hidden="false" style="outline: 0px; z-index: 5000; height: auto; width: 500px; margin-top: 100px; top: 0; margin-left: calc(50% - 250px); display: block;">
 <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-1" class="ui-dialog-title" role="heading">Power+</span></div>
@@ -77,33 +90,49 @@ dtps.requests = {};
 dtps.http = {};
 dtps.webReq = function (req, url, callback, q) {
     if ((dtps.requests[url] == undefined) || url.includes("|")) {
+        //Use backend request instead of canvas request for standalone Power+
+        if ((req == "canvas") && !dtps.embedded) req = "backend"
         //"Canvas" request type for making a GET request to the Canvas API
         if (req == "canvas") {
-            dtps.log("Making DTPS web request")
-            if (typeof cURLdtps !== "undefined") {
-                cURLdtps(url, function (data) {
-                    if (callback) callback(data, q);
-                    dtps.requests[url] = data;
-                });
-            } else {
-                dtps.http[url] = new XMLHttpRequest();
-                dtps.http[url].onreadystatechange = function () {
-                    if (this.readyState == 4) {
-                        if (this.status == 200) {
-                            if (callback) callback(this.responseText, q);
-                            dtps.requests[url] = this.responseText;
-                            dtps.log("Returning DTPS data")
-                        } else {
-                            if (callback) callback(JSON.stringify({ error: this.status }), q);
-                            dtps.requests[url] = JSON.stringify({ error: this.status });
-                            dtps.log("DTPS webReq error" + this.status)
-                        }
+            dtps.log("Making DTPS Canvas web request")
+            dtps.http[url] = new XMLHttpRequest();
+            dtps.http[url].onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        if (callback) callback(this.responseText, q);
+                        dtps.requests[url] = this.responseText;
+                        dtps.log("Returning DTPS data")
+                    } else {
+                        if (callback) callback(JSON.stringify({ error: this.status }), q);
+                        dtps.requests[url] = JSON.stringify({ error: this.status });
+                        dtps.log("DTPS webReq error" + this.status)
                     }
-                };
-                dtps.http[url].open("GET", url, true);
-                dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids")
-                dtps.http[url].send();
-            }
+                }
+            };
+            dtps.http[url].open("GET", url, true);
+            dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids")
+            dtps.http[url].send();
+        }
+        //"backend" request type for making a GET request to the Canvas API w/ jottocraft.com backend
+        if (req == "backend") {
+            dtps.http[url] = new XMLHttpRequest();
+            dtps.http[url].onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        if (callback) callback(this.responseText, q);
+                        dtps.requests[url] = this.responseText;
+                        dtps.log("Returning DTPS data")
+                    } else {
+                        if (callback) callback(JSON.stringify({ error: this.status }), q);
+                        dtps.requests[url] = JSON.stringify({ error: this.status });
+                        dtps.log("DTPS webReq error" + this.status)
+                    }
+                }
+            };
+            dtps.http[url].open("GET", "http://lms.jottocraft.com:2755" + url, true);
+            dtps.http[url].setRequestHeader("dtps", "WinterCreek/" + dtps.ver)
+            dtps.http[url].setRequestHeader("Authorization", "Bearer " + dtps.auth.accessToken)
+            dtps.http[url].send();
         }
         //"canSUBMIT" request type for submitting assignments using the Canvas API (POST request)
         if (req == "canSUBMIT") {
@@ -261,7 +290,25 @@ dtps.filter = function (color) {
     return filter;
 }
 
-//Starts Power+
+//Get all JavaScript libraries
+dtps.JS = function (cb) {
+    if (dtps.embedded) {
+        jQuery.getScript('https://dtps.js.org/fluid.js');
+        jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
+        jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function () {
+            jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
+        })
+        jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
+
+        jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3");
+
+        jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js", cb);
+    } else {
+        cb();
+    }
+}
+
+//Starts Power+, and renders if running a non-embedded client
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
 
@@ -274,15 +321,26 @@ dtps.init = function () {
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
         fluidThemes = [["rainbow"]];
         fluidAutoLoad = false;
-        dtps.user = JSON.parse(user);
-        //TEMPORARY
-        //jQuery("body").addClass("sudo");
 
-        sudoers = ["669", "672", "209"]
+        document.addEventListener("fluidTheme", function (data) {
+            if (dtps.oldTheme !== data.detail) {
+                //theme change
+                console.log("[DTPS] Fluid UI Theme Change")
+                dtps.oldTheme = data.detail;
+                var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+                if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--background, #252525)" : "var(--background, white)") + ")"
+                if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+                $(".background").css("background", next)
+                dtps.chroma();
+            }
+        })
+
+        dtps.user = JSON.parse(user);
+        sudoers = [669, 672, 209]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        contributors = ["669"]
+        contributors = [669]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
-        if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+        if (dtps.user.id == 669) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
         if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
         if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
         $ = jQuery;
@@ -294,7 +352,7 @@ dtps.init = function () {
             //Weekday
             if (new Date().getDay() == 3) {
                 //Wednesday
-		if ((time > 0844) && (time < 0911)) dtps.period = 7;
+                if ((time > 0844) && (time < 0911)) dtps.period = 7;
                 if ((time > 0912) && (time < 1003)) dtps.period = 1;
                 if ((time > 1004) && (time < 1056)) dtps.period = 2;
                 if ((time > 1057) && (time < 1149)) dtps.period = 3;
@@ -304,7 +362,7 @@ dtps.init = function () {
             } else {
                 if (new Date().getDay() !== 4) {
                     //M, TU, F
-		    if ((time > 0844) && (time < 0916)) dtps.period = 7;
+                    if ((time > 0844) && (time < 0916)) dtps.period = 7;
                     if ((time > 0917) && (time < 1013)) dtps.period = 1;
                     if ((time > 1022) && (time < 1118)) dtps.period = 2;
                     if ((time > 1119) && (time < 1215)) dtps.period = 3;
@@ -314,26 +372,37 @@ dtps.init = function () {
                 }
             }
         }
-        if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) { dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period]; }
-        jQuery.getScript('https://dtps.js.org/fluid.js', function () {
-            document.addEventListener("fluidTheme", function (data) {
-                if (dtps.oldTheme !== data.detail) {
-                    //theme change
-                    console.log("[DTPS] Fluid UI Theme Change")
-                    dtps.oldTheme = data.detail;
-                    var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-                    if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--background, #252525)" : "var(--background, white)") + ")"
-                    if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
-                    $(".background").css("background", next)
-                    dtps.chroma();
-                }
-            })
-        });
-        jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function () {
-            jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
-        })
-        jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
-        jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=UA-105685403-3", function () {
+        if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) {
+            dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period];
+            if (dtps.currentClass) {
+                $("#headText").html(("Period " + dtps.period).replace("Period 7", "@d.tech"));
+            }
+        }
+        if (!dtps.currentClass) {
+            dtps.selectedClass = "dash";
+            dtps.selectedContent = "stream";
+        }
+        dtps.masterContent = "assignments";
+        if (!dtps.embedded) { dtps.renderLite(); dtps.showClasses(); }
+
+        dtps.shouldRender = true;
+        dtps.showChangelog = false;
+        dtps.first = false;
+        if (window.localStorage.dtpsInstalled !== "true") {
+            if (!dtps.embedded) dtps.shouldRender = false;
+            dtps.first = true;
+        }
+        if (dtps.first && !dtps.embedded) dtps.firstrun();
+        if (Number(window.localStorage.dtps) < dtps.ver) {
+            dtps.log("New release")
+            dtps.showChangelog = true;
+            if (dtps.shouldRender) dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer, true);
+        }
+        if (dtps.shouldRender && !dtps.showChangelog) {
+            dtps.nativeAlert("Loading...", undefined, true);
+        }
+        dtps.JS(function () {
+
             window.dataLayer = window.dataLayer || [];
             function gtag() { dataLayer.push(arguments); }
             var configTmp = {
@@ -352,27 +421,9 @@ dtps.init = function () {
             }
             gtag('config', 'UA-105685403-3', configTmp);
 
-        });
-        dtps.shouldRender = true;
-        dtps.showChangelog = false;
-        dtps.first = false;
-        if (window.localStorage.dtpsInstalled !== "true") {
-            dtps.shouldRender = false;
-            dtps.first = true;
-        }
-        if (Number(window.localStorage.dtps) < dtps.ver) {
-            dtps.log("New release")
-            dtps.showChangelog = true;
-            if (dtps.shouldRender) dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer, true);
-        }
-        if (dtps.shouldRender && !dtps.showChangelog) {
-            dtps.nativeAlert("Loading...", undefined, true);
-        }
-        jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js", function () {
             dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
                 dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
                     dtps.webReq("canvas", "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
-                        dtps.classes = [];
                         dtps.classesReady = 0;
                         dtps.colorCSS = [];
                         dtps.gpa = null;
@@ -472,9 +523,9 @@ dtps.init = function () {
                         for (var i = 0; i < gpa.length; i++) {
                             total += gpa[i];
                         }
-                        dtps.gpa = total / gpa.length;
+
                         if (dtps.shouldRender) dtps.render();
-                        if (dtps.first) dtps.firstrun();
+                        if (dtps.first && dtps.embedded) dtps.firstrun();
                     });
                 });
             });
@@ -781,7 +832,7 @@ dtps.classStream = function (num, renderOv) {
                             }
                         }
                     }
-                    dtps.classes[num].streamitems.push(data[i].assignments[ii].id);
+                    dtps.classes[num].streamitems.push(String(data[i].assignments[ii].id));
                     if ((data[i].assignments[ii].submission.score !== null) && (data[i].assignments[ii].submission.score !== undefined)) {
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].status = data[i].assignments[ii].submission.workflow_state;
@@ -808,10 +859,10 @@ dtps.classStream = function (num, renderOv) {
                                         data.full_rubric_assessment.data.forEach((rubricData) => {
                                             var streamIndex = dtps.classes[q.num].streamitems.indexOf(data.assignment_id)
                                             var rubricIndex = dtps.classes[q.num].stream[streamIndex].rubricItems.indexOf(rubricData.learning_outcome_id)
-					    if (dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex]) {
-				                dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].score = rubricData.points;
-                                            	dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].assessedAt = data.graded_at;
-					    }
+                                            if (dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex]) {
+                                                dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].score = rubricData.points;
+                                                dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].assessedAt = data.graded_at;
+                                            }
                                         })
                                     }
                                 }
@@ -965,7 +1016,7 @@ dtps.renderStream = function (stream, searchRes) {
     var oldDiv = false;
     for (var i = 0; i < stream.length; i++) {
         streamlist.push((stream[i].old && !oldDiv ? `<h5 style="text-align: center; margin: 75px 25px 10px 75px; font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
-        <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment(` + stream[i].id + `, ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
+        <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment('` + stream[i].id + `', ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
         ` + (stream[i].missing ? `<i title="Assignment is missing" class="material-icons floatingIcon" style="color: #c44848;">remove_circle_outline</i>` : ``) + `
@@ -1270,8 +1321,9 @@ dtps.gradebook = function (num) {
 
 //Shows details for an assignment given the assignment ID and class number
 dtps.assignment = function (id, classNum, submissions) {
-    var streamNum = dtps.classes[classNum].streamitems.indexOf(id.toString());
+    var streamNum = dtps.classes[classNum].streamitems.indexOf(String(id));
     var assignment = dtps.classes[classNum].stream[streamNum];
+    console.log(classNum, streamNum);
     if (submissions == "handIN") {
         $(".card.details").html(`<i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
 <i style="left: 0; right: auto;" onclick="dtps.assignment(` + id + `, ` + classNum + `)" class="material-icons close">arrow_back</i>
@@ -1800,7 +1852,10 @@ dtps.loadState = function (stateKey) {
 //Renders Power+ and removes all Canvas HTML
 //Seperated into static HTML and javascript-based things
 dtps.render = function () {
-    jQuery("head").html("");
+    if (dtps.embedded) {
+        jQuery("head").html("");
+        $("body").addClass("dashboard");
+    }
     document.title = "Power+" + dtps.trackSuffix;
 
     //Cacao pref
@@ -1821,21 +1876,6 @@ dtps.render = function () {
         if (String(e.detail) == "true") { dtps.fullNames = true; } else { dtps.fullNames = false; }
         dtps.showClasses(true);
     })
-
-    if (fluid.chroma) {
-        fluid.chroma.supported(function (res) {
-            if (res) {
-                //Razer Synapse installed
-                $(".razerChroma").show();
-
-                //Razer Chroma pref
-                if (fluid.get("pref-chromaEffects") == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } }
-                document.addEventListener("pref-chromaEffects", function (e) {
-                    if (String(e.detail) == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } } else { fluid.chroma.disable(); }
-                })
-            }
-        })
-    }
 
     //Hide grades pref
     if (fluid.get("pref-hideGrades") == "true") { jQuery('body').addClass('hidegrades'); }
@@ -1867,40 +1907,8 @@ dtps.render = function () {
         }
     })
 
-    $("body").addClass("dashboard");
-    if (!dtps.currentClass) {
-        dtps.selectedClass = "dash";
-        dtps.selectedContent = "stream";
-    }
-    dtps.masterContent = "assignments";
-    var trackDom = "";
-    if (dtps.trackSuffix !== "") {
-        trackDom = `<div style="display:inline-block;font-size: 16px; padding: 3px 4px;background-color: ` + dtps.trackColor + `" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`
-    } else {
-        trackDom = ``;
-    }
-    var verDom = dtps.readableVer.replace(dtps.trackSuffix, "");
-    if (dtps.trackSuffix !== "") {
-        verDom = `<div class="buildInfo" style="display: inline-block;font-size: 12px;cursor: pointer;"></div>`
-    } else {
-        verDom = dtps.readableVer.replace(dtps.trackSuffix, "");
-    }
-    /*document.addEventListener('extensionData', function (e) {
-        if (e.detail == "extensionInstalled") {
-            var extensionDom = "";
-            jQuery(".extensionDom").html(`<br />
-<div id="extensionAutoLoad" onclick="$(this).toggleClass('active'); if (window.localStorage.disableAutoLoad == 'false') {localStorage.setItem('disableAutoLoad', true); } else {localStorage.setItem('disableAutoLoad', false); }" class="switch"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">extension</i> Automatically load Power+</div>
-<br /><br />
-<div class="extensionDevMode switch" id="extensionDevMode" onclick="$(this).toggleClass('active'); if (window.localStorage.devAutoLoad == 'true') {localStorage.setItem('devAutoLoad', false);} else {localStorage.setItem('devAutoLoad', true); window.alert('The dev version of Power+ is often untested and may contain several bugs. Continue at your own risk.'); }"><span class="head"></span></div>
-    <div class="extensionDevMode label"><i class="material-icons">extension</i> Load the unstable (dev) version of Power+</div>`)
-            jQuery(".extTab").show();
-            if (window.localStorage.disableAutoLoad == "false") { jQuery("#extensionAutoLoad").addClass("active"); }
-            if (window.localStorage.devAutoLoad == "true") { jQuery("#extensionDevMode").addClass("active"); }
-            if (window.localStorage.dtpsLocal) { jQuery("#dtpsLocal").addClass("active"); }
-        }
-    });*/
-    jQuery("body").html(`
+    if (dtps.embedded) {
+        jQuery("body").html(`
     <div style="line-height: 0;" class="sidebar">
     </div>
     <div class="cover image"></div>
@@ -1967,13 +1975,143 @@ dtps.render = function () {
 <h4>An error occured</h4>
 </div>
 
-<style id="colorCSS">` + (dtps.colorCSS ? dtps.colorCSS.join("") : "") + `</style>
+<style id="colorCSS"></style>
 <script>fluid.init();</script>
   `);
-	
-	
-	
-	jQuery(".card.abt-new").html(`<i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
+    }
+
+
+    jQuery("#colorCSS").html(dtps.colorCSS ? dtps.colorCSS.join("") : "")
+    if (dtps.embedded) dtps.renderLite();
+
+
+
+    var idleTime = 0;
+    $(document).ready(function () {
+        //Increment the idle time counter every minute.
+        var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
+
+        //Zero the idle timer on mouse movement.
+        $(this).mousemove(function (e) {
+            idleTime = 0;
+        });
+        $(this).keypress(function (e) {
+            idleTime = 0;
+        });
+    });
+
+    function timerIncrement() {
+        idleTime = idleTime + 1;
+        if (idleTime > 60) { // Clear all saved assignment data to get the latest info
+            dtps.requests = {};
+            dtps.http = {};
+            dtps.classesReady = 0;
+            for (var i = 0; i < dtps.classes.length; i++) {
+                dtps.classStream(i, true);
+            }
+        }
+    }
+
+    var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
+    //if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
+    jQuery.getJSON(getURL, function (data) {
+        jQuery(".buildInfo").html("build " + data[0].sha.substring(7, 0));
+        jQuery(".buildInfo").click(function () {
+            window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
+        });
+    })
+    jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js", function () {
+        markdown = new showdown.Converter();
+        jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function (data) {
+            jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
+            if (data[0].tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
+                localStorage.setItem('dtps', dtps.ver);
+                if (dtps.showChangelog) dtps.changelog();
+            }
+            $(".btn.changelog").show();
+        });
+    });
+
+    fluid.theme();
+    dtps.showClasses("first");
+    //dtps.gapis();
+
+    if (dtps.embedded) {
+        $("link").remove();
+        jQuery("<link/>", {
+            rel: "shortcut icon",
+            type: "image/png",
+            href: "https://dtps.js.org/favicon.png"
+        }).appendTo("head");
+        jQuery("<link/>", {
+            rel: "stylesheet",
+            type: "text/css",
+            href: "https://dtps.js.org/fluid.css"
+        }).appendTo("head");
+        jQuery("<link/>", {
+            rel: "stylesheet",
+            type: "text/css",
+            href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
+        }).appendTo("head");
+
+        if (dtps.trackSuffix !== "") {
+            jQuery("<link/>", {
+                rel: "stylesheet",
+                type: "text/css",
+                href: "https://dtps.js.org/dev.css"
+            }).appendTo("head");
+        } else {
+            jQuery("<link/>", {
+                rel: "stylesheet",
+                type: "text/css",
+                href: "https://dtps.js.org/dtps.css"
+            }).appendTo("head");
+        }
+
+        jQuery("<link/>", {
+            rel: "stylesheet",
+            type: "text/css",
+            href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
+        }).appendTo("head");
+
+    }
+
+    jQuery('.classContent').bind('heightChange', function () {
+        jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
+    });
+
+    if (dtps.embedded) fluid.onLoad();
+}
+
+//Render function that can ran before classes are ready
+dtps.renderLite = function () {
+    if (fluid.chroma) {
+        fluid.chroma.supported(function (res) {
+            if (res) {
+                //Razer Synapse installed
+                $(".razerChroma").show();
+
+                //Razer Chroma pref
+                if (fluid.get("pref-chromaEffects") == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } }
+                document.addEventListener("pref-chromaEffects", function (e) {
+                    if (String(e.detail) == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } } else { fluid.chroma.disable(); }
+                })
+            }
+        })
+    }
+    var trackDom = "";
+    if (dtps.trackSuffix !== "") {
+        trackDom = `<div style="display:inline-block;font-size: 16px; padding: 3px 4px;background-color: ` + dtps.trackColor + `" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`
+    } else {
+        trackDom = ``;
+    }
+    var verDom = dtps.readableVer.replace(dtps.trackSuffix, "");
+    if (dtps.trackSuffix !== "") {
+        verDom = `<div class="buildInfo" style="display: inline-block;font-size: 12px;cursor: pointer;"></div>`
+    } else {
+        verDom = dtps.readableVer.replace(dtps.trackSuffix, "");
+    }
+    jQuery(".card.abt-new").html(`<i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
   <div class="sidenav" style="position: fixed; height: calc(100% - 50px); border-radius: 20px 0px 0px 20px;">
     <div class="title">
 	  <img src="https://dtps.js.org/outline.png" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
@@ -1987,9 +2125,6 @@ dtps.render = function () {
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
       <i class="material-icons">book</i> Classes
-    </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item gradesTab">
-      <i class="material-icons">assessment</i> Grades
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
       <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
@@ -2032,17 +2167,27 @@ dtps.render = function () {
 	<br style="display: none;" class="razerChroma" /><br style="display: none;" class="razerChroma" />
     <div style="display: none" onclick="fluid.set('pref-chromaEffects')" class="switch pref-chromaEffects razerChroma"><span class="head"></span></div>
     <div class="label razerChroma" style="display: none;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /img> Razer Chroma Effects (beta)</div>
-    <br /><br />
+    <div class="embeddedOptions">
+	<br /><br />
     <p>Power+</p>
     <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
     <div class="label"><i class="material-icons">code</i> Automatically load Power+</div>
     <!-- <br /><br />
     <div onclick="fluid.set('pref-devChannel')" class="switch pref-devChannel"><span class="head"></span></div>
     <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div> -->
+	</div>
 </div>
 <div style="display: none;" class="abtpage classes">
-<h5>Canvas Classes</h5>
+<h5>Classes</h5>
 <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule classes</button>
+<br /><br />
+<div id="classGrades">
+<h5>Grades</h5>
+<div class="gradeDom">
+<p>Loading...</p>
+</div>
+</div>
+<!--
 <br /><br />
 <div class="googleClassroom sudo">
     <h5>google_logo Classes</h5>
@@ -2057,12 +2202,7 @@ dtps.render = function () {
     <p>If Power+ thinks one of your Canvas classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
     <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn sudo"><i class="material-icons">link</i>Link Google Classroom</button>
 </div>
-</div>
-<div style="display: none;" class="abtpage grades">
-<h5>Grades</h5>
-<div class="gradeDom">
-<p>Loading...</p>
-</div>
+-->
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
@@ -2138,106 +2278,12 @@ dtps.render = function () {
 <p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
   </div>`)
-	jQuery(".items").html(`<h4>` + dtps.user.name + `</h4>
+    jQuery(".items").html(`<h4>` + dtps.user.name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
-    <i onclick="$('.gradeDom').html(dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('.sidenav .item.gradesTab').hide(); }; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
-	
-	
-	
-    var idleTime = 0;
-    $(document).ready(function () {
-        //Increment the idle time counter every minute.
-        var idleInterval = setInterval(timerIncrement, 60000); // 1 minute
-
-        //Zero the idle timer on mouse movement.
-        $(this).mousemove(function (e) {
-            idleTime = 0;
-        });
-        $(this).keypress(function (e) {
-            idleTime = 0;
-        });
-    });
-
-    function timerIncrement() {
-        idleTime = idleTime + 1;
-        if (idleTime > 60) { // Clear all saved assignment data to get the latest info
-            dtps.requests = {};
-            dtps.http = {};
-            dtps.classesReady = 0;
-            for (var i = 0; i < dtps.classes.length; i++) {
-                dtps.classStream(i, true);
-            }
-        }
-    }
-	
-    var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
-    //if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
-    jQuery.getJSON(getURL, function (data) {
-        jQuery(".buildInfo").html("build " + data[0].sha.substring(7, 0));
-        jQuery(".buildInfo").click(function () {
-            window.open("https://github.com/jottocraft/dtps/commit/" + data[0].sha)
-        });
-    })
-    jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js", function () {
-        markdown = new showdown.Converter();
-        jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases", function (data) {
-            jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data[0].body));
-            if (data[0].tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
-                localStorage.setItem('dtps', dtps.ver);
-                if (dtps.showChangelog) dtps.changelog();
-            }
-            $(".btn.changelog").show();
-        });
-    });
-
-    fluid.theme();
-    dtps.showClasses("first");
-    //dtps.gapis();
-    $("link").remove();
-	
-    jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
-    jQuery("<link/>", {
-        rel: "shortcut icon",
-        type: "image/png",
-        href: "https://dtps.js.org/favicon.png"
-    }).appendTo("head");
-    jQuery("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "https://dtps.js.org/fluid.css"
-    }).appendTo("head");
-    jQuery("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
-    }).appendTo("head");
-
-    if (dtps.trackSuffix !== "") {
-        jQuery("<link/>", {
-            rel: "stylesheet",
-            type: "text/css",
-            href: "https://dtps.js.org/dev.css"
-        }).appendTo("head");
-    } else {
-        jQuery("<link/>", {
-            rel: "stylesheet",
-            type: "text/css",
-            href: "https://dtps.js.org/dtps.css"
-        }).appendTo("head");
-    }
-
-    jQuery("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
-    }).appendTo("head");
-
-    jQuery('.classContent').bind('heightChange', function () {
-        jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
-    });
-
-    fluid.onLoad();
+    <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html(dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
+    if (!dtps.embedded) $(".embeddedOptions").hide();
+    if (!dtps.embedded) fluid.onLoad();
 }
 
 dtps.init();
