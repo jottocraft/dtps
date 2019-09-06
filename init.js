@@ -1892,11 +1892,11 @@ dtps.render = function () {
     document.addEventListener("pref-calcGrades", function (e) {
         if (String(e.detail) == "true") {
             $("#outcomeCalcView").show();
-            swal({ title: 'Calculate Class Grades (beta)', text: 'CLASS GRADES CALCULATED IN POWER+ ARE NOT OFFICIAL. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY INCORRECT CLASS GRADES. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
+            /*swal({ title: 'Calculate Class Grades (beta)', text: 'CLASS GRADES CALCULATED IN POWER+ ARE NOT OFFICIAL. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY INCORRECT CLASS GRADES. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
                 if (!enable) {
                     fluid.set("pref-calcGrades", false)
                 }
-            });
+            });*/
         } else {
             $("#outcomeCalcView").hide();
         }
@@ -1904,11 +1904,11 @@ dtps.render = function () {
 
     document.addEventListener("pref-outcomeCalc", function (e) {
         if (String(e.detail) == "true") {
-            swal({ title: 'Calculate Outcome Scores (alpha)', text: 'OUTCOME SCORES CALCULATED IN POWER+ ARE NOT OFFICIAL. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY INCORRECT OUTCOME SCORES. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
+            /*swal({ title: 'Calculate Outcome Scores (alpha)', text: 'OUTCOME SCORES CALCULATED IN POWER+ ARE NOT OFFICIAL. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY INCORRECT OUTCOME SCORES. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
                 if (!enable) {
                     fluid.set("pref-outcomeCalc", false)
                 }
-            });
+            });*/
         }
     })
 
