@@ -215,7 +215,7 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         if ((number75 >= 3.5) && (lowestValue >= 2.5)) letter = "A-";
         if ((number75 >= 3.5) && (lowestValue >= 3)) letter = "A";
 
-        if (fluid.get('pref-calcGrades') == "true") dtps.classes[classNum].letter = letter;
+        if (fluid.get('pref-calcGrades') !== "false") dtps.classes[classNum].letter = letter;
 
         //store grade calculation variables to show them in the gradebook
         dtps.classes[classNum].gradeCalc = {
@@ -443,7 +443,7 @@ dtps.init = function () {
                                 //collection of data used to calculate a letter grade
                                 grades: {},
                                 grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
-                                letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") == "true" ? false : "--")),
+                                letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") !== "false" ? false : "--")),
                                 num: i,
                                 tmp: {},
                                 image: data[i].image_download_url,
