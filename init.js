@@ -135,8 +135,9 @@ dtps.webReq = function (req, url, callback, q) {
                 }
             };
             dtps.http[url].open("GET", "http://lms.jottocraft.com:2755" + url, true);
-            dtps.http[url].setRequestHeader("dtps", "WinterCreek/" + dtps.ver)
-            dtps.http[url].setRequestHeader("Authorization", "Bearer " + dtps.auth.accessToken)
+	    dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids");
+            dtps.http[url].setRequestHeader("dtps", "WinterCreek/" + dtps.ver);
+            dtps.http[url].setRequestHeader("Authorization", "Bearer " + dtps.auth.accessToken);
             dtps.http[url].send();
         }
         //"canSUBMIT" request type for submitting assignments using the Canvas API (POST request)
@@ -341,11 +342,11 @@ dtps.init = function () {
         })
 
         dtps.user = JSON.parse(user);
-        sudoers = [669, 672, 209]
+        sudoers = ["669", "672", "209"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        contributors = [669]
+        contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
-        if (dtps.user.id == 669) { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+        if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
         if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
         if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
         $ = jQuery;
