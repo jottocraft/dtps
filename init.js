@@ -462,7 +462,7 @@ dtps.init = function () {
 }`);
                             }
                             dtps.computedClassGrades = 0;
-                            if (fluid.get("pref-calcGrades") == "true") dtps.computeClassGrade(i, true);
+                            if (fluid.get("pref-calcGrades") !== "false") dtps.computeClassGrade(i, true);
                             dtps.classStream(i, true);
                             if (data[i].enrollments[0].computed_current_score) {
                                 dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + filter + `"><div style="color: var(--dark);" class="progressLabel">` + subject + `</div><div class="progress" style="background-color: var(--light); width: calc(` + data[i].enrollments[0].computed_current_score + `% - 300px);"></div></div>`)
