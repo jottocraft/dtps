@@ -1212,7 +1212,7 @@ dtps.gradebook = function (num) {
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.number75 + `</div></h5>
     <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
-
+</div>` : "") + `
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
                     var keyA = dtps.classes[num].outcomes[a].score,
                         keyB = dtps.classes[num].outcomes[b].score;
