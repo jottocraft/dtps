@@ -134,7 +134,7 @@ dtps.webReq = function (req, url, callback, q) {
                     }
                 }
             };
-            dtps.http[url].open("GET", "http://lms.jottocraft.com:2755" + url, true);
+            dtps.http[url].open("GET", "https://lms.jottocraft.com:2755" + url, true);
 	    dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids");
             dtps.http[url].setRequestHeader("dtps", "WinterCreek/" + dtps.ver);
             dtps.http[url].setRequestHeader("Authorization", "Bearer " + dtps.auth.accessToken);
