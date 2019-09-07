@@ -178,50 +178,6 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         //array of outcome averages sorted from highest to lowest
         var rollupScores = rollups.scores.map(function (score) { return score.score; }).sort((a, b) => b - a);
 
-        // IF Power+ Outcome Calculations are enabled, calculation outcome averages ---------------------------------
-        if (fluid.get("pref-outcomeCalc") == "true") {
-            var outcomeScores = {};
-            rollupScores = [];
-            dtps.classes[num].computedOutcomeScores = {};
-            dtps.classes[num].stream.forEach((assignment) => {
-                if (assignment.rubric) {
-                    assignment.rubric.forEach((rubric) => {
-                        if (rubric.score !== undefined) {
-                            if (outcomeScores[rubric.outcome_id] == undefined) {
-                                var calc = 0;
-                                data.linked.outcomes.forEach((outcome) => {
-                                    if (outcome.id == rubric.outcome_id) calc = outcome.calculation_int
-                                });
-                                outcomeScores[rubric.outcome_id] = { values: [], calc: calc, id: rubric.outcome_id }
-                            }
-                            outcomeScores[rubric.outcome_id].values.push({ val: rubric.score, assessedAt: new Date(rubric.assessedAt).getTime() })
-                        }
-                    })
-                }
-            })
-            Object.keys(outcomeScores).forEach((k) => {
-                //sort MOST RECENT -> OLDEST
-                outcomeScores[k].values.sort((a, b) => b.assessedAt - a.assessedAt);
-                outcomeScores[k].lastAssessment = outcomeScores[k].values[0].val * (outcomeScores[k].calc / 100);
-
-                var sum = 0;
-                for (var i = 1; i < outcomeScores[k].values.length; i++) {
-                    sum += outcomeScores[k].values[i].val
-                }
-                outcomeScores[k].everythingElse = (sum / (outcomeScores[k].values.length - 1)) * (1 - (outcomeScores[k].calc / 100))
-
-                outcomeScores[k].score = outcomeScores[k].lastAssessment + outcomeScores[k].everythingElse;
-
-                if (outcomeScores[k].values.length == 1) outcomeScores[k].score = outcomeScores[k].values[0].val;
-                rollupScores.push(outcomeScores[k].score);
-
-                //for gradebook
-                dtps.classes[num].computedOutcomeScores[k] = outcomeScores[k].score;
-            })
-            rollupScores = rollupScores.sort((a, b) => b - a);
-        }
-        // ----------------------------------------------------------------------------------------------------------
-
         //the highest value 75% of outcomes are greater than or equal to
         var number75 = null;
 
@@ -506,7 +462,7 @@ dtps.init = function () {
 }`);
                             }
                             dtps.computedClassGrades = 0;
-                            if ((fluid.get("pref-outcomeCalc") != "true") && (fluid.get("pref-calcGrades") == "true")) { dtps.computeClassGrade(i, true); }
+                            if (fluid.get("pref-calcGrades") == "true") dtps.computeClassGrade(i, true);
                             dtps.classStream(i, true);
                             if (data[i].enrollments[0].computed_current_score) {
                                 dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + filter + `"><div style="color: var(--dark);" class="progressLabel">` + subject + `</div><div class="progress" style="background-color: var(--light); width: calc(` + data[i].enrollments[0].computed_current_score + `% - 300px);"></div></div>`)
@@ -776,12 +732,6 @@ dtps.classStream = function (num, renderOv) {
             dtps.classes[num].streamitems = [];
             dtps.classes[num].weights = [];
 
-            //for outcome calc
-            if (fluid.get("pref-outcomeCalc") == "true") {
-                dtps.classes[num].pendingAssignments = 0;
-                dtps.classes[num].loadedAssignments = 0;
-            }
-
             for (var i = 0; i < data.length; i++) {
                 dtps.classes[num].weights.push({ weight: data[i].name + " (" + ((data.length == 1) && (data[i].group_weight == 0) ? 100 : data[i].group_weight) + "%)", assignments: [], possiblePoints: 0, earnedPoints: 0, icon: `<i class="material-icons">category</i> ` });
                 if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
@@ -854,44 +804,8 @@ dtps.classStream = function (num, renderOv) {
                     if (data[i].assignments[ii].submission !== undefined) {
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].missing = data[i].assignments[ii].submission.missing;
                     }
-                    if (fluid.get("pref-outcomeCalc") == "true") {
-                        if (data[i].assignments[ii].rubric && (data[i].assignments[ii].submission.score !== undefined)) {
-                            //assignment is graded AND has a rubric, check for outcome assessment
-                            dtps.classes[num].pendingAssignments++;
-                            dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/assignments/" + data[i].assignments[ii].id + "/submissions/" + dtps.user.id + "?include[]=full_rubric_assessment", function (resp, q) {
-                                var data = JSON.parse(resp);
-                                if (data.full_rubric_assessment) {
-                                    if (data.full_rubric_assessment.data) {
-                                        data.full_rubric_assessment.data.forEach((rubricData) => {
-                                            var streamIndex = dtps.classes[q.num].streamitems.indexOf(data.assignment_id)
-                                            var rubricIndex = dtps.classes[q.num].stream[streamIndex].rubricItems.indexOf(rubricData.learning_outcome_id)
-                                            if (dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex]) {
-                                                dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].score = rubricData.points;
-                                                dtps.classes[q.num].stream[streamIndex].rubric[rubricIndex].assessedAt = data.graded_at;
-                                            }
-                                        })
-                                    }
-                                }
-                                dtps.classes[q.num].loadedAssignments++;
-                                if (dtps.classes[q.num].pendingAssignments == dtps.classes[q.num].loadedAssignments) {
-                                    if (dtps.classes[q.num].loadingDelayed) {
-                                        if (fluid.get('pref-calcGrades') == "true") dtps.computeClassGrade(q.num, true);
-                                    }
-                                }
-                            }, { i: i, ii: ii, num: num })
-                        }
-                    }
                 }
                 if (dtps.classes[num].weights[i].possiblePoints !== 0) { dtps.classes[num].weights[i].grade = ((dtps.classes[num].weights[i].earnedPoints / dtps.classes[num].weights[i].possiblePoints) * 100).toFixed(2) + "%" } else { dtps.classes[num].weights[i].grade = "" }
-            }
-
-            if (fluid.get("pref-outcomeCalc") == "true") {
-                if (dtps.classes[num].pendingAssignments == dtps.classes[num].loadedAssignments) {
-                    //all pending assignments loaded
-                    if (fluid.get('pref-calcGrades') == "true") dtps.computeClassGrade(num, true);
-                } else {
-                    dtps.classes[num].loadingDelayed = true;
-                }
             }
 
             for (var i = 0; i < outcomes.length; i++) {
@@ -1298,8 +1212,6 @@ dtps.gradebook = function (num) {
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.number75 + `</div></h5>
     <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
-    ` + (fluid.get("pref-outcomeCalc") == "true" ? `<br /><p style="font-style: italic;color: var(--secText);">Outcome scores are being calculated by Power+ instead of Canvas. This may result in an inaccurate grade calculation.</p>` : "") + `
-    </div>` : "") + `
 
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
                     var keyA = dtps.classes[num].outcomes[a].score,
@@ -1890,29 +1802,6 @@ dtps.render = function () {
         dtps.showClasses(true);
     })
 
-    document.addEventListener("pref-calcGrades", function (e) {
-        if (String(e.detail) == "true") {
-            $("#outcomeCalcView").show();
-            /*swal({ title: 'Calculate Class Grades (beta)', text: 'CLASS GRADES CALCULATED IN POWER+ ARE NOT OFFICIAL. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY INCORRECT CLASS GRADES. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
-                if (!enable) {
-                    fluid.set("pref-calcGrades", false)
-                }
-            });*/
-        } else {
-            $("#outcomeCalcView").hide();
-        }
-    })
-
-    document.addEventListener("pref-outcomeCalc", function (e) {
-        if (String(e.detail) == "true") {
-            /*swal({ title: 'Calculate Outcome Scores (alpha)', text: 'OUTCOME SCORES CALCULATED IN POWER+ ARE NOT OFFICIAL. THIS FEATURE IS STILL DEVELOPMENT AND MAY DISPLAY INCORRECT OUTCOME SCORES. USE AT YOUR OWN RISK.', buttons: true, dangerMode: true, icon: "warning" }).then((enable) => {
-                if (!enable) {
-                    fluid.set("pref-outcomeCalc", false)
-                }
-            });*/
-        }
-    })
-
     if (dtps.embedded) {
         jQuery("body").html(`
     <div style="line-height: 0;" class="sidebar">
@@ -2150,13 +2039,8 @@ dtps.renderLite = function () {
     <div class="btns row themeSelector"></div>
     <br />
     <p>Grades</p>
-    <div onclick="fluid.set('pref-calcGrades')" class="switch pref-calcGrades"><span class="head"></span></div>
+    <div onclick="fluid.set('pref-calcGrades')" class="switch pref-calcGrades active"><span class="head"></span></div>
     <div class="label"><i class="material-icons">functions</i> Calculate class grades (beta)</div>
-
-   <div style="display: none;" id="outcomeCalcView"><br />
-<div onclick="fluid.set('pref-outcomeCalc')" class="switch pref-outcomeCalc"><span class="head"></span></div>
-<div class="label"><i class="material-icons">warning</i> Calculate outcome scores (alpha)</div></div>
-
     <br /><br />
     <div onclick="fluid.set('pref-hideGrades')" class="switch pref-hideGrades"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
