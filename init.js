@@ -220,7 +220,7 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         //store grade calculation variables to show them in the gradebook
         dtps.classes[classNum].gradeCalc = {
             lowestValue: lowestValue,
-            number75: number75
+            number75: (number75 !== null ? number75 : "")
         }
 
         //if there are no outcomes, remember this so the grades tab can be hidden
