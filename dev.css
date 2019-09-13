@@ -986,3 +986,19 @@ body:not(.dark) .items.black, body:not(.dark) .items.black i, body:not(.dark) .i
 .item.link span {
     vertical-align: middle;
 }
+
+.earned.outcomes {
+    height:20px;
+    text-align:right;
+    writing-mode: vertical-rl;
+    line-height:0px;
+    font-size:0px;
+}
+.earned.outcomes .outcome {
+    background-color:yellow;
+    display: inline-block;
+    vertical-align: middle;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+}
