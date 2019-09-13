@@ -633,6 +633,7 @@ body.dark .tabs.btns .btn:not(.active) {
     position: absolute;
     display: inline-block;
     right: 25px;
+    white-space:nowrap;
 }
 
 .classContent .card .points.spinner {
@@ -976,6 +977,7 @@ body:not(.dark) .items.black, body:not(.dark) .items.black i, body:not(.dark) .i
     writing-mode: vertical-rl;
     line-height:0px;
     font-size:0px !important;
+    white-space: normal;
 }
 .earned.outcomes .outcome {
     background-color:var(--text);
