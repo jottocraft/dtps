@@ -358,19 +358,11 @@ body {
     font-size: 20px;
 }
 
-body:not(.letterGrades) .points:hover .numbers {
+body:not(.letterGrades) .points:hover .outcomes {
     display: none !important;
 }
 
-body:not(.letterGrades) .points:not(:hover) .letters {
-    display: none !important;
-}
-
-.points:not(:hover) .percentage {
-    display: none !important;
-}
-
-.points:hover .possible {
+body:not(.letterGrades) .points:not(:hover) .numbers {
     display: none !important;
 }
 
