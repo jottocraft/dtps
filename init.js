@@ -947,6 +947,14 @@ dtps.renderStream = function (stream, searchRes) {
     var streamlist = [];
     var oldDiv = false;
     for (var i = 0; i < stream.length; i++) {
+        var outcomeDom = [];
+        if (stream[i].rubric) {
+            for (var ii = 0; ii < stream[i].rubric.length;ii++) {
+                if (stream[i].rubric[ii].score) {
+                    outcomeDom.push(`<div class="outcome score` + stream[i].rubric[ii].score + `"></div>`)
+                }
+            }
+        }
         streamlist.push((stream[i].old && !oldDiv ? `<h5 style="text-align: center; margin: 75px 25px 10px 75px; font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment('` + stream[i].id + `', ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
@@ -956,10 +964,8 @@ dtps.renderStream = function (stream, searchRes) {
         ` + (stream[i].locked ? `<i title="Assignment submissions are locked" class="material-icons floatingIcon" style="font-family: 'Material Icons Extended'; color: var(--secText, gray);">lock_outline</i>` : ``) + `
         ` + (stream[i].status == "pending_review" ? `<i title="Grade is pending review" class="material-icons floatingIcon" style="color: #b3b70b;">rate_review</i>` : ``) + `
         <div class="points">
-        <div class="earned numbers">` + (stream[i].letter ? stream[i].grade.split("/")[0] : "") + `</div>
-	<div class="earned letters">` + stream[i].letter + `</div>
+        ` + (outcomeDom.length ? `<div class="earned outcomes">` + outcomeDom.join("") + `</div>` : `<div class="earned numbers">` + (stream[i].letter ? stream[i].grade.split("/")[0] : "") + `</div>`) + `
         ` + (stream[i].grade ? (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") : "") + `
-	` + (stream[i].grade ? (stream[i].grade.split("/")[1] !== undefined ? `<div class="total percentage">` + ((Number(stream[i].grade.split("/")[0]) / Number(stream[i].grade.split("/")[1])) * 100).toFixed(2) + `%</div>` : "") : "") + `
         </div>
         <h4>` + stream[i].title + `</h4>
       	<h5>
@@ -1488,7 +1494,7 @@ dtps.showClasses = function (override) {
         dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
       <div class="name">` + name + `</div>
-      <div class="grade val">` + (dtps.classes[i].letter !== false ? `<span class="letter">` + dtps.classes[i].letter + `</span><span class="points">` + dtps.classes[i].grade + `%</span>` : `
+      <div class="grade val">` + (dtps.classes[i].letter !== false ? `<span style="display: block !important;" class="letter">` + dtps.classes[i].letter + `</span><span style="display: none !important;" class="points">` + dtps.classes[i].grade + `%</span>` : `
       <div class="spinner" style=" background-color: var(--norm); margin: 5px; "></div>`) + `</div>
       </div>
     `);
