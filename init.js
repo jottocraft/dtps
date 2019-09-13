@@ -26,7 +26,7 @@ var dtps = {
 };
 
 window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
-    if(window.localStorage.dtpsDebug == "true") alert("[DTPS] ERROR: " + errorMsg + "\n\n" + url + ":" + lineNumber);
+    if (window.localStorage.dtpsDebug == "true") alert("[DTPS] ERROR: " + errorMsg + "\n\n" + url + ":" + lineNumber);
     return false;
 }
 
@@ -135,7 +135,7 @@ dtps.webReq = function (req, url, callback, q) {
                 }
             };
             dtps.http[url].open("GET", "https://lms.jottocraft.com:2755" + url, true);
-	    dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids");
+            dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids");
             dtps.http[url].setRequestHeader("dtps", "WinterCreek/" + dtps.ver);
             dtps.http[url].setRequestHeader("Authorization", "Bearer " + dtps.auth.accessToken);
             dtps.http[url].send();
@@ -227,7 +227,32 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         if (!data.linked.outcomes.length) dtps.classes[classNum].noOutcomes = true;
 
         dtps.computedClassGrades++;
-        if ((dtps.computedClassGrades == dtps.classes.length) && renderSidebar) dtps.showClasses(true);
+        if (renderSidebar) {
+            if (letter !== "--") {
+                if (letter.includes("A")) gpa.push(4)
+                if (letter.includes("B")) gpa.push(3)
+                if (letter.includes("C")) gpa.push(2)
+                if (letter.includes("I")) gpa.push(0)
+                if (letter == "I") score = 0;
+                if (letter == "C") score = 75;
+                if (letter == "B-") score = 80;
+                if (letter == "B") score = 85;
+                if (letter == "B+") score = 88;
+                if (letter == "A-") score = 90;
+                if (letter == "A") score = 95;
+                dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[classNum].col + `">
+            <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[classNum].subject + `</div>
+            <div class="progress" style="background-color: var(--light); width: calc(` + score + `% - 300px);"></div></div>`)
+            }
+        }
+        if ((dtps.computedClassGrades == dtps.classes.length) && renderSidebar) {
+            dtps.showClasses(true);
+            var total = 0;
+            for (var i = 0; i < gpa.length; i++) {
+                total += gpa[i];
+            }
+            dtps.gpa = (total / gpa.length).toFixed(2);
+        }
     }, num);
 }
 
@@ -389,11 +414,11 @@ dtps.init = function () {
                         dtps.classesReady = 0;
                         dtps.colorCSS = [];
                         dtps.gpa = null;
+                        gpa = [];
                         var colors = JSON.parse(colorsResp);
                         var dashboard = JSON.parse(dashboardResp);
                         var data = JSON.parse(resp);
                         dtps.gradeHTML = [];
-                        var gpa = [];
                         data.sort(function (a, b) {
                             var keyA = dashboard.dashboard_positions["course_" + a.id],
                                 keyB = dashboard.dashboard_positions["course_" + b.id];
@@ -464,15 +489,6 @@ dtps.init = function () {
                             dtps.computedClassGrades = 0;
                             if (fluid.get("pref-calcGrades") !== "false") dtps.computeClassGrade(i, true);
                             dtps.classStream(i, true);
-                            if (data[i].enrollments[0].computed_current_score) {
-                                dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + filter + `"><div style="color: var(--dark);" class="progressLabel">` + subject + `</div><div class="progress" style="background-color: var(--light); width: calc(` + data[i].enrollments[0].computed_current_score + `% - 300px);"></div></div>`)
-                            }
-                            if (data[i].enrollments[0].computed_current_grade) {
-                                if (data[i].enrollments[0].computed_current_grade.includes("A")) gpa.push(4)
-                                if (data[i].enrollments[0].computed_current_grade.includes("B")) gpa.push(3)
-                                if (data[i].enrollments[0].computed_current_grade.includes("C")) gpa.push(2)
-                                if (data[i].enrollments[0].computed_current_grade.includes("DV")) gpa.push(0)
-                            }
                             if (dtps.currentClass == data[i].id) {
                                 dtps.selectedClass = i;
                                 dtps.selectedContent = "stream";
@@ -481,10 +497,6 @@ dtps.init = function () {
                             }
                         }
                         dtps.log("Grades loaded: ", dtps.classes);
-                        var total = 0;
-                        for (var i = 0; i < gpa.length; i++) {
-                            total += gpa[i];
-                        }
 
                         if (dtps.shouldRender) dtps.render();
                         if (dtps.first && dtps.embedded) dtps.firstrun();
@@ -2171,7 +2183,7 @@ dtps.renderLite = function () {
     jQuery(".items").html(`<h4>` + dtps.user.name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
-    <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html(dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
+    <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
     if (!dtps.embedded) $(".embeddedOptions").hide();
     if (!dtps.embedded) fluid.onLoad();
 }
