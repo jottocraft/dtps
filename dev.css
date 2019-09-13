@@ -358,22 +358,6 @@ body {
     font-size: 20px;
 }
 
-body:not(.letterGrades) .points:hover .outcomes {
-    display: none !important;
-}
-
-body:not(.letterGrades) .points:not(:hover) .numbers {
-    display: none !important;
-}
-
-body.letterGrades .points:not(:hover) .numbers {
-    display: none !important;
-}
-
-body.letterGrades .points:hover .letters {
-    display: none !important;
-}
-
 body.dark .card .dot {
     background-color: #181b1d;
 }
@@ -664,7 +648,6 @@ body.dark .tabs.btns .btn:not(.active) {
 
 .classContent .card .points .total {
     font-size: 14px;
-    margin-top: 15px;
     display: inline-block;
     color: var(--secText);
 }
@@ -992,13 +975,30 @@ body:not(.dark) .items.black, body:not(.dark) .items.black i, body:not(.dark) .i
     text-align:right;
     writing-mode: vertical-rl;
     line-height:0px;
-    font-size:0px;
+    font-size:0px !important;
 }
 .earned.outcomes .outcome {
-    background-color:yellow;
+    background-color:var(--text);
     display: inline-block;
     vertical-align: middle;
     width:7px;
     height:7px;
     border-radius:50%;
+    margin: 1px;
+}
+
+.earned.outcomes .outcome.score1 {
+    background-color:#b90000;
+}
+
+.earned.outcomes .outcome.score2 {
+    background-color:#cc8400;
+}
+
+.earned.outcomes .outcome.score3 {
+    background-color:#b5b500;
+}
+
+.earned.outcomes .outcome.score4 {
+    background-color:#007700;
 }
