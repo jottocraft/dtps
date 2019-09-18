@@ -15,7 +15,31 @@ var dtps = {
     explorer: [],
     embedded: window.location.href.includes("instructure.com"),
     auth: {
-        accessToken: window.localStorage.accessToken
+        accessToken: window.localStorage.accessToken,
+        canvasURL: "https://dtechhs.instructure.com",
+        client_id: "146080000000000005",
+        uri: "https://powerplus.app/app",
+        scope: [
+          "url:GET|/api/v1/courses/:course_id/outcome_rollups",
+          "url:GET|/api/v1/users/:id",
+          "url:GET|/api/v1/users/:id/colors",
+          "url:GET|/api/v1/users/:id/dashboard_positions",
+          "url:GET|/api/v1/courses",
+          "url:GET|/api/v1/courses/:course_id/pages",
+          "url:GET|/api/v1/courses/:course_id/discussion_topics",
+          "url:GET|/api/v1/courses/:course_id/discussion_topics/:topic_id/view",
+          "url:GET|/api/v1/courses/:course_id/outcome_results",
+          "url:GET|/api/v1/courses/:course_id/assignment_groups",
+          "url:GET|/api/v1/courses/:course_id/modules",
+          "url:GET|/api/v1/courses/:course_id/front_page",
+          "url:GET|/api/v1/courses/:course_id/pages/:url",
+          "url:GET|/api/v1/outcomes/:id",
+          "url:GET|/api/v1/courses/:course_id/outcome_alignments",
+          "url:GET|/api/v1/announcements",
+          //not currently used in dtps, might be used later on
+          "url:GET|/api/v1/courses/:course_id/assignments",
+          "url:GET|/api/v1/courses/:course_id/assignment_groups/:assignment_group_id/assignments"
+        ]
     },
     chromaProfile: {
         title: "Power+",
@@ -42,6 +66,30 @@ dtps.changelog = function () {
     fluid.cards.close(".card.focus")
     fluid.modal(".card.changelog");
 };
+
+//get url paramaters
+dtps.getParams = function () {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+        vars[key] = value;
+    });
+    return vars;
+}
+
+//dtps.authenticate and dtps.webReq work together to ensure the user is authenticated
+//the dtps client must not be embedded for dtps.authenticate to work
+dtps.authenticate = function (cb) {
+    var params = dtps.getParams();
+    if (params.code && (params.state == window.localStorage.authState)) {
+        dtps.webReq("backend", "/login/oauth2/token?client_id=" + dtps.auth.client_id + "&redirect_uri=" + dtps.auth.uri + "&grant_type=authorization_code&code=" + params.code, function (res) {
+            console.log(JSON.parse(res));
+        });
+    } else {
+	var state = "WinterCreek" + Math.floor(1000 + Math.random() * 9000);
+	window.localStorage.authState = state;
+        window.location.href = dtps.auth.canvasURL + "/login/oauth2/auth?client_id=" + dtps.auth.client_id + "&scope=" + dtps.auth.scope.join(" ") + "&purpose=" + encodeURI(navigator.platform) + "&response_type=code&state=" + state + "&redirect_uri=" + dtps.auth.uri
+    }
+}
 
 //Logs debugging messags to both the normal JS console and also Power+'s included debugging log
 dtps.log = function (msg) {
