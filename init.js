@@ -2305,7 +2305,7 @@ dtps.renderLite = function () {
 <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">` + dtps.user.name + ` <span style="font-size: 12px;">` + dtps.user.id + `</span></h4>
 
 
-<div style="display:inline-block;" class="badge marketer">marketer<i style="vertical-align: middle;" class="material-icons sudo">work</i></div>
+<div style="display:inline-block;" class="badge marketer">marketer<i style="vertical-align: middle;" class="material-icons marketer">work_outline</i></div>
 <div style="display:inline-block;" class="badge sudo">tester<i style="vertical-align: middle;" class="material-icons sudo">bug_report</i></div>
 <div style="display:inline-block;" class="badge contributor">contributor<i style="vertical-align: middle;" class="material-icons contributor">group</i></div>
 <div style="display:inline-block;" class="badge dev">developer<i style="vertical-align: middle;" class="material-icons dev">code</i></div>
