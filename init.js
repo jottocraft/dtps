@@ -253,7 +253,9 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         var rollupScores = rollups.scores.map(function (score) { return score.score; }).sort((a, b) => b - a);
 
         //the highest value 75% of outcomes are greater than or equal to
+        //number75thresh is the percentage of assignments >= number75. number75thresh is always >= 0.75 && <= 1
         var number75 = null;
+        var number75thresh = null;
 
         //test values
         var testValues = [3.5, 3, 2.5]
@@ -272,6 +274,7 @@ dtps.computeClassGrade = function (num, renderSidebar) {
                 //if at least 75% of the outcomes are >= test value, number75 is the test value
                 if ((equalOrGreater.length / rollupScores.length) >= 0.75) {
                     number75 = testValues[i];
+                    number75thresh = (equalOrGreater.length / rollupScores.length);
                 }
             }
         }
@@ -294,7 +297,10 @@ dtps.computeClassGrade = function (num, renderSidebar) {
         //store grade calculation variables to show them in the gradebook
         dtps.classes[classNum].gradeCalc = {
             lowestValue: lowestValue,
-            number75: (number75 !== null ? number75 : "")
+            number75: (number75 !== null ? number75 : ""),
+            number75thresh: number75thresh,
+            //number75percent: (number75thresh-0.75)/(1-0.75),
+            //lowestValuePercent: (),
         }
 
         //if there are no outcomes, remember this so the grades tab can be hidden
@@ -1295,32 +1301,88 @@ dtps.gradebook = function (num) {
                     })
                 }
 
+                //temporary variable for if outcome divider is added yet
+                var dividerAdded = false;
+
                 $(".classContent").html(headsUp + `
 
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
     <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].name + `
-    <div style="-webkit-text-fill-color: var(--light);display: inline-block;background-color: var(--norm);width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h4>
+    <div class="classGradeCircle" style="display: inline-block;width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h4>
     <h5 style="height: 60px; line-height: 60px;">75% of outcome scores are ≥
-    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.number75 + `</div></h5>
+    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
     <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
+    <br />
+    <a onclick="$('#classGradeMore').show(); $(this).hide();" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
+    <div style="display: none;" id="classGradeMore">
+    <table class="u-full-width">
+  <thead>
+    <tr>
+      <th>Final Letter</th>
+      <th>75% of outcome scores ≥</th>
+      <th>No outcome scores below</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ` + (dtps.classes[num].letter == "A" ? `style="color: var(--norm);font-size:20px;"` : ``) + `>
+      <td>A</td>
+      <td>3.5</td>
+      <td>3.0</td>
+    </tr>
+    <tr ` + (dtps.classes[num].letter == "A-" ? `style="color: var(--norm);font-size:20px;"` : ``) + `>
+      <td>A-</td>
+      <td>3.5</td>
+      <td>2.5</td>
+    </tr>
+    <tr ` + (dtps.classes[num].letter == "B+" ? `style="color: var(--norm);font-size:20px;"` : ``) + `>
+      <td>B+</td>
+      <td>3</td>
+      <td>2.5</td>
+    </tr>
+    <tr ` + (dtps.classes[num].letter == "B" ? `style="color: var(--norm);font-size:20px;"` : ``) + `>
+      <td>B</td>
+      <td>3</td>
+      <td>2.25</td>
+    </tr>
+    <tr ` + (dtps.classes[num].letter == "B-" ? `style="color: var(--norm);font-size:20px;"` : ``) + `>
+      <td>B-</td>
+      <td>3</td>
+      <td>2.0</td>
+    </tr>
+    <tr ` + (dtps.classes[num].letter == "C" ? `style="color: var(--norm);font-size:20px;"` : ``) + `>
+      <td>C</td>
+      <td>2.5</td>
+      <td>2.0</td>
+    </tr>
+    <tr ` + (dtps.classes[num].letter == "I" ? `style="color: var(--norm);font-size:20px;"` : ``) + `>
+      <td>I</td>
+      <td>Anything else</td>
+      <td>--</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>` : "") + `
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
                     var keyA = dtps.classes[num].outcomes[a].score,
                         keyB = dtps.classes[num].outcomes[b].score;
-                    if (keyA == undefined) { keyA = Infinity; }
-                    if (keyB == undefined) { keyB = Infinity; }
+                    if (keyA == undefined) { keyA =  999999 - dtps.classes[num].outcomes[a].alignments.length; }
+                    if (keyB == undefined) { keyB =  999999 - dtps.classes[num].outcomes[b].alignments.length; }
                     // Compare the 2 scores
                     if (keyA > keyB) return 1;
                     if (keyA < keyB) return -1;
                     return 0;
                 }).map(function (i) {
-                    return `
-<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 110px;cursor: pointer;" class="card">
-  <h5 style="font-weight: bold;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
+                    var divider = !dividerAdded && !dtps.classes[num].outcomes[i].score;
+                    if (divider) dividerAdded = true;
+                    return (divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
+<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 105px;cursor: pointer;" class="card">
+  <h5 style="font-size: 1.5rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
   ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + `
-  ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `/4</div>` : "") + `
+  ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `</div>` : "") + `
+  ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
 </div>`
                 }).join("") + `
 </div>`)
