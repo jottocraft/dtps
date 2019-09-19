@@ -84,6 +84,26 @@ body.cacao .classContent {
     color: var(--themeText) !important;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border-color: var(--secText);
+}
+
+body.dark .classGradeCircle {
+    background-color: var(--norm);
+    -webkit-text-fill-color: var(--light);
+    color: var(--light);
+}
+
+body:not(.dark) .classGradeCircle {
+    background-color: var(--light);
+    -webkit-text-fill-color: var(--norm);
+    color: var(--norm);
+}
+
 .infoChip {
     vertical-align: middle;
     margin: 0px;
