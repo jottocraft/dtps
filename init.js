@@ -877,7 +877,7 @@ dtps.classStream = function (num, renderOv) {
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 3) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#b5b500";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 4) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#007700";
                                     data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
-                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = data[i].assignments[ii].rubric[iii].ratings[iiii].description;
+                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = data[i].assignments[ii].rubric[iii].ratings[iiii].points;
                                 }
                             }
                         }
@@ -916,7 +916,21 @@ dtps.classStream = function (num, renderOv) {
                     }
                 }
             }
-            if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) { jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream)); } }
+            if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) {
+              jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream.sort(function (a, b) {
+        var keyA = new Date(a.dueDate).getTime(),
+            keyB = new Date(b.dueDate).getTime();
+        var now = new Date().getTime();
+        if (a.dueDate == null) { keyA = Infinity; a.old = true; }
+        if (b.dueDate == null) { keyB = Infinity; b.old = true; }
+        if (keyA < now) { keyA += 9999999999999; a.old = true; }
+        if (keyB < now) { keyB += 9999999999999; b.old = true; }
+        // Compare the 2 dates
+        if (keyA > keyB) return 1;
+        if (keyA < keyB) return -1;
+        return 0;
+    }))); 
+            } }
             dtps.classesReady++;
             dtps.checkReady(num);
         });
