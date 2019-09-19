@@ -1051,7 +1051,7 @@ dtps.renderStream = function (stream, searchRes) {
                 }
             }
         }
-        streamlist.push((stream[i].old && !oldDiv ? `<h5 style="text-align: center; margin: 75px 25px 10px 75px; font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
+        streamlist.push((stream[i].old && !oldDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment('` + stream[i].id + `', ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
