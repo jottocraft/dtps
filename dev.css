@@ -745,6 +745,12 @@ body.dark .tabs.btns .btn:not(.active) {
     margin: 0px !important;
 }
 
+.badge.marketer {
+    color: var(--secText);
+    background-color: transparent !important;
+    margin: 0px !important;
+}
+
 .badge.contributor {
     color: #20da61;
     background-color: transparent !important;
@@ -930,7 +936,7 @@ body.midnight:not(.dashboard) .background:before {
     background-color: var(--light);
 }
 
-body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor, body:not(.prerelease) .prerelease {
+body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor, body:not(.prerelease) .prerelease, body:not(.marketer) .marketer {
     display: none !important;
 }
 
