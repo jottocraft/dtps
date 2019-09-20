@@ -405,7 +405,7 @@ dtps.init = function () {
         dtps.user = JSON.parse(user);
         sudoers = ["669", "672", "209"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-	marketers = ["669", "672", "209"]
+        marketers = ["669", "672", "209"]
         if (marketers.includes(dtps.user.id)) { jQuery("body").addClass("marketer"); dtps.log("Promotional marketing mode enabled"); }
         contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
@@ -877,7 +877,8 @@ dtps.classStream = function (num, renderOv) {
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 3) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#b5b500";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 4) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#007700";
                                     data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
-                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = data[i].assignments[ii].rubric[iii].ratings[iiii].points;
+                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "";
+                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].color) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "gray";
                                 }
                             }
                         }
@@ -916,21 +917,23 @@ dtps.classStream = function (num, renderOv) {
                     }
                 }
             }
-            if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) { if (!renderOv) {
-              jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream.sort(function (a, b) {
-        var keyA = new Date(a.dueDate).getTime(),
-            keyB = new Date(b.dueDate).getTime();
-        var now = new Date().getTime();
-        if (a.dueDate == null) { keyA = Infinity; a.old = true; }
-        if (b.dueDate == null) { keyB = Infinity; b.old = true; }
-        if (keyA < now) { keyA += 9999999999999; a.old = true; }
-        if (keyB < now) { keyB += 9999999999999; b.old = true; }
-        // Compare the 2 dates
-        if (keyA > keyB) return 1;
-        if (keyA < keyB) return -1;
-        return 0;
-    }))); 
-            } }
+            if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
+                if (!renderOv) {
+                    jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream.slice().sort(function (a, b) {
+                        var keyA = new Date(a.dueDate).getTime(),
+                            keyB = new Date(b.dueDate).getTime();
+                        var now = new Date().getTime();
+                        if (a.dueDate == null) { keyA = Infinity; a.old = true; }
+                        if (b.dueDate == null) { keyB = Infinity; b.old = true; }
+                        if (keyA < now) { keyA += 9999999999999; a.old = true; }
+                        if (keyB < now) { keyB += 9999999999999; b.old = true; }
+                        // Compare the 2 dates
+                        if (keyA > keyB) return 1;
+                        if (keyA < keyB) return -1;
+                        return 0;
+                    })));
+                }
+            }
             dtps.classesReady++;
             dtps.checkReady(num);
         });
@@ -1288,39 +1291,67 @@ dtps.gradebook = function (num) {
 
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
             dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
-                var alignmentData = JSON.parse(resp);
-                var rollupData = JSON.parse(respp);
-                dtps.classes[num].outcomes = {};
+                dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?user_ids[]=" + dtps.user.id, function (resppp) {
+                    var alignmentData = JSON.parse(resp);
+                    var rollupData = JSON.parse(respp);
+                    var resultsData = JSON.parse(resppp).outcome_results;
+                    dtps.classes[num].outcomes = {};
 
-                for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
-                    dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
-                    dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
-                }
+                    console.log(resultsData)
 
-                for (var i = 0; i < alignmentData.length; i++) {
-                    if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
-                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
-                    } else {
-                        dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
+                    for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
+                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
+                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
+                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignments = []
+                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignmentIDs = []
                     }
-                }
 
-                for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
-                    dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome].score = rollupData.rollups[0].scores[i].score
-                }
-
-                if (dtps.classes[num].computedOutcomeScores !== undefined) {
-                    Object.keys(dtps.classes[num].computedOutcomeScores).forEach((k) => {
-                        if (dtps.classes[num].outcomes[k]) {
-                            dtps.classes[num].outcomes[k].score = dtps.classes[num].computedOutcomeScores[k]
+                    for (var i = 0; i < alignmentData.length; i++) {
+                        if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
+                            dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
+                            for (var ii = 0; ii < resultsData.length; ii++) {
+                                if (String(resultsData[ii].links.assignment).replace("assignment_", "") == alignmentData[i].assignment_id) {
+                                    if (resultsData[ii].score && !dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.includes(resultsData[ii].links.assignment)) {
+                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.push(alignmentData[i]);
+                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.push(resultsData[ii].links.assignment);
+                                    }
+                                }
+                            }
+                        } else {
+                            dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
                         }
-                    })
-                }
+                    }
 
-                //temporary variable for if outcome divider is added yet
-                var dividerAdded = false;
+                    for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
+                        var outcome = dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome];
+                        outcome.score = rollupData.rollups[0].scores[i].score
+                        for (var ii = 0; ii < dtps.classes[num].stream.length; ii++) {
+                            if (dtps.classes[num].stream[ii].title == rollupData.rollups[0].scores[i].title) {
+                                outcome.lastAssignment = {
+                                    id: dtps.classes[num].stream[ii].id,
+                                    name: rollupData.rollups[0].scores[i].title,
+                                    score: dtps.classes[num].stream[ii].rubric[dtps.classes[num].stream[ii].rubricItems.indexOf(rollupData.rollups[0].scores[i].links.outcome)].score
+                                }
+                            }
+                        }
+                        if (outcome.lastAssignment) {
+                            //straight outcome average (w/o decaying average thing)
+                            outcome.straightAverage = ((((outcome.score - (outcome.lastAssignment.score * (outcome.calculation_int / 100))) / (1 - (outcome.calculation_int / 100))) * (outcome.gradedAlignments.length - 1)) + outcome.lastAssignment.score) / outcome.gradedAlignments.length;
+                        }
+                    }
 
-                $(".classContent").html(headsUp + `
+                    if (dtps.classes[num].computedOutcomeScores !== undefined) {
+                        Object.keys(dtps.classes[num].computedOutcomeScores).forEach((k) => {
+                            if (dtps.classes[num].outcomes[k]) {
+                                dtps.classes[num].outcomes[k].score = dtps.classes[num].computedOutcomeScores[k]
+                            }
+                        })
+                    }
+
+                    //temporary variable for if outcome divider is added yet
+                    var dividerAdded = false;
+
+                    $(".classContent").html(headsUp + `
 
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
     <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].name + `
@@ -1381,18 +1412,18 @@ dtps.gradebook = function (num) {
 </div>
 </div>` : "") + `
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
-                    var keyA = dtps.classes[num].outcomes[a].score,
-                        keyB = dtps.classes[num].outcomes[b].score;
-                    if (keyA == undefined) { keyA =  999999 - dtps.classes[num].outcomes[a].alignments.length; }
-                    if (keyB == undefined) { keyB =  999999 - dtps.classes[num].outcomes[b].alignments.length; }
-                    // Compare the 2 scores
-                    if (keyA > keyB) return 1;
-                    if (keyA < keyB) return -1;
-                    return 0;
-                }).map(function (i) {
-                    var divider = !dividerAdded && !dtps.classes[num].outcomes[i].score;
-                    if (divider) dividerAdded = true;
-                    return (divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
+                        var keyA = dtps.classes[num].outcomes[a].score,
+                            keyB = dtps.classes[num].outcomes[b].score;
+                        if (keyA == undefined) { keyA = 999999 - dtps.classes[num].outcomes[a].alignments.length; }
+                        if (keyB == undefined) { keyB = 999999 - dtps.classes[num].outcomes[b].alignments.length; }
+                        // Compare the 2 scores
+                        if (keyA > keyB) return 1;
+                        if (keyA < keyB) return -1;
+                        return 0;
+                    }).map(function (i) {
+                        var divider = !dividerAdded && !dtps.classes[num].outcomes[i].score;
+                        if (divider) dividerAdded = true;
+                        return (divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
 <div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 105px;cursor: pointer;" class="card">
   <h5 style="font-size: 1.5rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
@@ -1400,11 +1431,17 @@ dtps.gradebook = function (num) {
   ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `</div>` : "") + `
   ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
 </div>`
-                }).join("") + `
+                    }).join("") + `
 </div>`)
+                });
             });
         })
     }
+}
+
+//grade boost is its own thing now because of CBL
+dtps.gradeBoost = function () {
+
 }
 
 //Shows details for an assignment given the assignment ID and class number
