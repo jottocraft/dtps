@@ -1,13 +1,14 @@
-/* Power+ v2.0.0 (beta)
+/* Power+ v2.0.0 (GM)
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 var dtps = {
     ver: 200,
-    readableVer: "v2.0.0 (beta)",
-    trackSuffix: " (beta)",
-    trackColor: "#ec9b06",
+    readableVer: "v2.0.0 (GM)",
+    trackSuffix: " (GM)",
+    fullTrackSuffix: " (Golden Master)",
+    trackColor: "#ceb420",
     showLetters: false,
     fullNames: false,
     classes: [],
@@ -46,6 +47,15 @@ var dtps = {
         description: "Razer Chroma effects for Power+ (beta)",
         author: "jottocraft",
         domain: "dtps.js.org"
+    },
+    cblColors: {
+        1: "#c4474e",
+        1.5: "#c45847",
+        2: "#c26d44",
+        2.5: "#b59b53",
+        3: "#a1b553",
+        3.5: "#89b553",
+        4: "#4f9e59"
     }
 };
 
@@ -126,17 +136,17 @@ dtps.log = function (msg) {
 //Renders Power+ first run stuff
 dtps.firstrun = function () {
     if (dtps.embedded) {
-        jQuery("body").append(`<div id="dtpsNativeAlert" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-dialog-buttons" tabindex="-1" aria-hidden="false" style="outline: 0px; z-index: 5000; height: auto; width: 500px; margin-top: 100px; top: 0; margin-left: calc(50% - 250px); display: block;">
+        jQuery("body").append(`<div id="dtpsNativeAlert" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-dialog-buttons" tabindex="-1" aria-hidden="false" style="outline: 0px; z-index: 5000; height: auto; width: 500px; position: fixed; top: 100px; margin-left: calc(50% - 250px); display: block;">
 <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix"><span id="ui-id-1" class="ui-dialog-title" role="heading">Welcome to Power+` + dtps.trackSuffix + `</span><button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" class="ui-dialog-titlebar-close ui-corner-all"><span class="ui-icon ui-icon-closethick">close</span></button></div>
 <form id="new_course_form" class="bootstrap-form form-horizontal ui-dialog-content ui-widget-content" data-turn-into-dialog="{&quot;width&quot;:500,&quot;resizable&quot;:false}" style="width: auto; min-height: 0px; height: auto; display: block;" action="/courses" accept-charset="UTF-8" method="post" aria-expanded="true" scrolltop="0" scrollleft="0">
 <h5>` + dtps.readableVer + `</h5>
-<p>Things to keep in mind when testing Power+` + dtps.trackSuffix + `</p>
-<li>Power+` + dtps.trackSuffix + ` can't fully replace Canvas yet. Many Canvas features are not included in Power+` + dtps.trackSuffix + `.</li>
-<li>The Power+ gradebook is being temporarily disabled and will return later this year.</li>
-<li style="color: red;"><b>Power+` + dtps.trackSuffix + ` is still in development. There will be a lot of bugs and missing features, especially in the first month of the school year.</b></li>
+<p>Things to keep in mind while using Power+` + dtps.trackSuffix + `:</p>
+<li>Power+` + dtps.trackSuffix + ` can't fully replace Canvas yet. Several Canvas features are not included in Power+` + dtps.trackSuffix + `.</li>
+<li>Class grade calculations in Power+ are not official. If you want to see class grades from Canvas, you can disable class grade calculations in the settings menu.</li>
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display inaccurate information. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
-</form><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" type="button" data-text-while-loading="Cancel" class="btn dialog_closer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span></button><button onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.render();" type="button" data-text-while-loading="Loading Power+..." class="btn btn-primary button_type_submit ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Continue</span></button></div></div></div>
-<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%; height: 100%; z-index: 500;"></div>`)
+</form><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" type="button" data-text-while-loading="Cancel" class="btn dialog_closer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span></button>
+<button onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.shouldRender = true; dtps.render(); dtps.masterStream(true);" type="button" data-text-while-loading="Loading Power+..." class="btn btn-primary button_type_submit ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Continue</span></button></div></div></div>
+<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 500;"></div>`)
     } else {
         $("#welcomeVer").html(dtps.readableVer)
         fluid.splash("#welcomeToDtps")
@@ -150,7 +160,7 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
     if (sub == undefined) var sub = "";
     if (loadingSplash) {
         if (dtps.embedded) {
-            jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
+            jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
 <style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner { width: 40px; height: 40px; margin: 100px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style></div>`)
         }
     } else {
@@ -159,8 +169,11 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
 <form id="new_course_form" class="bootstrap-form form-horizontal ui-dialog-content ui-widget-content" data-turn-into-dialog="{&quot;width&quot;:500,&quot;resizable&quot;:false}" style="width: auto; min-height: 0px; height: auto; display: block;" action="/courses" accept-charset="UTF-8" method="post" aria-expanded="true" scrolltop="0" scrollleft="0">
 <h4>` + text + `</h4>
 <p>` + sub + `</p>
-</form></div>
-<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="width: 100%; height: 100%; z-index: 500;"></div>`)
+</form>
+<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset">
+<button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" type="button" data-text-while-loading="Cancel" class="btn dialog_closer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">OK</span></button>
+</div></div></div>
+<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 500;"></div>`)
     }
 };
 
@@ -386,7 +399,7 @@ dtps.init = function () {
     dtps.explorer.push({ name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs" });
 
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
-        fluidThemes = [["rainbow"]];
+        fluidThemes = [["midnight"]];
         fluidAutoLoad = false;
 
         document.addEventListener("fluidTheme", function (data) {
@@ -410,7 +423,7 @@ dtps.init = function () {
         contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
         if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
-        if ((dtps.trackSuffix !== "") && (dtps.trackSuffix !== "GM")) jQuery("body").addClass("prerelease");
+        if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
         if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
         $ = jQuery;
         var min = new Date().getMinutes();
@@ -458,7 +471,7 @@ dtps.init = function () {
         dtps.showChangelog = false;
         dtps.first = false;
         if (window.localStorage.dtpsInstalled !== "true") {
-            if (!dtps.embedded) dtps.shouldRender = false;
+            if (dtps.embedded) dtps.shouldRender = false;
             dtps.first = true;
         }
         if (dtps.first && !dtps.embedded) dtps.firstrun();
@@ -475,16 +488,14 @@ dtps.init = function () {
             window.dataLayer = window.dataLayer || [];
             function gtag() { dataLayer.push(arguments); }
             var configTmp = {
-                'page_title': 'portal',
-                'page_path': '/portal',
+                'page_title': 'canvas',
+                'page_path': '/canvas',
                 'anonymize_ip': true
             }
             if (dtps.trackSuffix !== "") {
                 configTmp = {
-                    //'page_title' : 'prerelease',
-                    //'page_path': '/prerelease',
-                    'page_title': 'canvasdp',
-                    'page_path': '/canvasdp',
+                    'page_title': 'prerelease',
+                    'page_path': '/prerelease',
                     'anonymize_ip': true
                 }
             }
@@ -570,13 +581,12 @@ dtps.init = function () {
                             }
                             dtps.computedClassGrades = 0;
                             if (fluid.get("pref-calcGrades") !== "false") dtps.computeClassGrade(i, true);
-                            dtps.classStream(i, true);
                             if (dtps.currentClass == data[i].id) {
                                 dtps.selectedClass = i;
                                 dtps.selectedContent = "stream";
                                 dtps.chroma();
-                                dtps.classStream(i);
                             }
+                            dtps.classStream(i, true);
                         }
                         dtps.log("Grades loaded: ", dtps.classes);
 
@@ -594,11 +604,11 @@ dtps.init = function () {
 dtps.readyInterval = "n/a";
 dtps.checkReady = function (num) {
     dtps.log(num + " reporting as READY total of " + dtps.classesReady);
-    if ((dtps.selectedClass == "dash") && (dtps.classesReady == dtps.classes.length)) {
+    if ((dtps.selectedClass == "dash") && (dtps.classesReady == dtps.classes.length) && dtps.shouldRender) {
         dtps.log("All classes ready, loading master stream");
         dtps.masterStream(true);
     } else {
-        if ((dtps.selectedClass == "dash") && (dtps.classesReady < dtps.classes.length)) {
+        if ((dtps.selectedClass == "dash") && (dtps.classesReady < dtps.classes.length) && dtps.shouldRender) {
             dtps.masterStream();
         }
     }
@@ -817,7 +827,7 @@ dtps.classStream = function (num, renderOv) {
     }
     var allData = [];
     var total = null;
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?user_ids[]=" + dtps.user.id, function (respp) {
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?per_page=100&user_ids[]=" + dtps.user.id, function (respp) {
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/assignment_groups?include[]=assignments&include[]=submissions&include[]=submission", function (resp) {
             var data = JSON.parse(resp);
             var outcomes = JSON.parse(respp).outcome_results;
@@ -872,10 +882,7 @@ dtps.classStream = function (num, renderOv) {
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("DEVELOPING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Developing";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PROFICIENT")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Proficient";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PIONEERING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Pioneering";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 1) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#b90000";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 2) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#cc8400";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 3) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#b5b500";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].points == 4) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "#007700";
+                                    data[i].assignments[ii].rubric[iii].ratings[iiii].color = dtps.cblColors[data[i].assignments[ii].rubric[iii].ratings[iiii].points];
                                     data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
                                     if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "";
                                     if (!data[i].assignments[ii].rubric[iii].ratings[iiii].color) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "gray";
@@ -1050,7 +1057,7 @@ dtps.renderStream = function (stream, searchRes) {
         if (stream[i].rubric) {
             for (var ii = 0; ii < stream[i].rubric.length; ii++) {
                 if (stream[i].rubric[ii].score) {
-                    outcomeDom.push(`<div class="outcome score` + stream[i].rubric[ii].score + `"></div>`)
+                    outcomeDom.push(`<div title="` + stream[i].rubric[ii].description + `" style="background-color: ` + dtps.cblColors[stream[i].rubric[ii].score] + `" class="outcome"></div>`)
                 }
             }
         }
@@ -1067,10 +1074,10 @@ dtps.renderStream = function (stream, searchRes) {
         ` + (stream[i].grade ? (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") : "") + `
         </div>
         <h4>` + stream[i].title + `</h4>
-      	<h5>
+      	<h5 style="white-space: nowrap; overflow: hidden;">
          ` + (stream[i].due ? `<div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due ` + stream[i].due + `</div>` : "") + `
-        ` + ((stream[i].weight !== undefined) && stream[i].uniqueWeight ? `<div class="infoChip weighted">` + stream[i].weightIcon + stream[i].weight.replace("Comprehension Checks", "CC").replace("Success Skills", "SS").replace("Performance Tasks", "PT") + `</div>` : "") + `
-        ` + (stream[i].outcomes !== undefined ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + stream[i].outcomes.length + `</div>` : "") + `
+         ` + (stream[i].outcomes !== undefined ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + stream[i].outcomes.length + `</div>` : "") + `
+         ` + ((stream[i].weight !== undefined) && stream[i].uniqueWeight ? `<div class="infoChip weighted">` + stream[i].weightIcon + stream[i].weight.replace("Comprehension Checks", "CC").replace("Success Skills", "SS").replace("Performance Tasks", "PT") + `</div>` : "") + `
         </h5>
         </div>
       `);
@@ -1291,11 +1298,22 @@ dtps.gradebook = function (num) {
 
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
             dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
-                dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?user_ids[]=" + dtps.user.id, function (resppp) {
+                dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?per_page=100&user_ids[]=" + dtps.user.id, function (resppp) {
                     var alignmentData = JSON.parse(resp);
                     var rollupData = JSON.parse(respp);
                     var resultsData = JSON.parse(resppp).outcome_results;
                     dtps.classes[num].outcomes = {};
+
+                    console.log(resultsData)
+
+                    resultsData.sort(function (a, b) {
+                        var keyA = a.submitted_or_assessed_at,
+                            keyB = b.submitted_or_assessed_at;
+                        // Compare the 2 dates
+                        if (keyA > keyB) return 1;
+                        if (keyA < keyB) return -1;
+                        return 0;
+                    })
 
                     console.log(resultsData)
 
@@ -1314,6 +1332,7 @@ dtps.gradebook = function (num) {
                                     if (resultsData[ii].score && !dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.includes(resultsData[ii].links.assignment)) {
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.push(alignmentData[i]);
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.push(resultsData[ii].links.assignment);
+                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments[dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.length - 1].score = resultsData[ii].score;
                                     }
                                 }
                             }
@@ -1325,13 +1344,11 @@ dtps.gradebook = function (num) {
                     for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
                         var outcome = dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome];
                         outcome.score = rollupData.rollups[0].scores[i].score
-                        for (var ii = 0; ii < dtps.classes[num].stream.length; ii++) {
-                            if (dtps.classes[num].stream[ii].title == rollupData.rollups[0].scores[i].title) {
-                                outcome.lastAssignment = {
-                                    id: dtps.classes[num].stream[ii].id,
-                                    name: rollupData.rollups[0].scores[i].title,
-                                    score: dtps.classes[num].stream[ii].rubric[dtps.classes[num].stream[ii].rubricItems.indexOf(rollupData.rollups[0].scores[i].links.outcome)].score
-                                }
+                        if (outcome.gradedAlignments[0]) {
+                            outcome.lastAssignment = {
+                                id: outcome.gradedAlignments[0].assignment_id,
+                                name: outcome.gradedAlignments[0].title,
+                                score: outcome.gradedAlignments[0].score
                             }
                         }
                         if (outcome.lastAssignment) {
@@ -1424,13 +1441,30 @@ dtps.gradebook = function (num) {
                         var divider = !dividerAdded && !dtps.classes[num].outcomes[i].score;
                         if (divider) dividerAdded = true;
                         return (divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
-<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="border-radius: 20px;padding: 10px 20px;height: 105px;cursor: pointer;" class="card">
+<div style="border-radius: 20px;padding: 10px 20px;" class="card">
+
+<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="cursor: pointer;">
   <h5 style="font-size: 1.5rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
   ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + `
   ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `</div>` : "") + `
   ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
-</div>`
+  </div>
+
+  ` + (dtps.classes[num].outcomes[i].lastAssignment ? `<div style="margin: 10px 0px;"></div>
+  <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? `<i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">keyboard_arrow_right</i>` : "") + `
+  <div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 22px; width: 22px; height: 22px; background-color: ` + dtps.cblColors[dtps.classes[num].outcomes[i].lastAssignment.score] + `; color: white;` : `line-height: 20px; width: 20px; height: 20px; border: 1px solid ` + dtps.cblColors[dtps.classes[num].outcomes[i].lastAssignment.score] + `; color: ` + dtps.cblColors[dtps.classes[num].outcomes[i].lastAssignment.score] + `;`) + `display: inline-block; text-align: center; font-size: 16px; border-radius: 50%; margin-right: 5px;">
+  ` + dtps.classes[num].outcomes[i].lastAssignment.score + `</div> ` + dtps.classes[num].outcomes[i].lastAssignment.name + `</div>` : "") + `
+  
+<div style="margin-top: 10px; display: none;" class="fullList">
+` + dtps.classes[num].outcomes[i].gradedAlignments.map(function(alignment, ii) {
+if (ii == 0) return "";
+return `<div style="padding-left: 29px; margin: 2px 0px; color: var(--lightText); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+<div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; border: 1px solid ` + dtps.cblColors[alignment.score] + `; color: ` + dtps.cblColors[alignment.score] + `;` : `line-height: 20px; width: 20px; height: 20px; background-color: ` + alignment.score + `; color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px;">` + alignment.score + `</div> ` + alignment.title + `</div>`
+}).join("") + `
+  </div>
+  
+  </div>`
                     }).join("") + `
 </div>`)
                 });
@@ -1529,20 +1563,19 @@ Power+ currently only supports assignments that use online text entry. Other ass
                     if (rubric.ratings) {
                         dtps.classes[classNum].tmp[rubric.id] = rubric.long_description
                         return `
-                        <div style="margin: 20px 0px;">
+                        <div style="margin: 32px 0px;">
                         <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rubric.description + `</h6>
-        <div style="display: inline-block; margin-right: 20px; vertical-align: middle;">
+        <div style="margin-right: 20px; vertical-align: middle;">
 <p style="color: var(--secText);" class="` + rubric.id + `"><a onclick="$('p.` + rubric.id + `').html(dtps.classes[` + classNum + `].tmp['` + rubric.id + `'])" href="#">Rubric details</a></p>
 </div>
-
-<div style="display: inline-block; border-radius: 10px; overflow: hidden; font-size: 0; vertical-align: middle; background: ` + (rubric.score ? rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].color : `linear-gradient(90deg, ` + rubric.ratings.map(function (rating) { return rating.color + ","; }).join("").slice(0, -1) + `)`) + `;">
+<div style="display: inline-block; border-radius: 8px; white-space: nowrap; overflow: hidden; font-size: 0; vertical-align: middle; background: ` + (rubric.score ? rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].color : `linear-gradient(90deg, ` + rubric.ratings.map(function (rating) { return rating.color + ","; }).join("").slice(0, -1) + `)`) + `;">
 ` + (rubric.score !== undefined ? `
 <div style="padding: 5px 10px; font-size: 18px; background-color: transparent; color: white; font-weight: bold; width: 200px; text-align: center; display: inline-block;">
-` + rubric.score + "/" + rubric.points + " " + rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name + `
+` + (rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name ? rubric.score + "&nbsp;&nbsp;" + rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name : rubric.score) + `
 </div>` : rubric.ratings.map(function (rating) {
                             return `
-<div style="padding: 5px 10px; font-size: 18px; background-color: transparent; color: white; font-weight: bold; width: 120px; text-align: center; display: inline-block;">
-` + rating.name + `
+<div style="padding: 2px 0px; font-size: 16px; background-color: transparent; color: white; width: 100px; text-align: center; display: inline-block;">
+` + (rating.name ? rating.name : rating.points) + `
 </div>`
                         }).join("")) + `</div></div>`
                     } else { return ""; }
@@ -2115,7 +2148,7 @@ dtps.render = function () {
     }
 
     var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=init.js";
-    //if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
+    if (dtps.trackSuffix !== "") var getURL = "https://api.github.com/repos/jottocraft/dtps/commits?path=dev.js";
     jQuery.getJSON(getURL, function (data) {
         jQuery(".buildInfo").html("build " + data[0].sha.substring(7, 0));
         jQuery(".buildInfo").click(function () {
@@ -2332,7 +2365,8 @@ dtps.renderLite = function () {
         <div id="dtpsLocal" onclick="fluid.set('pref-localDtps')" class="switch pref-localDtps"><span class="head"></span></div>
         <div class="label"><i class="material-icons">public</i> Use local copy of Project DTPS</div>
 <br /><br>
-<button onclick="$('body').removeClass('sudo');$('body').removeClass('contributor');$('body').removeClass('dev');">Remove badges</button>
+<button onclick="$('body').removeClass('sudo');$('body').removeClass('contributor');$('body').removeClass('dev');$('body').removeClass('marketer');">Remove badges</button>
+<button onclick="$('body').removeClass('prerelease');">Remove prerelease</button>
     <br /><br>
 <span class="log">
 </span>
@@ -2344,7 +2378,7 @@ dtps.renderLite = function () {
 <img src="https://dtps.js.org/outline.png" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
 <div style="display: inline-block; vertical-align: middle;">
 <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">Power+</h4>
-<div style="font-size: 16px; margin-top: 5px;">` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></div>
+<div style="font-size: 16px; margin-top: 5px;">` + dtps.readableVer.replace(dtps.trackSuffix, dtps.fullTrackSuffix) + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></div>
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
 <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to Canvas.') }" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
@@ -2379,8 +2413,8 @@ dtps.renderLite = function () {
   </div>`)
     jQuery(".items").html(`<h4>` + dtps.user.name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
-    <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
-    <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
+    <i style="border-radius: 50%; padding: 6px;" onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease acrylicMaterial">feedback</i>
+    <i style="border-radius: 50%; padding: 6px;" onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons acrylicMaterial">settings</i>`);
     if (!dtps.embedded) $(".embeddedOptions").hide();
     if (!dtps.embedded) fluid.onLoad();
 }
