@@ -1,6 +1,5 @@
 ## Power+
 [![Power+ Release](https://img.shields.io/github/release/jottocraft/dtps.svg)](https://github.com/jottocraft/dtps/releases)
-[![Pre-release version](https://img.shields.io/badge/prerelease-v2.0.0%20(beta)-yellow.svg)](https://github.com/jottocraft/dtps/releases)
 [![Website Status](https://img.shields.io/website/https/powerplus.app.svg?label=server%20status)](https://powerplus.app)
 [![Power+ Chrome Web Store Rating](https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo/reviews)
 
