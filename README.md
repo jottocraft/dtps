@@ -1,33 +1,33 @@
 ## Power+
-<!--- [![Power+ Release](https://img.shields.io/github/release/jottocraft/dtps.svg)](https://github.com/jottocraft/dtps/releases) -->
+[![Power+ Release](https://img.shields.io/github/release/jottocraft/dtps.svg)](https://github.com/jottocraft/dtps/releases)
 [![Pre-release version](https://img.shields.io/badge/prerelease-v2.0.0%20(beta)-yellow.svg)](https://github.com/jottocraft/dtps/releases)
-[![Website Status](https://img.shields.io/website/https/dtps.js.org.svg?label=server%20status)](https://dtps.js.org)
+[![Website Status](https://img.shields.io/website/https/powerplus.app.svg?label=server%20status)](https://powerplus.app)
 [![Power+ Chrome Web Store Rating](https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo/reviews)
 
-For users looking to install Power+, visit the Power+ website by clicking [here](https://dtps.js.org)
+For users looking to install Power+, visit the Power+ website by clicking [here](https://powerplus.app)
 
 <br /><br />
 
 #### Alternate Install methods
-These install methods are not officially supported. For supported install methods, visit [dtps.js.org](https://dtps.js.org)
+These install methods are not officially supported. For supported install methods, visit [powerplus.app](https://powerplus.app)
 
 <br />
 
 Stable bookmarklet
 
-`javascript:jQuery.getScript('https://dtps.js.org/init.js');dtpsLoader=2;`
+`javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;`
 
 <br />
 
 Dev bookmarklet
 
-`javascript:jQuery.getScript('https://dtps.js.org/dev.js');dtpsLoader=2;`
+`javascript:jQuery.getScript('https://powerplus.app/dev.js');dtpsLoader=2;`
 
 <br />
 
 Firefox bookmarklet
 
-`javascript:(function(){jQuery.getScript('https://dtps.js.org/init.js');dtpsLoader=2;})();`
+`javascript:(function(){jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;})();`
 
 <br /><br /><br /><br /><br /><br />
 
