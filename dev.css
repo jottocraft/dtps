@@ -1,5 +1,5 @@
 /*
-Power+ CSS v2.0.0 (beta)
+Power+ CSS v2.0.0 (GM)
 (c) jottocraft 2018-2019
 */
 
@@ -623,7 +623,7 @@ body.dark .tabs.btns .btn:not(.active) {
 .spinner {
     width: 40px;
     height: 40px;
-    margin: 100px auto;
+    margin: 40px auto;
     background-color: var(--secText);
     border-radius: 100%;
     -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
