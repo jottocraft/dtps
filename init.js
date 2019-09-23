@@ -1,13 +1,13 @@
-/* Power+ v2.0.0 (GM)
+/* Power+ v2.0.0
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 var dtps = {
     ver: 200,
-    readableVer: "v2.0.0 (GM)",
-    trackSuffix: " (GM)",
-    fullTrackSuffix: " (Golden Master)",
+    readableVer: "v2.0.0",
+    trackSuffix: "",
+    fullTrackSuffix: "",
     trackColor: "#ceb420",
     showLetters: false,
     fullNames: false,
@@ -46,7 +46,7 @@ var dtps = {
         title: "Power+",
         description: "Razer Chroma effects for Power+ (beta)",
         author: "jottocraft",
-        domain: "dtps.js.org"
+        domain: "powerplus.app"
     }
 };
 
@@ -380,7 +380,7 @@ dtps.filter = function (color) {
 //Get all JavaScript libraries
 dtps.JS = function (cb) {
     if (dtps.embedded) {
-        jQuery.getScript('https://dtps.js.org/fluid.js');
+        jQuery.getScript('https://powerplus.app/fluid.js');
         jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
         jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function () {
             jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
@@ -2175,12 +2175,12 @@ dtps.render = function () {
         jQuery("<link/>", {
             rel: "shortcut icon",
             type: "image/png",
-            href: "https://dtps.js.org/favicon.png"
+            href: "https://powerplus.app/favicon.png"
         }).appendTo("head");
         jQuery("<link/>", {
             rel: "stylesheet",
             type: "text/css",
-            href: "https://dtps.js.org/fluid.css"
+            href: "https://powerplus.app/fluid.css"
         }).appendTo("head");
         jQuery("<link/>", {
             rel: "stylesheet",
@@ -2192,13 +2192,13 @@ dtps.render = function () {
             jQuery("<link/>", {
                 rel: "stylesheet",
                 type: "text/css",
-                href: "https://dtps.js.org/dev.css"
+                href: "https://powerplus.app/dev.css"
             }).appendTo("head");
         } else {
             jQuery("<link/>", {
                 rel: "stylesheet",
                 type: "text/css",
-                href: "https://dtps.js.org/dtps.css"
+                href: "https://powerplus.app/dtps.css"
             }).appendTo("head");
         }
 
@@ -2248,7 +2248,7 @@ dtps.renderLite = function () {
     jQuery(".card.abt-new").html(`<i onclick="fluid.cards.close('.card.abt-new')" class="material-icons close">close</i>
   <div class="sidenav" style="position: fixed; height: calc(100% - 50px); border-radius: 20px 0px 0px 20px;">
     <div class="title">
-	  <img src="https://dtps.js.org/outline.png" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
+	  <img src="https://powerplus.app/outline.png" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
       <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>` + trackDom + `
       <p style="font-weight: bold;">` + verDom + `</p>
@@ -2350,7 +2350,7 @@ dtps.renderLite = function () {
 <div class="sudo">
     <h5>Experiments</h5>
     <p>WARNING: Features listed below are not officially supported and can break Power+. Use at your own risk.</p>
-    <p>Want to test out new features as they are developed? <a href="https://dtps.js.org/devbookmark.txt">Try the dev version of Power+</a>.</p>
+    <p>Want to test out new features as they are developed? <a href="https://powerplus.app/devbookmark.txt">Try the dev version of Power+</a>.</p>
 <br />
 <div onclick="fluid.set('pref-cacao')" class="switch pref-cacao"><span class="head"></span></div>
 <div class="label"><i class="material-icons">view_carousel</i> Project Cacao</div>
@@ -2374,7 +2374,7 @@ dtps.renderLite = function () {
 <div style="display: none;" class="abtpage about">
 <h5>About</h5>
 <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
-<img src="https://dtps.js.org/outline.png" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
+<img src="https://powerplus.app/outline.png" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
 <div style="display: inline-block; vertical-align: middle;">
 <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">Power+</h4>
 <div style="font-size: 16px; margin-top: 5px;">` + dtps.readableVer.replace(dtps.trackSuffix, dtps.fullTrackSuffix) + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></div>
