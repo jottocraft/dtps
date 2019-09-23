@@ -1,9 +1,9 @@
 $(document).ready(function () {
-   console.log("[DTPS Chrome] Automatically loading Project DTPS");
+   console.log("[DTPS Chrome] Power+ is ready");
 
    //Canvas Script
-   var url = 'https://dtps.js.org/init.js'
-   if (window.localStorage["pref-devChannel"] == "true") var url = (window.localStorage["pref-localDtps"] == "true" ? (window.localStorage.dtpsPath ? window.localStorage.dtpsPath : "http://localhost/") + 'dev.js' : 'https://dtps.js.org/dev.js')
+   var url = 'https://powerplus.app/init.js'
+   if (window.localStorage["pref-devChannel"] == "true") var url = (window.localStorage["pref-localDtps"] == "true" ? (window.localStorage.dtpsPath ? window.localStorage.dtpsPath : "http://localhost:8000/") + 'dev.js' : 'https://powerplus.app/dev.js')
 
    window.dtpsLoader = 3;
 
@@ -26,7 +26,7 @@ $(document).ready(function () {
       jQuery("#menu").append(`<li class="ic-app-header__menu-list-item">
             <a onclick="jQuery.getScript('` + url + `');dtpsLoader=2;" style="cursor: pointer;" class="ic-app-header__menu-list-link">
               <div class="menu-item-icon-container" aria-hidden="true">
-                  <img src="https://dtps.js.org/whiteOutline.png" class="ic-icon-svg">
+                  <img src="https://powerplus.app/whiteOutline.png" class="ic-icon-svg">
 
               </div>
               <div class="menu-item__text" style="font-size: 14px;">Power+
