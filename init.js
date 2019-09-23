@@ -47,15 +47,6 @@ var dtps = {
         description: "Razer Chroma effects for Power+ (beta)",
         author: "jottocraft",
         domain: "dtps.js.org"
-    },
-    cblColors: {
-        1: "#c4474e",
-        1.5: "#c45847",
-        2: "#c26d44",
-        2.5: "#b59b53",
-        3: "#a1b553",
-        3.5: "#89b553",
-        4: "#4f9e59"
     }
 };
 
@@ -78,6 +69,19 @@ dtps.changelog = function () {
     fluid.modal(".card.changelog");
 };
 
+//Get CBL color
+dtps.cblColor = function(score) {
+    var col = "#808080";
+    if (score >= 1) col = "#c4474e";
+    if (score >= 1.5) col = "#c45847";
+    if (score >= 2) col = "#c26d44";
+    if (score >= 2.5) col = "#b59b53";
+    if (score >= 3) col = "#a1b553";
+    if (score >= 3.5) col = "#89b553";
+    if (score >= 4) col = "#4f9e59";
+    return col;
+}
+
 //get url paramaters
 dtps.getParams = function () {
     var vars = {};
@@ -90,7 +94,7 @@ dtps.getParams = function () {
 //dtps.authenticate and dtps.webReq work together to ensure the user is authenticated
 //the dtps client must not be embedded for dtps.authenticate to work
 dtps.authenticate = function (cb) {
-    if (window.localStorage.accessToken) {
+    /*if (window.localStorage.accessToken) {
         //manually defined access token
         cb();
     } else {
@@ -124,7 +128,11 @@ dtps.authenticate = function (cb) {
 
             }
         }
-    }
+    }*/
+
+    //authentication disabled
+    console.error("Authentication disabled");
+    cb();
 }
 
 //Logs debugging messags to both the normal JS console and also Power+'s included debugging log
@@ -161,7 +169,7 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
     if (loadingSplash) {
         if (dtps.embedded) {
             jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
-<style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner { width: 40px; height: 40px; margin: 100px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style></div>`)
+<style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner { width: 40px; height: 40px; margin: 40px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style></div>`)
         }
     } else {
         jQuery("body").append(`<div id="dtpsNativeAlert" class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-dialog-buttons" tabindex="-1" aria-hidden="false" style="outline: 0px; z-index: 5000; height: auto; width: 500px; margin-top: 100px; top: 0; margin-left: calc(50% - 250px); display: block;">
@@ -259,7 +267,6 @@ dtps.webReq = function (req, url, callback, q) {
 dtps.computeClassGrade = function (num, renderSidebar) {
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (resp, classNum) {
         var data = JSON.parse(resp);
-        console.log(data);
         var rollups = data.rollups[0];
 
         //array of outcome averages sorted from highest to lowest
@@ -521,15 +528,8 @@ dtps.init = function () {
                         });
                         for (var i = 0; i < data.length; i++) {
                             var name = data[i].name;
-                            var subject = null;
+                            var subject = name.split(" - ")[0];
                             var icon = null;
-                            if (name.includes("Physics")) { var subject = "Physics"; var icon = "experiment"; }; if (name.includes("English")) { var subject = "English"; var icon = "library_books" }; if (name.includes("Physical Education")) { var subject = "PE"; var icon = "directions_run"; };
-                            if (name.includes("Prototyping")) { var subject = "Prototyping"; var icon = "drive_file_rename_outline"; }; if (name.includes("Algebra")) { var subject = "Algebra"; }; if (name.includes("Algebra 2")) { var subject = "Algebra 2"; };
-                            if (name.includes("Spanish")) { var subject = "Spanish" }; if (name.includes("@") || name.includes("dtech")) { var subject = "@d.tech" }; if (name.includes("Environmental")) { var subject = "Environmental Science" };
-                            if (name.includes("Robotics")) { var subject = "Robotics" }; if (name.includes("Chemistry")) { var subject = "Chemistry" }; if (name.includes("Biology")) { var subject = "Biology" }; if (name.includes("Engineering")) { var subject = "Engineering" }; if (name.includes("Geometry")) { var subject = "Geometry" };
-                            if (name.includes("Photography")) { var subject = "Photography" }; if (name.includes("World History")) { var subject = "World History" }; if (name.includes("U.S. History")) { var subject = "US History" };
-                            if (name.includes("Calculus")) { var subject = "Calculus" }; if (name.toUpperCase().includes("CALCULUS") && name.toUpperCase().includes("PRE")) { var subject = "Precalculus" }; if (name.includes("Statistics")) { var subject = "Advanced Statistics" };
-                            if (name.includes("Model United Nations")) { var subject = "Model UN" }; if (name.includes("Government")) { var subject = "Government" }; if (name.includes("Economics")) { var subject = "Economics" };
                             if (data[i].name !== data[i].course_code) {
                                 //Canvas class manually renamed
                                 subject = null;
@@ -882,7 +882,7 @@ dtps.classStream = function (num, renderOv) {
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("DEVELOPING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Developing";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PROFICIENT")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Proficient";
                                     if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PIONEERING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Pioneering";
-                                    data[i].assignments[ii].rubric[iii].ratings[iiii].color = dtps.cblColors[data[i].assignments[ii].rubric[iii].ratings[iiii].points];
+                                    data[i].assignments[ii].rubric[iii].ratings[iiii].color = dtps.cblColor(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
                                     data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
                                     if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "";
                                     if (!data[i].assignments[ii].rubric[iii].ratings[iiii].color) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "gray";
@@ -912,10 +912,8 @@ dtps.classStream = function (num, renderOv) {
 
             for (var i = 0; i < outcomes.length; i++) {
                 var streamItem = dtps.classes[num].streamitems.indexOf(outcomes[i].links.assignment.match(/\d+/)[0]);
-                console.log("streamItem ", streamItem)
                 if (streamItem !== -1) {
                     var rubricItem = dtps.classes[num].stream[streamItem].rubricItems.indexOf(outcomes[i].links.learning_outcome);
-                    console.log("rubricItem ", rubricItem)
                     if (rubricItem !== -1) {
                         dtps.classes[num].stream[streamItem].rubric[rubricItem].score = outcomes[i].score
                         dtps.classes[num].stream[streamItem].rubric[rubricItem].scoreName = outcomes[i].score
@@ -1057,7 +1055,7 @@ dtps.renderStream = function (stream, searchRes) {
         if (stream[i].rubric) {
             for (var ii = 0; ii < stream[i].rubric.length; ii++) {
                 if (stream[i].rubric[ii].score) {
-                    outcomeDom.push(`<div title="` + stream[i].rubric[ii].description + `" style="background-color: ` + dtps.cblColors[stream[i].rubric[ii].score] + `" class="outcome"></div>`)
+                    outcomeDom.push(`<div title="` + stream[i].rubric[ii].description + `" style="background-color: ` + dtps.cblColor(stream[i].rubric[ii].score) + `" class="outcome"></div>`)
                 }
             }
         }
@@ -1292,8 +1290,7 @@ dtps.gradebook = function (num) {
         dtps.selectedContent = "stream";
         dtps.classStream(num);
     } else {
-        headsUp = `<div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
-        <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">Gradebook (beta)</div></div>`
+        headsUp = ``;
         $(".classContent").html(headsUp + `<div class="spinner"></div>`)
 
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
@@ -1328,7 +1325,7 @@ dtps.gradebook = function (num) {
                         if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
                             dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
                             for (var ii = 0; ii < resultsData.length; ii++) {
-                                if (String(resultsData[ii].links.assignment).replace("assignment_", "") == alignmentData[i].assignment_id) {
+                                if ((String(resultsData[ii].links.assignment).replace("assignment_", "") == alignmentData[i].assignment_id) && (resultsData[ii].links.learning_outcome == alignmentData[i].learning_outcome_id)) {
                                     if (resultsData[ii].score && !dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.includes(resultsData[ii].links.assignment)) {
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.push(alignmentData[i]);
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.push(resultsData[ii].links.assignment);
@@ -1371,8 +1368,8 @@ dtps.gradebook = function (num) {
                     $(".classContent").html(headsUp + `
 
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
-    <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].name + `
-    <div class="classGradeCircle" style="display: inline-block;width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h4>
+    <h3 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
+    <div class="classGradeCircle" style="display: inline-block;width: 80px;height: 80px; font-size: 38px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
     <h5 style="height: 60px; line-height: 60px;">75% of outcome scores are ≥
     <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
     <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than
@@ -1441,26 +1438,28 @@ dtps.gradebook = function (num) {
                         var divider = !dividerAdded && !dtps.classes[num].outcomes[i].score;
                         if (divider) dividerAdded = true;
                         return (divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
-<div style="border-radius: 20px;padding: 10px 20px;" class="card">
+<div style="border-radius: 20px;padding: 20px; padding-bottom: 20px;" class="card">
 
 <div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="cursor: pointer;">
-  <h5 style="font-size: 1.5rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">` + dtps.classes[num].outcomes[i].title + `</h5>
+    ` + (dtps.classes[num].outcomes[i].score ? `<div class="points">
+        <div style="color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].score) + `" class="earned numbers">` + dtps.classes[num].outcomes[i].score + `</div>
+    </div>` : "") + `
+  <h5 style="font-size: 1.5rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis; margin-top: 0px; margin-right: 40px;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
-  ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Calculation ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "/" + (100 - dtps.classes[num].outcomes[i].calculation_int) + `</div>` : "") + `
-  ` + (dtps.classes[num].outcomes[i].score ? `<div title="Outcome score" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">assessment</i> ` + dtps.classes[num].outcomes[i].score + `</div>` : "") + `
+  ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Decaying Average Ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "% / " + (100 - dtps.classes[num].outcomes[i].calculation_int) + `%</div>` : "") + `
   ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
   </div>
 
   ` + (dtps.classes[num].outcomes[i].lastAssignment ? `<div style="margin: 10px 0px;"></div>
   <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? `<i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">keyboard_arrow_right</i>` : "") + `
-  <div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 22px; width: 22px; height: 22px; background-color: ` + dtps.cblColors[dtps.classes[num].outcomes[i].lastAssignment.score] + `; color: white;` : `line-height: 20px; width: 20px; height: 20px; border: 1px solid ` + dtps.cblColors[dtps.classes[num].outcomes[i].lastAssignment.score] + `; color: ` + dtps.cblColors[dtps.classes[num].outcomes[i].lastAssignment.score] + `;`) + `display: inline-block; text-align: center; font-size: 16px; border-radius: 50%; margin-right: 5px;">
+  <div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 22px; width: 22px; height: 22px; background-color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; color: white;` : `line-height: 20px; width: 20px; height: 20px; border: 1px solid ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `;`) + `display: inline-block; text-align: center; font-size: 16px; border-radius: 50%; margin-right: 5px;">
   ` + dtps.classes[num].outcomes[i].lastAssignment.score + `</div> ` + dtps.classes[num].outcomes[i].lastAssignment.name + `</div>` : "") + `
   
 <div style="margin-top: 10px; display: none;" class="fullList">
 ` + dtps.classes[num].outcomes[i].gradedAlignments.map(function(alignment, ii) {
 if (ii == 0) return "";
 return `<div style="padding-left: 29px; margin: 2px 0px; color: var(--lightText); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-<div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; border: 1px solid ` + dtps.cblColors[alignment.score] + `; color: ` + dtps.cblColors[alignment.score] + `;` : `line-height: 20px; width: 20px; height: 20px; background-color: ` + alignment.score + `; color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px;">` + alignment.score + `</div> ` + alignment.title + `</div>`
+<div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; border: 1px solid ` + dtps.cblColor(alignment.score) + `; color: ` + dtps.cblColor(alignment.score) + `;` : `line-height: 20px; width: 20px; height: 20px; background-color: ` + dtps.cblColor(alignment.score) + `; color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px;">` + alignment.score + `</div> ` + alignment.title + `</div>`
 }).join("") + `
   </div>
   
@@ -2413,8 +2412,8 @@ dtps.renderLite = function () {
   </div>`)
     jQuery(".items").html(`<h4>` + dtps.user.name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
-    <i style="border-radius: 50%; padding: 6px;" onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease acrylicMaterial">feedback</i>
-    <i style="border-radius: 50%; padding: 6px;" onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons acrylicMaterial">settings</i>`);
+    <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
+    <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
     if (!dtps.embedded) $(".embeddedOptions").hide();
     if (!dtps.embedded) fluid.onLoad();
 }
