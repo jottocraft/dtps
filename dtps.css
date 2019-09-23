@@ -1,7 +1,77 @@
 /*
-Power+ CSS v1.6.1
+Power+ CSS v2.0.0
 (c) jottocraft 2018-2019
 */
+
+.acrylicMaterial {
+    background-color: var(--elements) !important;
+    opacity: 0.9 !important;
+}
+
+/* cacao */
+body.cacao .cacaoBar {
+    display: block !important;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px 0px;
+    z-index: 300;
+    width: calc(100% - 460px);
+    background-color: var(--nav);
+    border-radius: 15px;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+body.cacao .cacaoBar .tab {
+    background-color: var(--norm);
+    color: var(--light);
+    border-radius: 18px;
+    padding: 0px 10px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0px 5px;
+    transition: var(--trans);
+}
+
+body.cacao .cacaoBar .tab.active {
+    background-color: var(--dark);
+    color: white;
+}
+
+body.cacao .cacaoBar .tab.new {
+    background-color: var(--theme);
+    color: var(--themeText);
+    opacity: 0.8;
+    height: 40px;
+    width: 40px;
+    padding: 0px;
+    text-align: center;
+}
+
+body.cacao .cacaoBar .tab i {
+    vertical-align: middle;
+}
+
+body.cacao .cacaoBar .tab:not(.icon) i {
+    margin-right: 10px;
+}
+
+body.cacao .sidebar {
+    top: 80px;
+    border-top-right-radius: 15px;
+}
+
+body.cacao .header {
+    padding-top: 150px;
+}
+
+body.cacao .classContent {
+    padding-top: 350px;
+}
 
 @font-face {
     font-family: 'Material Icons Outline';
@@ -16,22 +86,55 @@ Power+ CSS v1.6.1
 
 .fc-today {
     border-radius: 5px;
-    background: var(--theme-color) !important;
-    color: var(--theme-text-color) !important;
+    background: var(--theme) !important;
+    color: var(--themeText) !important;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border-color: var(--secText);
+}
+
+body.dark .classGradeCircle {
+    background-color: var(--norm);
+    -webkit-text-fill-color: var(--light);
+    color: var(--light);
+}
+
+body:not(.dark) .classGradeCircle {
+    background-color: var(--light);
+    -webkit-text-fill-color: var(--norm);
+    color: var(--norm);
 }
 
 .infoChip {
     vertical-align: middle;
-    margin:0px;
+    margin: 0px;
     display: inline-block;
     font-size: 16px;
     height: 20px;
     line-height: 20px;
 }
 
+.assignmentChip {
+    padding: 5px 10px;
+    background-color: var(--elements);
+    display: inline-block;
+    border-radius: 20px;
+    line-height: 24px;
+    margin: 0px 2px;
+}
+
+.assignmentChip i {
+    vertical-align: middle;
+}
+
 .progressBar {
     padding: 5px;
-    background-color:  var(--theme-color-outline);
+    background-color: var(--elements);
     border-radius: 12px;
     height: 30px;
     margin: 10px 5px;
@@ -41,12 +144,12 @@ Power+ CSS v1.6.1
 .progressLabel {
     position: absolute;
     z-index: 5;
-    color: var(--theme-text-color);
+    color: var(--themeText);
 }
 
 .progress {
     height: 32px;
-    background-color: var(--theme-color);
+    background-color: var(--theme);
     margin: -6px;
     border-radius: 12px;
     position: absolute;
@@ -114,8 +217,11 @@ body.isolatedGoogleClass .background {
     border: none !important;
 }
 
-.card.focus {
-    max-height: calc(100vh - 50px);
+@media (min-width: 1001px) {
+    .card.focus {
+        max-height: calc(100vh - 50px);
+        top: 25px !important;
+    }
 }
 
 #calendar h2 {
@@ -128,8 +234,8 @@ body.isolatedGoogleClass .background {
     border: none;
 }
 
-body.dark .fc .fc-button-group>* {
-    color: white;
+.fc .fc-button-group>* {
+    color: var(--text);
 }
 
 .announcement .label {
@@ -153,7 +259,8 @@ body.dark .fc .fc-button-group>* {
 }
 
 .announcement a {
-    color: var(--norm);
+    color: var(--dark);
+    opacity: 0.6;
 }
 
 body {
@@ -227,6 +334,11 @@ body {
     margin: 15px 25px 0px 10px !important;
 }
 
+.classContent .assignmentPicker .btn.active {
+    background: #7b7b7b45 !important;
+    color: inherit !important;
+}
+
 .class .dot {
     position: absolute;
     height: 30px;
@@ -272,30 +384,6 @@ body {
     font-size: 20px;
 }
 
-body:not(.letterGrades) .points:hover .numbers {
-    display: none !important;
-}
-
-body:not(.letterGrades) .points:not(:hover) .letters {
-    display: none !important;
-}
-
-.points:not(:hover) .percentage {
-    display: none !important;
-}
-
-.points:hover .possible {
-    display: none !important;
-}
-
-body.letterGrades .points:not(:hover) .numbers {
-    display: none !important;
-}
-
-body.letterGrades .points:hover .letters {
-    display: none !important;
-}
-
 body.dark .card .dot {
     background-color: #181b1d;
 }
@@ -303,14 +391,6 @@ body.dark .card .dot {
 body.titlebar .sidebar {
     position: fixed;
     top: 75;
-}
-
-body.dark .spinner > div {
-    background-color: var(--flex-sectext, #bbb);
-}
-
-body:not(.dark) .spinner > div {
-    background-color: var(--flex-sectext, #333);
 }
 
 .class .grade .letter, .class .grade .points , .class .grade .material-icons {
@@ -371,12 +451,8 @@ body:not(.dark) .spinner > div {
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.17);
 }
 
-body:not(.dark) .sidebar, body:not(.dark) .abtheader {
-    background-color: var(--flex-layer2, #f1f1f1);
-}
-
-body.dark.midnight .sidebar {
-    background-color: #080808;
+.sidebar, .abtheader {
+    background-color: var(--nav);
 }
 
 body.noSidebar .sidebar {
@@ -389,7 +465,7 @@ body.noSidebar .header {
     margin-left: 0px;
 }
 
-body.titlebar .background {
+body.titlebar .background, body.titlebar .cover.image {
     position: fixed;
     height: 75px;
     z-index: 10;
@@ -439,11 +515,11 @@ body.titlebar:not(.noSidebar) .header .btns {
 }
 
 .classContent {
-    margin-left: 260px;
+    margin-left: 275px;
     padding-top: 300px;
     z-index: 100;
     top: 0;
-    width: calc(100% - 250px);
+    width: calc(100% - 275px);
 }
 
 body.titlebar .classContent {
@@ -472,20 +548,20 @@ body.titlebar .classContent {
 
 .tabs.btns .btn.active {
     color: white;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid white !important;
 }
 
-body:not(.dark) .tabs.btns .btn.active {
-    color: black !important;
-    border-color: black !important;
+.tabs.btns .btn.active {
+    color: var(--text) !important;
+    border-color: var(--text) !important;
 }
 
-body:not(.dark) .tabs.btns .btn:not(.active) {
-    color: var(--norm, gray) !important;
+body:not(.dark) .tabs.btns .btn:not(.active), body.midnight.dark .tabs.btns .btn:not(.active) {
+    color: var(--norm, var(--secText)) !important;
 }
 
 body.dark .tabs.btns .btn:not(.active) {
-    color: var(--light, gray) !important;
+    color: var(--light, var(--secText)) !important;
 }
 
 .sidebar, .header {
@@ -496,11 +572,15 @@ body.dark .tabs.btns .btn:not(.active) {
     display: none;
 }
 
-.background {
+.background, .cover.image {
     position: absolute;
     top: 0;
     width: 100%;
     height: 500px;
+}
+
+.background {
+    filter: blur(10px);
 }
 
 .header {
@@ -520,12 +600,8 @@ body.dark .tabs.btns .btn:not(.active) {
     border-radius: 30px;
 }
 
-body:not(.dark) .classContent .card {
-    color: black;
-}
-
-body.dark .classContent .card {
-    color: white;
+.classContent .card {
+    color: var(--text);
 }
 
 .card i.close {
@@ -545,50 +621,36 @@ body.dark .classContent .card {
 }
 
 .spinner {
-    margin: 100px auto 0;
-    width: 70px;
-    text-align: center;
-}
-
-.spinner > div {
-    width: 18px;
-    height: 18px;
-    background-color: #333;
+    width: 40px;
+    height: 40px;
+    margin: 40px auto;
+    background-color: var(--secText);
     border-radius: 100%;
-    display: inline-block;
-    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
-    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+    animation: sk-scaleout 1.0s infinite ease-in-out;
 }
 
-.spinner .bounce1 {
-    -webkit-animation-delay: -0.32s;
-    animation-delay: -0.32s;
-}
-
-.spinner .bounce2 {
-    -webkit-animation-delay: -0.16s;
-    animation-delay: -0.16s;
-}
-
-@-webkit-keyframes sk-bouncedelay {
-    0%, 80%, 100% {
+@-webkit-keyframes sk-scaleout {
+    0% {
         -webkit-transform: scale(0)
     }
 
-    40% {
-        -webkit-transform: scale(1.0)
+    100% {
+        -webkit-transform: scale(1.0);
+        opacity: 0;
     }
 }
 
-@keyframes sk-bouncedelay {
-    0%, 80%, 100% {
+@keyframes sk-scaleout {
+    0% {
         -webkit-transform: scale(0);
         transform: scale(0);
     }
 
-    40% {
+    100% {
         -webkit-transform: scale(1.0);
         transform: scale(1.0);
+        opacity: 0;
     }
 }
 
@@ -597,6 +659,7 @@ body.dark .classContent .card {
     position: absolute;
     display: inline-block;
     right: 25px;
+    white-space:nowrap;
 }
 
 .classContent .card .points.spinner {
@@ -612,17 +675,16 @@ body.dark .classContent .card {
 
 .classContent .card .points .total {
     font-size: 14px;
-    margin-top: 15px;
     display: inline-block;
-    color: var(--flex-sectext, #8e8e8e);
+    color: var(--secText);
 }
 
-body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight.dark .assignment:not(.color) .weighted {
-    color: gray;
+.classContent .card:not(.color) .points .total, .assignment:not(.color) .weighted {
+    color: var(--secText);
 }
 
 .assignment .weighted {
-    color: var(--flex-sectext, #8e8e8e);
+    color: var(--secText);
     font-size: 0.9rem;
 }
 
@@ -663,55 +725,42 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
     overflow: hidden !important;
 }
 
-.badge, .beta.notice {
-    display: inline-block;
-    margin: 0 5px;
-    border: none;
-    padding: 3px 6px;
-    color: white !important;
-    background-color: #ff7e00;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.badge i, .beta.notice i {
+.badge i {
     vertical-align: middle;
     font-size: 20px;
-}
-
-.beta.notice.turnin {
-    color: white;
-    border-color: #0bb75b;
-    background-color: #0bb75b;
-}
-
-.beta.notice.turnin i {
-    font-size: 18px;
 }
 
 .dash.stream .card {
     margin-right: 25px;
 }
 
-.beta.notice.missing {
+.badge.missing {
     color: #b7630a;
     border-color: #b7630a;
 }
 
 .badge.dev {
-    background-color: #0090ff;
+    color: #0090ff;
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
 .badge.sudo {
-    background-color: #d64c0c;
+    color: #d64c0c;
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
-.badge.og {
-    background-color: #daa520;
+.badge.marketer {
+    color: var(--secText);
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
 .badge.contributor {
-    background-color: #20da61;
+    color: #20da61;
+    background-color: transparent !important;
+    margin: 0px !important;
 }
 
 .weight.parent {
@@ -721,7 +770,7 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
 }
 
 .card .weight p {
-    color: var(--flex-sectext, gray) !important;
+    color: var(--secText) !important;
 }
 
 .card.gb {
@@ -745,40 +794,9 @@ body.midnight.dark .classContent .card:not(.color) .points .total, body.midnight
     display: none;
 }
 
-body.dark .card.details * {
-    /* color: white !important; */
-}
-
 .card.assignment {
     cursor: pointer;
     padding: 20px 30px;
-}
-
-.card.assignment.whatif .points .numbers {
-    padding: 2px 10px;
-    border-radius: 10px;
-    outline: none;
-    border: none;
-}
-
-body.dark .card.assignment.whatif .points .numbers {
-    background-color: var(--flex-layer1, #171717);
-}
-
-body:not(.dark) .card.assignment.whatif .points .numbers {
-    background-color: var(--flex-layer1, #dadada);
-}
-
-.card.assignment.color.whatif .points .numbers {
-    background-color: var(--dark) !important;
-}
-
-.card.assignment.whatif .points .numbers, .card.assignment.whatif .points .possible {
-    display: inline-block !important;
-}
-
-.card.assignment.whatif .points .letters, .card.assignment.whatif .points .percentage {
-    display: none !important;
 }
 
 .classContent .card.assignment h5 {
@@ -808,18 +826,14 @@ body:not(.dark) .card.assignment.whatif .points .numbers {
     font-weight: bold;
 }
 
-body.dark .class .name {
-    color: white;
-}
+body:not(.dark) {
+    --light: var(--flex-light, #efefef); --norm: var(--flex-layer1, #929292); --dark: var(--flex-layer3, #5f5f5f); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
 
 body.dark {
-    --light: var(--flex-light, #7d7d7d); --norm: var(--flex-layer1, #383838); --dark: var(--flex-layer3, #101010); --grad: linear-gradient(to right bottom, var(--flex-layer3, #2f2f2f), var(--flex-bg, #252525)); }
-
-body:not(.dark) {
-    --light: var(--flex-light, #d4d4d4); --norm: var(--flex-layer1, #a7a7a7); --dark: var(--flex-layer3, #676767); --grad: linear-gradient(to bottom right, var(--flex-layer3, #d4d4d4), var(--flex-bg, #FFFFFF)); }
+    --light: var(--flex-light, #949494); --norm: var(--flex-layer1, #444444); --dark: var(--flex-layer3, #292929); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
 
 body:not(.dark) .background, body:not(.dark) .header h1 {
-    --grad: linear-gradient(to bottom right, #d6d6d6, white) !important; color: black !important;
+    --grad: linear-gradient(to bottom right, var(--darker), var(--background)) !important; color: black !important;
 }
 
 .filter_0 {
@@ -864,7 +878,7 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 .filter_21 {
     --light: #c9d63b; --norm: #88920f; --dark: #525808; --grad: linear-gradient(to bottom right, #c9d63b, #525808); }
 
-.background {
+.background, .cover.image {
     background-size: 100%;
     position: absolute;
     z-index: -90;
@@ -885,16 +899,12 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
     transition: all 0.5s ease-in-out;
 }
 
-body:not(.dark):not(.dashboard) .background:before {
-    background: linear-gradient(to right bottom, var(--light), var(--flex-bg, white)) !important;
+body:not(.dashboard) .background:before {
+    background: linear-gradient(to right bottom, var(--light), var(--background)) !important;
 }
 
-body.dark:not(.dashboard) .background:before {
-    background: linear-gradient(to right bottom, var(--light), var(--flex-bg, #252525)) !important;
-}
-
-body.dark.midnight:not(.dashboard) .background:before {
-    background: linear-gradient(to right bottom, var(--dark), var(--flex-bg, black)) !important;
+body.midnight:not(.dashboard) .background:before {
+    background: linear-gradient(to right bottom, var(--dark), var(--background)) !important;
 }
 
 .background.trans:before {
@@ -904,7 +914,7 @@ body.dark.midnight:not(.dashboard) .background:before {
 
 .card.color {
     background: linear-gradient(to right bottom, var(--light), var(--norm));
-    color: var(--text, white) !important;
+    color: white !important;
 }
 
 .card.color .weighted {
@@ -932,7 +942,7 @@ body.dark.midnight:not(.dashboard) .background:before {
     background-color: var(--light);
 }
 
-body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.og) .og, body:not(.contributor) .contributor, body:not(.highFlyer) .highFlyer, body:not(.prerelease) .prerelease {
+body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor, body:not(.prerelease) .prerelease, body:not(.marketer) .marketer {
     display: none !important;
 }
 
@@ -991,4 +1001,38 @@ body:not(.dark) .items.black, body:not(.dark) .items.black i, body:not(.dark) .i
 
 .item.link span {
     vertical-align: middle;
+}
+
+.earned.outcomes {
+    height:20px;
+    text-align:right;
+    writing-mode: vertical-rl;
+    line-height:0px;
+    font-size:0px !important;
+    white-space: normal;
+}
+.earned.outcomes .outcome {
+    background-color:var(--text);
+    display: inline-block;
+    vertical-align: middle;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    margin: 1px;
+}
+
+.earned.outcomes .outcome.score1 {
+    background-color:#b90000;
+}
+
+.earned.outcomes .outcome.score2 {
+    background-color:#cc8400;
+}
+
+.earned.outcomes .outcome.score3 {
+    background-color:#b5b500;
+}
+
+.earned.outcomes .outcome.score4 {
+    background-color:#007700;
 }
