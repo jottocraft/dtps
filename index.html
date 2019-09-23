@@ -37,15 +37,25 @@
     font-family: 'Material Icons Outline';
 }
     .dtpsBtn {
-		font-size: 42px;
+		font-size: 28px;
 		cursor: pointer;
 		font-weight: bold;
 		font-family: 'Product Sans';
 		color: var(--secText);
-		line-height: 42px;
+		line-height: 28px;
 		display: inline-block;
 		margin: 0px 20px;
+	    	border-radius: 10px;
+	    	padding: 12px 28px;
+	    	border: 2px solid #ffbd00;
+	        transition: var(--trans);
 	}
+	  .dtpsBtn:hover {
+		border: 2px solid #ffbd008f;
+		background-color: #ffbd002e;
+		color: #ca9603;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+	  }
 	
 	.promoBox {
 		margin: 300px 0px;
@@ -82,10 +92,10 @@
   <img src="https://i.imgur.com/vCGOvPp.png" style="width: 120px; border-radius: 30px; vertical-align: middle; margin-right: 20px;" />
   <h1 style="font-size: 80px; display: inline-block; vertical-align: middle;">Power+</h1>
   <br /><br />
-	  <h5>A Canvas LMS redesign and grade calculator</h5>
+	  <h5 style="color: var(--secText, gray)">A Canvas LMS redesign and grade calculator</h5>
 	  <br /><br />
   
-  <a href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo" class="dtpsBtn" style="margin-left: 0px;"><i class="material-icons" style="font-family: 'Material Icons Extended'; font-size: 32px;">extension</i> Install</a>
+  <a href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo" class="dtpsBtn" style="margin-left: 0px;"><i class="material-icons" style="font-family: 'Material Icons Extended';">extension</i> Install</a>
   
   <br /><br /><br /><br />
   
@@ -123,6 +133,25 @@
 		
 		
   </div>
+  
+  </div>
+	  
+	  <div class="promoBox leftText">
+  
+  <div class="promoText">
+  <h3><i class="material-icons">format_quote</i> What people are saying</h3>
+  <h5>People love using Power+ and are probably satisfied</h5>
+  </div>
+		  <br /><br />
+		  <div style="text-align: left;display: inline-block;">
+		  <h4 style="font-weight: bold; font-size: 1.8rem;">"Wow, I’m failing basically all of my classes"</h4>
+		  <h5 style="color: var(--secText, gray); font-size: 1.2rem; font-style: italic;">A Power+ user</h5>
+		  </div>
+		  <br /><br />
+		  <div style="text-align: left;display: inline-block;">
+		  <h4 style="font-weight: bold; font-size: 1.8rem;">"If a house is a home, a trailer park is a RV"</h4>
+		  <h5 style="color: var(--secText, gray); font-size: 1.2rem; font-style: italic;">?????</h5>
+		  </div>
   
   </div>
   
@@ -180,7 +209,7 @@
   </div>
   
   </div>
-  
+	  
   <div class="promoBox leftText">
   
   <div class="promoText">
@@ -238,14 +267,14 @@
   </div>
   
   
-  <div class="promoBox leftText" style="background-color: #02030c;background-image: url('https://i.imgur.com/BLVbaa7.png');margin: 150px 0px;padding: 150px 30px;text-align: left;border-radius: 30px;background-size: 250px;background-position: right 50px center;background-repeat: no-repeat;">
+  <div class="promoBox leftText" style="background-image: url('https://i.imgur.com/BLVbaa7.png');margin: 150px 0px;padding: 150px 30px;text-align: left;border-radius: 30px;background-size: 250px;background-position: right 50px center;background-repeat: no-repeat;">
   
   <div style="margin-top: -120px;" class="promoText">
-  <h3 style="color: white;">Razer Chroma Integration</h3>
+  <h3>Razer Chroma Integration</h3>
   <h5>You can use Razer Chroma devices with Power+ by enabling Razer Chroma effects in Power+ settings</h5>
   <br />
   <div class="switch active"><span class="head"></span></div>
-  <div class="label" style="color: #cccccc;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" img=""> Razer Chroma Effects (beta)</div>
+  <div class="label" style="color: var(--secText, gray);"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" img=""> Razer Chroma Effects (beta)</div>
   </div>
  
   
@@ -255,7 +284,7 @@
   
   </div>
 
-      <p style="text-align:center; width: 100%; margin-bottom: 75px;">(c) 2018 - 2019 jottocraft&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/">source</a></p>
+      <p style="text-align:center; width: 100%; margin-bottom: 75px;">(c) 2018 - 2019 jottocraft&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/">source</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/app">login</a></p>
 
 </body>
 </html>
