@@ -70,7 +70,7 @@ dtps.changelog = function () {
 };
 
 //Get CBL color
-dtps.cblColor = function(score) {
+dtps.cblColor = function (score) {
     var col = "#808080";
     if (score >= 1) col = "#c4474e";
     if (score >= 1.5) col = "#c45847";
@@ -80,6 +80,16 @@ dtps.cblColor = function(score) {
     if (score >= 3.5) col = "#89b553";
     if (score >= 4) col = "#4f9e59";
     return col;
+}
+
+//Get CBL name
+dtps.cblName = function (rating) {
+    var name = "";
+    if (String(rating).toUpperCase().includes("EMERGING")) name = "Emerging";
+    if (String(rating).toUpperCase().includes("DEVELOPING")) name = "Developing";
+    if (String(rating).toUpperCase().includes("PROFICIENT")) name = "Proficient";
+    if (String(rating).toUpperCase().includes("PIONEERING")) name = "Pioneering";
+    return name;
 }
 
 //get url paramaters
@@ -878,10 +888,7 @@ dtps.classStream = function (num, renderOv) {
                             if (data[i].assignments[ii].rubric[iii].ratings) {
                                 data[i].assignments[ii].rubric[iii].ratingItems = [];
                                 for (var iiii = 0; iiii < data[i].assignments[ii].rubric[iii].ratings.length; iiii++) {
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("EMERGING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Emerging";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("DEVELOPING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Developing";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PROFICIENT")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Proficient";
-                                    if (data[i].assignments[ii].rubric[iii].ratings[iiii].description.toUpperCase().includes("PIONEERING")) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "Pioneering";
+                                    data[i].assignments[ii].rubric[iii].ratings[iiii].name = dtps.cblName(data[i].assignments[ii].rubric[iii].ratings[iiii].name);
                                     data[i].assignments[ii].rubric[iii].ratings[iiii].color = dtps.cblColor(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
                                     data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
                                     if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "";
@@ -1259,7 +1266,7 @@ dtps.getPage = function (classID, id, fromModuleStream) {
     });
 }
 
-dtps.outcome = function (num, id) {
+dtps.outcome = function (num, id, i) {
     dtps.webReq("canvas", "/api/v1/outcomes/" + id, function (resp) {
         var data = JSON.parse(resp);
 
@@ -1271,11 +1278,18 @@ dtps.outcome = function (num, id) {
 
         $(".card.outcomeCard").html(`<i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
         <h4 style="font-weight: bold;">` + data.title + `</h4>
-        ` + data.ratings.map(function (rating) {
-            return `<h5>` + rating.points + ": " + rating.description + `</h5>`
-        }).join("") + `
-        <div style="margin-top: 20px;" class="syllabusBody">` + (data.description ? `<iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
-        `)
+        <div style="margin-bottom: 20px;" class="syllabusBody">` + (data.description ? `<iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
+       <div style="display: inline-block; width: 40%;"> ` + data.ratings.map(function (rating) {
+            var desc = rating.description.replace(dtps.cblName(rating.description) + ": ", '').replace(dtps.cblName(rating.description) + "- ", '').replace(dtps.cblName(rating.description), '');
+            return `<div style="margin: 20px 0px;"><h5><span style="font-weight: bold; font-size: 42px; color: ` + dtps.cblColor(rating.points) + `">` + rating.points + "</span>&nbsp;&nbsp;" + dtps.cblName(rating.description) + `</h5>
+            ` + (desc ? `<p>` + desc + `</p>` : "") + `</div>`
+        }).join("") + `</div>
+
+        <div style="display: inline-block; width: 55%; vertical-align: top;"> 
+        ` + dtps.classes[num].outcomes[i].alignments.map(function (alignment, ii) {
+            return `<div onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)" style="margin: 5px 0px; color: var(--lightText); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">` + alignment.title + `</div>`}).join("") + `
+        </div>`)
+
         fluid.modal(".card.outcomeCard")
     })
 }
@@ -1440,7 +1454,7 @@ dtps.gradebook = function (num) {
                         return (divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
 <div style="border-radius: 20px;padding: 20px; padding-bottom: 20px;" class="card">
 
-<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `')" style="cursor: pointer;">
+<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `', ` + i + `)" style="cursor: pointer;">
     ` + (dtps.classes[num].outcomes[i].score ? `<div class="points">
         <div style="color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].score) + `" class="earned numbers">` + dtps.classes[num].outcomes[i].score + `</div>
     </div>` : "") + `
@@ -1452,15 +1466,15 @@ dtps.gradebook = function (num) {
 
   ` + (dtps.classes[num].outcomes[i].lastAssignment ? `<div style="margin: 10px 0px;"></div>
   <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? `<i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">keyboard_arrow_right</i>` : "") + `
-  <div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 22px; width: 22px; height: 22px; background-color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; color: white;` : `line-height: 20px; width: 20px; height: 20px; border: 1px solid ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `;`) + `display: inline-block; text-align: center; font-size: 16px; border-radius: 50%; margin-right: 5px;">
-  ` + dtps.classes[num].outcomes[i].lastAssignment.score + `</div> ` + dtps.classes[num].outcomes[i].lastAssignment.name + `</div>` : "") + `
+  <span onclick="dtps.assignment('` + dtps.classes[num].outcomes[i].lastAssignment.id + `', ` + num + `)" style="cursor: pointer;"><div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 22px; width: 22px; height: 22px; background-color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; color: white;` : `line-height: 20px; width: 20px; height: 20px; border: 1px solid ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `;`) + `display: inline-block; text-align: center; font-size: 16px; border-radius: 50%; margin-right: 5px;">
+  ` + dtps.classes[num].outcomes[i].lastAssignment.score + `</div> ` + dtps.classes[num].outcomes[i].lastAssignment.name + `</span></div>` : "") + `
   
 <div style="margin-top: 10px; display: none;" class="fullList">
-` + dtps.classes[num].outcomes[i].gradedAlignments.map(function(alignment, ii) {
-if (ii == 0) return "";
-return `<div style="padding-left: 29px; margin: 2px 0px; color: var(--lightText); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+` + dtps.classes[num].outcomes[i].gradedAlignments.map(function (alignment, ii) {
+                            if (ii == 0) return "";
+                            return `<div onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)" style="cursor: pointer; padding-left: 29px; margin: 2px 0px; color: var(--lightText); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
 <div style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; border: 1px solid ` + dtps.cblColor(alignment.score) + `; color: ` + dtps.cblColor(alignment.score) + `;` : `line-height: 20px; width: 20px; height: 20px; background-color: ` + dtps.cblColor(alignment.score) + `; color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px;">` + alignment.score + `</div> ` + alignment.title + `</div>`
-}).join("") + `
+                        }).join("") + `
   </div>
   
   </div>`
@@ -2251,7 +2265,7 @@ dtps.renderLite = function () {
 	  <img src="https://powerplus.app/outline.png" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
 	  <div style="vertical-align: middle; display: inline-block;">
       <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>` + trackDom + `
-      <p style="font-weight: bold;">` + verDom + `</p>
+      <p>` + verDom + `</p>
 	  </div>
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();" class="item active">
