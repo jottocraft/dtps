@@ -437,9 +437,9 @@ dtps.init = function () {
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
         marketers = ["669", "672", "209", "707", "534", "506"]
         if (marketers.includes(dtps.user.id)) { jQuery("body").addClass("marketer"); dtps.log("Promotional marketing mode enabled"); }
-        contributors = ["669"]
+        contributors = ["669", "672"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
-        if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+        if (dtps.user.id == "669", "672") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
         if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
         if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
         $ = jQuery;
@@ -2364,7 +2364,6 @@ dtps.renderLite = function () {
 <div class="sudo">
     <h5>Experiments</h5>
     <p>WARNING: Features listed below are not officially supported and can break Power+. Use at your own risk.</p>
-    <p>Want to test out new features as they are developed? <a href="https://powerplus.app/devbookmark.txt">Try the dev version of Power+</a>.</p>
 <br />
 <div onclick="fluid.set('pref-cacao')" class="switch pref-cacao"><span class="head"></span></div>
 <div class="label"><i class="material-icons">view_carousel</i> Project Cacao</div>
