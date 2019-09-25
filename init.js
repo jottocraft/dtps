@@ -435,7 +435,7 @@ dtps.init = function () {
         dtps.user = JSON.parse(user);
         sudoers = ["669", "672", "209"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        marketers = ["669", "672", "209"]
+        marketers = ["669"]
         if (marketers.includes(dtps.user.id)) { jQuery("body").addClass("marketer"); dtps.log("Promotional marketing mode enabled"); }
         contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
@@ -2369,6 +2369,9 @@ dtps.renderLite = function () {
 <div onclick="fluid.set('pref-cacao')" class="switch pref-cacao"><span class="head"></span></div>
 <div class="label"><i class="material-icons">view_carousel</i> Project Cacao</div>
 <br /><br />
+<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints sudo marketer"><span class="head"></span></div>
+<div class="label marketer"><i class="material-icons">stars</i> PowerPoints (Early Access)</div>
+<br /><br />
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
@@ -2430,6 +2433,7 @@ dtps.renderLite = function () {
     <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
     if (!dtps.embedded) $(".embeddedOptions").hide();
     if (!dtps.embedded) fluid.onLoad();
+    if (fluid.get("pref-powerPoints") == "true") $.getScript("https://jottocraft.github.io/dtps-points/points.js");
 }
 
 dtps.init();
