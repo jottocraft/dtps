@@ -433,9 +433,9 @@ dtps.init = function () {
         })
 
         dtps.user = JSON.parse(user);
-        sudoers = ["669", "672", "209", "707", "534", "506", "693", "577"]
+        sudoers = ["669", "672", "209"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        marketers = ["669", "672", "209", "707", "534", "506", "693", "577"]
+        marketers = ["669", "672", "209"]
         if (marketers.includes(dtps.user.id)) { jQuery("body").addClass("marketer"); dtps.log("Promotional marketing mode enabled"); }
         contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
@@ -2315,6 +2315,9 @@ dtps.renderLite = function () {
     <p>Power+</p>
     <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
     <div class="label"><i class="material-icons">code</i> Automatically load Power+</div>
+<br /><br />
+<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints"><span class="head"></span></div>
+<div class="label"><i class="material-icons">stars</i> PowerPoints (USE AT YOUR OWN RISK)</div>
     <!-- <br /><br />
     <div onclick="fluid.set('pref-devChannel')" class="switch pref-devChannel"><span class="head"></span></div>
     <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div> -->
@@ -2368,9 +2371,6 @@ dtps.renderLite = function () {
 <br />
 <div onclick="fluid.set('pref-cacao')" class="switch pref-cacao"><span class="head"></span></div>
 <div class="label"><i class="material-icons">view_carousel</i> Project Cacao</div>
-<br /><br />
-<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints sudo marketer"><span class="head"></span></div>
-<div class="label marketer"><i class="material-icons">stars</i> PowerPoints (Early Access)</div>
 <br /><br />
 </div>
 </div>
