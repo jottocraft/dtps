@@ -433,9 +433,9 @@ dtps.init = function () {
         })
 
         dtps.user = JSON.parse(user);
-        sudoers = ["669", "672", "209", "707", "534", "506"]
+        sudoers = ["669", "672", "209", "707", "534", "506", "693", "577"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        marketers = ["669", "672", "209", "707", "534", "506"]
+        marketers = ["669", "672", "209", "707", "534", "506", "693", "577"]
         if (marketers.includes(dtps.user.id)) { jQuery("body").addClass("marketer"); dtps.log("Promotional marketing mode enabled"); }
         contributors = ["669"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
