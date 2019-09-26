@@ -2315,9 +2315,6 @@ dtps.renderLite = function () {
     <p>Power+</p>
     <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
     <div class="label"><i class="material-icons">code</i> Automatically load Power+</div>
-<br /><br />
-<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints"><span class="head"></span></div>
-<div class="label"><i class="material-icons">stars</i> PowerPoints (USE AT YOUR OWN RISK)</div>
     <!-- <br /><br />
     <div onclick="fluid.set('pref-devChannel')" class="switch pref-devChannel"><span class="head"></span></div>
     <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div> -->
@@ -2356,6 +2353,10 @@ dtps.renderLite = function () {
 </div>
 <div style="display: none;" class="abtpage apiExplorer">
     <h5>API Explorer</h5>
+<br /><br />
+<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints"><span class="head"></span></div>
+<div class="label"><i class="material-icons">stars</i> PowerPoints (USE AT YOUR OWN RISK, REQUIRES RELOAD)</div>
+<br /><br />
     <ul>` + dtps.explorer.map(function (item) {
         return `<li style="cursor: pointer;" onclick="dtps.explore('` + item.path + `')">` + item.name + `</li>`
     }).join("") + `</ul>
