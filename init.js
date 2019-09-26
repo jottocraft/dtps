@@ -416,7 +416,7 @@ dtps.init = function () {
     dtps.explorer.push({ name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs" });
 
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
-        fluidThemes = [["midnight"]];
+        fluidThemes = [["midnight"], ["rainbow"]];
         fluidAutoLoad = false;
 
         document.addEventListener("fluidTheme", function (data) {
