@@ -1,9 +1,7 @@
 /*!
-Fluid UI JavaScript Modules v3.9.1-1-1 GM
+Fluid UI JavaScript Modules v3.9.1-internal-dtps(debug)
 Copyright (c) 2017-2019 jottocraft
 Licenced under the GNU General Public License v3.0 (https://github.com/jottocraft/fluid/blob/master/LICENSE)
-
-THIS VERSION OF FLUID UI IS FOR TESTING PURPOSES ONLY
  */
 
 
@@ -107,16 +105,6 @@ fluid.theme = function (requestedTheme, temporary) {
   // -----------------------------------------
 
   // OTHER THEME THINGS ----------------------
-  //Load chroma
-  if (fluid.chroma.on && fluid.chroma.themeLink) {
-    fluid.chroma.static(getComputedStyle(document.body).getPropertyValue("--background"))
-  }
-
-  if ((requestedTheme !== currentTheme) && (currentTheme !== null)) {
-    //emit theme change event if the theme has changed
-    document.dispatchEvent(new CustomEvent('fluidTheme', { detail: requestedTheme }))
-  }
-
   //Acrylic (tinycolor library required)
   if (typeof tinycolor !== "undefined") {
     var acrylicBase = getComputedStyle(document.body).getPropertyValue("--acrylic");
@@ -125,6 +113,18 @@ fluid.theme = function (requestedTheme, temporary) {
     document.documentElement.style.setProperty("--acrylic50", tinycolor(acrylicBase).setAlpha(0.5).toRgbString())
     document.documentElement.style.setProperty("--acrylic50-fallback", tinycolor(acrylicBase).setAlpha(0.9).toRgbString())
     document.documentElement.style.setProperty("--acrylicSecText", tinycolor(getComputedStyle(document.body).getPropertyValue("--text")).setAlpha(0.3).toRgbString())
+  } else {
+    console.warn("[FLUID UI] The tinycolor library is not present. Fluid UI Acrylic will not work on this site.");
+  }
+  
+  //Load chroma
+  if (fluid.chroma.on && fluid.chroma.themeLink) {
+    fluid.chroma.static(getComputedStyle(document.body).getPropertyValue("--background"))
+  }
+
+  if ((requestedTheme !== currentTheme) && (currentTheme !== null)) {
+    //emit theme change event if the theme has changed
+    document.dispatchEvent(new CustomEvent('fluidTheme', { detail: requestedTheme }))
   }
   // -----------------------------------------
 
@@ -190,7 +190,7 @@ fluid.chroma.session = {};
 fluid.chroma.supported = function (cb) {
   $.ajax({
     type: "GET",
-    url: 'https://chromasdk.io:54236/razer/chromasdk',
+    url: 'http://localhost:54235/razer/chromasdk',
     success: function () {
       if (cb) cb(true);
     },
@@ -202,7 +202,7 @@ fluid.chroma.supported = function (cb) {
 fluid.chroma.init = function (profile, cb) {
   $.ajax({
     type: "POST",
-    url: 'https://chromasdk.io:54236/razer/chromasdk',
+    url: 'http://localhost:54235/razer/chromasdk',
     dataType: 'json',
     contentType: 'application/json',
     data: `{
