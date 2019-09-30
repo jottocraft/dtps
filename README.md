@@ -14,19 +14,25 @@ These install methods are not officially supported. For supported install method
 
 Stable bookmarklet
 
-`javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;`
+```javascript
+javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;
+```
 
 <br />
 
 Dev bookmarklet
 
-`javascript:jQuery.getScript('https://powerplus.app/dev.js');dtpsLoader=2;`
+```javascript
+javascript:jQuery.getScript('https://powerplus.app/dev.js');dtpsLoader=2;
+```
 
 <br />
 
 Firefox bookmarklet
 
-`javascript:(function(){jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;})();`
+```javascript
+javascript:(function(){jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;})();
+```
 
 <br /><br />
 
@@ -34,8 +40,12 @@ Firefox bookmarklet
 
 Power+ (dev) will be back online by October 15th, 2019
 
-Experimental Canvas Dark theme bookmarklet (will be added to Power+ (dev) soon). At this time, the Canvas Dark theme experiment is still in a very early stage of development. For now, issues and feedback related to this experimental theme will not be accepted.
-`javascript:jQuery("<link/>", { rel: "stylesheet", type: "text/css", href: "https://powerplus.app/canvasDark.css" }).appendTo("head");`
+Experimental Canvas Dark theme bookmarklet (will be added to Power+ (dev) soon).
+```javascript
+javascript:jQuery("<link/>", { rel:"stylesheet", type:"text/css", href:"https://powerplus.app/canvasDark.css" }).appendTo("head");
+```
+
+At this time, the Canvas Dark theme experiment is still in a very early stage of development. For now, issues and feedback related to this experimental theme will not be accepted.
 
 <br /><br /><br /><br /><br /><br />
 
