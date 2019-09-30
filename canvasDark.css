@@ -1,0 +1,273 @@
+:root {
+    --ic-brand-primary-darkened-5: #E34C32;
+    --ic-brand-primary-darkened-10: #D7482F;
+    --ic-brand-primary-darkened-15: #CB442D;
+    --ic-brand-primary-lightened-5: #EE583E;
+    --ic-brand-primary-lightened-10: #EF6148;
+    --ic-brand-primary-lightened-15: #F06A52;
+    --ic-brand-button--primary-bgd-darkened-5: #316184;
+    --ic-brand-button--primary-bgd-darkened-15: #2C5776;
+    --ic-brand-button--secondary-bgd-darkened-5: #2B3942;
+    --ic-brand-button--secondary-bgd-darkened-15: #27333B;
+    --ic-brand-font-color-dark-lightened-15: #dcdcdc;
+    --ic-brand-font-color-dark-lightened-30: #6C757C;
+    --ic-link-color-darkened-10: #79A9C3;
+    --ic-link-color-lightened-10: #92C1DB;
+    --ic-brand-primary: #ee5034;
+    --ic-brand-font-color-dark: #dadada;
+    --ic-link-color: #86bbd8;
+    --ic-brand-button--primary-bgd: #33668a;
+    --ic-brand-button--primary-text: #ffffff;
+    --ic-brand-button--secondary-bgd: #2D3B45;
+    --ic-brand-button--secondary-text: #ffffff;
+    --ic-brand-global-nav-bgd: #272f43;
+    --ic-brand-global-nav-ic-icon-svg-fill: #ffffff;
+    --ic-brand-global-nav-ic-icon-svg-fill--active: var(--ic-brand-primary);
+    --ic-brand-global-nav-menu-item__text-color: #ffffff;
+    --ic-brand-global-nav-menu-item__text-color--active: #33668a;
+    --ic-brand-global-nav-avatar-border: #ffffff;
+    --ic-brand-global-nav-menu-item__badge-bgd: var(--ic-brand-primary);
+    --ic-brand-global-nav-menu-item__badge-text: #ffffff;
+    --ic-brand-global-nav-logo-bgd: #ee5034;
+    --ic-brand-header-image: url(https://du11hjcvx0uqb.cloudfront.net/dist/images/canvas_logomark_only@2x-e197434829.png);
+    --ic-brand-mobile-global-nav-logo: url(https://du11hjcvx0uqb.cloudfront.net/dist/images/mobile-global-nav-logo-aff8453309.svg);
+    --ic-brand-watermark:;
+    --ic-brand-watermark-opacity: 1;
+    --ic-brand-favicon: url(https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico);
+    --ic-brand-apple-touch-icon: url(https://du11hjcvx0uqb.cloudfront.net/dist/images/apple-touch-icon-585e5d997d.png);
+    --ic-brand-msapplication-tile-color: var(--ic-brand-primary);
+    --ic-brand-msapplication-tile-square: url(https://du11hjcvx0uqb.cloudfront.net/dist/images/windows-tile-eda8889e7b.png);
+    --ic-brand-msapplication-tile-wide: url(https://du11hjcvx0uqb.cloudfront.net/dist/images/windows-tile-wide-44d3cc1060.png);
+    --ic-brand-right-sidebar-logo:;
+    --ic-brand-Login-body-bgd-color: #394B58;
+    --ic-brand-Login-body-bgd-image:;
+    --ic-brand-Login-body-bgd-shadow-color: #2D3B45;
+    --ic-brand-Login-logo: url(https://du11hjcvx0uqb.cloudfront.net/dist/images/login/canvas-logo-5617606953.svg);
+    --ic-brand-Login-Content-bgd-color: none;
+    --ic-brand-Login-Content-border-color: none;
+    --ic-brand-Login-Content-inner-bgd: none;
+    --ic-brand-Login-Content-inner-border: none;
+    --ic-brand-Login-Content-inner-body-bgd: none;
+    --ic-brand-Login-Content-inner-body-border: none;
+    --ic-brand-Login-Content-label-text-color: #ffffff;
+    --ic-brand-Login-Content-password-text-color: #ffffff;
+    --ic-brand-Login-footer-link-color: #ffffff;
+    --ic-brand-Login-footer-link-color-hover: #ffffff;
+    --ic-brand-Login-instructure-logo: #ffffff;
+}
+
+:root {
+    --fFVtz-color: #d0d0d0;
+    --voGQb-color: #d0d0d0;
+    --dsRAF-color: #d0d0d0;
+    --eHiXd-iconColor: #d0d0d0;
+    --eHiXd-iconActiveColor: white;
+    --fLzZc-background: #3e3e3e;
+    --dxCCp-color: gray;
+    --fNHEA-labelColor: gray;
+}
+
+#planner-today-btn {
+    background-color: #2d2d2d !important;
+    border-color: #484848 !important;
+    color: #cccccc !important;
+}
+
+.btn:not(.btn-primary), .Button:not(.Button--primary), .ui-button  {
+    background-color: #2d2d2d;
+    border-color: #484848;
+    color: #cccccc;
+}
+
+.btn:not(.btn-primary):hover, .Button:not(.Button--primary):hover, .ui-button:hover  {
+    background-color: #313131;
+    border-color: #484848;
+    color: #cccccc;
+}
+
+.list-view>ul>li>a:hover, .list-view>ul>li>a:focus, .list-view>nav>ul>li>a:hover, .list-view>nav>ul>li>a:focus {
+    background-color: #3c3c3c;
+}
+
+body, .ic-Dashboard-header__layout, .planner-day, .planner-empty-days, .planner-item, .module-sequence-footer .module-sequence-footer-content, .header-bar, #undated-events .event, #minical, table.summary td, table.summary tbody th {
+    background-color: #2d2d2d;
+    border-color: #484848;
+}
+
+.course-list-table .course-list-table-row:hover, #calendar-app .fc-month-view .fc-today, #calendar-drag-and-drop-container .fc-month-view .fc-today {
+    background-color:#313131
+}
+
+.root_hppr, .emyav_fAVi, .root_2OsM, .ic-app-nav-toggle-and-crumbs, #assignment_show .student-assignment-overview, .ic-app-footer, hr, .ic-Table td, .ic-Table th {
+    border-color: #484848;
+}
+
+span.yyQPt_cSXm, .PlannerHeader, #breadcrumbs {
+    background-color: #2d2d2d;
+}
+
+.bZMhq_ddES {
+    border-color: #444444;
+    background-color: #333333;
+}
+
+#calendar-app .fc-month-view .fc-body, #calendar-drag-and-drop-container .fc-month-view .fc-body {
+    background-color: #2d2d2d;
+}
+
+.calendar .fc-row .fc-content-skeleton td, .calendar .fc-row .fc-helper-skeleton td, #calendar-drag-and-drop-container .fc-row .fc-content-skeleton td, #calendar-drag-and-drop-container .fc-row .fc-helper-skeleton td, .fc-unthemed th, .fc-unthemed td, .fc-unthemed thead, .fc-unthemed tbody, .fc-unthemed .fc-divider, .fc-unthemed .fc-row, .fc-unthemed .fc-popover {
+    border-color:#484848;
+}
+
+#calendar-app .fc-event, #calendar-drag-and-drop-container .fc-event {
+    background-color:#333333;
+}
+
+#create_new_event_link {
+    color: gray;
+}
+
+#context-list-holder, #undated-events, #context-list .context_list_context:hover {
+    background-color: #2d2d2d;
+}
+
+#minical .fc-toolbar, #right-side h2, #right-side .h2, .ic-Table tbody th, #right-side hr, table.summary thead th, table.summary caption {
+    border-color: #4e4e4e;
+}
+
+#minical .fc-widget-content, #minical .fc-toolbar h2, #minical .fc-toolbar .h2 {
+    border-color: transparent;
+    color: #cccccc;
+}
+
+#pairing-code .eHiXd_bGBk {
+    background-color: #2d2d2d;
+    border-color: #484848;
+    color: #cccccc;
+}
+
+#pairing-code .eHiXd_bGBk:hover {
+    background-color: #313131;
+    border-color: #484848;
+    color: #cccccc;
+}
+
+a.delete_key_link {
+    color: #cccccc;
+}
+
+.feature-flags, .feature-flag {
+    border-color: #484848;
+}
+
+.ic-app-header__menu-list-item.ic-app-header__menu-list-item--active .ic-app-header__menu-list-link {
+    background-color: #3e3e3e;
+}
+
+.rubric_container td, .rubric_container th, .rubric_container table.ratings td {
+    border-color: #484848;
+}
+
+.rubric_container table.ratings td {
+    background-color: #2d2d2d;
+}
+
+.rubric_container thead th, .rubric_container .rubric_title, .student-groups.show-body .student-group-header {
+    background-color: #3e3e3e;
+    border-color: #484848;
+}
+
+.ui-dialog .ui-dialog-titlebar.ui-widget-header, .ui-dialog .ui-datepicker .ui-widget-header.ui-datepicker-header, .ui-datepicker .ui-dialog .ui-widget-header.ui-datepicker-header, .ui-widget-content {
+    background-color: #2d2d2d;
+    border-color: #484848;
+}
+
+.ui-dialog .ui-dialog-titlebar-close span, .ui-widget-content .ui-icon {
+    filter: invert(1)
+}
+
+.ic-app-course-nav-toggle {
+    border-color: transparent !important;
+    color: #777777 !important;
+}
+
+.item-group-container, .item-group-container .item-group-condensed {
+    background-color: #383838;
+    border-color: #4e4e4e;
+}
+
+.ig-header .name {
+    color: #cccccc;
+    text-shadow: none;
+}
+
+.item-group-condensed .ig-row, .item-group-condensed .ig-list li:first-child .ig-row, .item-group-condensed .ig-list li:first-of-type .ig-row, .item-group-condensed .first_visible .ig-row {
+    background-color: #2d2d2d;
+    border-color: #4e4e4e;
+}
+
+.item-group-condensed .ig-row:hover, .item-group-condensed .ig-list li:first-child .ig-row:hover, .item-group-condensed .ig-list li:first-of-type .ig-row:hover, .item-group-condensed .first_visible .ig-row:hover {
+    background-color: #3a3a3a;
+}
+
+.context_module_item.context_module_item_hover {
+    background-color: #383838;
+}
+.accessible-toggler, .accessible-toggler:hover, .accessible-toggler:focus {
+    color: #cccccc;
+}
+
+textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, select.ic-Input, textarea.ic-Input, input[type="text"].ic-Input, input[type="password"].ic-Input, input[type="datetime"].ic-Input, input[type="datetime-local"].ic-Input, input[type="date"].ic-Input, input[type="month"].ic-Input, input[type="time"].ic-Input, input[type="week"].ic-Input, input[type="number"].ic-Input, input[type="email"].ic-Input, input[type="url"].ic-Input, input[type="search"].ic-Input, input[type="tel"].ic-Input, input[type="color"].ic-Input, .uneditable-input.ic-Input {
+    background-color: #2d2d2d;
+    border-color: #4e4e4e;
+}
+
+.dLdjY_ycrn .dLdjY_bDLZ, select {
+    background-color: #2d2d2d;
+    border-color: #484848;
+    color: #cccccc;
+}
+
+.dLdjY_bGBk svg, .dLdjY_ycrn svg {
+    filter: invert(1);
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active, .ui-tabs .ui-tabs-nav li.ui-tabs-active.ui-state-hover, .ui-tabs .ui-tabs-nav li.ui-tabs-active:hover {
+    background-color: #2d2d2d;
+    border-color: #4e4e4e;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active a, .cWmNi_bGBk span {
+    color: #cccccc;
+}
+
+.ui-tabs .ui-tabs-nav, .MYpOQ_dsNY, #outcomes li, .react-rubric .rating-tier, .student-groups {
+    border-color: #4e4e4e;
+}
+
+.ui-tabs .ui-tabs-panel, .MYpOQ_fZwI {
+    background-color: #2d2d2d;
+    color: #cccccc;
+    border-color: #4e4e4e;
+}
+
+.cUhcF_bGBk svg, .student-groups .student-group-students {
+    color: #cccccc;
+}
+
+.bZMhq_cOXX {
+    background-color:#333333;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-state-hover, .ui-tabs .ui-tabs-nav li:hover {
+    background-color: #353535;
+    border-color: #4e4e4e;
+}
+
+.ic-Table.ic-Table--striped tbody tr:nth-child(odd):not(:hover) {
+    background-color: #313131;
+}
+
+.ic-Table.ic-Table--hover-row tbody tr:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-neutral:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-success:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-alert:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-danger:hover {
+    background-color: #424242;
+}
