@@ -2314,10 +2314,10 @@ dtps.renderLite = function () {
 	<br /><br />
     <p>Power+</p>
     <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">code</i> Automatically load Power+</div>
-    <!-- <br /><br />
+    <div class="label"><i class="material-icons">play_circle_outline</i> Automatically load Power+</div>
+    <br /><br />
     <div onclick="fluid.set('pref-devChannel')" class="switch pref-devChannel"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div> -->
+    <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div>
 	</div>
 </div>
 <div style="display: none;" class="abtpage classes">
