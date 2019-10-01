@@ -2292,7 +2292,7 @@ dtps.renderLite = function () {
     <div class="btns row themeSelector"></div>
     <br />
     <div onclick="fluid.set('pref-darkCanvas')" class="switch pref-darkCanvas"><span class="head"></span></div>
-    <div class="label"><img style="width: 26px;vertical-align: middle;margin-right: 2px; background-color: #ee5034; padding-bottom: 1px; border-radius: 50%;" src="https://i.imgur.com/Ft3jtFu.png" class="material-icons" /img> Use dark theme in Canvas</div>
+    <div class="label"><img style="width: 26px;vertical-align: middle;margin-right: 2px; background-color: #ee5034; padding-bottom: 1px; border-radius: 50%;" src="https://i.imgur.com/Ft3jtFu.png" class="material-icons" /img> Use dark theme in Canvas (beta)</div>
     <br /><br />
     <p>Grades</p>
     <div onclick="fluid.set('pref-calcGrades')" class="switch pref-calcGrades active"><span class="head"></span></div>
