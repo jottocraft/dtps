@@ -65,6 +65,9 @@
     --fLzZc-background: #3e3e3e;
     --dxCCp-color: gray;
     --fNHEA-labelColor: gray;
+    --cyAHS-minimalColor: #cccccc;
+    --fMhSu-arrowBackgroundColor: #2d2d2d;
+    --eoNrR-color: #cccccc;
 }
 
 #planner-today-btn {
@@ -217,9 +220,10 @@ a.delete_key_link {
     color: #cccccc;
 }
 
-textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, select.ic-Input, textarea.ic-Input, input[type="text"].ic-Input, input[type="password"].ic-Input, input[type="datetime"].ic-Input, input[type="datetime-local"].ic-Input, input[type="date"].ic-Input, input[type="month"].ic-Input, input[type="time"].ic-Input, input[type="week"].ic-Input, input[type="number"].ic-Input, input[type="email"].ic-Input, input[type="url"].ic-Input, input[type="search"].ic-Input, input[type="tel"].ic-Input, input[type="color"].ic-Input, .uneditable-input.ic-Input {
+textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, select.ic-Input, textarea.ic-Input, input[type="text"].ic-Input, input[type="password"].ic-Input, input[type="datetime"].ic-Input, input[type="datetime-local"].ic-Input, input[type="date"].ic-Input, input[type="month"].ic-Input, input[type="time"].ic-Input, input[type="week"].ic-Input, input[type="number"].ic-Input, input[type="email"].ic-Input, input[type="url"].ic-Input, input[type="search"].ic-Input, input[type="tel"].ic-Input, input[type="color"].ic-Input, .uneditable-input.ic-Input, input[type].bwOAM_cwos.bwOAM_EMjX {
     background-color: #2d2d2d;
     border-color: #4e4e4e;
+    color: #cacaca;
 }
 
 .dLdjY_ycrn .dLdjY_bDLZ, select {
@@ -251,6 +255,12 @@ textarea, input[type="text"], input[type="password"], input[type="datetime"], in
     border-color: #4e4e4e;
 }
 
+.ui-tabs .ui-tabs-nav li.ui-state-focus, .ui-tabs .ui-tabs-nav li.ui-state-focus.ui-tabs-active {
+    background-color: #2d2d2d;
+    color: #cccccc;
+    border-color: #4e4e4e;
+}
+
 .cUhcF_bGBk svg, .student-groups .student-group-students {
     color: #cccccc;
 }
@@ -270,4 +280,50 @@ textarea, input[type="text"], input[type="password"], input[type="datetime"], in
 
 .ic-Table.ic-Table--hover-row tbody tr:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-neutral:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-success:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-alert:hover, .ic-Table.ic-Table--hover-row tbody tr.ic-Table__row--bg-danger:hover {
     background-color: #424242;
+}
+
+.ic-DashboardCard, .ic-DashboardCard__header_content {
+    background-color: #353535;
+}
+
+.Button--icon-action, .Button--icon-action-rev {
+    background-color: transparent !important;
+}
+
+.ui-datepicker .ui-datepicker-time, .ui-dialog .ui-dialog-buttonpane, .ui-dialog .ui-datepicker .ui-datepicker-time, .ui-datepicker .ui-dialog .ui-datepicker-time {
+    background-color: #353535;
+    border-color: #484848;
+}
+
+.cDwzl_GKUc .cDwzl_caGd {
+    border-color: #484848;
+}
+
+.eHiXd_ddES, .eHiXd_fnSs, a.eHiXd_ddES, a.eHiXd_fnSs, button.eHiXd_ddES, button.eHiXd_ddES[type="button"], button.eHiXd_ddES[type="reset"], button.eHiXd_ddES[type="submit"], button.eHiXd_fnSs, button.eHiXd_fnSs[type="button"], button.eHiXd_fnSs[type="reset"], button.eHiXd_fnSs[type="submit"] {
+    background-color: #424242;
+    border-color: #5d5d5d;
+    color: #cccccc;
+}
+
+.eHiXd_ddES:active, .eHiXd_ddES:focus, .eHiXd_ddES:hover, a.eHiXd_ddES:active, a.eHiXd_ddES:focus, a.eHiXd_ddES:hover, button.eHiXd_ddES:active, button.eHiXd_ddES:focus, button.eHiXd_ddES:hover, button.eHiXd_ddES[type="button"]:active, button.eHiXd_ddES[type="button"]:focus, button.eHiXd_ddES[type="button"]:hover, button.eHiXd_ddES[type="reset"]:active, button.eHiXd_ddES[type="reset"]:focus, button.eHiXd_ddES[type="reset"]:hover, button.eHiXd_ddES[type="submit"]:active, button.eHiXd_ddES[type="submit"]:focus, button.eHiXd_ddES[type="submit"]:hover {
+    background-color: #565656;
+    border-color: #5d5d5d;
+    color: #cccccc;
+}
+
+.ColorPicker__Container, .DashboardCardMenu__ColorPicker, .MYpOQ_bGBk.cMXVf_GKUc {
+    background-color: #2d2d2d;
+}
+
+.cAqHo_eAjd, .sJGfW_bGBk, .eoNrR_blJt {
+    background-color: #2d2d2d;
+    color: #cccccc;
+}
+
+.dpuxe_bGBk {
+    background-color: #484848;
+}
+
+.sJGfW_blJt, .sJGfW_dnnz {
+    color: #cccccc;
 }
