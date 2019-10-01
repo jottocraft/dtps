@@ -358,7 +358,7 @@ textarea, input[type="text"], input[type="password"], input[type="datetime"], in
     border-color: #4e4e4e;
 }
 
-.topic .entry-content, .avatar, .discussion-entries .entry .entry, .ef-header, .ef-directory-header, .ef-footer, .ef-main .ef-folder-content, .ic-Action-header.ic-Action-header--before-item-groups, .message-list-scroller, .message-detail.span8 .message-content>li, .message-detail.span8 .message-header {
+.topic .entry-content, .avatar, .discussion-entries .entry .entry, .ef-header, .ef-directory-header, .ef-footer, .ef-main .ef-folder-content, .ic-Action-header.ic-Action-header--before-item-groups, .message-list-scroller, .message-detail.span8 .message-content>li, .message-detail.span8 .message-header, .ic-avatar {
     border-color: #4e4e4e;
 }
 
