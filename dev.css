@@ -1,12 +1,7 @@
 /*
-Power+ CSS v2.0.0
+Power+ CSS v2.1.0 [DEV]
 (c) jottocraft 2018-2019
 */
-
-.acrylicMaterial {
-    background-color: var(--elements) !important;
-    opacity: 0.9 !important;
-}
 
 /* cacao */
 body.cacao .cacaoBar {
