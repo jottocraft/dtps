@@ -434,3 +434,7 @@ pre {
 .dropdown-menu li>a {
     color: #cccccc;
 }
+
+.ic-item-row {
+    box-shadow: 0 -1px #4e4e4e, inset 0 -1px #4e4e4e;
+}
