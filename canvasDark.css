@@ -10,7 +10,7 @@
     --ic-brand-button--secondary-bgd-darkened-5: #2B3942;
     --ic-brand-button--secondary-bgd-darkened-15: #27333B;
     --ic-brand-font-color-dark-lightened-15: #dcdcdc;
-    --ic-brand-font-color-dark-lightened-30: #6C757C;
+    --ic-brand-font-color-dark-lightened-30: #868686;
     --ic-link-color-darkened-10: #79A9C3;
     --ic-link-color-lightened-10: #92C1DB;
     --ic-brand-primary: #ee5034;
@@ -68,6 +68,8 @@
     --cyAHS-minimalColor: #cccccc;
     --fMhSu-arrowBackgroundColor: #2d2d2d;
     --eoNrR-color: #cccccc;
+    --MlJlv-textColor: #cccccc;
+    --MlJlv-iconColor: #cccccc;
 }
 
 #planner-today-btn {
@@ -220,7 +222,7 @@ a.delete_key_link {
     color: #cccccc;
 }
 
-textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, select.ic-Input, textarea.ic-Input, input[type="text"].ic-Input, input[type="password"].ic-Input, input[type="datetime"].ic-Input, input[type="datetime-local"].ic-Input, input[type="date"].ic-Input, input[type="month"].ic-Input, input[type="time"].ic-Input, input[type="week"].ic-Input, input[type="number"].ic-Input, input[type="email"].ic-Input, input[type="url"].ic-Input, input[type="search"].ic-Input, input[type="tel"].ic-Input, input[type="color"].ic-Input, .uneditable-input.ic-Input, input[type].bwOAM_cwos.bwOAM_EMjX {
+textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input, select.ic-Input, textarea.ic-Input, input[type="text"].ic-Input, input[type="password"].ic-Input, input[type="datetime"].ic-Input, input[type="datetime-local"].ic-Input, input[type="date"].ic-Input, input[type="month"].ic-Input, input[type="time"].ic-Input, input[type="week"].ic-Input, input[type="number"].ic-Input, input[type="email"].ic-Input, input[type="url"].ic-Input, input[type="search"].ic-Input, input[type="tel"].ic-Input, input[type="color"].ic-Input, .uneditable-input.ic-Input, input[type].bwOAM_cwos.bwOAM_EMjX, .ac-input-box {
     background-color: #2d2d2d;
     border-color: #4e4e4e;
     color: #cacaca;
@@ -325,5 +327,110 @@ textarea, input[type="text"], input[type="password"], input[type="datetime"], in
 }
 
 .sJGfW_blJt, .sJGfW_dnnz {
+    color: #cccccc;
+}
+
+#right-side .events_list .event-details:after, #right-side .events_list .todo-details:after, #right-side .to-do-list .event-details:after, #right-side .to-do-list .todo-details:after {
+    background: linear-gradient(to right, rgba(45, 45, 45, 0) 0%, #2d2d2d 80%);
+}
+
+.pinned-discussions-v2__wrapper, .unpinned-discussions-v2__wrapper, .closed-for-comments-discussions-v2__wrapper {
+    background-color: #383838;
+    border-color: #4e4e4e;
+}
+
+.ic-discussion-row {
+    background-color: #2d2d2d;
+    box-shadow: -1px -1px #4e4e4e, inset -1px -1px #4e4e4e;
+}
+
+.discussions-v2__container-image {
+    background-color: #2d2d2d;
+    border-color: #4e4e4e;
+}
+
+.ic-unread-badge__total-count {
+    background-color: #4b5a61
+}
+
+.toolbarView .headerBar, .conversations .panel, .message-list .messages>li.active {
+    background-color: #383838;
+    border-color: #4e4e4e;
+}
+
+.topic .entry-content, .avatar, .discussion-entries .entry .entry, .ef-header, .ef-directory-header, .ef-footer, .ef-main .ef-folder-content, .ic-Action-header.ic-Action-header--before-item-groups, .message-list-scroller, .message-detail.span8 .message-content>li, .message-detail.span8 .message-header {
+    border-color: #4e4e4e;
+}
+
+.discussion-pubdate, .discussion-tododate {
+    color: #7b7b7b;
+}
+
+.discussion_entry, .discussion-entries .entry, .read .discussion-read-state, .item-group-condensed .item-group-expandable, .item-group-expandable .emptyMessage {
+    background-color:#2d2d2d;
+    border-color: #4e4e4e;
+}
+
+.message-list .messages>li {
+    background-color:#2d2d2d;
+    border-color: #4e4e4e;
+    color: #cccccc;
+}
+
+.dropdown-menu .divider {
+    background-color: #4e4e4e;
+    border-color: #4e4e4e;
+}
+
+.message-list .author, .message-list .subject {
+    color: #cccccc;
+}
+
+.message-list .summary {
+    color: #6b6b6b;
+}
+
+.message-list .message-count {
+    background-color: #525252;
+}
+
+.message-list .star-btn {
+    color: gray;
+}
+
+.message-detail.span8 .message-detail-actions li a:hover, .message-detail.span8 .message-detail-actions li a:focus, .message-detail.span8 .actions li a:hover, .message-detail.span8 .actions li a:focus {
+    color: #afafaf;
+}
+
+.conversations .panel .btn.ui-state-active {
+    background-color: #585858;
+}
+
+pre {
+    background-color: #383838;
+    border-color: #4e4e4e;
+    color: white;
+}
+
+.alert-info {
+    background-color: #325265;
+    color: #c9dae2;
+}
+
+.alert-success {
+    background-color: #446b49;
+    color: #c8e2ca
+}
+
+.alert-danger,.alert-error {
+    background-color: #945255;
+    color: #ead4d3
+}
+
+.dropdown-menu {
+    background-color: #2d2d2d;
+}
+
+.dropdown-menu li>a {
     color: #cccccc;
 }
