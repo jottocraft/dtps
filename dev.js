@@ -19,7 +19,7 @@ var dtps = {
         accessToken: window.localStorage.accessToken ? window.localStorage.accessToken : undefined,
         canvasURL: "https://dtechhs.instructure.com",
         client_id: "146080000000000005",
-        uri: dtps.trackSuffix !== "" ? "https://powerplus.app/dev" : "https://powerplus.app/app",
+        uri: "https://powerplus.app/app",
         scope: [
             "url:GET|/api/v1/courses/:course_id/outcome_rollups",
             "url:GET|/api/v1/users/:id",
@@ -49,6 +49,8 @@ var dtps = {
         domain: "powerplus.app"
     }
 };
+
+if (dtps.trackSuffix !== "") dtps.auth.url = "https://powerplus.app/dev"
 
 //alert all errors if dtpsDebug enabled (for chromebooks w/o devtools)
 window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
