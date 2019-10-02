@@ -36,17 +36,6 @@ javascript:(function(){jQuery.getScript('https://powerplus.app/init.js');dtpsLoa
 
 <br /><br />
 
-## Power+ (dev)
-
-Power+ (dev) will be back online by October 15th, 2019
-
-Experimental Canvas Dark theme bookmarklet (will be added to Power+ (dev) soon).
-```javascript
-javascript:jQuery("<link/>", { rel:"stylesheet", type:"text/css", href:"https://powerplus.app/canvasDark.css" }).appendTo("head");
-```
-
-At this time, the Canvas Dark theme experiment is still in a very early stage of development. For now, issues and feedback related to this experimental theme will not be accepted.
-
 <br /><br /><br /><br /><br /><br />
 
 (c) 2018-2019 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
