@@ -2057,7 +2057,7 @@ dtps.render = function () {
 
     if (dtps.embedded) {
         jQuery("body").html(`
-    <div style="line-height: 0;" class="sidebar">
+    <div style="line-height: 0;" class="sidebar acrylicMaterial">
     </div>
     <div class="cover image"></div>
     <div class="background trans"></div>
