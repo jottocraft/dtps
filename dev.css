@@ -864,11 +864,11 @@ body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor,
     display: none !important;
 }
 
-body.titlebar .items {
+body.titlebar .items.toolbar {
     display: none !important;
 }
 
-.items {
+.items.toolbar {
     position: absolute;
     right: 0;
     top: 0;
@@ -878,7 +878,7 @@ body.titlebar .items {
     z-index: 300;
 }
 
-body:not(.dark) .items, body:not(.dark) .items i, body:not(.dark) .items h4 {
+body:not(.dark) .items.toolbar, body:not(.dark) .items.toolbar i, body:not(.dark) .items.toolbar h4 {
     color: black !important;
 }
 
@@ -886,18 +886,18 @@ body:not(.dark) .header h1 {
     color: black !important;
 }
 
-body:not(.dark) .items.black, body:not(.dark) .items.black i, body:not(.dark) .items.black h4 {
+body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, body:not(.dark) .items.toolbar.black h4 {
     color: black !important;
 }
 
-.items h4 {
+.items.toolbar h4 {
     vertical-align: middle;
     display: inline-block;
     margin: 0;
     margin-right: 15px;
 }
 
-.items i {
+.items.toolbar i {
     cursor: pointer;
     vertical-align: middle;
     margin-left: 7px;
