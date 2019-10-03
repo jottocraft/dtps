@@ -545,9 +545,13 @@ dtps.init = function () {
                                 subject = null;
                             }
                             if (subject == null) var subject = name;
-                            var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
-                            //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
-                            if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+			    if (colors.custom_colors["course_" + data[i].id]) {
+                            	var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
+				//Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
+                            	if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+			    } else {
+				var filter = ""
+			    }
                             pagesTab = false;
                             for (var ii = 0; ii < data[i].tabs.length; ii++) {
                                 if (data[i].tabs[ii].id == "pages") pagesTab = true;
