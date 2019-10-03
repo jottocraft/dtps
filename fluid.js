@@ -1,5 +1,5 @@
 /*!
-Fluid UI JavaScript Modules v3.9.1-internal-dtps(debug)
+Fluid UI JavaScript Modules v3.9.2
 Copyright (c) 2017-2019 jottocraft
 Licenced under the GNU General Public License v3.0 (https://github.com/jottocraft/fluid/blob/master/LICENSE)
  */
@@ -116,7 +116,7 @@ fluid.theme = function (requestedTheme, temporary) {
   } else {
     console.warn("[FLUID UI] The tinycolor library is not present. Fluid UI Acrylic will not work on this site.");
   }
-  
+
   //Load chroma
   if (fluid.chroma.on && fluid.chroma.themeLink) {
     fluid.chroma.static(getComputedStyle(document.body).getPropertyValue("--background"))
@@ -505,6 +505,16 @@ fluid.init = function () {
     }
     $(this).attr("init", "true")
   });
+
+  $(".sidebar .collapse:not([init='true'])").click(function() {
+    $('body').toggleClass('collapsedSidebar');
+    if ($('body').hasClass('collapsedSidebar')) {
+      $(this).html(`<i class="material-icons">keyboard_arrow_right</i>`);
+    } else {
+      $(this).html(`<i class="material-icons">keyboard_arrow_left</i>`);
+    }
+    $(this).attr("init", "true");
+  })
 
   fluid.shouldSwitch = true;
   $(".switch:not([init='true'])").click(function (event) {
