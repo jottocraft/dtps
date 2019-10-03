@@ -1,11 +1,9 @@
 /*!
-Fluid UI Elements v3.9.1-1-1 GM
+Fluid UI Elements v3.9.1-dtps-epic
 Copyright (c) 2017-2019 jottocraft
 Licenced under the GNU General Public License v3.0 (https://github.com/jottocraft/fluid/blob/master/LICENSE)
 
 Skeleton CSS components (c) 2014 Dave Gamache. All rights reserved.
-
-THIS VERSION OF FLUID UI IS FOR TESTING PURPOSES ONLY
  */
 
 /* Table of contents
@@ -28,9 +26,6 @@ THIS VERSION OF FLUID UI IS FOR TESTING PURPOSES ONLY
  - Helpers
  - Miscellaneous
  - Skeleton Components
-
- TODO:
- - Flex themes
  */
 
 /* Variables
@@ -54,9 +49,9 @@ THIS VERSION OF FLUID UI IS FOR TESTING PURPOSES ONLY
   --sideColor: #f2f2f2;
   --sideActive: #efefef;
   --sideItem: #b9b9b9;
-  --navActiveText: #3ea760;
-  --navActive: #b2ffc9;
-  --navText: #6f6f6f;
+  --navBorder: #c7c7c7;
+  --navActive: #d4d4d4;
+  --navText: #4c4c4c;
   --nav: #f1f1f1;
   --cards: white;
   --cardRadius: 15px;
@@ -122,8 +117,8 @@ THIS VERSION OF FLUID UI IS FOR TESTING PURPOSES ONLY
     --sideColor: #131313;
     --sideActive: #101010;
     --sideItem: #3c3c3c;
-    --navActiveText: #26d47f;
-    --navActive: #436f50;
+    --navBorder: #3a3a3a;
+    --navActive: #2d2d2d;
     --navText: #6f6f6f;
     --nav: #131313;
     --cards: #212121;
@@ -143,36 +138,36 @@ THIS VERSION OF FLUID UI IS FOR TESTING PURPOSES ONLY
 /* Dark theme */
 body.dark, body.showThemeWindows .themeWindow.darkBox {
   --background: #1b1b1b;
-    --elements: #151515;
-    --elementRadius: 15px;
-    --elementShadow: 0 10px 30px rgba(0, 0, 0, 0.17);
-    --lightShadow: 0 2px 3px rgba(0, 0, 0, 0.17);
-    --elementText: white;
-    --darker: #0e0e0e;
-    --darkest: black;
-    --acrylic: black;
-    --inputColor: #151515;
-    --listColor: #151515;
-    --listHover: #0c0c0c;
-    --switchHead: white;
-    --sideColor: #131313;
-    --sideActive: #101010;
-    --sideItem: #3c3c3c;
-    --navActiveText: #26d47f;
-    --navActive: #436f50;
-    --navText: #6f6f6f;
-    --nav: #131313;
-    --cards: #212121;
-    --cardRadius: 15px;
-    --cardShadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    --titleFont: "Product Sans", Arial, sans-serif;
-    --textFont: "Google Sans", Arial, sans-serif;
-    --text: white;
-    --lightText: #b3b3b3;
-    --secText: #717171;
-    --trans: background-color 0.4s, box-shadow 0.4s, border-color 0.4s, color 0.4s;
-    --theme: #0c4d82;
-  --themeText: #def0ff;
+  --elements: #151515;
+  --elementRadius: 15px;
+  --elementShadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+  --lightShadow: 0 2px 3px rgba(0, 0, 0, 0.17);
+  --elementText: white;
+  --darker: #0e0e0e;
+  --darkest: black;
+  --acrylic: black;
+  --inputColor: #151515;
+  --listColor: #151515;
+  --listHover: #0c0c0c;
+  --switchHead: white;
+  --sideColor: #131313;
+  --sideActive: #101010;
+  --sideItem: #3c3c3c;
+  --navBorder: #3a3a3a;
+  --navActive: #2d2d2d;
+  --navText: #6f6f6f;
+  --nav: #131313;
+  --cards: #212121;
+  --cardRadius: 15px;
+  --cardShadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  --titleFont: "Product Sans", Arial, sans-serif;
+  --textFont: "Google Sans", Arial, sans-serif;
+  --text: white;
+  --lightText: #b3b3b3;
+  --secText: #717171;
+  --trans: background-color 0.4s, box-shadow 0.4s, border-color 0.4s, color 0.4s;
+  --theme: #0c4d82;
+--themeText: #def0ff;
 }
 
 /* Flex theme layer */
@@ -193,8 +188,8 @@ body.flex, body.showThemeWindows .themeWindow.flex {
   --sideColor: var(--flex-layer2);
   --sideActive: var(--flex-layer2);
   --sideItem: var(--flex-light);
-  --navActiveText: var(--themeText);
-  --navActive: var(--theme);
+  --navBorder: var(--flex-light);
+  --navActive: var(--flex-layer2);
   --navText: var(--text);
   --nav: var(--flex-layer2);
   --cards: var(--flex-light);
@@ -239,8 +234,8 @@ body.flex.highContrast:not(.dark), body.showThemeWindows .themeWindow.highContra
   --sideColor: var(--flex-layer2);
   --sideActive: var(--flex-layer2);
   --sideItem: var(--flex-light);
-  --navActiveText: var(--themeText);
-  --navActive: var(--theme);
+  --navBorder: var(--flex-light);
+  --navActive: var(--flex-layer2);
   --navText: var(--text);
   --nav: var(--flex-layer2);
   --cards: var(--flex-light);
@@ -285,19 +280,37 @@ body.aquatic.dark, body.showThemeWindows .themeWindow.aquatic {
 }
 
 body.midnight.dark, body.showThemeWindows .themeWindow.midnight {
-    --flex-light: #1b1b1b;
-    --flex-bg: #000000;
-    --flex-text: #cccccc;
-    --flex-layer1: #101010;
-    --flex-layer2: #212121;
-    --flex-layer3: #2f2f2f;
-    --theme-color: #252525;
-    --theme-color-outline: #252525c0;
-    --theme-text-color: #dddddd;
-    --flex-sectext: #484848;
-    --sideColor: #101010;
-    --sideItem: #292929;
-    --sideActive: #0e0e0e;
+  --background: #000000;
+  --elements: #161616;
+  --elementRadius: 15px;
+  --elementShadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+  --lightShadow: 0 2px 3px rgba(0, 0, 0, 0.17);
+  --elementText: #ffffff;
+  --darker: #222222;
+  --darkest: #2e2e2e;
+  --acrylic: #000000;
+  --inputColor: #161616;
+  --listColor: #161616;
+  --listHover: #2e2e2e;
+  --switchHead: white;
+  --sideColor: #101010;
+  --sideActive: #131313;
+  --sideItem: #252525;
+  --navBorder: #353535;
+  --navActive: #292929;
+  --navText: #ffffff;
+  --nav: #222222;
+  --cards: #0a0a0a;
+  --cardRadius: 15px;
+  --cardShadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+  --titleFont: "Product Sans", Arial, sans-serif;
+  --textFont: "Google Sans", Arial, sans-serif;
+  --text: #ffffff;
+  --lightText: #585858;
+  --secText: #585858;
+  --trans: background-color 0.4s, box-shadow 0.4s, border-color 0.4s, color 0.4s;
+  --theme: #132035;
+  --themeText: #b6daff;
 }
 
 body.candy, body.showThemeWindows .themeWindow.candy {
@@ -626,19 +639,6 @@ img.emoji {
   filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
     backdrop-filter: blur(20px);
-}
-
-/* Scrollbar */
-
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--secText);
-  opacity: 0.9;
-  border-radius: 20px;
 }
 
 /* Links */
@@ -1167,22 +1167,30 @@ textarea {
 }
 
 .sidebar {
-  height: 100vh;
+  height: calc(100vh - 0px);
   position: fixed;
   left: 0;
   top: 0;
-  width: 275px;
-  padding: 25px 0px 0px 0px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.17);
+  width: calc(275px - 0px);
+  padding: 25px 0px 42px 0px;
+  border-radius: 0px;
   background-color: var(--nav);
-  transition: var(--trans);
+  transition: var(--trans), width 0.2s;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--cardShadow);
+}
+
+.sidebar .items {
+  overflow: auto;
 }
 
 .sidebar h4 {
-  text-align: left;
+  text-align: center;
   font-size: 32px;
   font-weight: bold;
-  margin: 0px 0px 0px 10px;
+  margin: 10px 0px;
+  margin-bottom: 20px;
 }
 
 .sidebar p {
@@ -1191,40 +1199,73 @@ textarea {
 }
 
 .sidebar .item {
-  border: none;
-  padding: 0px;
-  opacity: 0.95;
-  display: inline-block;
-  border-radius: 0px calc(var(--cardRadius) + 10px) calc(var(--cardRadius) + 10px) 0px;
-  padding-right: 0px;
-  padding-left: 10px;
-  overflow: hidden;
-  font-size: 22px;
-  cursor: pointer;
-  line-height: 32px;
-  width: 250px;
-  height: 32px;
-  margin: 1px 0;
+  font-size: 20px;
+  padding: 0px 10px;
+  padding-right: 2px;
+  border: 2px solid transparent;
+  margin: 10px 10px;
+  height: 40px;
+  line-height: 36px;
+  border-radius: calc(var(--cardRadius) - 5px);
   transition: var(--trans);
   color: var(--navText);
+  cursor: pointer;
 }
 
-.sidebar .item i {
+
+.sidebar .item .icon {
   float: right;
-  vertical-align: middle;
-  line-height: 32px;
   margin-right: 7px;
+}
+
+.sidebar .item .icon i {
+  vertical-align: middle;
+}
+
+.sidebar .item.main {
+  height: 60px;
+  line-height: 54px;
+  border-radius: calc(var(--cardRadius) - 2px);
+  font-size: 26px;
+  border: 2px solid var(--navBorder);
 }
 
 .sidebar .item.active {
   background-color: var(--navActive);
-  color: var(--navActiveText);
-  font-weight: bold;
+  color: var(--text);
   letter-spacing: 0.9px;
+  box-shadow: var(--elementShadow);
 }
 
+.sidebar .item.active .label {
+  font-weight: bold;
+}
+
+.sidebar .collapse {
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  height: 40px;
+  text-align: right;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+.sidebar .collapse i {
+  vertical-align: middle;
+  background-color: var(--elements);
+  padding: 5px;
+  border-radius: 50%;
+  color: var(--elementText);
+}
+
+.sidebar .divider {
+  background-color: transparent;
+  margin: 15px 0px;
+}
 body.hasSidebar.collapsedSidebar .sidebar {
   width: 80px;
+  text-align: center;
 }
 
 body.hasSidebar.collapsedSidebar .sidebar .item .label {
@@ -1232,33 +1273,49 @@ body.hasSidebar.collapsedSidebar .sidebar .item .label {
 }
 
 body.hasSidebar.collapsedSidebar .sidebar .item {
-  width: 32px;
-  height: 32px;
-  margin-left: 24px;
+  width: 40px;
+  height: 40px;
+  margin-left: 20px;
+  padding: 0px;
   border-radius: 50%;
   text-align: center;
 }
 
-body.hasSidebar.collapsedSidebar .sidebar .item i {
-  margin-right: 4px;
+
+body.hasSidebar.collapsedSidebar .sidebar .item .icon {
+  line-height: 40px;
+  text-align: center;
+  width: 40px;
+  padding-left: 4px;
+  margin: 0px;
+  margin-top: -2px;
+}
+
+body.hasSidebar.collapsedSidebar .sidebar .item.main .icon {
+  margin-top: -4px;
 }
 
 body.hasSidebar.collapsedSidebar .sidebar p, body.hasSidebar.collapsedSidebar .sidebar h4 {
   display: none;
 }
 
-body.hasSidebar.collapsedSidebar img {
+body.hasSidebar.collapsedSidebar .logo {
   width: 40px;
   margin-bottom: 25px;
   margin-left: 20px;
 }
 
-body.hasSidebar:not(.collapsedSidebar) .sidebar img {
+body.hasSidebar:not(.collapsedSidebar) .sidebar .logo {
   display: none;
 }
 
 .sidebar .label {
   margin-left: 0px;
+}
+
+.sidebar .items {
+  overflow-x: hidden;
+  padding-bottom: 30px;
 }
 
 .nav.links {
@@ -1324,10 +1381,12 @@ body.hasSidebar:not(.collapsedSidebar) .sidebar img {
     width: 100% !important;
     height: 100vh !important;
     max-height: 100vh !important;
+    max-width: 100% !important;
     border-radius: 0px !important;
   }
   .card.focus .sidenav {
     border-radius: 0px !important;
+    height: 100vh !important;
   }
 }
 
