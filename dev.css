@@ -274,29 +274,6 @@ body {
     margin-right: 10px;
 }
 
-.class {
-    border: none;
-    padding: 0px;
-    opacity: 0.95;
-    display: inline-block;
-    border-radius: 15px;
-    padding-right: 0px;
-    padding-left: 10px;
-    overflow: hidden;
-    color: white;
-    font-size: 18px;
-    cursor: pointer;
-    line-height: 50px;
-    width: 250px;
-    height: 50px;
-    margin: 5px 0;
-    transition: background-color 0.5s;
-}
-
-.class .grade:not(:hover) .points, .class .grade:hover .letter {
-    display: none;
-}
-
 .class.whatif .letter {
     display: none;
 }
@@ -309,17 +286,6 @@ body {
     vertical-align: middle;
 }
 
-.class .grade {
-    float: right;
-    width: 50px;
-    height: 50px;
-    display: inline-block;
-    text-align: center;
-    margin-left: 10px;
-    vertical-align: middle;
-    border-radius: 10px;
-    opacity: 0.9;
-}
 
 .search, .classContent i.inputIcon {
     margin: 15px 75px 0px 10px !important;
@@ -334,36 +300,10 @@ body {
     color: inherit !important;
 }
 
-.class .dot {
-    position: absolute;
-    height: 30px;
-    line-height: 30px;
-    padding: 0px 10px;
-    right: -18;
-    margin-top: -15px;
-    border-radius: 20px;
-    background-color: var(--light);
-    font-weight: bold;
-    color: white;
-    vertical-align: middle;
-    text-align: right;
-}
 
 .class.active .dot {
     background-color: var(--dark);
     color: white;
-}
-
-.class .dot i {
-    margin-right: 5px;
-    vertical-align: middle;
-    font-weight: normal;
-    font-size: 18px;
-}
-
-.class .dot.num {
-    width: 30px;
-    text-align: center;
 }
 
 .card .dot {
@@ -388,12 +328,8 @@ body.titlebar .sidebar {
     top: 75;
 }
 
-.class .grade .letter, .class .grade .points , .class .grade .material-icons {
-    line-height: 50px;
-}
-
-.class .grade .letter {
-    font-weight: bold;
+body.hasSidebar {
+    padding: 0px !important;
 }
 
 .classDivider {
@@ -409,41 +345,40 @@ body.titlebar .sidebar {
     display: none !important;
 }
 
-.class .grade .letter {
-    font-size: 24px;
+.class .icon {
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.class .grade .points {
-    font-size: 12px;
+.class.main:not(.active) {
+    color: var(--lightText) !important;
+    border-color: var(--secText) !important;
 }
 
-.class .grade i {
-    font-size: 32px;
+.class:not(.main) {
+    font-size: 18px;
 }
 
-.class.active {
-    border: none;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+.class.main {
+    font-size: 22px !important;
 }
 
-.class .name {
-    width: 180px;
-    white-space: nowrap;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
+body.dark .class:not(.main):not(.active) {
+    color: var(--light) !important;
+}
+
+body:not(.dark) .class:not(.main):not(.active) {
+    color: var(--norm) !important;
+}
+
+.class:not(.main).active {
+    background-color: var(--light) !important;
+    color: var(--dark) !important;
+    border-color: var(--norm) !important;
 }
 
 .sidebar {
-    visibility: visible;
-    height: 100%;
-    min-height: 100vh;
-    width: 275px;
-    padding-left: 10px;
-    padding-top: 25px;
-    z-index: 5;
-    position: absolute;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.17);
+    box-shadow: none !important;
 }
 
 .sidebar, .abtheader {
@@ -458,6 +393,11 @@ body.noSidebar .sidebar {
 body.noSidebar .header {
     width: 100%;
     margin-left: 0px;
+}
+
+body.collapsedSidebar .header {
+    width: calc(100% - 80px);
+    margin-left: 80px;
 }
 
 body.titlebar .background, body.titlebar .cover.image {
@@ -486,6 +426,11 @@ body.titlebar .classContent {
 body.noSidebar .classContent {
     margin-left: 0px;
     width: 100%;
+}
+
+body.collapsedSidebar .classContent {
+    margin-left: 80px;
+    width: calc(100% - 80px);
 }
 
 body.titlebar .header h1 {
@@ -535,6 +480,7 @@ body.titlebar .classContent {
     border-radius: 0px !important;
     font-weight: normal;
     letter-spacing: normal;
+    border-color: var(--text) !important;
 }
 
 .tabs.btns .btn:not(.active) {
@@ -545,7 +491,7 @@ body.titlebar .classContent {
     font-size: 18px;
     color: var(--text) !important;
     border-color: var(--text) !important;
-    border-bottom: 2px solid white !important;
+    border-bottom: 2px solid var(--text) !important;
 }
 
 body:not(.dark) .tabs.btns .btn:not(.active), body.midnight.dark .tabs.btns .btn:not(.active) {
@@ -912,26 +858,6 @@ body.midnight:not(.dashboard) .background:before {
 .card.color .weighted {
     color: var(--dark);
     opacity: 0.55;
-}
-
-.class {
-    border-color: var(--dark);
-    background-color: var(--norm);
-}
-
-.class .grade {
-    color: var(--light);
-    background-color: var(--dark);
-}
-
-.class.active {
-    border-color: var(--light);
-    background-color: var(--dark);
-}
-
-.class.active .grade {
-    color: var(--dark);
-    background-color: var(--light);
 }
 
 body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor, body:not(.prerelease) .prerelease, body:not(.marketer) .marketer {
