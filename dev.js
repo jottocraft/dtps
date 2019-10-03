@@ -636,12 +636,12 @@ dtps.loadPages = function (num) {
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/pages", function (resp) {
         var data = JSON.parse(resp);
         if (data.error) {
-            jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class back">
-    <div class="name">Classes</div>
-    <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
-    </div>
-    <div class="classDivider"></div>
-  <h5 style="text-align: center; font-weight: bold;margin-left: -10px;">No pages found</h5><p style="text-align: center;margin-left: -10px;">This class doesn't have any pages</p>`)
+            jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class item main back">
+            <span class="label">Classes</span>
+            <div class="icon"><i class="material-icons">keyboard_arrow_left</i></div>
+            </div>
+    <div class="divider"></div>
+  <h5 style="text-align: center; font-weight: bold;">No pages found</h5><p style="text-align: center;">This class doesn't have any pages</p>`)
         } else {
             dtps.classes[num].pages = [];
             dtps.classes[num].pagelist = [];
@@ -653,18 +653,18 @@ dtps.loadPages = function (num) {
                     num: i
                 });
                 dtps.classes[num].pagelist.push(`
-      <div onclick="dtps.selectedPage = ` + data[i].page_id + `" class="class ` + data[i].page_id + `">
-      <div class="name">` + data[i].title + `</div>
-      <div class="grade"><i class="material-icons">notes</i></div>
+      <div onclick="dtps.selectedPage = ` + data[i].page_id + `" class="class item ` + data[i].page_id + `">
+      <span class="label">` + data[i].title + `</span>
+      <div class="icon"><i class="material-icons">notes</i></div>
       </div>
       `);
             }
             if ((dtps.selectedClass == num) && (dtps.selectedContent == "pages")) {
-                jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class back">
-      <div class="name">Classes</div>
-      <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
+                jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class item main back">
+      <span class="label">Classes</span>
+      <div class="icon"><i class="material-icons">keyboard_arrow_left</i></div>
       </div>
-      <div class="classDivider"></div>
+      <div class="divider"></div>
     ` + dtps.classes[num].pagelist.join(""))
             }
 
@@ -689,16 +689,16 @@ dtps.loadTopics = function (num) {
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/discussion_topics", function (resp) {
         var data = JSON.parse(resp);
         if (data.error || (data.length == 0)) {
-            jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class back">
-    <div class="name">Classes</div>
-    <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
+            jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class item main back">
+    <span class="label">Classes</span>
+    <div class="icon"><i class="material-icons">keyboard_arrow_left</i></div>
     </div>
-    <div onclick="window.open('/courses/` + dtps.classes[num].id + `/discussion_topics/new')" class="class back">
-    <div class="name">New discussion</div>
-    <div class="grade"><i class="material-icons">add</i></div>
+    <div onclick="window.open('/courses/` + dtps.classes[num].id + `/discussion_topics/new')" class="class item main back">
+    <span class="label">New discussion</span>
+    <div class="icon"><i class="material-icons">add</i></div>
     </div>
-    <div class="classDivider"></div>
-  <h5 style="text-align: center; font-weight: bold; margin-left: -10px;">No discussions found</h5><p style="text-align: center;margin-left: -10px;">There aren't any discussion topics</p>`)
+    <div class="divider"></div>
+  <h5 style="text-align: center; font-weight: bold;">No discussions found</h5><p style="text-align: center;">There aren't any discussion topics</p>`)
         } else {
             dtps.classes[num].topics = [];
             dtps.classes[num].topicList = [];
@@ -716,22 +716,22 @@ dtps.loadTopics = function (num) {
                     num: i
                 };
                 dtps.classes[num].topicList.push(`
-      <div onclick="dtps.selectedPage = ` + data[i].id + `" class="class ` + data[i].id + `">
-      <div class="name">` + data[i].title + `</div>
-      <div class="grade"><i style="font-family: 'Material Icons Extended';" class="material-icons">` + (data[i].locked_for_user ? "lock_outline" : "chat_bubble_outline") + `</i></div>
+      <div onclick="dtps.selectedPage = ` + data[i].id + `" class="class item ` + data[i].id + `">
+      <span class="label">` + data[i].title + `</span>
+      <div class="icon"><i style="font-family: 'Material Icons Extended';" class="material-icons">` + (data[i].locked_for_user ? "lock_outline" : "chat_bubble_outline") + `</i></div>
       </div>
       `);
             }
             if ((dtps.selectedClass == num) && (dtps.selectedContent == "discuss")) {
-                jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class back">
-      <div class="name">Classes</div>
-      <div class="grade"><i class="material-icons">keyboard_arrow_left</i></div>
-      </div>
-      <div onclick="window.open('/courses/` + dtps.classes[num].id + `/discussion_topics/new')" class="class back">
-    <div class="name">New discussion</div>
-    <div class="grade"><i class="material-icons">add</i></div>
-    </div>
-      <div class="classDivider"></div>
+                jQuery(".sidebar").html(`<div onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="class item main back">
+                <span class="label">Classes</span>
+                <div class="icon"><i class="material-icons">keyboard_arrow_left</i></div>
+                </div>
+                <div onclick="window.open('/courses/` + dtps.classes[num].id + `/discussion_topics/new')" class="class item main back">
+                <span class="label">New discussion</span>
+                <div class="icon"><i class="material-icons">add</i></div>
+                </div>
+                <div class="divider"></div>
     ` + dtps.classes[num].topicList.join(""))
             }
 
@@ -1727,9 +1727,9 @@ dtps.showClasses = function (override) {
         var name = dtps.classes[i].subject
         if (dtps.fullNames) name = dtps.classes[i].name
         dtps.classlist.push(`
-      <div onclick="dtps.selectedClass = ` + i + `" class="class ` + i + ` ` + dtps.classes[i].col + `">
-      <div class="name">` + name + `</div>
-      <div class="grade val">` + (dtps.classes[i].letter !== false ? `<span style="display: block !important;" class="letter">` + dtps.classes[i].letter + `</span><span style="display: none !important;" class="points">` + dtps.classes[i].grade + `%</span>` : `
+      <div onclick="dtps.selectedClass = ` + i + `" class="class item ` + i + ` ` + dtps.classes[i].col + `">
+      <span class="label name">` + name + `</span>
+      <div class="icon grade val">` + (dtps.classes[i].letter !== false ? dtps.classes[i].letter : `
       <div class="spinner" style=" background-color: var(--norm); margin: 5px; "></div>`) + `</div>
       </div>
     `);
@@ -1744,13 +1744,18 @@ dtps.showClasses = function (override) {
         }
     }
     if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
-        jQuery(".sidebar").html(`<h5 style="margin: 10px 0px 25px 0px; font-weight: 600; font-size: 27px; text-align: center;">Power+</h5>
-<div onclick="dtps.selectedClass = 'dash';" class="class masterStream ` + streamClass + `">
-    <div class="name">Dashboard</div>
-    <div class="grade"><i class="material-icons">dashboard</i></div>
+        jQuery(".sidebar").html(`<h4 style="-webkit-text-fill-color: transparent; background: -webkit-linear-gradient(#f9ca06, #efdf0d); -webkit-background-clip: text;">Power+</h4>
+        <img class="logo" src="https://powerplus.app/favicon.png" />
+<div class="items">
+<div onclick="dtps.selectedClass = 'dash';" class="class item main masterStream ` + streamClass + `">
+    <span class="label name">Dashboard</span>
+    <div class="icon"><i class="material-icons">dashboard</i></div>
     </div>
-    <div class="classDivider"></div>
-  ` + dtps.classlist.join(""));
+    <div class="divider"></div>
+  ` + dtps.classlist.join("") + `</div>
+  <div onclick="$('body').toggleClass('collapsedSidebar'); if ($('body').hasClass('collapsedSidebar')) { $(this).children('i').html('keyboard_arrow_right'); } else {$(this).children('i').html('keyboard_arrow_left');}" class="collapse">
+  <i class="material-icons">keyboard_arrow_left</i>
+</div>`);
         if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
         if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
         if ($(".btn.discuss").hasClass("active")) { $(".btn.discuss").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
@@ -1874,7 +1879,7 @@ dtps.googleStream = function () {
 dtps.googleAuth = function () {
     dtps.log("GOOGLE AUTH")
     dtps.user.google = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
-    $(".items img").attr("src", dtps.user.google.getImageUrl())
+    $(".toolbar.items img").attr("src", dtps.user.google.getImageUrl())
     gapi.client.classroom.courses.list({ pageSize: 40 }).then(function (resp) {
         dtps.googleClasses = resp.result.courses;
         if (dtps.googleClasses == undefined) {
@@ -2026,6 +2031,7 @@ dtps.render = function () {
     if (dtps.embedded) {
         jQuery("head").html("");
         $("body").addClass("dashboard");
+        $("body").addClass("hasSidebar");
     }
     document.title = "Power+" + dtps.trackSuffix;
 
@@ -2095,7 +2101,7 @@ dtps.render = function () {
     <div onclick="dtps.cacao('a')" state="a" class="tab a active"><i class="material-icons">dashboard</i><span>Dashboard</span></div>
     <div onclick="dtps.cacao('new')" class="tab icon new"><i class="material-icons">add</i></div>
 </div>
-    <div class="items">
+    <div class="toolbar items">
     </div>
 <div  style="border-radius: 30px;" class="card focus changelog close container">
 <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
@@ -2428,7 +2434,7 @@ dtps.renderLite = function () {
 <p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
 </div>
   </div>`)
-    jQuery(".items").html(`<h4>` + dtps.user.name + `</h4>
+    jQuery(".toolbar.items").html(`<h4>` + dtps.user.name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
     <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
