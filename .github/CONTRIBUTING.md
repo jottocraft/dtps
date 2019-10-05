@@ -1,6 +1,9 @@
 ## Contributing to Power+
 Power+ is open-source and open to contributions on GitHub. This document will provide several important details on how Power+ is developed and additional information about debugging Power+.
 
+### DevTools
+If you have PowerPoints enabled, developer tools will not work properly. You will need to disable PowerPoints in order to debug Power+.
+
 ### Documentation
 If you want to know how Power+ works, you can use the following sources:
 * The [Canvas API](https://canvas.instructure.com/doc/api/). All web requests in Power+ use the dtps.webReq function.
