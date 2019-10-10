@@ -894,7 +894,7 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
     vertical-align: middle;
     display: inline-block;
     margin: 0;
-    margin-right: 15px;
+    margin-right: 5px;
 }
 
 .items.toolbar i {
