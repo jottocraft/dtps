@@ -162,7 +162,7 @@ dtps.firstrun = function () {
 <h5>` + dtps.readableVer + `</h5>
 <li>Class grade calculations, what-if grades, recent grade changes, minimum score, and other gradebook features in Power+` + dtps.trackSuffix + ` are not official. If you want to see class grades from Canvas, you can disable class grade calculations in the settings menu.</li>
 <li><b>Power+` + dtps.trackSuffix + ` may have bugs that cause it to display inaccurate information. Use Power+` + dtps.trackSuffix + ` at your own risk.</b></li>
-<li><b>Power+` + dtps.trackSuffix + ` is not created nor endorsed by Canvas LMS and Instructure Inc.</b></li>
+<li><b>Power+` + dtps.trackSuffix + ` is not created neither endorsed by Canvas LMS and Instructure Inc.</b></li>
 </form><div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"><div class="ui-dialog-buttonset"><button onclick="jQuery('#dtpsNativeAlert').remove();jQuery('#dtpsNativeOverlay').remove();" type="button" data-text-while-loading="Cancel" class="btn dialog_closer ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Cancel</span></button>
 <button onclick="localStorage.setItem('dtpsInstalled', 'true'); dtps.shouldRender = true; dtps.render(); dtps.masterStream(true);" type="button" data-text-while-loading="Loading Power+..." class="btn btn-primary button_type_submit ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" role="button" aria-disabled="false"><span class="ui-button-text">Continue</span></button></div></div></div>
 <div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%; height: 100%; z-index: 500;"></div>`)
