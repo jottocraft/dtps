@@ -1321,24 +1321,43 @@ dtps.gradebook = function (num) {
                     var resultsData = JSON.parse(resppp).outcome_results;
                     dtps.classes[num].outcomes = {};
                     dtps.classes[num].gradedOutcomes = {};
+                    dtps.classes[num].recentChanges = [];
 
                     for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignments = []
+                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].sandbox = []
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignmentIDs = []
                     }
 
                     for (var i = 0; i < alignmentData.length; i++) {
                         if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
                             dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
+                            var gradAlign = dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments;
+
+                            //get grades for outcome alignments
                             for (var ii = 0; ii < resultsData.length; ii++) {
                                 if ((String(resultsData[ii].links.assignment).replace("assignment_", "") == alignmentData[i].assignment_id) && (resultsData[ii].links.learning_outcome == alignmentData[i].learning_outcome_id)) {
                                     if (resultsData[ii].score && !dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.includes(resultsData[ii].links.assignment)) {
-                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.push(alignmentData[i]);
+                                        gradAlign.push(alignmentData[i]);
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.push(resultsData[ii].links.assignment);
-                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments[dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.length - 1].score = resultsData[ii].score;
-                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments[dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.length - 1].date = resultsData[ii].submitted_or_assessed_at;
+                                        gradAlign[gradAlign.length - 1].score = resultsData[ii].score;
+                                        gradAlign[gradAlign.length - 1].date = resultsData[ii].submitted_or_assessed_at;
+                                        gradAlign[gradAlign.length - 1].gradAlignIndex = gradAlign.length - 1;
+
+                                        //save for recent changes sandbox
+                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].sandbox.push(resultsData[ii].score);
+
+                                        //save recent changes
+                                        var change = dtps.classes[num].recentChanges[new Date(gradAlign[gradAlign.length - 1].date).toDateString()]
+                                        if (change == undefined) {
+                                            dtps.classes[num].recentChanges[new Date(gradAlign[gradAlign.length - 1].date).toDateString()] = {
+                                                letterBefore: "--",
+                                                alignments: []
+                                            }
+                                        }
+                                        dtps.classes[num].recentChanges[new Date(gradAlign[gradAlign.length - 1].date).toDateString()].alignments.push(gradAlign[gradAlign.length - 1]);
                                     }
                                 }
                             }
@@ -1371,12 +1390,84 @@ dtps.gradebook = function (num) {
                         }
                     }
 
+                    //sort recent changes
+                    dtps.classes[num].recentChangesKeys = Object.keys(dtps.classes[num].recentChanges).sort(function (a, b) {
+                        var keyA = new Date(a),
+                            keyB = new Date(b);
+                        // Compare the 2 dates
+                        if (keyA < keyB) return 1;
+                        if (keyA > keyB) return -1;
+                        return 0;
+                    });
+
+                    //get recent changes
+                    dtps.classes[num].recentChangesKeys.map((k, index) => {
+                        if (index < 3) {
+                            console.log(k, index);
+                            var change = dtps.classes[num].recentChanges[k];
+
+                            //update data in sandbox
+                            for (var ii = 0; ii < change.alignments.length; ii++) {
+                                var sandbox = dtps.classes[num].outcomes[change.alignments[ii].learning_outcome_id].sandbox;
+                                sandbox[change.alignments[ii].gradAlignIndex] = null;
+                                //store last time outcome sandbox was modified
+                                dtps.classes[num].outcomes[change.alignments[ii].learning_outcome_id].modded = k;
+                            }
+
+                            //recalculate outcome scores
+                            var outcomeScores = [];
+                            Object.keys(dtps.classes[num].outcomes).map((kk) => {
+                                var outcome = dtps.classes[num].outcomes[kk];
+                                if (outcome.modded == k) {
+                                    //get length of all values in the sandbox, excluding null
+                                    //and also first outcome assessment that is not null
+                                    var counter = 0;
+                                    var firstScore = null;
+                                    for (var ii = 0; ii < outcome.sandbox.length; ii++) {
+                                        if (outcome.sandbox[ii] !== null) {
+                                            counter++;
+                                            if (firstScore == null) firstScore = outcome.sandbox[ii];
+                                        }
+                                    }
+                                    outcome.sandboxLength = counter;
+                                    outcome.sandboxFirst = firstScore;
+
+                                    //outcome alignments affected during this change, recalculate outcome score
+                                    var lastAssessment = outcome.sandboxFirst * (outcome.calculation_int / 100);
+                                    var sum = 0;
+                                    //starting at ii=1 is intentional to omit the latest outcome score from everything else
+                                    for (var ii = 0; ii < outcome.sandbox.length; ii++) {
+                                        if (outcome.sandbox[ii] !== null) {
+                                            sum += outcome.sandbox[ii];
+                                        }
+                                    }
+                                    var everythingElse = (sum / (outcome.sandboxLength - 1)) * (1 - (outcome.calculation_int / 100))
+
+                                    outcome.sandboxScore = lastAssessment + everythingElse;
+                                    if (outcome.sandboxLength == 1) outcome.sandboxScore = outcome.sandboxFirst;
+                                    if (outcome.sandboxLength) outcomeScores.push(outcome.sandboxScore);
+                                } else {
+                                    //outcome alignments not affected during this change, use previous outcome sandbox score or normal score if thats not present
+                                    if (outcome.sandboxScore || outcome.score) outcomeScores.push(outcome.sandboxScore || outcome.score)
+                                }
+                            })
+
+                            console.log("Recent outcome scores before " + k, outcomeScores)
+
+                            //calculate new class grade
+                            dtps.computeClassGrade(undefined, undefined, outcomeScores, (data) => {
+                                change.letter = data;
+                                console.log(change);
+                            })
+                        }
+                    })
+
                     //temporary variable for if outcome divider is added yet
                     var dividerAdded = false;
 
                     $(".classContent").html(`
                     <div style="display: none;" id="whatIfGrade">
-                    <div class="letter">A</div>
+                    <div class="letter">--</div>
                     <div class="notice">
                     <h5>What-If Grade</h5>
                     <p>This letter grade is hypothetical and does not reflect your actual class grade</p>
@@ -1442,6 +1533,24 @@ dtps.gradebook = function (num) {
 </table>
 </div>
 </div>` : "") + `
+<div class="card recentChanges">
+<h5 style="font-weight: bold; margin-top: 0px; font-size: 32px;"><i class="material-icons">restore</i> Recent Changes</h5>
+` + dtps.classes[num].recentChangesKeys.map((k, index) => {
+                        if (index < 3) {
+                            if (index == 0) {
+                                var letter = dtps.classes[num].letter;
+                            } else {
+                                var letter = dtps.classes[num].recentChanges[dtps.classes[num].recentChangesKeys[index - 1]].letter;
+                            }
+                            return `<div class="change"><h5 class="changeName"><div class="letter">` + letter + `</div>` + k + `</h5>` + dtps.classes[num].recentChanges[k].alignments.map((alignment) => {
+                                return `<p class="alignmentChange"><span style="color: ` + dtps.cblColor(alignment.score) + `;">` + alignment.score + `</span> ` + alignment.title + `</p>`
+                            }).join("") + `</div>`
+                        } else {
+                            return ``;
+                        }
+                    }).join("") + `
+</div>
+<br /><br />
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
                         var keyA = dtps.classes[num].outcomes[a].score,
                             keyB = dtps.classes[num].outcomes[b].score;
