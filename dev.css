@@ -1002,3 +1002,38 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
 #whatIfGrade .notice a {
     color: var(--lightText);
 }
+
+.recentChanges .changeName {
+    font-size: 20px;
+    margin-top: 20px;
+    height: 32px;
+    line-height: 32px;
+}
+
+.recentChanges i {
+    margin-right: 10px;
+}
+
+.recentChanges .letter {
+    display:inline-block;
+    vertical-align: middle;
+    background-color:var(--elements);
+    width:32px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+    margin-right: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.recentChanges .alignmentChange {
+    margin-left: 32px;
+    font-size: 14px;
+}
+
+.recentChanges .alignmentChange span {
+    font-size: 24px;
+    margin-right: 5px;
+}
