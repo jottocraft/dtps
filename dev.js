@@ -65,6 +65,11 @@ if (dtps.embedded) jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquer
 //REMOVED 8.13.2019
 //jQuery.getScript("https://fnxldqd4m5fr.statuspage.io/embed/script.js")
 
+//Shortcut for dtps.classes[dtps.selectedClass] for debugging only
+dtps.class = function () {
+    return dtps.classes[dtps.selectedClass]
+}
+
 //Shows the Power+ changelog modal
 dtps.changelog = function () {
     fluid.cards.close(".card.focus")
@@ -1328,6 +1333,8 @@ dtps.gradebook = function (num) {
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignments = []
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].sandbox = []
+                        //lowest score sandbox starts with null since we are testing various different scores. null won't actually change, its just for making sure the length of the array is correct.
+                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].lowestSandbox = [null]
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignmentIDs = []
                     }
 
@@ -1346,8 +1353,9 @@ dtps.gradebook = function (num) {
                                         gradAlign[gradAlign.length - 1].date = resultsData[ii].submitted_or_assessed_at;
                                         gradAlign[gradAlign.length - 1].gradAlignIndex = gradAlign.length - 1;
 
-                                        //save for recent changes sandbox
+                                        //save for recent changes sandbox and lowest score sandbox
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].sandbox.push(resultsData[ii].score);
+                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].lowestSandbox.push(resultsData[ii].score);
 
                                         //save recent changes
                                         var change = dtps.classes[num].recentChanges[new Date(gradAlign[gradAlign.length - 1].date).toDateString()]
@@ -1376,6 +1384,34 @@ dtps.gradebook = function (num) {
                             dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
                         }
                     }
+
+                    //get lowest score for each outcome
+                    Object.keys(dtps.classes[num].outcomes).map((k, index) => {
+                        var outcome = dtps.classes[num].outcomes[k];
+                        //5 means that more than just a 4 is needed to get a 3.5. it doesnt mean a 5 is needed
+                        var lowestScore = 5;
+
+                        //check new score for each outcome
+                        outcome.ratings.map((rating) => {
+                            //recalculate outcome decaying average
+                            var lastAssessment = rating.points * (outcome.calculation_int / 100);
+                            var sum = 0;
+                            //starting at ii=1 is intentional to omit the latest outcome score from everything else
+                            for (var ii = 1; ii < outcome.lowestSandbox.length; ii++) sum += outcome.lowestSandbox[ii];
+                            var everythingElse = (sum / (outcome.lowestSandbox.length - 1)) * (1 - (outcome.calculation_int / 100))
+
+                            var calculatedScore = lastAssessment + everythingElse;
+                            if (outcome.lowestSandbox.length == 1) calculatedScore = rating.points;
+
+                            //must get at least a 3.5 outcome average
+                            if (calculatedScore >= 3.5) {
+                                if (rating.points < lowestScore) lowestScore = rating.points;
+                            }
+                        });
+
+                        outcome.lowestScore = lowestScore;
+                    })
+
 
                     for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
                         var outcome = dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome];
@@ -1476,62 +1512,63 @@ dtps.gradebook = function (num) {
                     </div>
 
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
-    <h3 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
-    <div class="classGradeCircle" style="box-shadow: var(--elementShadow); display: inline-block;width: 80px;height: 80px; font-size: 38px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
-    <h5 style="height: 60px; line-height: 60px;">75% of outcome scores are ≥
-    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
-    <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than
-    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
-    <br />
-    <a onclick="$('#classGradeMore').show(); $(this).hide();" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
+    <h3 style="margin-bottom: 28px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
+    <div class="classGradeCircle" style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
+    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">` + (dtps.classes[num].gradeCalc.number75thresh * 100).toFixed(0) + `% of outcome scores are ≥
+    <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
+    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
+    <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
     <div style="display: none;" id="classGradeMore">
+    <br />
     <table class="u-full-width">
   <thead>
     <tr>
-      <th>Final Letter</th>
-      <th>75% of outcome scores ≥</th>
+      <th>&nbsp;&nbsp;Final Letter</th>
+      <th>At least 75% of outcome scores are ≥</th>
       <th>No outcome scores below</th>
     </tr>
   </thead>
   <tbody>
     <tr ` + (dtps.classes[num].letter == "A" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>A</td>
+      <td>&nbsp;&nbsp;A</td>
       <td>3.5</td>
       <td>3.0</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "A-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>A-</td>
+      <td>&nbsp;&nbsp;A-</td>
       <td>3.5</td>
       <td>2.5</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "B+" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>B+</td>
+      <td>&nbsp;&nbsp;B+</td>
       <td>3</td>
       <td>2.5</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "B" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>B</td>
+      <td>&nbsp;&nbsp;B</td>
       <td>3</td>
       <td>2.25</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "B-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>B-</td>
+      <td>&nbsp;&nbsp;B-</td>
       <td>3</td>
       <td>2.0</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "C" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>C</td>
+      <td>&nbsp;&nbsp;C</td>
       <td>2.5</td>
       <td>2.0</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "I" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>I</td>
+      <td>&nbsp;&nbsp;I</td>
       <td>Anything else</td>
       <td>--</td>
     </tr>
   </tbody>
 </table>
 </div>
+<br />
+<a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
 </div>` : "") + `
 <div class="card recentChanges">
 <h5 style="font-weight: bold; margin-top: 0px; font-size: 32px;"><i class="material-icons">restore</i> Recent Changes</h5>
@@ -1570,22 +1607,24 @@ dtps.gradebook = function (num) {
     ` + (dtps.classes[num].outcomes[i].score ? `<div class="points">
         <div style="color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].score) + `" class="earned numbers">` + dtps.classes[num].outcomes[i].score + `</div>
     </div>` : "") + `
-  <h5 style="font-size: 1.5rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis; margin-top: 0px; margin-right: 40px;">` + dtps.classes[num].outcomes[i].title + `</h5>
+  <h5 style="font-size: 1.4rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis; margin-top: 0px; margin-right: 40px;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
   ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Decaying Average Ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "% / " + (100 - dtps.classes[num].outcomes[i].calculation_int) + `%</div>` : "") + `
+  ` + (dtps.classes[num].outcomes[i].lowestScore ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.5 or higher in this outcome" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
   <div class="dev" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">bug_report</i> ` + dtps.classes[num].outcomes[i].id + `</div>
   ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
   </div>
 
   ` + (dtps.classes[num].outcomes[i].lastAssignment ? `<div style="margin: 10px 0px;"></div>
 
-  <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? "" : "display: none;") + `cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">keyboard_arrow_right</i>
-  <i onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">add</i>
+  <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+  <i onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="cursor: pointer; vertical-align: middle; color:var(--lightText); margin-right: 10px;" class="material-icons down">add_box</i>
+  <i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? "" : "display: none;") + `cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">keyboard_arrow_right</i>
 
   <div id="` + num + `-` + i + `-` + 0 + `" contenteditable="true" style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ?
                                     `line-height: 22px; width: 22px; height: 22px; border: none !important; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; background-color: var(--assessmentColor); color: white;`
                                     : `line-height: 20px; width: 20px; height: 20px; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);`) + `
-        display: inline-block; margin-left: 10px; text-align: center; font-size: ` + (String(dtps.classes[num].outcomes[i].lastAssignment.score).length > 2 ? "10px" : "16px") + `; border-radius: 50%; margin-right: 5px; vertical-align: middle; outline: none;">
+        display: inline-block; text-align: center; font-size: ` + (String(dtps.classes[num].outcomes[i].lastAssignment.score).length > 2 ? "10px" : "16px") + `; border-radius: 50%; margin-right: 5px; vertical-align: middle; outline: none;">
   ` + dtps.classes[num].outcomes[i].lastAssignment.score + `</div>
    <span onclick="dtps.assignment('` + dtps.classes[num].outcomes[i].lastAssignment.id + `', ` + num + `)" style="cursor: pointer;">` + dtps.classes[num].outcomes[i].lastAssignment.name + `</span></div>` : "") + `
   
@@ -1606,7 +1645,11 @@ dtps.gradebook = function (num) {
                             $("#" + num + "-" + i + "-" + ii + ", #" + num + "-" + i + "-extra").on("DOMCharacterDataModified", function (e) {
                                 var text = $(this).text();
                                 if ((String(text).length > 3) || (text && isNaN(Number(text))) || (text && ((Number(text) > 4) || (Number(text) < 1)))) {
-                                    alert("Invalid input: " + text)
+                                    $(this).css("--assessmentColor", "var(--secText)");
+                                    $("#whatIfGrade .letter").html("--");
+                                    $("#whatIfGrade").show();
+                                    $(this).parents(".card.outcomeResults").find(".earned.numbers").html("--*");
+                                    $(this).parents(".card.outcomeResults").find(".earned.numbers").css("color", "var(--secText)");
                                 } else {
                                     //update data
                                     var outcome = dtps.classes[$(this).attr("id").split("-")[0]].outcomes[$(this).attr("id").split("-")[1]];
@@ -1655,8 +1698,12 @@ dtps.simOutcomeInit = function (num, i, ele) {
     $(ele).siblings('i').show();
     $(ele).siblings('div').attr('sim', true);
     $(ele).siblings('div').html('--');
-    $(ele).siblings('div').css("--assessmentColor", "gray");
+    $(ele).siblings('div').css("--assessmentColor", "var(--secText)");
     $(ele).siblings('span').html('Simulated Outcome Assessment*');
+    $(ele).parents(".card.outcomeResults").find(".earned.numbers").html("--*");
+    $(ele).parents(".card.outcomeResults").find(".earned.numbers").css("color", "var(--secText)");
+    $("#whatIfGrade .letter").html("--");
+    $("#whatIfGrade").show();
     $(ele).hide();
     var outcome = dtps.classes[num].outcomes[i];
     outcome.gradedAlignments.push(outcome.gradedAlignments[0])
