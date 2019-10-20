@@ -2659,7 +2659,11 @@ dtps.renderLite = function () {
 </div>
 <br />
 <p style="cursor: pointer; color: var(--secText, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
-<p>(c) 2018-2019 jottocraft (<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a>)</p>
+<div style="text-align: center; padding: 50px 0px;">
+  <img style="height: 80px; vertical-align: middle;" src="https://i.imgur.com/2geYYiz.png" />
+  <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
+  <p>(c) jottocraft 2018-2019. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a></p>
+  </div>
 </div>
   </div>`)
     jQuery(".toolbar.items").html(`<h4>` + dtps.user.name + `</h4>
