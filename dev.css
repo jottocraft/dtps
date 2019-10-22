@@ -3,71 +3,6 @@ Power+ CSS v2.1.0 [DEV]
 (c) jottocraft 2018-2019
 */
 
-/* cacao */
-body.cacao .cacaoBar {
-    display: block !important;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 10px 0px;
-    z-index: 300;
-    width: calc(100% - 460px);
-    background-color: var(--nav);
-    border-radius: 15px;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-
-body.cacao .cacaoBar .tab {
-    background-color: var(--norm);
-    color: var(--light);
-    border-radius: 18px;
-    padding: 0px 10px;
-    height: 40px;
-    line-height: 40px;
-    font-size: 16px;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0px 5px;
-    transition: var(--trans);
-}
-
-body.cacao .cacaoBar .tab.active {
-    background-color: var(--dark);
-    color: white;
-}
-
-body.cacao .cacaoBar .tab.new {
-    background-color: var(--theme);
-    color: var(--themeText);
-    opacity: 0.8;
-    height: 40px;
-    width: 40px;
-    padding: 0px;
-    text-align: center;
-}
-
-body.cacao .cacaoBar .tab i {
-    vertical-align: middle;
-}
-
-body.cacao .cacaoBar .tab:not(.icon) i {
-    margin-right: 10px;
-}
-
-body.cacao .sidebar {
-    top: 80px;
-    border-top-right-radius: 15px;
-}
-
-body.cacao .header {
-    padding-top: 150px;
-}
-
-body.cacao .classContent {
-    padding-top: 350px;
-}
-
 @font-face {
     font-family: 'Material Icons Outline';
     font-style: normal;
@@ -85,26 +20,26 @@ body.cacao .classContent {
     color: var(--themeText) !important;
 }
 
-table {
+table#dtpsTable {
     border-collapse: collapse;
 }
 
-table, table * {
+table#dtpsTable, table#dtpsTable * {
     border-color: transparent !important;
 }
 
-tr, td {
+table#dtpsTable tr, table#dtpsTable td {
     height: 32px !important;
     padding: 0px;
 }
 
-th {
+table#dtpsTable th {
     padding-left: 0px;
     padding-right: 0px;
 }
 
-td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+table#dtpsTable td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+table#dtpsTable td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
 body.dark .classGradeCircle {
     background-color: var(--norm);
