@@ -1520,7 +1520,7 @@ dtps.gradebook = function (num) {
     <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
     <div style="display: none;" id="classGradeMore">
     <br />
-    <table class="u-full-width">
+    <table class="u-full-width dtpsTable">
   <thead>
     <tr>
       <th>&nbsp;&nbsp;Final Letter</th>
