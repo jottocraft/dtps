@@ -1845,7 +1845,12 @@ dtps.announcements = function () {
     }
     dtps.webReq("canvas", "/api/v1/announcements" + context.join(""), function (resp) {
         var ann = JSON.parse(resp);
-        var announcements = [];
+        var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
+<div class="label">` + dtps.classes[dtpsClass].subject + `</div>
+<p>Please fill out <a href="https://forms.gle/hui8kmfK3Lf1g2MaA">this easy, one-question CBL form</a>.</p>
+<p>Thank you for your time and for testing the next version of Power+. also sorry that you can't get rid of this. It'll go away by the end of lab day.</p>
+</div>
+`];
         for (var i = 0; i < ann.length; i++) {
             var dtpsClass = null;
             for (var ii = 0; ii < dtps.classes.length; ii++) {
