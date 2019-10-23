@@ -769,7 +769,6 @@ dtps.getTopic = function (num, id, fromModuleStream) {
         dtps.webReq("canvas", "/api/v1/courses/" + classID + "/discussion_topics/" + id + "/view", function (resp) {
             var data = JSON.parse(resp);
             if ((dtps.classes[dtps.selectedClass].id == classID) && ((dtps.selectedContent == "discuss") || fromModuleStream)) {
-                $(".cacaoBar .tab.active span").html(dtps.classes[num].topics[id].title)
                 var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
                 <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + dtps.classes[num].topics[id].content], { type: 'text/html' });
                 var newurl = window.URL.createObjectURL(blob);
@@ -1260,7 +1259,6 @@ dtps.getPage = function (classID, id, fromModuleStream) {
     dtps.webReq("canvas", "/api/v1/courses/" + classID + "/pages/" + id, function (resp) {
         var data = JSON.parse(resp);
         if ((dtps.classes[dtps.selectedClass].id == classID) && ((dtps.selectedContent == "pages") || fromModuleStream)) {
-            $(".cacaoBar .tab.active span").html(data.title)
             var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
                 <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + data.body], { type: 'text/html' });
             var newurl = window.URL.createObjectURL(blob);
@@ -1569,7 +1567,8 @@ dtps.gradebook = function (num) {
 </div>
 <br />
 <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
-</div>` : "") + `
+</div>
+
 <div class="card recentChanges">
 <h5 style="font-weight: bold; margin-top: 0px; font-size: 32px;"><i class="material-icons">restore</i> Recent Changes</h5>
 ` + dtps.classes[num].recentChangesKeys.map((k, index) => {
@@ -1587,7 +1586,7 @@ dtps.gradebook = function (num) {
                         }
                     }).join("") + `
 </div>
-<br /><br />
+<br /><br />` : "") + `
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
                         var keyA = dtps.classes[num].outcomes[a].score,
                             keyB = dtps.classes[num].outcomes[b].score;
@@ -1618,10 +1617,10 @@ dtps.gradebook = function (num) {
   ` + (dtps.classes[num].outcomes[i].lastAssignment ? `<div style="margin: 10px 0px;"></div>
 
   <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-  <i onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="cursor: pointer; vertical-align: middle; color:var(--lightText); margin-right: 10px;" class="material-icons down">add_box</i>
+  ` + (dtps.classes[num].letter !== "--" ? `<i onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="cursor: pointer; vertical-align: middle; color:var(--lightText); margin-right: 10px;" class="material-icons down">add_box</i>` : "") + `
   <i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? "" : "display: none;") + `cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">keyboard_arrow_right</i>
 
-  <div id="` + num + `-` + i + `-` + 0 + `" contenteditable="true" style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ?
+  <div id="` + num + `-` + i + `-` + 0 + `" ` + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ?
                                     `line-height: 22px; width: 22px; height: 22px; border: none !important; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; background-color: var(--assessmentColor); color: white;`
                                     : `line-height: 20px; width: 20px; height: 20px; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);`) + `
         display: inline-block; text-align: center; font-size: ` + (String(dtps.classes[num].outcomes[i].lastAssignment.score).length > 2 ? "10px" : "16px") + `; border-radius: 50%; margin-right: 5px; vertical-align: middle; outline: none;">
@@ -1631,7 +1630,7 @@ dtps.gradebook = function (num) {
 <div style="margin-top: 10px; display: none;" class="fullList">
 ` + dtps.classes[num].outcomes[i].gradedAlignments.map(function (alignment, ii) {
                                         return `<div ` + (ii == 0 ? `class="fullListLatest"` : "") + ` style="` + (ii == 0 ? "display: none;" : "") + `padding-left: 29px; margin: 2px 0px; color: var(--lightText); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-<div id="` + num + `-` + i + `-` + ii + `" contenteditable="true" style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);` : `line-height: 20px; width: 20px; height: 20px; border: none !important; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; background-color: var(--assessmentColor); color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px; outline: none;">` + alignment.score + `</div>
+<div id="` + num + `-` + i + `-` + ii + `" `  + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);` : `line-height: 20px; width: 20px; height: 20px; border: none !important; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; background-color: var(--assessmentColor); color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px; outline: none;">` + alignment.score + `</div>
 <span style="cursor: pointer;" onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)">` + alignment.title + `</span></div>`
                                     }).join("") + `
   </div>
@@ -1981,7 +1980,7 @@ dtps.showClasses = function (override) {
     </div>
     <div class="divider"></div>
   ` + dtps.classlist.join("") + `</div>
-  <div onclick="$('body').toggleClass('collapsedSidebar'); if ($('body').hasClass('collapsedSidebar')) { $(this).children('i').html('keyboard_arrow_right'); } else {$(this).children('i').html('keyboard_arrow_left');}" class="collapse">
+  <div onclick="$('body').toggleClass('collapsedSidebar'); if ($('body').hasClass('collapsedSidebar')) { $(this).children('i').html('keyboard_arrow_right'); } else {$(this).children('i').html('keyboard_arrow_left');}" init="true" class="collapse">
   <i class="material-icons">keyboard_arrow_left</i>
 </div>`);
         if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
@@ -2018,9 +2017,6 @@ dtps.showClasses = function (override) {
             $(".background").removeClass(jQuery.grep($(".background").attr("class").split(" "), function (item, index) {
                 return item.trim().match(/^filter_/);
             })[0]);
-            $(".cacaoBar .tab.active").removeClass(jQuery.grep($(".cacaoBar .tab.active").attr("class").split(" "), function (item, index) {
-                return item.trim().match(/^filter_/);
-            })[0]);
             $(".header").removeClass(jQuery.grep($(".header").attr("class").split(" "), function (item, index) {
                 return item.trim().match(/^filter_/);
             })[0]);
@@ -2032,19 +2028,12 @@ dtps.showClasses = function (override) {
                     $(".btn.google").show();
                 };
                 $(".background").addClass(dtps.classes[dtps.selectedClass].col);
-                $(".cacaoBar .tab.active").addClass(dtps.classes[dtps.selectedClass].col);
                 $(".header").addClass(dtps.classes[dtps.selectedClass].col);
                 $(".classContent").addClass(dtps.classes[dtps.selectedClass].col);
             }
             $(this).siblings().removeClass("active")
             $(this).addClass("active")
             $(".header h1").html($(this).children(".name").text())
-            $(".cacaoBar .tab.active span").html($(this).children(".name").text())
-            if (dtps.selectedClass == "dash") {
-                $(".cacaoBar .tab.active i").html("dashboard")
-            } else {
-                $(".cacaoBar .tab.active i").html(($(".btn." + dtps.selectedContent + " i").html() ? $(".btn." + dtps.selectedContent + " i").html() : "dashboard"))
-            }
             if (!dtps.classes[dtps.selectedClass]) {
                 $(".header .btns").hide();
             } else {
@@ -2189,70 +2178,6 @@ dtps.gradeTrend = function (ele) {
     }
 }
 
-//cacao variables
-dtps.states = {};
-letters = 'abcdefghijklmnopqrstuvwxyz'.split('')
-letter = 1;
-
-//Tab click handler (cacao)
-dtps.cacao = function (state) {
-    if (String(fluid.get("pref-cacao")) == "true") {
-        if (state == "new") {
-            $(".cacaoBar .tab.new").before(`<div onclick="dtps.cacao('` + letters[letter] + `');" state="` + letters[letter] + `" class="tab ` + letters[letter] + `"><i class="material-icons">dashboard</i><span>Dashboard</span></div>`)
-            letter++;
-        } else {
-            dtps.saveState($(".cacaoBar .tab.active").attr("state"));
-            $(".cacaoBar .tab." + state).siblings().removeClass("active")
-            $(".cacaoBar .tab." + state).addClass("active")
-            dtps.loadState(state);
-        }
-    }
-}
-
-//Save state (cacao)
-dtps.saveState = function (state) {
-    if (String(fluid.get("pref-cacao")) == "true") {
-        dtps.states[state] = {
-            class: dtps.selectedClass,
-            content: dtps.selectedContent,
-            page: dtps.selectedPage,
-            classContent: $(".classContent").html(),
-            scrollTop: document.documentElement.scrollTop,
-            scrollLeft: document.documentElement.scrollLeft
-        }
-    }
-}
-
-//Load state (cacao)
-dtps.loadState = function (stateKey) {
-    if (String(fluid.get("pref-cacao")) == "true") {
-        var state = dtps.states[stateKey]
-        if (state) {
-            dtps.selectedClass = state.class;
-            dtps.selectedContent = state.content;
-            dtps.selectedPage = state.page;
-            dtps.showClasses(true);
-            $(".class." + (state.class == "dash" ? "masterStream" : state.class)).click();
-            if (state.content == "pages") {
-                $(".header .btn.pages").click();
-                $(".sidebar .btn." + dtps.selectedPage).click();
-            }
-            $(".classContent").html(state.classContent);
-            document.documentElement.scrollTop = state.scrollTop;
-            document.documentElement.scrollLeft = state.scrollLeft;
-        } else {
-            //no state present, load default dashboard state
-            dtps.selectedClass = "dash"
-            dtps.selectedContent = "stream"
-            document.documentElement.scrollTop = 0;
-            document.documentElement.scrollLeft = 0;
-            dtps.showClasses(true);
-            $(".class.masterStream").click();
-            dtps.saveState(stateKey)
-        }
-    }
-}
-
 //Renders Power+ and removes all Canvas HTML
 //Seperated into static HTML and javascript-based things
 dtps.render = function () {
@@ -2262,18 +2187,6 @@ dtps.render = function () {
         $("body").addClass("hasSidebar");
     }
     document.title = "Power+" + dtps.trackSuffix;
-
-    //Cacao pref
-    if (fluid.get("pref-cacao") == "true") { $("body").addClass("cacao"); $('.sidebar').addClass("acrylicMaterial"); }
-    document.addEventListener("pref-cacao", function (e) {
-        if (String(e.detail) == "true") {
-            $("body").addClass("cacao");
-            $('.sidebar').addClass("acrylicMaterial");
-        } else {
-            $("body").removeClass("cacao");
-            $('.sidebar').removeClass("acrylicMaterial");
-        }
-    })
 
     //Full names pref
     if (fluid.get("pref-fullNames") == "true") { dtps.fullNames = true; }
@@ -2298,23 +2211,23 @@ dtps.render = function () {
 <div class="header">
     <h1 id="headText">Dashboard</h1>
     <div style="display: none;" class="btns row tabs">
-    <button onclick="dtps.selectedContent = 'stream'; dtps.chroma(); $('.cacaoBar .tab.active i').html('assignment'); dtps.classStream(dtps.selectedClass);" class="btn active stream">
+    <button onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="btn active stream">
     <i class="material-icons">library_books</i>
     Coursework
     </button>
-    <button onclick="dtps.selectedContent = 'google'; dtps.chroma(); $('.cacaoBar .tab.active i').html('class'); $('.classContent').html(dtps.renderStream(dtps.classes[dtps.selectedClass].google.stream))" class="btn google">
+    <button onclick="dtps.selectedContent = 'google'; dtps.chroma(); $('.classContent').html(dtps.renderStream(dtps.classes[dtps.selectedClass].google.stream))" class="btn google">
     <i class="material-icons">class</i>
     google_logo Classroom
     </button>
-    <button onclick="dtps.selectedContent = 'discuss'; dtps.chroma(); $('.cacaoBar .tab.active i').html('group'); dtps.loadTopics(dtps.selectedClass);" class="btn discuss">
+    <button onclick="dtps.selectedContent = 'discuss'; dtps.chroma(); dtps.loadTopics(dtps.selectedClass);" class="btn discuss">
     <i class="material-icons">forum</i>
     Discussions
     </button>
-    <button onclick="dtps.selectedContent = 'pages'; dtps.chroma(); $('.cacaoBar .tab.active i').html('insert_drive_file'); dtps.loadPages(dtps.selectedClass);" class="btn pages">
+    <button onclick="dtps.selectedContent = 'pages'; dtps.chroma(); dtps.loadPages(dtps.selectedClass);" class="btn pages">
     <i class="material-icons">insert_drive_file</i>
     Pages
     </button>
-    <button onclick="dtps.selectedContent = 'grades'; dtps.chroma(); $('.cacaoBar .tab.active i').html('assessment'); dtps.gradebook(dtps.selectedClass);" class="btn grades">
+    <button onclick="dtps.selectedContent = 'grades'; dtps.chroma(); dtps.gradebook(dtps.selectedClass);" class="btn grades">
     <i class="material-icons">assessment</i>
     Grades
     </button>
@@ -2325,10 +2238,6 @@ dtps.render = function () {
     </div>
 <div style="height: calc(100vh - 50px); overflow: auto !important;" class="card withnav focus close container abt-new"></div>
 
-<div style="display: none;" class="cacaoBar acrylicMaterial">
-    <div onclick="dtps.cacao('a')" state="a" class="tab a active"><i class="material-icons">dashboard</i><span>Dashboard</span></div>
-    <div onclick="dtps.cacao('new')" class="tab icon new"><i class="material-icons">add</i></div>
-</div>
     <div class="toolbar items">
     </div>
 <div  style="border-radius: 30px;" class="card focus changelog close container">
@@ -2414,7 +2323,6 @@ dtps.render = function () {
         });
     });
 
-    fluid.theme();
     dtps.showClasses("first");
     //dtps.gapis();
 
@@ -2530,7 +2438,7 @@ dtps.renderLite = function () {
     <br /><br />
     <p>Grades</p>
     <div onclick="fluid.set('pref-calcGrades')" class="switch pref-calcGrades active"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">functions</i> Calculate class grades (beta)</div>
+    <div class="label"><i class="material-icons">functions</i> Calculate class grades</div>
     <br /><br />
     <div onclick="fluid.set('pref-hideGrades')" class="switch pref-hideGrades"><span class="head"></span></div>
     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
@@ -2605,11 +2513,8 @@ dtps.renderLite = function () {
 <div class="sudo">
     <h5>Experiments</h5>
     <p>WARNING: Features listed below are not officially supported and can break Power+. Use at your own risk.</p>
-    <p>Want to test out new features as they are developed? <a href="https://powerplus.app/devbookmark.txt">Try the dev version of Power+</a>.</p>
+    <p>Want to test out new features as they are developed? <a href="https://github.com/jottocraft/dtps#alternate-install-methods">Try the dev version of Power+</a>.</p>
 <br />
-<div onclick="fluid.set('pref-cacao')" class="switch pref-cacao"><span class="head"></span></div>
-<div class="label"><i class="material-icons">view_carousel</i> Project Cacao</div>
-<br /><br />
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
