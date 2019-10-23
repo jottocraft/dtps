@@ -1,11 +1,11 @@
-/* Power+ v2.0.0
+/* Power+ v2.0.2
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 var dtps = {
-    ver: 200,
-    readableVer: "v2.0.0",
+    ver: 202,
+    readableVer: "v2.0.2",
     trackSuffix: "",
     fullTrackSuffix: "",
     trackColor: "#ceb420",
