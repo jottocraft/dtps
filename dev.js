@@ -993,8 +993,12 @@ dtps.moduleStream = function (num) {
                 if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
                 if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
                 if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
-                subsetData.push(`<div onclick="` + open + `" style="background-color:var(--elements);padding:20px;font-size:17px;border-radius:15px;margin:15px 0; cursor: pointer;">
+                if (data[i].items[ii].type == "SubHeader") {
+                  subsetData.push(`<h5>` + data[i].items[ii].title + `</h5>`);
+                } else {
+                  subsetData.push(`<div onclick="` + open + `" style="background-color:var(--elements);padding:20px;font-size:17px;border-radius:15px;margin:10px 0; margin-left: ` + (data[i].items[ii].indent * 5) + `px; cursor: pointer;">
 <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
+                }
             }
             streamData.push(`<div class="card">
 <h4 style="margin-top: 5px;">` + data[i].name + `</h4>
@@ -1293,7 +1297,7 @@ dtps.outcome = function (num, id, i) {
             ` + (desc ? `<p>` + desc + `</p>` : "") + `</div>`
         }).join("") + `</div>
 
-        <div style="display: inline-block; width: 55%; vertical-align: top;"> 
+        <div style="display: inline-block; width: 55%; vertical-align: top;">
         ` + dtps.classes[num].outcomes[i].alignments.map(function (alignment, ii) {
             return `<div onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)" style="margin: 5px 0px; color: var(--lightText); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">` + alignment.title + `</div>`
         }).join("") + `
@@ -2546,7 +2550,7 @@ dtps.renderLite = function () {
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
 <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to Canvas.') }" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-<a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps"><i class="material-icons" style="vertical-align: middle">code</i> GitHub</a></div>
+<a style="color: var(--lightText); margin: 0px 5px;" href="https://paypal.me/jottocraft"><i class="material-icons" style="vertical-align: middle">attach_money</i> Donate</a></div>
 </div>
      <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
 <img src="` + dtps.user.avatar_url + `" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px; border-radius: 50%;" />
@@ -2576,7 +2580,7 @@ dtps.renderLite = function () {
   </div>
 </div>
   </div>`)
-    jQuery(".toolbar.items").html(`<h4>` + dtps.user.name + `</h4>
+    jQuery(".toolbar.items").html(`<h4>` + dtps.user.short_name + `</h4>
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
     <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
