@@ -56,7 +56,7 @@ window.matchMedia("(prefers-color-scheme: dark)").addListener(function (e) {
   }
 })
 
-fluid.includedFlexThemes = ["midnight", "nitro", "aquatic", "highContrast", "candy", "violet"]
+fluid.includedFlexThemes = ["midnight", "nitro", "aquatic", "highContrast", "candy", "violet", "tome"]
 fluid.theme = function (requestedTheme, temporary) {
   // GET CURRENT THEME -----------------------
   var currentTheme = null;
