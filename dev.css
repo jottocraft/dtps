@@ -8,6 +8,10 @@ body:not(.dark) .acrylicMaterial {
     opacity: 0.9 !important;
 }
 
+body:not(.dark) .acrylicMaterial.sidebar {
+    background-color: white !important;
+}
+
 @font-face {
     font-family: 'Material Icons Outline';
     font-style: normal;
@@ -495,7 +499,7 @@ body.dark .tabs.btns .btn:not(.active) {
 .classContent .card {
     margin: 25px 75px;
     text-align: left;
-    border-radius: 30px;
+    border-radius: 25px;
 }
 
 .classContent .card {
@@ -694,7 +698,7 @@ body.dark .tabs.btns .btn:not(.active) {
 
 .card.assignment {
     cursor: pointer;
-    padding: 20px 30px;
+    padding: 20px 25px;
 }
 
 .classContent .card.assignment h5 {
