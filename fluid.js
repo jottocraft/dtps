@@ -417,7 +417,7 @@ fluid.onLoad = function () {
       fluid.themePageDOM.push([]);
       for (var ii = 0; ii < fluidThemes[i].length; ii++) {
         if (typeof fluidThemes[i][ii] == "object") { if (!fluidThemes[i][ii].icon) { fluidThemes[i][ii].icon = "palette"; } fluid.themePageDOM[i].push(`<button onclick="fluid.theme('` + fluidThemes[i][ii].id + `')" class="btn themeWindow flex ` + fluidThemes[i][ii].id.replace("#", "") + `"><div class="themeName"><i class="material-icons">` + fluidThemes[i][ii].icon + `</i> ` + fluidThemes[i][ii].name + `</div></button>`) }
-        if (fluidThemes[i][ii] == "midnight") { fluid.themePageDOM[i].push(`<button onclick="fluid.theme('midnight')" class="btn themeWindow flex midnight"><div class="themeName"><i class="material-icons">brightness_3</i> Midnight Black</div></button>`) }
+        if (fluidThemes[i][ii] == "midnight") { fluid.themePageDOM[i].push(`<button onclick="fluid.theme('midnight')" class="btn themeWindow flex midnight"><div class="themeName"><i class="material-icons">brightness_3</i> Midnight</div></button>`) }
         if (fluidThemes[i][ii] == "nitro") { fluid.themePageDOM[i].push(`<button onclick="fluid.theme('nitro')" class="btn themeWindow flex nitro"><div class="themeName"><i class="material-icons">whatshot</i> Nitro</div></button>`) }
         if (fluidThemes[i][ii] == "aquatic") { fluid.themePageDOM[i].push(`<button onclick="fluid.theme('aquatic')" class="btn themeWindow flex aquatic"><div class="themeName"><i class="material-icons">pool</i> Aqua</div></button>`) }
         if (fluidThemes[i][ii] == "candy") { fluid.themePageDOM[i].push(`<button onclick="fluid.theme('candy')" class="btn themeWindow flex candy"><div class="themeName"><i class="material-icons">color_lens</i> Candy</div></button>`) }
