@@ -13,6 +13,10 @@ body:not(.dark) .acrylicMaterial.sidebar {
     box-shadow: 0px 7px 30px rgba(173, 173, 173, 0.28) !important;
 }
 
+.fc .fc-button-group>* {
+    background: none !important;
+}
+
 @font-face {
     font-family: 'Material Icons Outline';
     font-style: normal;
