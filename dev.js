@@ -472,7 +472,7 @@ dtps.init = function () {
     dtps.explorer.push({ name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs" });
 
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
-        fluidThemes = [["midnight"], ["rainbow"]];
+        fluidThemes = [["midnight", {name: "Tome", id: "tome", icon: "link"}], ["rainbow"]];
         fluidAutoLoad = false;
 
         document.addEventListener("fluidTheme", function (data) {
@@ -489,9 +489,9 @@ dtps.init = function () {
         })
 
         dtps.user = JSON.parse(user);
-        sudoers = ["669", "672", "209"]
+        sudoers = ["669", "672", "209", "560"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        contributors = ["669", "672"]
+        contributors = ["669", "672", "560"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
         if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
         if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
@@ -2292,7 +2292,7 @@ dtps.render = function () {
     if (dtps.embedded) {
         jQuery("head").html("");
         $("body").addClass("dashboard");
-	$("body").addClass("showThemeWindows");
+        $("body").addClass("showThemeWindows");
         $("body").addClass("hasSidebar");
     }
     document.title = "Power+" + dtps.trackSuffix;
@@ -2546,9 +2546,9 @@ dtps.renderLite = function () {
     <br />
     <p>Theme</p>
     <div class="btns row themeSelector"></div>
-    <br />
+    <!--<br />
     <div onclick="fluid.set('pref-darkCanvas')" class="switch pref-darkCanvas"><span class="head"></span></div>
-    <div class="label"><img style="width: 26px;vertical-align: middle;margin-right: 2px; background-color: #ee5034; padding-bottom: 1px; border-radius: 50%;" src="https://i.imgur.com/Ft3jtFu.png" class="material-icons" /img> Use dark theme in Canvas (beta)</div>
+    <div class="label"><img style="width: 26px;vertical-align: middle;margin-right: 2px; background-color: #ee5034; padding-bottom: 1px; border-radius: 50%;" src="https://i.imgur.com/Ft3jtFu.png" class="material-icons" /img> Use dark theme in Canvas (beta)</div>-->
     <br /><br />
     <p>Grades</p>
     <div onclick="fluid.set('pref-calcGrades')" class="switch pref-calcGrades active"><span class="head"></span></div>
