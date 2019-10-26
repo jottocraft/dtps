@@ -276,6 +276,13 @@ body.titlebar .sidebar {
     top: 75;
 }
 
+.sidebar .item .label {
+    max-width: calc(100% - 32px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 body.hasSidebar {
     padding: 0px !important;
 }
