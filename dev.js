@@ -208,7 +208,7 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
 dtps.requests = {};
 dtps.http = {};
 dtps.webReq = function (req, url, callback, q) {
-    if ((dtps.requests[url] == undefined) || url.includes("|")) {
+    if ((dtps.requests[url] == undefined) || url.includes("|") || (q && q.forceLoad)) {
         //Use backend request instead of canvas request for standalone Power+
         if ((req == "canvas") && !dtps.embedded) req = "backend"
         //"Canvas" request type for making a GET request to the Canvas API
@@ -229,8 +229,32 @@ dtps.webReq = function (req, url, callback, q) {
                 }
             };
             dtps.http[url].open("GET", url, true);
-            dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids")
+            dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids, application/json")
             dtps.http[url].send();
+        }
+        //"canCOLLAPSE" request type for collapsing modules through an unofficial Canvas API
+        if (req == "canCOLLAPSE") {
+            dtps.log("Making DTPS Canvas web request")
+            dtps.http[url] = new XMLHttpRequest();
+            dtps.http[url].onreadystatechange = function () {
+                if (this.readyState == 4) {
+                    if (this.status == 200) {
+                        if (callback) callback(this.responseText, q);
+                        dtps.requests[url] = this.responseText;
+                        dtps.log("Returning DTPS data")
+                    } else {
+                        if (callback) callback(JSON.stringify({ error: this.status }), q);
+                        dtps.requests[url] = JSON.stringify({ error: this.status });
+                        dtps.log("DTPS webReq error" + this.status)
+                    }
+                }
+            };
+            dtps.http[url].open("POST", url, true);
+            dtps.http[url].setRequestHeader("Accept", "application/json, text/javascript, application/json+canvas-string-ids, */*; q=0.01")
+            dtps.http[url].setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+            dtps.http[url].setRequestHeader("X-Requested-With", "XMLHttpRequest")
+            dtps.http[url].setRequestHeader("X-CSRF-Token", decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0])
+            dtps.http[url].send("_method=POST&collapse=" + q.collapse + "&authenticity_token=" + decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0]);
         }
         //"backend" request type for making a GET request to the Canvas API w/ jottocraft.com backend
         if (req == "backend") {
@@ -1032,37 +1056,60 @@ dtps.moduleStream = function (num) {
     if (dtps.selectedContent == "moduleStream") jQuery(".classContent").html(moduleRootHTML + `<div class="spinner"></div>`);
     streamData = [];
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/modules?include[]=items&include[]=content_details", function (resp) {
-        var data = JSON.parse(resp);
-        for (var i = 0; i < data.length; i++) {
-            var subsetData = [];
-            for (var ii = 0; ii < data[i].items.length; ii++) {
-                var icon = "star_border";
-                if (data[i].items[ii].type == "ExternalTool") icon = "insert_link";
-                if (data[i].items[ii].type == "ExternalUrl") icon = "open_in_new";
-                if (data[i].items[ii].type == "Assignment") icon = "assignment";
-                if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
-                if (data[i].items[ii].type == "Discussion") icon = "forum";
-                if (data[i].items[ii].type == "Quiz") icon = "assessment";
-                if (data[i].items[ii].type == "SubHeader") icon = "format_size";
-                var open = `window.open('` + data[i].items[ii].html_url + `')`;
-                if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
-                if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
-                if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
-                if (data[i].items[ii].type == "SubHeader") {
-                    subsetData.push(`<h5 style="font-size: 22px;padding: 2px 10px;">` + data[i].items[ii].title + `</h5>`);
-                } else {
-                    subsetData.push(`<div onclick="` + open + `" style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: ` + (data[i].items[ii].indent * 15) + `px; cursor: pointer;">
-<i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
-                }
+        dtps.webReq("canvas", "/courses/" + dtps.classes[num].id + "/modules/progressions", function (progResp) {
+            var data = JSON.parse(resp);
+            var progData = JSON.parse(progResp);
+            var collapsed = {};
+            for (var i = 0; i < progData.length; i++) {
+                collapsed[progData[i].context_module_progression.context_module_id] = progData[i].context_module_progression.collapsed;
             }
-            streamData.push(`<div class="card">
-<h4 style="margin-top: 5px; font-size: 32px; font-weight: bold;">` + data[i].name + `</h4>
+            for (var i = 0; i < data.length; i++) {
+                var subsetData = [];
+                for (var ii = 0; ii < data[i].items.length; ii++) {
+                    var icon = "star_border";
+                    if (data[i].items[ii].type == "ExternalTool") icon = "insert_link";
+                    if (data[i].items[ii].type == "ExternalUrl") icon = "open_in_new";
+                    if (data[i].items[ii].type == "Assignment") icon = "assignment";
+                    if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
+                    if (data[i].items[ii].type == "Discussion") icon = "forum";
+                    if (data[i].items[ii].type == "Quiz") icon = "assessment";
+                    if (data[i].items[ii].type == "SubHeader") icon = "format_size";
+                    var open = `window.open('` + data[i].items[ii].html_url + `')`;
+                    if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
+                    if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
+                    if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
+                    if (data[i].items[ii].type == "SubHeader") {
+                        subsetData.push(`<h5 style="font-size: 22px;padding: 2px 10px;">` + data[i].items[ii].title + `</h5>`);
+                    } else {
+                        subsetData.push(`<div onclick="` + open + `" style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: ` + (data[i].items[ii].indent * 15) + `px; cursor: pointer;">
+<i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
+                    }
+                }
+                streamData.push(`<div class="card ` + (collapsed[data[i].id] ? "collapsed" : "") + `">
+<h4 style="margin: 5px 2px; font-size: 32px; font-weight: bold;">
+<i onclick="dtps.moduleCollapse(this, '` + dtps.classes[num].id + `', '` + data[i].id + `');" style="cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons collapseIcon">` + (collapsed[data[i].id] ? "keyboard_arrow_right" : "keyboard_arrow_down") + `</i>
+` + data[i].name + `</h4>
+<div class="moduleContents" style="padding-top: 10px;">
 ` + subsetData.join("") + `
+</div>
 </div>`)
-        }
-        if (dtps.selectedContent == "moduleStream") jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
-
+            }
+            if (dtps.selectedContent == "moduleStream") jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
+        });
     });
+}
+
+//collapse a module
+dtps.moduleCollapse = function (ele, classID, modID) {
+    $(ele).parents('.card').toggleClass('collapsed');
+    if ($(ele).parents('.card').hasClass('collapsed')) {
+        dtps.webReq("canCOLLAPSE", "/courses/" + classID + "/modules/" + modID + "/collapse", undefined, { collapse: 1, forceLoad: true })
+        $(ele).html('keyboard_arrow_right');
+    } else {
+        dtps.webReq("canCOLLAPSE", "/courses/" + classID + "/modules/" + modID + "/collapse", undefined, { collapse: 0, forceLoad: true })
+        $(ele).html('keyboard_arrow_down');
+    }
+
 }
 
 //Asks the user when they have each class to load the class automatically
@@ -2100,6 +2147,7 @@ dtps.showClasses = function (override) {
                 $(".header .btns:not(.master)").show();
             }
             if ((dtps.selectedContent == "stream") && (dtps.classes[dtps.selectedClass])) dtps.classStream(dtps.selectedClass)
+            if ((dtps.selectedContent == "moduleStream") && (dtps.classes[dtps.selectedClass])) dtps.moduleStream(dtps.selectedClass)
             if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
             if (dtps.selectedClass == "dash") dtps.masterStream(true);
             if (dtps.selectedClass == "announcements") dtps.announcements();
