@@ -1,13 +1,16 @@
-/* Power+ v2.1.0 [DEV]
+/* Power+ v2.1.0 [GM]
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
+
+//prevent Power+ from breaking when the button is clicked multiple times
+if (typeof dtps !== "undefined") throw "Error: DTPS is already loading"
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 var dtps = {
     ver: 210,
-    readableVer: "v2.1.0 (dev)",
-    trackSuffix: " (dev)",
-    fullTrackSuffix: " (development)",
+    readableVer: "v2.1.0 (GM)",
+    trackSuffix: " (GM)",
+    fullTrackSuffix: " (Golden Master)",
     trackColor: "#ffa500",
     showLetters: false,
     fullNames: false,
@@ -291,8 +294,22 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
 
         //the highest value 75% of outcomes are greater than or equal to
         //number75thresh is the percentage of assignments >= number75. number75thresh is always >= 0.75 && <= 1
+        //number75length is the amount of outcomes needed to satisfy 75% criteria thing
+        //number75lengthA is amount of outcomes satisfying the A requirement for the 75% criteria thing
+        //moreA is how many more outcomes are not at least 3
         var number75 = null;
         var number75thresh = null;
+        var number75Length = Math.ceil(rollupScores.length * .75);
+        var number75LengthA = 0;
+        var moreA = 0;
+        rollupScores.map((s) => {
+            if (s >= 3.5) {
+                number75LengthA++;
+            }
+            if (s < 3) {
+                moreA++;
+            }
+        })
 
         //test values
         var testValues = [3.5, 3, 2.5]
@@ -341,6 +358,9 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
             lowestValue: lowestValue,
             number75: (number75 !== null ? number75 : ""),
             number75thresh: number75thresh,
+            number75Length: number75Length,
+            number75LengthA: number75LengthA,
+            moreA: moreA
             //number75percent: (number75thresh-0.75)/(1-0.75),
             //lowestValuePercent: (),
         }
@@ -360,10 +380,10 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
                 if (letter == "B-") score = 80;
                 if (letter == "B") score = 85;
                 if (letter == "B+") score = 88;
-                if (letter == "A-") score = 90;
-                if (letter == "A") score = 95;
+                if (letter == "A-") score = 92;
+                if (letter == "A") score = 100;
                 dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[classNum].col + `">
-            <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[classNum].subject + `</div>
+            <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[classNum].subject + ` (` + letter + `)</div>
             <div class="progress" style="background-color: var(--light); width: calc(` + score + `% - 300px);"></div></div>`)
             }
         }
@@ -533,6 +553,9 @@ dtps.init = function () {
                     dtps.webReq("canvas", "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
                         dtps.classesReady = 0;
                         dtps.colorCSS = [];
+                        //this object is for keeping track of when each assignment was graded
+                        //because submitted_or_assessed at key for outcome results api is not good :(
+                        dtps.assignmentGradeTimes = {};
                         dtps.gpa = null;
                         gpa = [];
                         var colors = JSON.parse(colorsResp);
@@ -555,9 +578,13 @@ dtps.init = function () {
                                 subject = null;
                             }
                             if (subject == null) var subject = name.split(" - ")[0];
-                            var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
-                            //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
-                            if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+                            if (colors.custom_colors["course_" + data[i].id]) {
+                                var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
+                                //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
+                                if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+                            } else {
+                                var filter = ""
+                            }
                             pagesTab = false;
                             for (var ii = 0; ii < data[i].tabs.length; ii++) {
                                 if (data[i].tabs[ii].id == "pages") pagesTab = true;
@@ -761,9 +788,8 @@ dtps.getTopic = function (num, id, fromModuleStream) {
     if ((dtps.classes[dtps.selectedClass].id == classID) && ((dtps.selectedContent == "discuss") || fromModuleStream)) {
         jQuery(".classContent").html(`<div class="spinner"></div>`);
     }
-    if (dtps.classes[num].topics[id].locked) {
-        alert(dtps.classes[num].topics[id].content);
-        jQuery(".classContent").html("");
+    if (false) {
+        jQuery(".classContent").html(`<div class="card">` + dtps.classes[num].topics[id].content + "</div>");
     } else {
         var spinnerTmp = true;
         dtps.webReq("canvas", "/api/v1/courses/" + classID + "/discussion_topics/" + id + "/view", function (resp) {
@@ -779,6 +805,10 @@ dtps.getTopic = function (num, id, fromModuleStream) {
 
                 ` + (dtps.classes[num].topics[id].requirePost && !data.view ? `<div class="acrylicMaterial" style="border-radius: 20px;display: inline-block;margin: 10px 82px;margin-top: 25px;height: 40px;line-height: 40px;padding: 0px 20px; margin-right: -70px;">
                 Replies are only visible to those who have posted at least one reply</div>` : "") + `
+
+                ` + (dtps.classes[num].topics[id].locked ? `<div class="acrylicMaterial" style="border-radius: 20px;display: inline-block;margin: 10px 82px;margin-top: 25px;height: 40px;line-height: 40px;padding: 0px 20px; margin-right: -70px;">
+                Locked</div>` : "") + `
+                
 
                 <div class="acrylicMaterial" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px;">
                 <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;">Discussions (beta)</div></div>
@@ -836,10 +866,11 @@ dtps.ampm = function (date) {
 //Fetches assignment data for a class
 dtps.classStream = function (num, renderOv) {
     dtps.log("Fetching assignments for class " + num)
+    dtps.selectedContent = "stream";
     if (!renderOv) dtps.showClasses();
     if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
         if (!renderOv) {
-            jQuery(".classContent").html(`
+            jQuery(".classContent").html(dtps.renderStreamTools(num) + `
     <div class="spinner"></div>
   `);
         }
@@ -891,6 +922,7 @@ dtps.classStream = function (num, renderOv) {
                         submissionTypes: data[i].assignments[ii].submission_types,
                         worth: data[i].assignments[ii].points_possible
                     });
+                    dtps.assignmentGradeTimes[data[i].assignments[ii].id] = data[i].assignments[ii].submission.graded_at;
                     if (data[i].assignments[ii].rubric) {
                         for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
                             dtps.classes[num].stream[dtps.classes[num].stream.length - 1].rubricItems.push(data[i].assignments[ii].rubric[iii].outcome_id);
@@ -961,20 +993,43 @@ dtps.classStream = function (num, renderOv) {
     });
 }
 
+//renders stream tools html for a class
+//these are the search box and the class info buttons
+dtps.renderStreamTools = function (num, search, fromModules) {
+    //num (number) = class number
+    //search (boolean) = should render search
+    //fromModules (boolean) = rendering stream tools for modules page
+    return `
+<div style="position: absolute;display:  inline-block;margin: 82px;">
+<div class="acrylicMaterial" style="border-radius: 20px; display: inline-block; margin-right: 5px;">
+<img src="` + dtps.classes[num].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[num].teacher.name + `</div></div>
+
+<div onclick="dtps.classInfo(` + num + `)" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
+<i style="line-height: 40px;" class="material-icons">info</i>
+</div>
+
+` + (dtps.classes[num].defaultView == "wiki" ? `<div onclick="dtps.classHome(` + num + `)" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer;">
+<i style="line-height: 40px;" class="material-icons">home</i>
+</div>` : "") + `
+
+</div>
+<div style="text-align: right;">
+
+` + (search ? `<i class="inputIcon material-icons">search</i><input onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />` : "") + `
+
+<br />
+<div class="btns row small acrylicMaterial assignmentPicker" style="margin: ` + (search ? `20px 80px 20px 0px !important` : `63px 80px 20px 0px !important`) + `;">
+  <button class="btn ` + (!fromModules ? "active" : "") + `" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
+  <button class="btn ` + (fromModules ? "active" : "") + `" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
+</div>
+</div>`;
+}
+
 //Fetches module stream for a class
 dtps.moduleStream = function (num) {
-    var moduleRootHTML = `
-<div class="acrylicMaterial" style="position: absolute;display:  inline-block;border-radius: 20px;margin: 82px;">
-<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>
-<div style="text-align: right;">
-<br />
-<div class="btns row small acrylicMaterial assignmentPicker" style="margin: 63px 80px 20px 0px !important;">
-  <button class="btn" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
-  <button class="btn active" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
-</div><script>fluid.init();</script>
-</div>
-</div>`
-    jQuery(".classContent").html(moduleRootHTML + `<div class="spinner"></div>`);
+    dtps.selectedContent = "moduleStream";
+    var moduleRootHTML = dtps.renderStreamTools(num, false, true);
+    if (dtps.selectedContent == "moduleStream") jQuery(".classContent").html(moduleRootHTML + `<div class="spinner"></div>`);
     streamData = [];
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/modules?include[]=items&include[]=content_details", function (resp) {
         var data = JSON.parse(resp);
@@ -994,18 +1049,18 @@ dtps.moduleStream = function (num) {
                 if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
                 if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
                 if (data[i].items[ii].type == "SubHeader") {
-                  subsetData.push(`<h5>` + data[i].items[ii].title + `</h5>`);
+                    subsetData.push(`<h5 style="font-size: 22px;padding: 2px 10px;">` + data[i].items[ii].title + `</h5>`);
                 } else {
-                  subsetData.push(`<div onclick="` + open + `" style="background-color:var(--elements);padding:20px;font-size:17px;border-radius:15px;margin:10px 0; margin-left: ` + (data[i].items[ii].indent * 5) + `px; cursor: pointer;">
+                    subsetData.push(`<div onclick="` + open + `" style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: ` + (data[i].items[ii].indent * 15) + `px; cursor: pointer;">
 <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `</i>` + data[i].items[ii].title + `</div>`);
                 }
             }
             streamData.push(`<div class="card">
-<h4 style="margin-top: 5px;">` + data[i].name + `</h4>
+<h4 style="margin-top: 5px; font-size: 32px; font-weight: bold;">` + data[i].name + `</h4>
 ` + subsetData.join("") + `
 </div>`)
         }
-        jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
+        if (dtps.selectedContent == "moduleStream") jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
 
     });
 }
@@ -1113,33 +1168,9 @@ dtps.renderStream = function (stream, searchRes) {
         }
     }
     return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ?
-        (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results") + `</p></div>`
+        (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results.") + `</p></div>`
         : ((typeof Fuse !== "undefined" ? `
-
-` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `
-
-<div style="position: absolute;display:  inline-block;margin: 82px;">
-<div class="acrylicMaterial" style="border-radius: 20px; display: inline-block; margin-right: 5px;">
-<img src="` + dtps.classes[dtps.selectedClass].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[dtps.selectedClass].teacher.name + `</div></div>
-
-<div onclick="dtps.classInfo(` + dtps.selectedClass + `)" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
-<i style="line-height: 40px;" class="material-icons">info</i>
-</div>
-
-` + (dtps.classes[dtps.selectedClass].defaultView == "wiki" ? `<div onclick="dtps.classHome(` + dtps.selectedClass + `)" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer;">
-<i style="line-height: 40px;" class="material-icons">home</i>
-</div>` : "") + `
-
-</div>
-` : "") + `
-
-<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />
-` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? `<br />
-<div class="btns row small acrylicMaterial assignmentPicker" style="margin: 20px 80px 20px 0px !important;">
-  <button class="btn active" onclick="dtps.classStream(dtps.selectedClass);"><i class="material-icons">assignment</i>Assignments</button>
-  <button class="btn" onclick="dtps.moduleStream(dtps.selectedClass);"><i class="material-icons">view_module</i>Modules</button>
-</div><script>fluid.init();</script>` : "") + `
-</div>` : "") + streamlist.join(""));
+` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? dtps.renderStreamTools(dtps.selectedClass, true) : "") : "") + streamlist.join(""));
     //return streamlist.join("");
 }
 
@@ -1352,7 +1383,7 @@ dtps.gradebook = function (num) {
                                         gradAlign.push(alignmentData[i]);
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.push(resultsData[ii].links.assignment);
                                         gradAlign[gradAlign.length - 1].score = resultsData[ii].score;
-                                        gradAlign[gradAlign.length - 1].date = resultsData[ii].submitted_or_assessed_at;
+                                        gradAlign[gradAlign.length - 1].date = (dtps.assignmentGradeTimes[alignmentData[i].assignment_id] ? dtps.assignmentGradeTimes[alignmentData[i].assignment_id] : resultsData[ii].submitted_or_assessed_at);
                                         gradAlign[gradAlign.length - 1].gradAlignIndex = gradAlign.length - 1;
 
                                         //save for recent changes sandbox and lowest score sandbox
@@ -1503,6 +1534,37 @@ dtps.gradebook = function (num) {
                     //temporary variable for if outcome divider is added yet
                     var dividerAdded = false;
 
+                    $(".card.recentChanges").html(`<i onclick="fluid.cards.close('.card.recentChanges')" class="material-icons close">close</i>
+                    <h5 style="font-weight: bold; margin-top: 0px; font-size: 32px;"><i class="material-icons">restore</i> Recent Changes</h5>
+                    ` + dtps.classes[num].recentChangesKeys.map((k, index) => {
+                        if (index < 3) {
+                            if (index == 0) {
+                                var letter = dtps.classes[num].letter;
+                            } else {
+                                var letter = dtps.classes[num].recentChanges[dtps.classes[num].recentChangesKeys[index - 1]].letter;
+                            }
+                            return `<div class="change"><h5 class="changeName"><div class="letter">` + letter + `</div>` + k + `</h5>` + dtps.classes[num].recentChanges[k].alignments.map((alignment) => {
+                                return `<p class="alignmentChange"><span style="color: ` + dtps.cblColor(alignment.score) + `;">` + alignment.score + `</span> ` + alignment.title + `</p>`
+                            }).join("") + `</div>`
+                        } else {
+                            return ``;
+                        }
+                    }).join(""));
+
+                    var fix = "";
+                    //not all outcomes meeting A criteria
+                    if (dtps.classes[num].gradeCalc.number75Length !== dtps.classes[num].gradeCalc.number75LengthA) {
+                        fix = "Get at least a 3.5 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes to get an A"
+                    }
+                    //lowest score is below a 3
+                    if (dtps.classes[num].gradeCalc.lowestValue < 3) {
+                        fix = "Make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
+                    }
+                    //both
+                    if ((dtps.classes[num].gradeCalc.lowestValue < 3) && (dtps.classes[num].gradeCalc.number75Length !== dtps.classes[num].gradeCalc.number75LengthA)) {
+                        fix = "Get at least a 3.5 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes and make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
+                    }
+
                     $(".classContent").html(`
                     <div style="display: none;" id="whatIfGrade">
                     <div class="letter">--</div>
@@ -1514,7 +1576,7 @@ dtps.gradebook = function (num) {
                     </div>
 
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
-    <h3 style="margin-bottom: 28px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
+    <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
     <div class="classGradeCircle" style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
     <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">` + (dtps.classes[num].gradeCalc.number75thresh * 100).toFixed(0) + `% of outcome scores are ≥
     <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
@@ -1522,6 +1584,7 @@ dtps.gradebook = function (num) {
     <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
     <div style="display: none;" id="classGradeMore">
     <br />
+    ` + (dtps.classes[num].letter !== "A" ? `<p style="text-align: center;">` + fix + `</p>` : "") + `
     <table class="u-full-width dtpsTable">
   <thead>
     <tr>
@@ -1571,26 +1634,9 @@ dtps.gradebook = function (num) {
 </div>
 <br />
 <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
+&nbsp;&nbsp;<a onclick="fluid.cards('.card.recentChanges');" style="color: var(--secText, gray); cursor: pointer;">Recent Changes</a>
 </div>
-
-<div class="card recentChanges">
-<h5 style="font-weight: bold; margin-top: 0px; font-size: 32px;"><i class="material-icons">restore</i> Recent Changes</h5>
-` + dtps.classes[num].recentChangesKeys.map((k, index) => {
-                        if (index < 3) {
-                            if (index == 0) {
-                                var letter = dtps.classes[num].letter;
-                            } else {
-                                var letter = dtps.classes[num].recentChanges[dtps.classes[num].recentChangesKeys[index - 1]].letter;
-                            }
-                            return `<div class="change"><h5 class="changeName"><div class="letter">` + letter + `</div>` + k + `</h5>` + dtps.classes[num].recentChanges[k].alignments.map((alignment) => {
-                                return `<p class="alignmentChange"><span style="color: ` + dtps.cblColor(alignment.score) + `;">` + alignment.score + `</span> ` + alignment.title + `</p>`
-                            }).join("") + `</div>`
-                        } else {
-                            return ``;
-                        }
-                    }).join("") + `
-</div>
-<br /><br />` : "") + `
+<br />` : "") + `
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
                         var keyA = dtps.classes[num].outcomes[a].score,
                             keyB = dtps.classes[num].outcomes[b].score;
@@ -1621,24 +1667,29 @@ dtps.gradebook = function (num) {
   ` + (dtps.classes[num].outcomes[i].lastAssignment ? `<div style="margin: 10px 0px;"></div>
 
   <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-  ` + (dtps.classes[num].letter !== "--" ? `<i onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="cursor: pointer; vertical-align: middle; color:var(--lightText); margin-right: 10px;" class="material-icons down">add_box</i>` : "") + `
-  <i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? "" : "display: none;") + `cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down">keyboard_arrow_right</i>
+  <i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? "" : "display: none;") + `cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down fullListToggleIcon">keyboard_arrow_right</i>
 
-  <div id="` + num + `-` + i + `-` + 0 + `" ` + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ?
+  <div class="coolEpicLatest" id="` + num + `-` + i + `-` + 0 + `" ` + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ?
                                     `line-height: 22px; width: 22px; height: 22px; border: none !important; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; background-color: var(--assessmentColor); color: white;`
                                     : `line-height: 20px; width: 20px; height: 20px; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);`) + `
         display: inline-block; text-align: center; font-size: ` + (String(dtps.classes[num].outcomes[i].lastAssignment.score).length > 2 ? "10px" : "16px") + `; border-radius: 50%; margin-right: 5px; vertical-align: middle; outline: none;">
   ` + dtps.classes[num].outcomes[i].lastAssignment.score + `</div>
-   <span onclick="dtps.assignment('` + dtps.classes[num].outcomes[i].lastAssignment.id + `', ` + num + `)" style="cursor: pointer;">` + dtps.classes[num].outcomes[i].lastAssignment.name + `</span></div>` : "") + `
+   <span class="coolEpicLatest" onclick="dtps.assignment('` + dtps.classes[num].outcomes[i].lastAssignment.id + `', ` + num + `)" style="cursor: pointer;">` + dtps.classes[num].outcomes[i].lastAssignment.name + `</span></div>` : "") + `
   
 <div style="margin-top: 10px; display: none;" class="fullList">
 ` + dtps.classes[num].outcomes[i].gradedAlignments.map(function (alignment, ii) {
                                         return `<div ` + (ii == 0 ? `class="fullListLatest"` : "") + ` style="` + (ii == 0 ? "display: none;" : "") + `padding-left: 29px; margin: 2px 0px; color: var(--lightText); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-<div id="` + num + `-` + i + `-` + ii + `" `  + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);` : `line-height: 20px; width: 20px; height: 20px; border: none !important; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; background-color: var(--assessmentColor); color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px; outline: none;">` + alignment.score + `</div>
+<div id="` + num + `-` + i + `-` + ii + `" ` + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);` : `line-height: 20px; width: 20px; height: 20px; border: none !important; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; background-color: var(--assessmentColor); color: white;`) + `display: inline-block; text-align: center; font-size: 14px; border-radius: 50%; margin-right: 5px; outline: none;">` + alignment.score + `</div>
 <span style="cursor: pointer;" onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)">` + alignment.title + `</span></div>`
                                     }).join("") + `
   </div>
-  
+
+  ` + ((dtps.classes[num].letter !== "--") && dtps.classes[num].outcomes[i].lastAssignment ? `
+  <p onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 10px; cursor: pointer;">
+  <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
+  Simulate additional outcome assessment
+  </p>` : "") + `
+
   </div>`
                     }).join("") + `
 </div>`)
@@ -1697,12 +1748,12 @@ dtps.gradebook = function (num) {
 }
 
 dtps.simOutcomeInit = function (num, i, ele) {
-    $(ele).parent().siblings('.fullList').find('.fullListLatest').show();
-    $(ele).siblings('i').show();
-    $(ele).siblings('div').attr('sim', true);
-    $(ele).siblings('div').html('--');
-    $(ele).siblings('div').css("--assessmentColor", "var(--secText)");
-    $(ele).siblings('span').html('Simulated Outcome Assessment*');
+    $(ele).parents(".card.outcomeResults").find('.fullList').find('.fullListLatest').show();
+    $(ele).parents(".card.outcomeResults").find('.fullListToggleIcon').show();
+    $(ele).parents(".card.outcomeResults").find("div.coolEpicLatest").attr('sim', true);
+    $(ele).parents(".card.outcomeResults").find("div.coolEpicLatest").html('--');
+    $(ele).parents(".card.outcomeResults").find("div.coolEpicLatest").css("--assessmentColor", "var(--secText)");
+    $(ele).parents(".card.outcomeResults").find("span.coolEpicLatest").html('Simulated Outcome Assessment*');
     $(ele).parents(".card.outcomeResults").find(".earned.numbers").html("--*");
     $(ele).parents(".card.outcomeResults").find(".earned.numbers").css("color", "var(--secText)");
     $("#whatIfGrade .letter").html("--");
@@ -1818,8 +1869,8 @@ Power+ currently only supports assignments that use online text entry. Other ass
 ` + (rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name ? rubric.score + "&nbsp;&nbsp;" + rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name : rubric.score) + `
 </div>` : rubric.ratings.map(function (rating) {
                             return `
-<div style="padding: 2px 0px; font-size: 16px; background-color: transparent; color: white; width: 100px; text-align: center; display: inline-block;">
-` + (rating.name ? rating.name : rating.points) + `
+<div style="padding: 2px 0px; font-size: 16px; background-color: transparent; color: white; width: 50px; text-align: center; display: inline-block;">
+` + rating.points + `
 </div>`
                         }).join("")) + `</div></div>`
                     } else { return ""; }
@@ -2275,6 +2326,11 @@ dtps.render = function () {
 <h4>An error occured</h4>
 </div>
 
+<div style="border-radius: 30px; top: 50px;" class="card focus close recentChanges container">
+<i onclick="fluid.cards.close('.card.recentChanges')" class="material-icons close">close</i>
+<h4>An error occured</h4>
+</div>
+
 <style id="colorCSS"></style>
 <script>fluid.init();</script>
   `);
@@ -2479,7 +2535,7 @@ dtps.renderLite = function () {
 <button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule classes</button>
 <br /><br />
 <div id="classGrades">
-<h5>Grades</h5>
+<h5>Class Grades</h5>
 <div class="gradeDom">
 <p>Loading...</p>
 </div>
