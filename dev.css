@@ -1,7 +1,12 @@
 /*
-Power+ CSS v2.1.0 [DEV]
+Power+ CSS v2.1.0 [GM]
 (c) jottocraft 2018-2019
 */
+
+body:not(.dark) .acrylicMaterial {
+    background-color: var(--elements) !important;
+    opacity: 0.9 !important;
+}
 
 @font-face {
     font-family: 'Material Icons Outline';
