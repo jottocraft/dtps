@@ -171,37 +171,37 @@ body.dark, body.showThemeWindows .themeWindow.darkBox {
 }
 
 body.tome, body.showThemeWindows .themeWindow.tome {
-  --background: #120f17;
-  --elements: #0e0a0e;
-  --elementRadius: 15px;
-  --elementShadow: 0 10px 30px rgba(0, 0, 0, 0.17);
-  --lightShadow: 0 2px 3px rgba(0, 0, 0, 0.17);
-  --elementText: white;
-  --darker: #09070a;
-  --darkest: #020102;
-  --acrylic: #0a021f;
-  --inputColor: #0f0b13;
-  --listColor: #201b25;
-  --listHover: #130f17;
-  --switchHead: white;
-  --sideColor: #0f0c15;
-  --sideActive: #0d0a13;
-  --sideItem: #2d263a;
-  --navBorder: #3a3a3a;
-  --navActive: #2d2d2d;
-  --navText: #6f6f6f;
-  --nav: #131313;
-  --cards: #19151f;
-  --cardRadius: 15px;
-  --cardShadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  --titleFont: "Product Sans", Arial, sans-serif;
-  --textFont: "Google Sans", Arial, sans-serif;
-  --text: white;
-  --lightText: #ada5bd;
-  --secText: #5a5367;
-  --trans: background-color 0.4s, box-shadow 0.4s, border-color 0.4s, color 0.4s;
-  --theme: #241e2f;
-  --themeText: #e7e4e8;
+    --background: #160f21;
+    --elements: #0e0a0e;
+    --elementRadius: 15px;
+    --elementShadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+    --lightShadow: 0 2px 3px rgba(0, 0, 0, 0.17);
+    --elementText: white;
+    --darker: #09070a;
+    --darkest: #020102;
+    --acrylic: #0a021f;
+    --inputColor: #0f0b13;
+    --listColor: #201b25;
+    --listHover: #130f17;
+    --switchHead: white;
+    --sideColor: #0f0c15;
+    --sideActive: #0d0a13;
+    --sideItem: #2d263a;
+    --navBorder: #5a4e6d;
+    --navActive: #2f2146;
+    --navText: #f3ebff;
+    --nav: #131313;
+    --cards: #1a1521;
+    --cardRadius: 15px;
+    --cardShadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    --titleFont: "Product Sans", Arial, sans-serif;
+    --textFont: "Google Sans", Arial, sans-serif;
+    --text: white;
+    --lightText: #ada5bd;
+    --secText: #5a5367;
+    --trans: background-color 0.4s, box-shadow 0.4s, border-color 0.4s, color 0.4s;
+    --theme: #321c58;
+    --themeText: #e7e4e8;
 }
 
 /* Flex theme layer */
