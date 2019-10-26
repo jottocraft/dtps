@@ -491,7 +491,7 @@ dtps.init = function () {
         dtps.user = JSON.parse(user);
         sudoers = ["669", "672", "209"]
         if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        contributors = ["669"]
+        contributors = ["669", "672"]
         if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
         if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
         if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
