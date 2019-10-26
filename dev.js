@@ -2292,6 +2292,7 @@ dtps.render = function () {
     if (dtps.embedded) {
         jQuery("head").html("");
         $("body").addClass("dashboard");
+	$("body").addClass("showThemeWindows");
         $("body").addClass("hasSidebar");
     }
     document.title = "Power+" + dtps.trackSuffix;
