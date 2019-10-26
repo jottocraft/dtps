@@ -56,7 +56,7 @@ window.matchMedia("(prefers-color-scheme: dark)").addListener(function (e) {
   }
 })
 
-fluid.includedFlexThemes = ["midnight", "nitro", "aquatic", "highContrast", "candy", "violet", "tome"]
+fluid.includedFlexThemes = ["midnight", "nitro", "aquatic", "highContrast", "candy", "violet"]
 fluid.theme = function (requestedTheme, temporary) {
   // GET CURRENT THEME -----------------------
   var currentTheme = null;
@@ -81,6 +81,7 @@ fluid.theme = function (requestedTheme, temporary) {
   classes = document.body.classList.value.split(" ");
   for (var ii = 0; ii < classes.length; ii++) { if ((classes[ii].startsWith("light") || classes[ii].startsWith("dark")) && ((classes[ii] !== "dark") && (classes[ii] !== "light"))) { $("body").removeClass(classes[ii]) } }
   for (var i = 0; i < fluid.includedFlexThemes.length; i++) $("body").removeClass(fluid.includedFlexThemes[i])
+  $("body").removeClass("tome");
 
   if (requestedTheme.includes("light") || (requestedTheme == "highContrast")) { $("body").removeClass("dark"); $("body").addClass("light"); }
   if (requestedTheme.includes("dark") || fluid.includedFlexThemes.includes(requestedTheme)) { $("body").removeClass("light"); $("body").addClass("dark"); }
