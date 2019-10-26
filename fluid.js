@@ -84,7 +84,7 @@ fluid.theme = function (requestedTheme, temporary) {
   $("body").removeClass("tome");
 
   if (requestedTheme.includes("light") || (requestedTheme == "highContrast")) { $("body").removeClass("dark"); $("body").addClass("light"); }
-  if (requestedTheme.includes("dark") || fluid.includedFlexThemes.includes(requestedTheme)) { $("body").removeClass("light"); $("body").addClass("dark"); }
+  if (requestedTheme.includes("dark") || fluid.includedFlexThemes.includes(requestedTheme) || (requestedTheme == "tome")) { $("body").removeClass("light"); $("body").addClass("dark"); }
   if (requestedTheme !== "auto") $("body").addClass(requestedTheme);
 
   //Auto (time-based) theme
