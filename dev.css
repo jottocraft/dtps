@@ -3,6 +3,20 @@ Power+ CSS v2.1.0 [GM]
 (c) jottocraft 2018-2019
 */
 
+.classContent .card.collapsed {
+    padding: 10px 20px;
+}
+.classContent .card.collapsed h4 {
+    font-size: 24px !important;
+    font-weight: normal !important;
+}
+.classContent .card.collapsed h4 i {
+    margin-top: -6px;
+}
+.classContent .card.collapsed .moduleContents {
+    display: none;
+}
+
 body:not(.dark) .acrylicMaterial {
     background-color: var(--elements) !important;
     opacity: 0.9 !important;
