@@ -3,6 +3,10 @@ Power+ CSS v2.1.0 [GM]
 (c) jottocraft 2018-2019
 */
 
+.blur * {
+    pointer-events: none !important;
+}
+
 .classContent .card.collapsed {
     padding: 10px 20px;
 }
