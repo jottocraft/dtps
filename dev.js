@@ -472,7 +472,7 @@ dtps.init = function () {
     dtps.explorer.push({ name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs" });
 
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
-        fluidThemes = [["midnight", {name: "Tome", id: "tome", icon: "link"}], ["rainbow"]];
+        fluidThemes = [["midnight", { name: "Tome", id: "tome", icon: "link" }], ["rainbow"]];
         fluidAutoLoad = false;
 
         document.addEventListener("fluidTheme", function (data) {
@@ -1000,14 +1000,21 @@ dtps.classStream = function (num, renderOv) {
                         var keyA = new Date(a.dueDate).getTime(),
                             keyB = new Date(b.dueDate).getTime();
                         var now = new Date().getTime();
-                        if (a.dueDate == null) { keyA = Infinity; a.old = true; }
-                        if (b.dueDate == null) { keyB = Infinity; b.old = true; }
-                        if (keyA < now) { keyA += 9999999999999; a.old = true; }
-                        if (keyB < now) { keyB += 9999999999999; b.old = true; }
-                        // Compare the 2 dates
-                        if (keyA > keyB) return 1;
-                        if (keyA < keyB) return -1;
-                        return 0;
+                        if (a.dueDate == null) { keyA = 0; }
+                        if (b.dueDate == null) { keyB = 0; }
+                        if (keyA < now) { a.old = true; }
+                        if (keyB < now) { b.old = true; }
+                        if (b.old || a.old) {
+                            // Compare the 2 dates
+                            if (keyA < keyB) return 1;
+                            if (keyA > keyB) return -1;
+                            return 0;
+                        } else {
+                            // Compare the 2 dates
+                            if (keyA > keyB) return 1;
+                            if (keyA < keyB) return -1;
+                            return 0;
+                        }
                     })));
                 }
             }
@@ -1280,14 +1287,21 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
         var keyA = new Date(a.dueDate).getTime(),
             keyB = new Date(b.dueDate).getTime();
         var now = new Date().getTime();
-        if (a.dueDate == null) { keyA = Infinity; a.old = true; }
-        if (b.dueDate == null) { keyB = Infinity; b.old = true; }
-        if (keyA < now) { keyA += 9999999999999; a.old = true; }
-        if (keyB < now) { keyB += 9999999999999; b.old = true; }
-        // Compare the 2 dates
-        if (keyA > keyB) return 1;
-        if (keyA < keyB) return -1;
-        return 0;
+        if (a.dueDate == null) { keyA = 0; }
+        if (b.dueDate == null) { keyB = 0; }
+        if (keyA < now) { a.old = true; }
+        if (keyB < now) { b.old = true; }
+        if (b.old || a.old) {
+            // Compare the 2 dates
+            if (keyA < keyB) return 1;
+            if (keyA > keyB) return -1;
+            return 0;
+        } else {
+            // Compare the 2 dates
+            if (keyA > keyB) return 1;
+            if (keyA < keyB) return -1;
+            return 0;
+        }
     })));
     $(".card.assignment").addClass("color");
     dtps.calendar(doneLoading);
