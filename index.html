@@ -41,7 +41,7 @@
 		cursor: pointer;
 		font-weight: bold;
 		font-family: 'Product Sans';
-		color: var(--secText);
+		color: var(--lightText);
 		line-height: 28px;
 		display: inline-block;
 		margin: 0px 20px;
@@ -87,7 +87,20 @@
   <script>fluidThemes = [];</script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="/fluid.js"></script>
-  
+  <script>
+//if(navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+if (true) {
+  $(document).ready(() => {
+	fluid.splash(".splash.androidSplash");
+  })
+}
+  </script>
+  <div class="splash androidSplash">
+  <h5>Power+ App (beta)</h5>
+  <p>Power+ is testing a new mobile grade calculator on Android. The Power+ Android app is still far from finished and is very much a work in progress. Make sure you understand the risks of using pre-release software before testing the Power+ App.</p>
+  <br />
+  <div onclick="window.location.href = 'https://play.google.com/apps/testing/com.jottocraft.dtps';" class="btn">Get the app</div>
+  </div>
   <div style="margin-top: 100px;" class="container">
   <img src="https://i.imgur.com/vCGOvPp.png" style="width: 120px; border-radius: 30px; vertical-align: middle; margin-right: 20px;" />
   <h1 style="font-size: 80px; display: inline-block; vertical-align: middle;">Power+</h1>
