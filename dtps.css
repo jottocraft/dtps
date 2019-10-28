@@ -342,7 +342,7 @@ body.hasSidebar {
     border-color: var(--secText) !important;
 }
 
-body:not(.dark) .class.main:not(.active) {
+body.dark .class.main:not(.active) {
     color: #ffffffbf !important;
     border-color: #ffffff36 !important;
 }
