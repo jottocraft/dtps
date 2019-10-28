@@ -1,5 +1,5 @@
 /*
-Power+ CSS v2.1.0 [GM]
+Power+ CSS v2.2.0 [DEV]
 (c) jottocraft 2018-2019
 */
 
@@ -340,6 +340,11 @@ body.hasSidebar {
 .class.main:not(.active) {
     color: var(--lightText) !important;
     border-color: var(--secText) !important;
+}
+
+body:not(.dark) .class.main:not(.active) {
+    color: #ffffffbf !important;
+    border-color: #ffffff36 !important;
 }
 
 .class:not(.main) {
