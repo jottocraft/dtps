@@ -1632,7 +1632,7 @@ dtps.gradebook = function (num) {
                     <div style="display: none;" id="whatIfGrade">
                     <div class="letter">--</div>
                     <div class="notice">
-                    <h5>What-If Grade</h5>
+                    <h5>What-If Grade (beta)</h5>
                     <p>This letter grade is hypothetical and does not reflect your actual class grade</p>
                     <p><a onclick="dtps.gradebook(` + num + `)" href="#">Show actual grades</a></p>
                     </div>
@@ -1722,7 +1722,7 @@ dtps.gradebook = function (num) {
   <h5 style="font-size: 1.4rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis; margin-top: 0px; margin-right: 40px;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
   ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Decaying Average Ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "% / " + (100 - dtps.classes[num].outcomes[i].calculation_int) + `%</div>` : "") + `
-  ` + (dtps.classes[num].outcomes[i].lowestScore && (dtps.classes[num].outcomes[i].calculation_int >= 50) ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.5 or higher in this outcome" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
+  ` + (dtps.classes[num].outcomes[i].lowestScore && (dtps.classes[num].outcomes[i].calculation_int >= 50) ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.5 or higher in this outcome (beta)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
   <div class="dev" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">bug_report</i> ` + dtps.classes[num].outcomes[i].id + `</div>
   ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
   </div>
