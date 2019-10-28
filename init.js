@@ -1381,19 +1381,21 @@ dtps.outcome = function (num, id, i) {
         }
 
         $(".card.outcomeCard").html(`<i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
-        <h4 style="font-weight: bold;">` + data.title + `</h4>
+        <h4 style="font-weight: bold;">` + (data.title ? data.title : "An error occurred") + `</h4>
+	` + (!data.title ? `<p>Power+ couldn't get the details for this outcome from Canvas</p>` : "") + `
         <div style="margin-bottom: 20px;" class="syllabusBody">` + (data.description ? `<iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
-       <div style="display: inline-block; width: 40%;"> ` + data.ratings.map(function (rating) {
+       <div style="display: inline-block; width: 40%;"> ` + (data.ratings ? data.ratings.map(function (rating) {
             var desc = rating.description.replace(dtps.cblName(rating.description) + ": ", '').replace(dtps.cblName(rating.description) + "- ", '').replace(dtps.cblName(rating.description), '');
             return `<div style="margin: 20px 0px;"><h5><span style="font-weight: bold; font-size: 42px; color: ` + dtps.cblColor(rating.points) + `">` + rating.points + "</span>&nbsp;&nbsp;" + dtps.cblName(rating.description) + `</h5>
             ` + (desc ? `<p>` + desc + `</p>` : "") + `</div>`
-        }).join("") + `</div>
+        }).join("") : "") + `</div>
 
-        <div style="display: inline-block; width: 55%; vertical-align: top;">
+        ` + (dtps.classes[num].outcomes[i].alignments && (dtps.classes[num].outcomes[i].alignments.length) ? `<div style="display: inline-block; width: 55%; vertical-align: top;">
+	<h5>Assignments</h5>
         ` + dtps.classes[num].outcomes[i].alignments.map(function (alignment, ii) {
             return `<div onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)" style="margin: 5px 0px; color: var(--lightText); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">` + alignment.title + `</div>`
         }).join("") + `
-        </div>`)
+        </div>` : ""))
 
         fluid.modal(".card.outcomeCard")
     })
