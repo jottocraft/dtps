@@ -1,4 +1,4 @@
-/* Power+ v2.1.0
+/* Power+ v2.1.1
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
@@ -7,8 +7,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading"
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 var dtps = {
-    ver: 210,
-    readableVer: "v2.1.0",
+    ver: 211,
+    readableVer: "v2.1.1",
     trackSuffix: "",
     fullTrackSuffix: "",
     trackColor: "#ffa500",
@@ -321,9 +321,11 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         //number75length is the amount of outcomes needed to satisfy 75% criteria thing
         //number75lengthA is amount of outcomes satisfying the A requirement for the 75% criteria thing
         //moreA is how many more outcomes are not at least 3
+        //number75per is the percentage used
+        var number75per = 0.75;
         var number75 = null;
         var number75thresh = null;
-        var number75Length = Math.ceil(rollupScores.length * .75);
+        var number75Length = Math.ceil(rollupScores.length * number75per);
         var number75LengthA = 0;
         var moreA = 0;
         rollupScores.map((s) => {
@@ -336,7 +338,7 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         })
 
         //test values
-        var testValues = [3.5, 3, 2.5]
+        var testValues = [3.5, 3.3, 3, 2.6, 2.2]
 
         for (var i = 0; i < testValues.length; i++) {
             //make sure a higher number for number75 isn't already found
@@ -350,7 +352,7 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
                 }
 
                 //if at least 75% of the outcomes are >= test value, number75 is the test value
-                if ((equalOrGreater.length / rollupScores.length) >= 0.75) {
+                if ((equalOrGreater.length / rollupScores.length) >= number75per) {
                     number75 = testValues[i];
                     number75thresh = (equalOrGreater.length / rollupScores.length);
                 }
@@ -363,11 +365,11 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         //get letter grade
         var letter = "I";
         if (rollupScores.length == 0) letter = "--";
-        if ((number75 >= 2.5) && (lowestValue >= 2)) letter = "C";
-        if ((number75 >= 3) && (lowestValue >= 2)) letter = "B-";
+        if ((number75 >= 2.2) && (lowestValue >= 0)) letter = "C";
+        if ((number75 >= 2.6) && (lowestValue >= 2)) letter = "B-";
         if ((number75 >= 3) && (lowestValue >= 2.25)) letter = "B";
         if ((number75 >= 3) && (lowestValue >= 2.5)) letter = "B+";
-        if ((number75 >= 3.5) && (lowestValue >= 2.5)) letter = "A-";
+        if ((number75 >= 3.3) && (lowestValue >= 2.5)) letter = "A-";
         if ((number75 >= 3.5) && (lowestValue >= 3)) letter = "A";
 
         if ((classNum == undefined) && cb) {
@@ -1664,7 +1666,7 @@ dtps.gradebook = function (num) {
     </tr>
     <tr ` + (dtps.classes[num].letter == "A-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;A-</td>
-      <td>3.5</td>
+      <td>3.3</td>
       <td>2.5</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "B+" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
@@ -1679,13 +1681,13 @@ dtps.gradebook = function (num) {
     </tr>
     <tr ` + (dtps.classes[num].letter == "B-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;B-</td>
-      <td>3</td>
+      <td>2.6</td>
       <td>2.0</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "C" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;C</td>
-      <td>2.5</td>
-      <td>2.0</td>
+      <td>2.2</td>
+      <td>0</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "I" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;I</td>
