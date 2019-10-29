@@ -2455,7 +2455,7 @@ dtps.render = function () {
         });*/
         if ("v2.1.1" == dtps.readableVer.replace(dtps.trackSuffix, "")) {
               localStorage.setItem('dtps', dtps.ver);
-              alert("New October 29th CBL changes are LIVE in Power+!");
+              if (dtps.showChangelog) alert("New October 29th CBL changes are now in Power+! Your class grades are being calculated using the updated algorithm.");
         }
     });
 
