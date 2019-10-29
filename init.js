@@ -81,12 +81,16 @@ dtps.changelog = function () {
 
 //Get CBL color
 dtps.cblColor = function (score) {
-    var col = "#808080";
+    var col = "#b80d0d";
     if (score >= 1) col = "#c4474e";
     if (score >= 1.5) col = "#c45847";
     if (score >= 2) col = "#c26d44";
+    if (score >= 2.2) col = "#c28144";
+    if (score >= 2.25) col = "#c29044";
     if (score >= 2.5) col = "#b59b53";
+    if (score >= 2.6) col = "#b5b053";
     if (score >= 3) col = "#a1b553";
+    if (score >= 3.3) col = "#9bb553";
     if (score >= 3.5) col = "#89b553";
     if (score >= 4) col = "#4f9e59";
     return col;
