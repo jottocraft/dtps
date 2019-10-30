@@ -2449,18 +2449,14 @@ dtps.render = function () {
     })
     jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js", function () {
         markdown = new showdown.Converter();
-        /*jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases/latest", function (data) {
+        jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases/latest", function (data) {
             jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + markdown.makeHtml(data.body));
             if (data.tag_name == dtps.readableVer.replace(dtps.trackSuffix, "")) {
                 localStorage.setItem('dtps', dtps.ver);
                 if (dtps.showChangelog) dtps.changelog();
             }
             $(".btn.changelog").show();
-        });*/
-        if ("v2.1.1" == dtps.readableVer.replace(dtps.trackSuffix, "")) {
-              localStorage.setItem('dtps', dtps.ver);
-              if (dtps.showChangelog) alert("New October 29th CBL changes are now in Power+! Your class grades are being calculated using the updated algorithm.");
-        }
+        });
     });
 
     dtps.showClasses("first");
