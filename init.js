@@ -333,7 +333,7 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         var number75LengthA = 0;
         var moreA = 0;
         rollupScores.map((s) => {
-            if (s >= 3.5) {
+            if (s >= 3.3) {
                 number75LengthA++;
             }
             if (s < 3) {
@@ -342,7 +342,7 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         })
 
         //test values
-        var testValues = [3.5, 3.3, 3, 2.6, 2.2]
+        var testValues = [3.3, 2.6, 2.2]
 
         for (var i = 0; i < testValues.length; i++) {
             //make sure a higher number for number75 isn't already found
@@ -371,10 +371,10 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         if (rollupScores.length == 0) letter = "--";
         if ((number75 >= 2.2) && (lowestValue >= 0)) letter = "C";
         if ((number75 >= 2.6) && (lowestValue >= 2)) letter = "B-";
-        if ((number75 >= 3) && (lowestValue >= 2.25)) letter = "B";
-        if ((number75 >= 3) && (lowestValue >= 2.5)) letter = "B+";
+        if ((number75 >= 2.6) && (lowestValue >= 2.25)) letter = "B";
+        if ((number75 >= 2.6) && (lowestValue >= 2.5)) letter = "B+";
         if ((number75 >= 3.3) && (lowestValue >= 2.5)) letter = "A-";
-        if ((number75 >= 3.5) && (lowestValue >= 3)) letter = "A";
+        if ((number75 >= 3.3) && (lowestValue >= 3)) letter = "A";
 
         if ((classNum == undefined) && cb) {
             cb(letter);
@@ -1490,7 +1490,7 @@ dtps.gradebook = function (num) {
                     //get lowest score for each outcome
                     Object.keys(dtps.classes[num].outcomes).map((k, index) => {
                         var outcome = dtps.classes[num].outcomes[k];
-                        //5 means that more than just a 4 is needed to get a 3.5. it doesnt mean a 5 is needed
+                        //5 means that more than just a 4 is needed to get a 3.3. it doesnt mean a 5 is needed
                         var lowestScore = 5;
 
                         //check new score for each outcome
@@ -1505,8 +1505,8 @@ dtps.gradebook = function (num) {
                             var calculatedScore = lastAssessment + everythingElse;
                             if (outcome.lowestSandbox.length == 1) calculatedScore = rating.points;
 
-                            //must get at least a 3.5 outcome average
-                            if (calculatedScore >= 3.5) {
+                            //must get at least a 3.3 outcome average
+                            if (calculatedScore >= 3.3) {
                                 if (rating.points < lowestScore) lowestScore = rating.points;
                             }
                         });
@@ -1623,7 +1623,7 @@ dtps.gradebook = function (num) {
                     var fix = "";
                     //not all outcomes meeting A criteria
                     if (dtps.classes[num].gradeCalc.number75Length !== dtps.classes[num].gradeCalc.number75LengthA) {
-                        fix = "Get at least a 3.5 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes to get an A"
+                        fix = "Get at least a 3.3 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes to get an A"
                     }
                     //lowest score is below a 3
                     if (dtps.classes[num].gradeCalc.lowestValue < 3) {
@@ -1631,7 +1631,7 @@ dtps.gradebook = function (num) {
                     }
                     //both
                     if ((dtps.classes[num].gradeCalc.lowestValue < 3) && (dtps.classes[num].gradeCalc.number75Length !== dtps.classes[num].gradeCalc.number75LengthA)) {
-                        fix = "Get at least a 3.5 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes and make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
+                        fix = "Get at least a 3.3 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes and make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
                     }
 
                     $(".classContent").html(`
@@ -1665,7 +1665,7 @@ dtps.gradebook = function (num) {
   <tbody>
     <tr ` + (dtps.classes[num].letter == "A" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;A</td>
-      <td>3.5</td>
+      <td>3.3</td>
       <td>3.0</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "A-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
@@ -1675,12 +1675,12 @@ dtps.gradebook = function (num) {
     </tr>
     <tr ` + (dtps.classes[num].letter == "B+" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;B+</td>
-      <td>3</td>
+      <td>2.6</td>
       <td>2.5</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "B" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;B</td>
-      <td>3</td>
+      <td>2.6</td>
       <td>2.25</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "B-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
@@ -1728,7 +1728,7 @@ dtps.gradebook = function (num) {
   <h5 style="font-size: 1.4rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis; margin-top: 0px; margin-right: 40px;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
   ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Decaying Average Ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "% / " + (100 - dtps.classes[num].outcomes[i].calculation_int) + `%</div>` : "") + `
-  ` + (dtps.classes[num].outcomes[i].lowestScore && (dtps.classes[num].outcomes[i].calculation_int >= 50) ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.5 or higher in this outcome (beta)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
+  ` + (dtps.classes[num].outcomes[i].lowestScore && (dtps.classes[num].outcomes[i].calculation_int >= 50) ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.3 or higher in this outcome (beta)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
   <div class="dev" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">bug_report</i> ` + dtps.classes[num].outcomes[i].id + `</div>
   ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
   </div>
