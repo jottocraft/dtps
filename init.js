@@ -375,6 +375,9 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         if ((number75 >= 2.6) && (lowestValue >= 2.5)) letter = "B+";
         if ((number75 >= 3.3) && (lowestValue >= 2.5)) letter = "A-";
         if ((number75 >= 3.3) && (lowestValue >= 3)) letter = "A";
+        
+        //hide dlab grades
+        if (dtps.classes[num] && dtps.classes[num].name.includes("OCT19")) letter = "--";
 
         if ((classNum == undefined) && cb) {
             cb(letter);
