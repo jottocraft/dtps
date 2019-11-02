@@ -191,7 +191,8 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
     if (sub == undefined) var sub = "";
     if (loadingSplash) {
         if (dtps.embedded) {
-            jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%;height: 100%;z-index: 500;background: rgba(31, 31, 31, 0.89);">&nbsp;<h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(rgb(255, 167, 0), rgb(255, 244, 0));-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
+            jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%;height: 100%;z-index: 500;background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);">&nbsp;
+            <h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(#f9ca06, #efdf0d);-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
 <style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner { width: 40px; height: 40px; margin: 40px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style></div>`)
         }
     } else {
@@ -375,7 +376,7 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         if ((number75 >= 2.6) && (lowestValue >= 2.5)) letter = "B+";
         if ((number75 >= 3.3) && (lowestValue >= 2.5)) letter = "A-";
         if ((number75 >= 3.3) && (lowestValue >= 3)) letter = "A";
-        
+
         //hide dlab grades
         if (dtps.classes[num] && dtps.classes[num].name.includes("OCT19")) letter = "--";
 
@@ -473,6 +474,24 @@ dtps.JS = function (cb) {
 //Starts Power+, and renders if running a non-embedded client
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
+    
+    //changelog and loading
+    dtps.shouldRender = true;
+    dtps.showChangelog = false;
+    dtps.first = false;
+    if (window.localStorage.dtpsInstalled !== "true") {
+        if (dtps.embedded) dtps.shouldRender = false;
+        dtps.first = true;
+    }
+    if (dtps.first && !dtps.embedded) dtps.firstrun();
+    if (Number(window.localStorage.dtps) < dtps.ver) {
+        dtps.log("New release")
+        dtps.showChangelog = true;
+        if (dtps.shouldRender) dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer, true);
+    }
+    if (dtps.shouldRender && !dtps.showChangelog) {
+        dtps.nativeAlert("Loading...", undefined, true);
+    }
 
     //add basic explorer items
     dtps.explorer.push({ name: "/users/self", path: "/api/v1/users/self" });
@@ -547,22 +566,6 @@ dtps.init = function () {
         dtps.masterContent = "assignments";
         if (!dtps.embedded) { dtps.renderLite(); dtps.showClasses(); }
 
-        dtps.shouldRender = true;
-        dtps.showChangelog = false;
-        dtps.first = false;
-        if (window.localStorage.dtpsInstalled !== "true") {
-            if (dtps.embedded) dtps.shouldRender = false;
-            dtps.first = true;
-        }
-        if (dtps.first && !dtps.embedded) dtps.firstrun();
-        if (Number(window.localStorage.dtps) < dtps.ver) {
-            dtps.log("New release")
-            dtps.showChangelog = true;
-            if (dtps.shouldRender) dtps.nativeAlert("Loading...", "Updating to Power+ " + dtps.readableVer, true);
-        }
-        if (dtps.shouldRender && !dtps.showChangelog) {
-            dtps.nativeAlert("Loading...", undefined, true);
-        }
         dtps.JS(function () {
 
             window.dataLayer = window.dataLayer || [];
@@ -696,6 +699,7 @@ dtps.checkReady = function (num) {
 
 //Loads the list of pages for a class
 dtps.loadPages = function (num) {
+    jQuery("body").removeClass("collapsedSidebar");
     if ((dtps.selectedClass == num) && (dtps.selectedContent == "pages")) {
         jQuery(".sidebar").html(`
 <div class="classDivider"></div>
@@ -749,6 +753,7 @@ dtps.loadPages = function (num) {
 
 //Loads the list of discussion topics for a class
 dtps.loadTopics = function (num) {
+    jQuery("body").removeClass("collapsedSidebar");
     if ((dtps.selectedClass == num) && (dtps.selectedContent == "discuss")) {
         jQuery(".sidebar").html(`
 <div class="classDivider"></div>
