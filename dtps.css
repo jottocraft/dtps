@@ -35,15 +35,8 @@ body:not(.dark) .acrylicMaterial.sidebar {
     background: none !important;
 }
 
-@font-face {
-    font-family: 'Material Icons Outline';
-    font-style: normal;
-    font-weight: 400;
-    src: url(outline.woff2) format('woff2');
-}
-
 .material-icons {
-    font-family: 'Material Icons Outline';
+    font-family: 'Material Icons Outlined';
 }
 
 .fc-today {
