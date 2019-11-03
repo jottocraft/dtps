@@ -2487,6 +2487,11 @@ dtps.render = function () {
             type: "text/css",
             href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
         }).appendTo("head");
+	jQuery("<link/>", {
+            rel: "stylesheet",
+            type: "text/css",
+            href: "https://fonts.googleapis.com/css?family=Material+Icons+Outlined"
+        }).appendTo("head");
 
         if (dtps.trackSuffix !== "") {
             jQuery("<link/>", {
