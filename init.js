@@ -2690,7 +2690,9 @@ dtps.renderLite = function () {
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
 <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to Canvas.') }" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-<a style="color: var(--lightText); margin: 0px 5px;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GHD8S35VT7H2J&item_name=Donate+to+Power%2B&currency_code=USD&source=url"><i class="material-icons" style="vertical-align: middle">attach_money</i> Donate</a></div>
+<a style="color: var(--lightText); margin: 0px 5px;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GHD8S35VT7H2J&item_name=Donate+to+Power%2B&currency_code=USD&source=url"><i class="material-icons" style="vertical-align: middle">attach_money</i> Donate</a>
+<a style="color: var(--lightText); margin: 0px 5px;" href="https://www.bonfire.com/store/powerplus/"><i class="material-icons" style="vertical-align: middle">shopping_basket</i> Merch</a>
+</div>
 </div>
      <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
 <img src="` + dtps.user.avatar_url + `" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px; border-radius: 50%;" />
