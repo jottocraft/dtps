@@ -1136,13 +1136,13 @@ dtps.moduleCollapse = function (ele, classID, modID) {
 //Asks the user when they have each class to load the class automatically
 dtps.schedule = function () {
     var schedule = {}
-    if (confirm("Type in which period you have each class as a number (1-6, type 7 for @d.tech). If the class is from a different semester or you don't have that class for a class period, leave the box blank")) {
+    if (confirm("Type in which period you have each class as a number (1-6, type 7 for @d.tech). Leave the box blank for classes you aren't currently taking.")) {
         for (var i = 0; i < dtps.classes.length; i++) {
             var num = prompt("Which class period do you have '" + dtps.classes[i].name + "'? (Number 1-6, type 7 for @d.tech, or leave blank)");
             if ((Number(num) > 0) && (Number(num) < 8)) schedule[num] = dtps.classes[i].id;
         }
         localStorage.setItem("dtpsSchedule", JSON.stringify(schedule));
-        alert("Your schedule has been saved. When loading Power+, Power+ will try to load the class that you are in instead of the dashboard, if you are using Power+ during school hours.")
+        alert("Your schedule has been saved. When you load Power+ during class, Power+ will automatically load the class you are in instead of the dashboard.")
     }
 }
 
@@ -1187,6 +1187,11 @@ dtps.classHome = function (num) {
             fluid.cards.close('.card.classInfoCard')
         }
     })
+}
+
+//shows the CBL grade dashboard external tool in Power+
+dtps.cblDashboard = function() {
+	alert("This feature is coming soon");
 }
 
 //Converts a Power+ stream array into HTML for displaying the assignment list
@@ -2563,7 +2568,7 @@ dtps.renderLite = function () {
       <i class="material-icons">settings</i> Settings
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
-      <i class="material-icons">book</i> Classes
+      <i class="material-icons">book</i> Grades
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
       <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
@@ -2604,7 +2609,9 @@ dtps.renderLite = function () {
 	<br style="display: none;" class="razerChroma" /><br style="display: none;" class="razerChroma" />
     <div style="display: none" onclick="fluid.set('pref-chromaEffects')" class="switch pref-chromaEffects razerChroma"><span class="head"></span></div>
     <div class="label razerChroma" style="display: none;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /img> Razer Chroma Effects (beta)</div>
-    <div class="embeddedOptions">
+    <br /><br />
+    <button onclick="dtps.schedule()" class="btn small"><i class="material-icons">access_time</i>Schedule classes</button>
+	<div class="embeddedOptions">
 	<br /><br />
     <p>Power+</p>
     <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
@@ -2615,11 +2622,10 @@ dtps.renderLite = function () {
 	</div>
 </div>
 <div style="display: none;" class="abtpage classes">
-<h5>Classes</h5>
-<button onclick="dtps.schedule()" class="btn"><i class="material-icons">access_time</i>Schedule classes</button>
-<br /><br />
 <div id="classGrades">
 <h5>Class Grades</h5>
+<button onclick="dtps.cblDashboard()" class="btn"><i class="material-icons">business</i>CBL grade dashboard</button>
+<br /><br />
 <div class="gradeDom">
 <p>Loading...</p>
 </div>
