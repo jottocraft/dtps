@@ -1191,7 +1191,16 @@ dtps.classHome = function (num) {
 
 //shows the CBL grade dashboard external tool in Power+
 dtps.cblDashboard = function() {
-	alert("This feature is coming soon");
+	$(".card.cblDashboard").html(`<i onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
+	<p>Loading your CBL dashboard...</p>`);
+	fluid.cards.close(".card.abt-new");
+	fluid.modal(".card.cblDashboard");
+	dtps.webReq("canvas", "/api/v1/accounts/self/external_tools/sessionless_launch?id=143", function (resp) {
+        	var data = JSON.parse(resp);
+		$(".card.cblDashboard").html(`<i onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
+		<br /><br />
+		<iframe src="` + data.url + `" style="width: 100%; height: calc(100vh - 175px); border: none;"></iframe>`);
+	});
 }
 
 //Converts a Power+ stream array into HTML for displaying the assignment list
@@ -2415,6 +2424,11 @@ dtps.render = function () {
 <h4>An error occured</h4>
 </div>
 
+<div style="border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close cblDashboard container">
+<i style="color: black !important;" onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
+<h4>An error occured</h4>
+</div>
+
 <style id="colorCSS"></style>
 <script>fluid.init();</script>
   `);
@@ -2568,7 +2582,7 @@ dtps.renderLite = function () {
       <i class="material-icons">settings</i> Settings
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
-      <i class="material-icons">book</i> Grades
+      <i class="material-icons">assessment</i> Grades
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
       <i class="material-icons" style="font-family: 'Material Icons Extended'">experiment</i> Experiments
