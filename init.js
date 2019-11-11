@@ -378,7 +378,11 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         if ((number75 >= 3.3) && (lowestValue >= 3)) letter = "A";
 
         //hide dlab grades
-        if (dtps.classes[num] && dtps.classes[num].name.includes("OCT19")) letter = "--";
+	//keywords should be in all uppercase
+	var dlabKeywords = ["D.LAB", "DLAB", "D-LAB", "OCT19", "JAN20", "MAR20", "JUN20"];
+	dtps.classes[num] && dlabKeywords.forEach((keyword) => {
+		if (dtps.classes[num].name.toUpperCase().includes(keyword)) letter = "--";
+	});
 
         if ((classNum == undefined) && cb) {
             cb(letter);
