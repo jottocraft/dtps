@@ -6,7 +6,7 @@ https://github.com/jottocraft/dtps */
 if (typeof dtps !== "undefined") throw "Error: DTPS is already loading"
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
-var dtps = {
+dtps = {
     ver: 211,
     readableVer: "v2.1.1",
     trackSuffix: "",
@@ -213,6 +213,11 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
 dtps.requests = {};
 dtps.http = {};
 dtps.webReq = function (req, url, callback, q) {
+    //swap "self" user for ID of user being observed if the user is a parent
+    if (dtps.user && dtps.user.obsID) {
+        if (q ? !q.obsOverride : true) url = url.replace("/self", "/" + dtps.user.obsID).replace(dtps.user.id, dtps.user.obsID);
+    }
+
     if ((dtps.requests[url] == undefined) || url.includes("|") || (q && q.forceLoad)) {
         //Use backend request instead of canvas request for standalone Power+
         if ((req == "canvas") && !dtps.embedded) req = "backend"
@@ -378,11 +383,11 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
         if ((number75 >= 3.3) && (lowestValue >= 3)) letter = "A";
 
         //hide dlab grades
-	//keywords should be in all uppercase
-	var dlabKeywords = ["D.LAB", "DLAB", "D-LAB", "OCT19", "JAN20", "MAR20", "JUN20"];
-	dtps.classes[num] && dlabKeywords.forEach((keyword) => {
-		if (dtps.classes[num].name.toUpperCase().includes(keyword)) letter = "--";
-	});
+        //keywords should be in all uppercase
+        var dlabKeywords = ["D.LAB", "DLAB", "D-LAB", "OCT19", "JAN20", "MAR20", "JUN20"];
+        dtps.classes[num] && dlabKeywords.forEach((keyword) => {
+            if (dtps.classes[num].name.toUpperCase().includes(keyword)) letter = "--";
+        });
 
         if ((classNum == undefined) && cb) {
             cb(letter);
@@ -478,7 +483,7 @@ dtps.JS = function (cb) {
 //Starts Power+, and renders if running a non-embedded client
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
-    
+
     //changelog and loading
     dtps.shouldRender = true;
     dtps.showChangelog = false;
@@ -498,192 +503,205 @@ dtps.init = function () {
     }
 
     //add basic explorer items
+    dtps.explorer.push({ name: "/users/self/observees", path: "/api/v1/users/self/observees" });
     dtps.explorer.push({ name: "/users/self", path: "/api/v1/users/self" });
     dtps.explorer.push({ name: "/users/self/dashboard_positions", path: "/api/v1/users/self/dashboard_positions" });
     dtps.explorer.push({ name: "/users/self/colors", path: "/api/v1/users/self/colors" });
     dtps.explorer.push({ name: "/courses", path: "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs" });
 
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
-        fluidThemes = [["midnight", { name: "Tome", id: "tome", icon: "link" }], ["rainbow"]];
-        fluidAutoLoad = false;
+        dtps.webReq("canvas", "/api/v1/users/self/observees", function (userObs) {
+            fluidThemes = [["midnight", { name: "Tome", id: "tome", icon: "link" }], ["rainbow"]];
+            fluidAutoLoad = false;
 
-        document.addEventListener("fluidTheme", function (data) {
-            if (dtps.oldTheme !== data.detail) {
-                //theme change
-                console.log("[DTPS] Fluid UI Theme Change")
-                dtps.oldTheme = data.detail;
-                var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-                if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--background, #252525)" : "var(--background, white)") + ")"
-                if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
-                $(".background").css("background", next)
-                dtps.chroma();
+            document.addEventListener("fluidTheme", function (data) {
+                if (dtps.oldTheme !== data.detail) {
+                    //theme change
+                    console.log("[DTPS] Fluid UI Theme Change")
+                    dtps.oldTheme = data.detail;
+                    var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
+                    if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue($("body").hasClass("midnight") ? "--dark" : "--light") + ", " + ($("body").hasClass("dark") ? "var(--background, #252525)" : "var(--background, white)") + ")"
+                    if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
+                    $(".background").css("background", next)
+                    dtps.chroma();
+                }
+            })
+
+            if (typeof dtpsPrevUser == "undefined") {
+                dtps.user = JSON.parse(user);
+                dtps.user.obs = JSON.parse(userObs);
+                if (dtps.user.obs[0]) {
+                    dtps.user.observer = true;
+                    dtps.user.obsID = dtps.user.obs[0].id;
+                    jQuery("body").addClass("userObserver");
+                }
+                dtpsPrevUser = true;
             }
-        })
 
-        dtps.user = JSON.parse(user);
-        sudoers = ["669", "672", "209", "560"]
-        if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-        contributors = ["669", "672", "560"]
-        if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
-        if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
-        if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
-        if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
-        $ = jQuery;
-        var min = new Date().getMinutes();
-        if (String(min).length < 2) min = Number("0" + String(min))
-        var time = Number(String(new Date().getHours()) + String(min))
-        dtps.period = null;
-        if ((new Date().getDay() > 0) && (new Date().getDay() < 6)) {
-            //Weekday
-            if (new Date().getDay() == 3) {
-                //Wednesday
-                if ((time > 0844) && (time < 0911)) dtps.period = 7;
-                if ((time > 0912) && (time < 1003)) dtps.period = 1;
-                if ((time > 1004) && (time < 1056)) dtps.period = 2;
-                if ((time > 1057) && (time < 1149)) dtps.period = 3;
-                if ((time > 1220) && (time < 1312)) dtps.period = 4;
-                if ((time > 1313) && (time < 1405)) dtps.period = 5;
-                if ((time > 1406) && (time < 1458)) dtps.period = 6;
-            } else {
-                if (new Date().getDay() !== 4) {
-                    //M, TU, F
-                    if ((time > 0844) && (time < 0916)) dtps.period = 7;
-                    if ((time > 0917) && (time < 1013)) dtps.period = 1;
-                    if ((time > 1022) && (time < 1118)) dtps.period = 2;
-                    if ((time > 1119) && (time < 1215)) dtps.period = 3;
-                    if ((time > 1246) && (time < 1342)) dtps.period = 4;
-                    if ((time > 1343) && (time < 1439)) dtps.period = 5;
-                    if ((time > 1440) && (time < 1536)) dtps.period = 6;
+            sudoers = ["669", "672", "209", "560"]
+            if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
+            contributors = ["669", "672", "560"]
+            if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
+            if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+            if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
+            if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
+            $ = jQuery;
+            var min = new Date().getMinutes();
+            if (String(min).length < 2) min = Number("0" + String(min))
+            var time = Number(String(new Date().getHours()) + String(min))
+            dtps.period = null;
+            if ((new Date().getDay() > 0) && (new Date().getDay() < 6)) {
+                //Weekday
+                if (new Date().getDay() == 3) {
+                    //Wednesday
+                    if ((time > 0844) && (time < 0911)) dtps.period = 7;
+                    if ((time > 0912) && (time < 1003)) dtps.period = 1;
+                    if ((time > 1004) && (time < 1056)) dtps.period = 2;
+                    if ((time > 1057) && (time < 1149)) dtps.period = 3;
+                    if ((time > 1220) && (time < 1312)) dtps.period = 4;
+                    if ((time > 1313) && (time < 1405)) dtps.period = 5;
+                    if ((time > 1406) && (time < 1458)) dtps.period = 6;
+                } else {
+                    if (new Date().getDay() !== 4) {
+                        //M, TU, F
+                        if ((time > 0844) && (time < 0916)) dtps.period = 7;
+                        if ((time > 0917) && (time < 1013)) dtps.period = 1;
+                        if ((time > 1022) && (time < 1118)) dtps.period = 2;
+                        if ((time > 1119) && (time < 1215)) dtps.period = 3;
+                        if ((time > 1246) && (time < 1342)) dtps.period = 4;
+                        if ((time > 1343) && (time < 1439)) dtps.period = 5;
+                        if ((time > 1440) && (time < 1536)) dtps.period = 6;
+                    }
                 }
             }
-        }
-        if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) {
-            dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period];
-            if (dtps.currentClass) {
-                $("#headText").html(("Period " + dtps.period).replace("Period 7", "@d.tech"));
+            if (dtps.period && (String(localStorage.dtpsSchedule).startsWith("{"))) {
+                dtps.currentClass = JSON.parse(localStorage.dtpsSchedule)[dtps.period];
+                if (dtps.currentClass) {
+                    $("#headText").html(("Period " + dtps.period).replace("Period 7", "@d.tech"));
+                }
             }
-        }
-        if (!dtps.currentClass) {
-            dtps.selectedClass = "dash";
-            dtps.selectedContent = "stream";
-        }
-        dtps.masterContent = "assignments";
-        if (!dtps.embedded) { dtps.renderLite(); dtps.showClasses(); }
-
-        dtps.JS(function () {
-
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            var configTmp = {
-                'page_title': 'canvas',
-                'page_path': '/canvas',
-                'anonymize_ip': true
+            if (!dtps.currentClass) {
+                dtps.selectedClass = "dash";
+                dtps.selectedContent = "stream";
             }
-            if (dtps.trackSuffix !== "") {
-                configTmp = {
-                    'page_title': 'prerelease',
-                    'page_path': '/prerelease',
+            dtps.masterContent = "assignments";
+            if (!dtps.embedded) { dtps.renderLite(); dtps.showClasses(); }
+
+            dtps.JS(function () {
+
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { dataLayer.push(arguments); }
+                var configTmp = {
+                    'page_title': 'canvas',
+                    'page_path': '/canvas',
                     'anonymize_ip': true
                 }
-            }
-            gtag('config', 'UA-105685403-3', configTmp);
+                if (dtps.trackSuffix !== "") {
+                    configTmp = {
+                        'page_title': 'prerelease',
+                        'page_path': '/prerelease',
+                        'anonymize_ip': true
+                    }
+                }
+                gtag('config', 'UA-105685403-3', configTmp);
 
-            dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
-                dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
-                    dtps.webReq("canvas", "/api/v1/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
-                        dtps.classesReady = 0;
-                        dtps.colorCSS = [];
-                        //this object is for keeping track of when each assignment was graded
-                        //because submitted_or_assessed at key for outcome results api is not good :(
-                        dtps.assignmentGradeTimes = {};
-                        dtps.gpa = null;
-                        gpa = [];
-                        var colors = JSON.parse(colorsResp);
-                        var dashboard = JSON.parse(dashboardResp);
-                        var data = JSON.parse(resp);
-                        dtps.gradeHTML = [];
-                        data.sort(function (a, b) {
-                            var keyA = dashboard.dashboard_positions["course_" + a.id],
-                                keyB = dashboard.dashboard_positions["course_" + b.id];
-                            if (keyA < keyB) return -1;
-                            if (keyA > keyB) return 1;
-                            return 0;
-                        });
-                        for (var i = 0; i < data.length; i++) {
-                            var name = data[i].name;
-                            var subject = name.split(" - ")[0];
-                            var icon = null;
-                            if (data[i].name !== data[i].course_code) {
-                                //Canvas class manually renamed
-                                subject = null;
-                            }
-                            if (subject == null) var subject = name.split(" - ")[0];
-                            if (colors.custom_colors["course_" + data[i].id]) {
-                                var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
-                                //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
-                                if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
-                            } else {
-                                var filter = ""
-                            }
-                            pagesTab = false;
-                            for (var ii = 0; ii < data[i].tabs.length; ii++) {
-                                if (data[i].tabs[ii].id == "pages") pagesTab = true;
-                            }
-                            dtps.classes.push({
-                                name: name,
-                                subject: subject,
-                                description: data[i].public_description,
-                                totalStudents: data[i].total_students,
-                                favorite: data[i].is_favorite,
-                                defaultView: data[i].default_view,
-                                icon: icon,
-                                col: filter,
-                                pagesTab: pagesTab,
-                                syllabus: data[i].syllabus_body,
-                                norm: colors.custom_colors["course_" + data[i].id],
-                                light: tinycolor(colors.custom_colors["course_" + data[i].id]).brighten(20).toHexString(),
-                                dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
-                                isBright: (dtps.filter(colors.custom_colors["course_" + data[i].id]) ? false : !tinycolor(colors.custom_colors["course_" + data[i].id]).isDark()),
-                                id: data[i].id,
-                                //collection of data used to calculate a letter grade
-                                grades: {},
-                                grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
-                                letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") !== "false" ? false : "--")),
-                                num: i,
-                                tmp: {},
-                                image: data[i].image_download_url,
-                                teacher: {
-                                    name: data[i].teachers[0].display_name,
-                                    prof: data[i].teachers[0].avatar_image_url
+                dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
+                    dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
+                        dtps.webReq("canvas", "/api/v1/users/self/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
+                            dtps.classesReady = 0;
+                            dtps.colorCSS = [];
+                            //this object is for keeping track of when each assignment was graded
+                            //because submitted_or_assessed at key for outcome results api is not good :(
+                            dtps.assignmentGradeTimes = {};
+                            dtps.gpa = null;
+                            gpa = [];
+                            var colors = JSON.parse(colorsResp);
+                            var dashboard = JSON.parse(dashboardResp);
+                            var data = JSON.parse(resp);
+                            dtps.gradeHTML = [];
+                            data.sort(function (a, b) {
+                                var keyA = dashboard.dashboard_positions["course_" + a.id],
+                                    keyB = dashboard.dashboard_positions["course_" + b.id];
+                                if (keyA < keyB) return -1;
+                                if (keyA > keyB) return 1;
+                                return 0;
+                            });
+                            for (var i = 0; i < data.length; i++) {
+                                var name = data[i].name;
+                                var subject = name.split(" - ")[0];
+                                var icon = null;
+                                if (data[i].name !== data[i].course_code) {
+                                    //Canvas class manually renamed
+                                    subject = null;
                                 }
-                            })
-                            if (!dtps.filter(colors.custom_colors["course_" + data[i].id])) {
-                                dtps.colorCSS.push(`\n.` + dtps.classes[i].col + ` {
+                                if (subject == null) var subject = name.split(" - ")[0];
+                                if (colors.custom_colors["course_" + data[i].id]) {
+                                    var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
+                                    //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
+                                    if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+                                } else {
+                                    var filter = ""
+                                }
+                                pagesTab = false;
+                                for (var ii = 0; ii < data[i].tabs.length; ii++) {
+                                    if (data[i].tabs[ii].id == "pages") pagesTab = true;
+                                }
+                                dtps.classes.push({
+                                    name: name,
+                                    subject: subject,
+                                    description: data[i].public_description,
+                                    totalStudents: data[i].total_students,
+                                    favorite: data[i].is_favorite,
+                                    defaultView: data[i].default_view,
+                                    icon: icon,
+                                    col: filter,
+                                    pagesTab: pagesTab,
+                                    syllabus: data[i].syllabus_body,
+                                    norm: colors.custom_colors["course_" + data[i].id],
+                                    light: tinycolor(colors.custom_colors["course_" + data[i].id]).brighten(20).toHexString(),
+                                    dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
+                                    isBright: (dtps.filter(colors.custom_colors["course_" + data[i].id]) ? false : !tinycolor(colors.custom_colors["course_" + data[i].id]).isDark()),
+                                    id: data[i].id,
+                                    //collection of data used to calculate a letter grade
+                                    grades: {},
+                                    grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
+                                    letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") !== "false" ? false : "--")),
+                                    num: i,
+                                    tmp: {},
+                                    image: data[i].image_download_url,
+                                    teacher: {
+                                        name: data[i].teachers[0].display_name,
+                                        prof: data[i].teachers[0].avatar_image_url
+                                    }
+                                })
+                                if (!dtps.filter(colors.custom_colors["course_" + data[i].id])) {
+                                    dtps.colorCSS.push(`\n.` + dtps.classes[i].col + ` {
 	--light: ` + dtps.classes[i].light + `;
 	--norm: ` + dtps.classes[i].norm + `;
  	--dark: ` + dtps.classes[i].dark + `;
   --filterText: ` + (dtps.classes[i].isBright ? dtps.classes[i].dark : "white") + `;
 	--grad: linear-gradient(to bottom right, ` + dtps.classes[i].light + `, ` + dtps.classes[i].dark + `);;
 }`);
+                                }
+                                dtps.computedClassGrades = 0;
+                                if (fluid.get("pref-calcGrades") !== "false") dtps.computeClassGrade(i, true);
+                                if (dtps.currentClass == data[i].id) {
+                                    dtps.selectedClass = i;
+                                    dtps.selectedContent = "stream";
+                                    dtps.chroma();
+                                }
+                                dtps.classStream(i, true);
                             }
-                            dtps.computedClassGrades = 0;
-                            if (fluid.get("pref-calcGrades") !== "false") dtps.computeClassGrade(i, true);
-                            if (dtps.currentClass == data[i].id) {
-                                dtps.selectedClass = i;
-                                dtps.selectedContent = "stream";
-                                dtps.chroma();
-                            }
-                            dtps.classStream(i, true);
-                        }
-                        dtps.log("Grades loaded: ", dtps.classes);
+                            dtps.log("Grades loaded: ", dtps.classes);
 
-                        if (dtps.shouldRender) dtps.render();
-                        if (dtps.first && dtps.embedded) dtps.firstrun();
+                            if (dtps.shouldRender) dtps.render();
+                            if (dtps.first && dtps.embedded) dtps.firstrun();
+                        });
                     });
                 });
             });
-        });
-    });
+        }, { obsOverride: true });
+    }, { obsOverride: true });
 
 }
 
@@ -957,14 +975,14 @@ dtps.classStream = function (num, renderOv) {
                         unlocksAt: data[i].assignments[ii].unlock_at,
                         locked: data[i].assignments[ii].locked_for_user,
                         lockedReason: data[i].assignments[ii].lock_explanation,
-                        submissions: data[i].assignments[ii].submission.preview_url,
+                        submissions: data[i].assignments[ii].submission && data[i].assignments[ii].submission.preview_url,
                         body: data[i].assignments[ii].description,
                         rubric: data[i].assignments[ii].rubric,
                         rubricItems: [],
                         submissionTypes: data[i].assignments[ii].submission_types,
                         worth: data[i].assignments[ii].points_possible
                     });
-                    dtps.assignmentGradeTimes[data[i].assignments[ii].id] = data[i].assignments[ii].submission.graded_at;
+                    dtps.assignmentGradeTimes[data[i].assignments[ii].id] = data[i].assignments[ii].submission && data[i].assignments[ii].submission.graded_at;
                     if (data[i].assignments[ii].rubric) {
                         for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
                             dtps.classes[num].stream[dtps.classes[num].stream.length - 1].rubricItems.push(data[i].assignments[ii].rubric[iii].outcome_id);
@@ -981,19 +999,19 @@ dtps.classStream = function (num, renderOv) {
                         }
                     }
                     dtps.classes[num].streamitems.push(String(data[i].assignments[ii].id));
-                    if ((data[i].assignments[ii].submission.score !== null) && (data[i].assignments[ii].submission.score !== undefined)) {
-                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
-                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].status = data[i].assignments[ii].submission.workflow_state;
-                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].late = data[i].assignments[ii].submission.late;
-                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].letter = (data[i].assignments[ii].submission.grade.match(/[a-z]/i) ? data[i].assignments[ii].submission.grade : data[i].assignments[ii].submission.score);
-                        //Only treat assignment as graded in the gradebook if the assignment status says the grades are published. Scores are still shown with a pending review icon. This is to match native Canvas behavior.
-                        if (data[i].assignments[ii].submission.workflow_state == "graded") {
-                            dtps.classes[num].weights[i].possiblePoints = dtps.classes[num].weights[i].possiblePoints + data[i].assignments[ii].points_possible;
-                            dtps.classes[num].weights[i].earnedPoints = dtps.classes[num].weights[i].earnedPoints + data[i].assignments[ii].submission.score;
-                            dtps.classes[num].weights[i].assignments.push({ id: data[i].assignments[ii].id, disp: data[i].assignments[ii].name + ": " + data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible, percentage: (data[i].assignments[ii].submission.score / data[i].assignments[ii].points_possible).toFixed(2), possible: data[i].assignments[ii].points_possible, earned: data[i].assignments[ii].submission.score });
-                        }
-                    }
                     if (data[i].assignments[ii].submission !== undefined) {
+                        if ((data[i].assignments[ii].submission.score !== null) && (data[i].assignments[ii].submission.score !== undefined)) {
+                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
+                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].status = data[i].assignments[ii].submission.workflow_state;
+                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].late = data[i].assignments[ii].submission.late;
+                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].letter = (data[i].assignments[ii].submission.grade.match(/[a-z]/i) ? data[i].assignments[ii].submission.grade : data[i].assignments[ii].submission.score);
+                            //Only treat assignment as graded in the gradebook if the assignment status says the grades are published. Scores are still shown with a pending review icon. This is to match native Canvas behavior.
+                            if (data[i].assignments[ii].submission.workflow_state == "graded") {
+                                dtps.classes[num].weights[i].possiblePoints = dtps.classes[num].weights[i].possiblePoints + data[i].assignments[ii].points_possible;
+                                dtps.classes[num].weights[i].earnedPoints = dtps.classes[num].weights[i].earnedPoints + data[i].assignments[ii].submission.score;
+                                dtps.classes[num].weights[i].assignments.push({ id: data[i].assignments[ii].id, disp: data[i].assignments[ii].name + ": " + data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible, percentage: (data[i].assignments[ii].submission.score / data[i].assignments[ii].points_possible).toFixed(2), possible: data[i].assignments[ii].points_possible, earned: data[i].assignments[ii].submission.score });
+                            }
+                        }
                         dtps.classes[num].stream[dtps.classes[num].stream.length - 1].missing = data[i].assignments[ii].submission.missing;
                     }
                 }
@@ -1194,17 +1212,17 @@ dtps.classHome = function (num) {
 }
 
 //shows the CBL grade dashboard external tool in Power+
-dtps.cblDashboard = function() {
-	$(".card.cblDashboard").html(`<i onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
+dtps.cblDashboard = function () {
+    $(".card.cblDashboard").html(`<i onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
 	<p>Loading your CBL dashboard...</p>`);
-	fluid.cards.close(".card.abt-new");
-	fluid.modal(".card.cblDashboard");
-	dtps.webReq("canvas", "/api/v1/accounts/self/external_tools/sessionless_launch?id=143", function (resp) {
-        	var data = JSON.parse(resp);
-		$(".card.cblDashboard").html(`<i onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
+    fluid.cards.close(".card.abt-new");
+    fluid.modal(".card.cblDashboard");
+    dtps.webReq("canvas", "/api/v1/accounts/self/external_tools/sessionless_launch?id=143", function (resp) {
+        var data = JSON.parse(resp);
+        $(".card.cblDashboard").html(`<i onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
 		<br /><br />
 		<iframe src="` + data.url + `" style="width: 100%; height: calc(100vh - 175px); border: none;"></iframe>`);
-	});
+    }, { obsOverride: true });
 }
 
 //Converts a Power+ stream array into HTML for displaying the assignment list
@@ -2510,7 +2528,7 @@ dtps.render = function () {
             type: "text/css",
             href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
         }).appendTo("head");
-	jQuery("<link/>", {
+        jQuery("<link/>", {
             rel: "stylesheet",
             type: "text/css",
             href: "https://fonts.googleapis.com/css?family=Material+Icons+Outlined"
@@ -2543,6 +2561,23 @@ dtps.render = function () {
     });
 
     if (dtps.embedded) fluid.onLoad();
+}
+
+//switch observee (for parent accounts)
+dtps.obsSwitch = function (ele) {
+    dtps.user.obsID = $(ele).val();
+
+    //clear web request cache
+    dtps.requests = {};
+    dtps.http = {};
+
+    //clear user data
+    dtps.classes = [];
+    dtps.latestStream = [];
+    dtps.explorer = [];
+
+    //reload Power+
+    dtps.init();
 }
 
 //Render function that can ran before classes are ready
@@ -2746,7 +2781,11 @@ dtps.renderLite = function () {
   </div>
 </div>
   </div>`)
-    jQuery(".toolbar.items").html(`<h4>` + dtps.user.short_name + `</h4>
+    jQuery(".toolbar.items").html((dtps.user.obs && dtps.user.obs.length ? `<select onchange="dtps.obsSwitch(this)">
+    ` + dtps.user.obs.map((ob) => {
+        return `<option ` + (dtps.user.obsID == ob.id ? "selected" : "") + ` value="` + ob.id + `">` + ob.short_name + `</option>`;
+    }).join("") + `
+  </select>` : `<h4>` + dtps.user.short_name + `</h4>`) + `
     <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
     <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
     <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
