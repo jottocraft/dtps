@@ -1,4 +1,4 @@
-/* Power+ v2.1.1
+/* Power+ v2.1.2
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
@@ -7,8 +7,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading"
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 dtps = {
-    ver: 211,
-    readableVer: "v2.1.1",
+    ver: 212,
+    readableVer: "v2.1.2",
     trackSuffix: "",
     fullTrackSuffix: "",
     trackColor: "#ffa500",
