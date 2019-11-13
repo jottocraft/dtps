@@ -229,7 +229,7 @@ dtps.webReq = function (req, url, callback, q) {
                 if (this.readyState == 4) {
                     if (this.status == 200) {
                         if (callback) callback(this.responseText, q);
-                        dtps.requests[url] = this.responseText;
+                        if (q ? !q.noCache : true) dtps.requests[url] = this.responseText;
                         dtps.log("Returning DTPS data")
                     } else {
                         if (callback) callback(JSON.stringify({ error: this.status }), q);
@@ -1222,7 +1222,7 @@ dtps.cblDashboard = function () {
         $(".card.cblDashboard").html(`<i onclick="fluid.cards.close('.card.cblDashboard')" class="material-icons close">close</i>
 		<br /><br />
 		<iframe src="` + data.url + `" style="width: 100%; height: calc(100vh - 175px); border: none;"></iframe>`);
-    }, { obsOverride: true });
+    }, { obsOverride: true, noCache: true });
 }
 
 //Converts a Power+ stream array into HTML for displaying the assignment list
