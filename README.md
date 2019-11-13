@@ -3,7 +3,7 @@
 [![Website Status](https://img.shields.io/website/https/powerplus.app.svg?label=server%20status)](https://powerplus.app)
 [![Power+ Chrome Web Store Rating](https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg)](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo/reviews)
 
-For users looking to install Power+, visit the Power+ website by clicking [here](https://powerplus.app)
+For users looking to install Power+, visit the Power+ website by clicking [here](https://powerplus.app/?install=true)
 
 <br /><br />
 
