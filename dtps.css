@@ -341,7 +341,7 @@ body.dark .class.main:not(.active) {
 }
 
 .class:not(.main) {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .class.main {
