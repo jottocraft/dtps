@@ -213,6 +213,12 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
 dtps.requests = {};
 dtps.http = {};
 dtps.webReq = function (req, url, callback, q) {
+    //support optional web requests
+    if (!url) {
+      callback();
+      return;
+    }
+    
     //swap "self" user for ID of user being observed if the user is a parent
     if (dtps.user && dtps.user.obsID) {
         if (q ? !q.obsOverride : true) url = url.replace("/self", "/" + dtps.user.obsID).replace(dtps.user.id, dtps.user.obsID);
@@ -976,6 +982,8 @@ dtps.classStream = function (num, renderOv) {
                         locked: data[i].assignments[ii].locked_for_user,
                         lockedReason: data[i].assignments[ii].lock_explanation,
                         submissions: data[i].assignments[ii].submission && data[i].assignments[ii].submission.preview_url,
+                        extTool: data[i].assignments[ii].submission_types && data[i].assignments[ii].submission_types.includes("external_tool"),
+                        extToolUrl: data[i].assignments[ii].submission_types && data[i].assignments[ii].submission_types.includes("external_tool") && data[i].assignments[ii].url,
                         body: data[i].assignments[ii].description,
                         rubric: data[i].assignments[ii].rubric,
                         rubricItems: [],
@@ -1926,6 +1934,12 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <br /><br />
 <iframe style="width: 100%; height: calc(100vh - 175px); border: none;" src="` + assignment.submissions + `"></iframe>`);
             } else {
+              $(".card.details").html(`<i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close</i>
+<h4 style="font-weight: bold;">Loading...</h4>`);
+              dtps.webReq("canvas", assignment.extToolUrl, (data) => {
+                
+                var extToolData = data && JSON.parse(data);
+                
                 $(".card.details").css("background-color", "")
                 $(".card.details").css("color", "")
 
@@ -1944,6 +1958,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 ` + (assignment.turnedIn && (assignment.status !== "unsubmitted") ? `<div  title="Assignment submitted" class="assignmentChip" style="background-color: #0bb75b"><i style="color:white;" class="material-icons">assignment_turned_in</i></div>` : "") + `
 ` + (assignment.status == "unsubmitted" ? `<div  title="Assignment unsubmitted" class="assignmentChip" style="background-color: #b3b70b"><i style="color:white;" class="material-icons">warning</i></div>` : "") + `
 ` + (assignment.missing ? `<div  title="Assignment is missing" class="assignmentChip" style="background-color: #c44848"><i style="color:white;" class="material-icons">remove_circle_outline</i></div>` : "") + `
+` + (assignment.extTool ? `<div ` + (extToolData && extToolData.url ? `onclick="if (!$(this).hasClass('open')) {window.open('` + extToolData.url + `'); $(this).html('Tool opened in new tab. Close and reopen this assignment to open again.'); $(this).addClass('open');}"` : "") + ` style="cursor: pointer;" title="Assignment uses an external tool" class="assignmentChip"><i style="color:white;" class="material-icons">open_in_browser</i> Open assignment tool</div>` : "") + `
 ` + (assignment.late ? `<div title="Assignment is late" class="assignmentChip" style="background-color: #c44848"><i style="color:white;" class="material-icons">assignment_late</i></div>` : "") + `
 ` + (assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="background-color: var(--secText, gray);"><i style="color:white;font-family: 'Material Icons Extended';" class="material-icons">lock_outline</i></div>` : "") + `
 ` + (assignment.status == "pending_review" ? `<div title="Grade is pending review" class="assignmentChip" style="background-color: #b3b70b"><i style="color:white;" class="material-icons">rate_review</i></div>` : "") + `
@@ -1993,6 +2008,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
                 }).join("") : "") + `
 </div>
 `)
+}, {noCache: true});
             }
         }
     }
