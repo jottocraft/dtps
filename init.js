@@ -5,6 +5,12 @@ https://github.com/jottocraft/dtps */
 //prevent Power+ from breaking when the button is clicked multiple times
 if (typeof dtps !== "undefined") throw "Error: DTPS is already loading"
 
+//alert user when loading Power+ on an invalid domain
+if (!window.location.href.includes("instructure.com")) {
+  alert("You need to be on Canvas to load Power+");
+  throw "Error: Invalid domain";
+}
+
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 dtps = {
     ver: 212,
