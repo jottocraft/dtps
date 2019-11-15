@@ -95,28 +95,32 @@
       color: #9dd8f5 !important;
     }
 
-    .privacyChip, .installChip {
+    .privacyChip,
+    .installChip {
       background-color: var(--elements);
       margin: 20px;
       padding: 5px;
       border-radius: 15px;
     }
 
-    .privacyChip i, .installChip i {
+    .privacyChip i,
+    .installChip i {
       vertical-align: middle;
       margin-right: 10px;
       font-size: 26px;
       margin-left: 10px;
     }
 
-    .privacyChip p, .installChip p {
+    .privacyChip p,
+    .installChip p {
       display: inline-block;
       font-size: 14px;
       width: calc(100% - 60px);
       vertical-align: middle;
     }
 
-    .privacyChip ul, .installChip ul {
+    .privacyChip ul,
+    .installChip ul {
       font-size: 14px;
       margin: 0px 60px;
     }
@@ -135,29 +139,33 @@
   <div style="text-align: left !important;" class="card focus close install container"><i
       onclick="fluid.cards.close('.card.install');" class="material-icons close">close</i>
     <h3 id="importantupdate">Install Power+</h3>
-    <p style="margin-bottom: 36px;">Follow the instructions corresponding with the device you're installing Power+ on</p>
+    <p style="margin-bottom: 36px;">Follow the instructions corresponding with the device you're installing Power+ on
+    </p>
     <div id="managedCrOSinstall" class="installChip">
       <i class="material-icons">business</i>
       <p style="font-size: 20px;">Install Power+ on a d.tech-managed chromebook</p>
-      <p style="margin: 0px 50px;">The Power+ Chrome Extension is being blocked on d.tech chromebooks. You'll still be able to use Power+, it'll
+      <p style="margin: 0px 50px;">The Power+ Chrome Extension is being blocked on d.tech chromebooks. You'll still be
+        able to use Power+, it'll
         just be a bit harder to install and use. Follow these steps to install the Power+ bookmarklet.</p>
       <ul style="margin-top: 20px;">
         <li>Make sure you have the bookmarks bar enabled (if it's not, press Control + Shift + B to show it)</li>
-        <li>Drag this script into the bookmarks bar: <a
-            style="cursor: move;" href="javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=3;">Power+</a> </li>
+        <li>Drag this script into the bookmarks bar: <a style="cursor: move;"
+            href="javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=3;">Power+</a> </li>
         <li>Visit Canvas, then click on the bookmarklet to load Power+ (You have to be on Canvas for the bookmark to
           work)
         </li>
       </ul>
     </div>
     <div class="installChip">
-        <i class="material-icons">devices</i>
-        <p style="font-size: 20px;">Install Power+ on your own device</p>
-        <ul>
-          <li>Install the <a href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo">Power+ Chrome Extension</a></li>
-          <li>Visit Canvas, then click on the Power+ icon in the sidebar</li>
-        </ul>
-      </div>
+      <i class="material-icons">devices</i>
+      <p style="font-size: 20px;">Install Power+ on your own device</p>
+      <ul>
+        <li>Install the <a
+            href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo">Power+ Chrome
+            Extension</a></li>
+        <li>Visit Canvas, then click on the Power+ icon in the sidebar</li>
+      </ul>
+    </div>
   </div>
 
   <div style="text-align: center;" class="splash androidSplash">
@@ -272,7 +280,7 @@
   </div>
 
   <div style="margin-top: 150px;" class="container row">
-    <h4 style="text-align: center; font-size: 32px; font-weight: bold;"><i style="margin-right: 10px;"
+    <h4 style="text-align: center; font-size: 34px; font-weight: bold;"><i style="margin-right: 10px;"
         class="material-icons">library_books</i> Coursework in Power+</h4>
     <h5 style="text-align: center; font-size: 18px; color: var(--secText); margin-top: 10px;">Power+ lets you see your
       assignments and modules in each class. Modules can be collapsed and sync with Canvas.</h5>
@@ -291,8 +299,7 @@
             <div class="earned numbers"></div>
 
           </div>
-          <h4 style="width: 100%;">5.5 -- Evidence-Based Claim (6A, 9A): What difference do different Specific Heat
-            values make in real life?</h4>
+          <h4 style="width: 100%;">Evidence-Based Claim</h4>
           <h5 style="white-space: nowrap; overflow: hidden;">
             <div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Thu Nov 14, 10:59 pm
             </div>
@@ -300,7 +307,7 @@
 
           </h5>
         </div>
-        <h5 style="margin-top: 75px; margin-bottom: 10px; font-weight: bold; text-align: center;">Old/Undated
+        <h5 style="margin-top: 75px; margin-bottom: 10px; font-weight: bold; text-align: center; font-size: 20px;">Old/Undated
           Assignments</h5>
         <div style="margin-left: 0px; margin-right: 0px;" class="card graded assignment filter_3">
           <i title="Assignment submitted" class="material-icons floatingIcon"
@@ -314,8 +321,7 @@
             <div class="earned numbers"></div>
 
           </div>
-          <h4 style="width: calc(100% - 20px);">5.4 -- Graphs of Oil and Water Data on One Coordinate Plane, Plus
-            Analysis of Data (4A)</h4>
+          <h4 style="width: calc(100% - 20px);">Graphs of Oil and Water Data</h4>
           <h5 style="white-space: nowrap; overflow: hidden;">
             <div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Fri Nov 08, 9:59 pm
             </div>
@@ -362,7 +368,7 @@
             </div>
             <div class="total possible">/12</div>
           </div>
-          <h4 style="width: calc(100% - 40px);">5.3 -- Snack Food Energy Wrap-Up (5A, 9A, and optional 2A)</h4>
+          <h4 style="width: calc(100% - 40px);">Snack Food Energy Wrap-Up</h4>
           <h5 style="white-space: nowrap; overflow: hidden;">
             <div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Sun Nov 03, 9:59 pm
             </div>
@@ -382,45 +388,12 @@
             <i style="cursor: pointer; vertical-align: middle; color:var(--lightText);"
               class="material-icons collapseIcon">keyboard_arrow_right</i>
             Welcome to Chemistry!</h4>
-          <div class="moduleContents" style="padding-top: 10px;">
-            <div
-              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">insert_drive_file</i>Map of
-              Fall Semester Outcome Opportunities</div>
-            <div
-              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">insert_link</i>Honors
-              Chemistry Description</div>
-            <div
-              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>Digital
-              Version of Biozone Book (Read-Only)</div>
-            <div
-              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons"
-                style="vertical-align: middle; margin-right: 10px;">insert_drive_file</i>Chemistry ONLINE RESOURCE HUB
-            </div>
-            <div
-              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 30px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>Website
-              Whitelist Request Form (goes to Paul Cerra)</div>
-            <div
-              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">insert_link</i>PIAZZA
-              (rollout of this will happen soon)</div>
-          </div>
         </div>
         <div style="margin-left: 0px; margin-right: 0px;" class="card collapsed">
           <h4 style="margin: 5px 2px; font-size: 32px; font-weight: bold;">
             <i style="cursor: pointer; vertical-align: middle; color:var(--lightText);"
               class="material-icons collapseIcon">keyboard_arrow_right</i>
             The Enigma</h4>
-          <div class="moduleContents" style="padding-top: 10px;">
-            <div
-              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assignment</i>0.1 --
-              Evidence of 4A and 2A (Representing Data and Modeling) (The Enigma)</div>
-          </div>
         </div>
         <div style="margin-left: 0px; margin-right: 0px;" class="card">
           <h4 style="margin: 5px 2px; font-size: 32px; font-weight: bold;">
@@ -430,21 +403,20 @@
           <div class="moduleContents" style="padding-top: 10px;">
             <div
               style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assignment</i>3.3 -- Model
-              of Experimental Apparatus, p.11, #13 (2A, Creating Models)</div>
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assignment</i>Model
+              of Experimental Apparatus</div>
             <div
               style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 45px; cursor: pointer;">
               <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>VIDEO:
               Observing the melting of Napthalene</div>
             <div
               style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
-              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assessment</i>3.4 -- Heat
-              Energy Calculation Quiz (5A, Computational Thinking) (...including specific heat and latent heat
-              calculations)</div>
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assessment</i>Heat
+              Energy Calculation Quiz</div>
             <div
               style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 45px; cursor: pointer;">
               <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assessment</i>PRACTICE QUIZ
-              - L3 - Specific Heat, Heat of Fusion (auto-graded)</div>
+              - Specific Heat (auto-graded)</div>
             <div
               style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 45px; cursor: pointer;">
               <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>VIDEO: Simple
@@ -459,7 +431,7 @@
 
   <div style="margin-top: 100px;" class="container row">
 
-    <h4 style="text-align: center; font-size: 32px; font-weight: bold;"><i style="margin-right: 10px;"
+    <h4 style="text-align: center; font-size: 34px; font-weight: bold;"><i style="margin-right: 10px;"
         class="material-icons">policy</i> Privacy</h4>
     <h5 style="text-align: center; font-size: 18px; color: var(--secText); margin-top: 10px;">Privacy is a top priority
       for Power+. This summary is accurate as of November 14th, 2019.</h5>
@@ -472,19 +444,19 @@
       </div>
       <div class="privacyChip">
         <i class="material-icons">visibility_off</i>
-        <p>Power+ does not collect personal information such as grades, classes, and assignments</p>
+        <p>Power+ does not collect grades, classes, or assignments</p>
       </div>
       <div class="privacyChip">
         <i class="material-icons">devices</i>
-        <p>Power+ is ran directly on your device</p>
+        <p>Power+ runs entirely on your device</p>
       </div>
       <div class="privacyChip">
         <i class="material-icons">storage</i>
-        <p>Data is processed on your device, never on a Power+ server</p>
+        <p>All of your data is processed on your device, not on a Power+ server</p>
       </div>
       <div class="privacyChip">
         <i class="material-icons">settings</i>
-        <p>User prefrences are stored locally, on-device</p>
+        <p>User prefrences are stored locally on your device</p>
       </div>
       <div class="privacyChip">
         <i class="material-icons">code</i>
@@ -493,7 +465,7 @@
       </div>
       <div class="privacyChip">
         <i class="material-icons">group</i>
-        <p>Power+ is not created nor endorsed by Instructure Inc, Canvas LMS, or Design Tech High School</p>
+        <p>Power+ is neither created nor endorsed by Instructure Inc, Canvas LMS, or Design Tech High School</p>
       </div>
     </div>
 
@@ -501,19 +473,20 @@
       <h5 style="font-size: 22px; text-align: center;">Data Power+ collects</h5>
       <div class="privacyChip">
         <i class="material-icons">multiline_chart</i>
-        <p>Power+ collects basic usage statistics with Google Analytics. Information collected by Google Analytics is
-          anonymous. This data includes (but is not limited to):</p>
+        <p>Power+ anonymously collects basic information with Google Analytics. Data collected includes (but is not
+          limited to):</p>
         <ul>
           <li>IP Addresses</li>
           <li>Basic device information</li>
-          <li>Usage statistics</li>
+          <li>Basic usage statistics</li>
         </ul>
         <p style="margin: 10px 50px;">Because data is collected anonymously, users cannot request or delete their Google
           Analytics data.</p>
       </div>
       <div class="privacyChip">
         <i class="material-icons">stars</i>
-        <p>For the small percentage of users that have manually opted into the PowerPoints rewards program and accepted
+        <p>For the small percentage of users that have manually opted into the PowerPoints rewards program and have
+          accepted
           the risks, Power+ also
           collects:</p>
         <ul>
