@@ -1,323 +1,593 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <link rel="shortcut icon" href="/favicon.png" type="image/png">
+  <script>
+    dtpsAlert = {
+      //enable only for chromebooks
+      enabled: /\bCrOS\b/.test(navigator.userAgent),
+      title: "Warning",
+      content: `The Power+ extension is being blocked on d.tech chromebooks. If you're using a d.tech chromebook, make sure you've follow the steps <a onclick="fluid.cards('.card.install');" href="#">here</a>.`
+    }
+  </script>
+  <link rel="shortcut icon" href="https://powerplus.app/favicon.png" type="image/png">
   <!--Import Google Icon Font-->
-       <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Extended" rel="stylesheet">
-       <link type="text/css" rel="stylesheet" href="/fluid.css"  media="screen,projection"/>
-	   <link type="text/css" rel="stylesheet" href="/dtps.css"  media="screen,projection"/>
-       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="https://powerplus.app/fluid.css" media="screen,projection" />
+  <link type="text/css" rel="stylesheet" href="https://powerplus.app/dtps.css" media="screen,projection" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <!--OpenGraph -->
-  <meta property="og:url" content="https://dtps.js.org" />
+  <meta property="og:url" content="https://powerplus.app" />
   <meta property="og:title" content="Power+" />
   <meta property="og:description" content="A redesigned UI for Canvas LMS" />
-  <meta property="og:image" content="https://dtps.js.org/dtps.png" />
+  <meta property="og:image" content="https://powerplus.app/icon.png" />
 
   <meta charset="utf-8">
   <title>Power+</title>
-<meta name="description" content="A redesigned UI for Canvas LMS">
+  <meta name="description" content="A redesigned UI for Canvas LMS">
   <meta name="author" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 
-<body class="light" style="text-align: center;">
-	<div style="
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    width: calc(100% - 20px);
-    border-radius: 20px;
-    box-shadow: var(--elementShadow);
-    background-color: #e4b93f;
-    z-index: 100;
-    text-align: left;
-    color: white;
-    padding: 2px 20px;
-">
-<p style="
-    vertical-align: middle;
-">The Power+ extension has been blocked on d.tech chromebooks. To continue using Power+, follow the updated installation instructions <a onclick="fluid.cards('.card.install')" href="#">here</a>.</p></div>
+<body class="dark">
   <style>
-	  @font-face {
-      font-family: 'Material Icons Outline';
-      font-style: normal;
-      font-weight: 400;
-      src: url('/outline.woff2') format('woff2');
+    .material-icons {
+      font-family: 'Material Icons Outlined';
     }
-  .material-icons {
-    font-family: 'Material Icons Outline';
-}
+
     .dtpsBtn {
-		font-size: 28px;
-		cursor: pointer;
-		font-weight: bold;
-		font-family: 'Product Sans';
-		color: var(--lightText);
-		line-height: 28px;
-		display: inline-block;
-		margin: 0px 20px;
-	    	border-radius: 10px;
-	    	padding: 12px 28px;
-	    	border: 2px solid #ffbd00;
-	        transition: var(--trans);
-	}
-	  .dtpsBtn:hover {
-		border: 2px solid #ffbd008f;
-		background-color: #ffbd002e;
-		color: #ca9603;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
-	  }
-	
-	.promoBox {
-		margin: 300px 0px;
-	}
-	
-	.promoBox h5 {
-		color: var(--secText);
-	}
-	
-	.promoBox .promoText {
-		display: inline-block;
-		width: 60%;
-		margin-bottom: 40px;
-	}
-	.promoBox .promoText i {
-		vertical-align: middle;
-		height: 30px;
-	}
-	.promoBox .promoDemo {
-		display: inline-block;
-		width: 70%;
-		text-align: left;
-	}
-	
-	.themeSelector .btn.arrow {
-		display: none;
-	}
+      font-size: 28px;
+      cursor: pointer;
+      font-weight: bold;
+      font-family: 'Product Sans';
+      color: var(--lightText);
+      line-height: 28px;
+      display: inline-block;
+      margin: 0px 20px;
+      border-radius: 10px;
+      padding: 12px 28px;
+      border: 2px solid #ffbd00;
+      transition: var(--trans);
+    }
+
+    .dtpsBtn:hover {
+      border: 2px solid #ffbd008f;
+      background-color: #ffbd002e;
+      color: #ca9603;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.17);
+    }
+
+    .promoBox {
+      margin: 300px 0px;
+    }
+
+    .promoBox h5 {
+      color: var(--secText);
+    }
+
+    .promoBox .promoText {
+      display: inline-block;
+      width: 60%;
+      margin-bottom: 40px;
+    }
+
+    .promoBox .promoText i {
+      vertical-align: middle;
+      height: 30px;
+    }
+
+    .promoBox .promoDemo {
+      display: inline-block;
+      width: 70%;
+      text-align: left;
+    }
+
+    .themeSelector .btn.arrow {
+      display: none;
+    }
+
+    #dtpsAlert a {
+      color: #9dd8f5 !important;
+    }
+
+    .privacyChip, .installChip {
+      background-color: var(--elements);
+      margin: 20px;
+      padding: 5px;
+      border-radius: 15px;
+    }
+
+    .privacyChip i, .installChip i {
+      vertical-align: middle;
+      margin-right: 10px;
+      font-size: 26px;
+      margin-left: 10px;
+    }
+
+    .privacyChip p, .installChip p {
+      display: inline-block;
+      font-size: 14px;
+      width: calc(100% - 60px);
+      vertical-align: middle;
+    }
+
+    .privacyChip ul, .installChip ul {
+      font-size: 14px;
+      margin: 0px 60px;
+    }
   </style>
   <script>fluidThemes = [];</script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-  <script type="text/javascript" src="/fluid.js"></script>
+  <script type="text/javascript" src="https://powerplus.app/fluid.js"></script>
   <script>
-if(navigator.userAgent.toLowerCase().indexOf("android") > -1) {
-  $(document).ready(() => {
-	fluid.splash(".splash.androidSplash");
-  })
-}
+    /*if(navigator.userAgent.toLowerCase().indexOf("android") > -1) {
+      $(document).ready(() => {
+      fluid.splash(".splash.androidSplash");
+      })
+    }*/
   </script>
-  
-  <div style="text-align: left !important;" class="card focus close install container"><i onclick="fluid.cards.close('.card.install')" class="material-icons close">close</i><h3 id="importantupdate">Install Power+</h3>
-<p>The Power+ Chrome Extension has been BLOCKED by d.tech. This means Power+ is a bit harder to install and use.</p>
-<ul>
-<li>Make sure you have the bookmarks bar enabled (if it's not, press Control + Shift + B to show it)</li>
-<li>Drag this script into the bookmarks bar: <a href="javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=3;">Power+</a> </li>
-<li>Visit Canvas, then click on the bookmarklet to load Power+ (You have to be on Canvas for the bookmark to work)</li>
-</ul>
-</div>
 
-  <div class="splash androidSplash">
-  <h5>Power+ App (beta)</h5>
-  <p>Power+ is testing a new mobile grade calculator on Android. The Power+ Android app is still far from finished and is very much a work in progress. Make sure you understand the risks of using pre-release software before testing the Power+ App.</p>
-  <br />
-  <div onclick="window.location.href = 'https://play.google.com/apps/testing/com.jottocraft.dtps';" class="btn">Get the app</div>
+  <div style="text-align: left !important;" class="card focus close install container"><i
+      onclick="fluid.cards.close('.card.install');" class="material-icons close">close</i>
+    <h3 id="importantupdate">Install Power+</h3>
+    <p style="margin-bottom: 36px;">Follow the instructions corresponding with the device you're installing Power+ on</p>
+    <div id="managedCrOSinstall" class="installChip">
+      <i class="material-icons">business</i>
+      <p style="font-size: 20px;">Install Power+ on a d.tech-managed chromebook</p>
+      <p style="margin: 0px 50px;">The Power+ Chrome Extension is being blocked on d.tech chromebooks. You'll still be able to use Power+, it'll
+        just be a bit harder to install and use. Follow these steps to install the Power+ bookmarklet.</p>
+      <ul style="margin-top: 20px;">
+        <li>Make sure you have the bookmarks bar enabled (if it's not, press Control + Shift + B to show it)</li>
+        <li>Drag this script into the bookmarks bar: <a
+            style="cursor: move;" href="javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=3;">Power+</a> </li>
+        <li>Visit Canvas, then click on the bookmarklet to load Power+ (You have to be on Canvas for the bookmark to
+          work)
+        </li>
+      </ul>
+    </div>
+    <div class="installChip">
+        <i class="material-icons">devices</i>
+        <p style="font-size: 20px;">Install Power+ on your own device</p>
+        <ul>
+          <li>Install the <a href="https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo">Power+ Chrome Extension</a></li>
+          <li>Visit Canvas, then click on the Power+ icon in the sidebar</li>
+        </ul>
+      </div>
   </div>
-  <div style="margin-top: 100px;" class="container">
-  <img src="https://i.imgur.com/vCGOvPp.png" style="width: 120px; border-radius: 30px; vertical-align: middle; margin-right: 20px;" />
-  <h1 style="font-size: 80px; display: inline-block; vertical-align: middle;">Power+</h1>
-  <br /><br />
-	  <h5 style="color: var(--secText, gray)">d.tech grade calculator with dark mode</h5>
-	  <br /><br />
-  
-<a href="#" onclick="fluid.cards('.card.install')" class="dtpsBtn" style="margin-left: 0px;padding-left: 54px;"><i class="material-icons" style="font-family: 'Material Icons Extended';position: absolute;margin-left: -30px;margin-top: 2px;">code</i> Install</a>
-<a href="https://www.bonfire.com/store/powerplus/" class="dtpsBtn" style="margin-left: 0px;padding-left: 54px;"><i class="material-icons" style="font-family: 'Material Icons Extended';position: absolute;margin-left: -30px;margin-top: 2px;">shopping_basket</i> Merch</a>
-  
-  <br /><br /><br /><br />
-  
-  <div class="promoBox leftText">
-  
-  <div class="promoText">
-  <h3><i class="material-icons">functions</i> Grade Calculation</h3>
-  <h5>Power+ calculates class grades</h5>
+
+  <div style="text-align: center;" class="splash androidSplash">
+    <h5>Power+ App (beta)</h5>
+    <p>Power+ is testing a new mobile grade calculator on Android. The Power+ Android app is still far from finished and
+      is very much a work in progress. Make sure you understand the risks of using pre-release software before testing
+      the Power+ App.</p>
+    <br />
+    <div class="btn">Get the app</div>
   </div>
-  
-  <div class="promoDemo">
-  <div class="card filter_1">
-    <h4 style="margin-bottom: 40px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">World History
-    <div style="font-weight: bold;-webkit-text-fill-color: var(--light);display: inline-block;background-color: var(--norm);width: 80px;height: 80px;text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">A</div></h4>
-    <h5 style="height: 60px; line-height: 60px;">75% of outcome scores are ≥
-    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">3.5</div></h5>
-    <h5 style="height: 60px; line-height: 60px;">No outcome scores are lower than
-    <div style=" display: inline-block; background-color: var(--elements); width: 60px; height: 60px; text-align: center; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px;">3</div></h5>
+
+  <div style="margin-top: 100px;" class="container row">
+
+    <div class="five columns" style="text-align: center; padding: 20px; padding-top: 0px;">
+      <img src="https://i.imgur.com/vCGOvPp.png"
+        style="width: 92px; border-radius: 25px; vertical-align: middle; margin-right: 20px;" />
+      <h1 style="font-size: 69px; display: inline-block; vertical-align: middle;">Power+</h1>
+      <h5 style="color: var(--secText); font-size: 24px; margin: 20px 0px;">A better way to manage your work at d.tech
+      </h5>
+      <div
+        style="display: none;padding: 7px 17px; margin: 20px 0px; margin-top: 30px; border: 2px solid #ffe9a3; background-color: #ffd85d4f; border-radius: 10px; text-align: left;"
+        id="dtpsAlert">
+        <h5 style="font-size: 24px; font-weight: bold; font-family: 'Google Sans';" id="dtpsAlertTitle"></h5>
+        <p id="dtpsAlertContent"></p>
+      </div>
+      <br />
+      <div>
+        <div onclick="fluid.cards('.card.install');" style="width: 100%; margin: 5px 0px;" class="btn"><i
+            class="material-icons">cloud_download</i> Install</div>
+        <div onclick="window.location.href = 'https://bonfire.com/powerplus';" style="width: 100%; margin: 5px 0px;"
+          class="btn"><i class="material-icons">shopping_basket</i> Merch</div>
+      </div>
+    </div>
+
+    <div class="card seven columns">
+      <h3
+        style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">
+        World History
+        <div class="classGradeCircle"
+          style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">
+          A</div>
+      </h3>
+      <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">75% of outcome
+        scores are ≥
+        <div
+          style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">
+          3.3</div>
+      </h5>
+      <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome
+        scores are lower than
+        <div
+          style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">
+          3</div>
+      </h5>
+      <div style="display: none;" id="classGradeMore">
+        <br>
+
+        <table class="u-full-width dtpsTable">
+          <thead>
+            <tr>
+              <th>&nbsp;&nbsp;Final Letter</th>
+              <th>At least 75% of outcome scores are ≥</th>
+              <th>No outcome scores below</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background-color: var(--norm); color: var(--light);font-size:20px;">
+              <td>&nbsp;&nbsp;A</td>
+              <td>3.3</td>
+              <td>3.0</td>
+            </tr>
+            <tr>
+              <td>&nbsp;&nbsp;A-</td>
+              <td>3.3</td>
+              <td>2.5</td>
+            </tr>
+            <tr>
+              <td>&nbsp;&nbsp;B+</td>
+              <td>2.6</td>
+              <td>2.5</td>
+            </tr>
+            <tr>
+              <td>&nbsp;&nbsp;B</td>
+              <td>2.6</td>
+              <td>2.25</td>
+            </tr>
+            <tr>
+              <td>&nbsp;&nbsp;B-</td>
+              <td>2.6</td>
+              <td>2.0</td>
+            </tr>
+            <tr>
+              <td>&nbsp;&nbsp;C</td>
+              <td>2.2</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>&nbsp;&nbsp;I</td>
+              <td>Anything else</td>
+              <td>--</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <br>
+      <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}"
+        style="color: var(--secText, gray); cursor: pointer;">Show More</a>
+      &nbsp;&nbsp;<a onclick="fluid.cards('.card.recentChanges');"
+        style="color: var(--secText, gray); cursor: pointer;">Recent Changes</a>
+    </div>
+
+  </div>
+
+  <div style="margin-top: 150px;" class="container row">
+    <h4 style="text-align: center; font-size: 32px; font-weight: bold;"><i style="margin-right: 10px;"
+        class="material-icons">library_books</i> Coursework in Power+</h4>
+    <h5 style="text-align: center; font-size: 18px; color: var(--secText); margin-top: 10px;">Power+ lets you see your
+      assignments and modules in each class. Modules can be collapsed and sync with Canvas.</h5>
+    <div style="margin: 0px;" class="six columns">
+
+      <div style="margin: 0px; padding: 20px; width: 100%;" class="classContent filter_3">
+
+        <div style="margin-left: 0px; margin-right: 0px;" class="card graded assignment filter_3">
+
+
+
+
+
+
+          <div class="points">
+            <div class="earned numbers"></div>
+
+          </div>
+          <h4 style="width: 100%;">5.5 -- Evidence-Based Claim (6A, 9A): What difference do different Specific Heat
+            values make in real life?</h4>
+          <h5 style="white-space: nowrap; overflow: hidden;">
+            <div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Thu Nov 14, 10:59 pm
+            </div>
+            <div class="infoChip weighted"><i class="material-icons">adjust</i>2</div>
+
+          </h5>
+        </div>
+        <h5 style="margin-top: 75px; margin-bottom: 10px; font-weight: bold; text-align: center;">Old/Undated
+          Assignments</h5>
+        <div style="margin-left: 0px; margin-right: 0px;" class="card graded assignment filter_3">
+          <i title="Assignment submitted" class="material-icons floatingIcon"
+            style="color: #0bb75b;">assignment_turned_in</i>
+
+
+
+
+
+          <div class="points">
+            <div class="earned numbers"></div>
+
+          </div>
+          <h4 style="width: calc(100% - 20px);">5.4 -- Graphs of Oil and Water Data on One Coordinate Plane, Plus
+            Analysis of Data (4A)</h4>
+          <h5 style="white-space: nowrap; overflow: hidden;">
+            <div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Fri Nov 08, 9:59 pm
+            </div>
+            <div class="infoChip weighted"><i class="material-icons">adjust</i>2</div>
+
+          </h5>
+        </div>
+
+        <div style="margin-left: 0px; margin-right: 0px;" class="card graded assignment filter_3">
+          <i title="Assignment submitted" class="material-icons floatingIcon"
+            style="color: #0bb75b;">assignment_turned_in</i>
+
+
+
+
+
+          <div class="points">
+            <div class="earned numbers"></div>
+
+          </div>
+          <h4 style="width: calc(100% - 40px);">SS #2 - Peer-Assessment</h4>
+          <h5 style="white-space: nowrap; overflow: hidden;">
+            <div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Thu Nov 07, 10:59 pm
+            </div>
+            <div class="infoChip weighted"><i class="material-icons">adjust</i>2</div>
+
+          </h5>
+        </div>
+
+        <div style="margin-left: 0px; margin-right: 0px;" class="card graded assignment filter_3">
+          <i title="Assignment submitted" class="material-icons floatingIcon"
+            style="color: #0bb75b;">assignment_turned_in</i>
+
+
+
+
+
+          <div class="points">
+            <div class="earned outcomes">
+              <div title="CHEM.5.A - Apply techniques of algebra and functions to solve problems"
+                style="background-color: #a1b553" class="outcome"></div>
+              <div title="CHEM.9.A - Identifying, Describing, and Defining Energy in Chemical Systems (PS3.A)"
+                style="background-color: #a1b553" class="outcome"></div>
+            </div>
+            <div class="total possible">/12</div>
+          </div>
+          <h4 style="width: calc(100% - 40px);">5.3 -- Snack Food Energy Wrap-Up (5A, 9A, and optional 2A)</h4>
+          <h5 style="white-space: nowrap; overflow: hidden;">
+            <div class="infoChip"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Sun Nov 03, 9:59 pm
+            </div>
+            <div class="infoChip weighted"><i class="material-icons">adjust</i>3</div>
+
+          </h5>
+        </div>
+
+
+      </div>
+
+    </div>
+    <div style="margin: 0px;" class="six columns">
+      <div style="margin: 0px; padding: 20px; width: 100%;" class="classContent filter_3">
+        <div style="margin-left: 0px; margin-right: 0px;" class="card collapsed">
+          <h4 style="margin: 5px 2px; font-size: 32px; font-weight: bold;">
+            <i style="cursor: pointer; vertical-align: middle; color:var(--lightText);"
+              class="material-icons collapseIcon">keyboard_arrow_right</i>
+            Welcome to Chemistry!</h4>
+          <div class="moduleContents" style="padding-top: 10px;">
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">insert_drive_file</i>Map of
+              Fall Semester Outcome Opportunities</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">insert_link</i>Honors
+              Chemistry Description</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>Digital
+              Version of Biozone Book (Read-Only)</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons"
+                style="vertical-align: middle; margin-right: 10px;">insert_drive_file</i>Chemistry ONLINE RESOURCE HUB
+            </div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 30px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>Website
+              Whitelist Request Form (goes to Paul Cerra)</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">insert_link</i>PIAZZA
+              (rollout of this will happen soon)</div>
+          </div>
+        </div>
+        <div style="margin-left: 0px; margin-right: 0px;" class="card collapsed">
+          <h4 style="margin: 5px 2px; font-size: 32px; font-weight: bold;">
+            <i style="cursor: pointer; vertical-align: middle; color:var(--lightText);"
+              class="material-icons collapseIcon">keyboard_arrow_right</i>
+            LESSON 0 - The Enigma</h4>
+          <div class="moduleContents" style="padding-top: 10px;">
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assignment</i>0.1 --
+              Evidence of 4A and 2A (Representing Data and Modeling) (The Enigma)</div>
+          </div>
+        </div>
+        <div style="margin-left: 0px; margin-right: 0px;" class="card">
+          <h4 style="margin: 5px 2px; font-size: 32px; font-weight: bold;">
+            <i style="cursor: pointer; vertical-align: middle; color:var(--lightText);"
+              class="material-icons collapseIcon">keyboard_arrow_down</i>
+            LESSON 3 - Everyday Chemistry</h4>
+          <div class="moduleContents" style="padding-top: 10px;">
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assignment</i>3.3 -- Model
+              of Experimental Apparatus, p.11, #13 (2A, Creating Models)</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 45px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>VIDEO:
+              Observing the melting of Napthalene</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 0px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assessment</i>3.4 -- Heat
+              Energy Calculation Quiz (5A, Computational Thinking) (...including specific heat and latent heat
+              calculations)</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 45px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">assessment</i>PRACTICE QUIZ
+              - L3 - Specific Heat, Heat of Fusion (auto-graded)</div>
+            <div
+              style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: 45px; cursor: pointer;">
+              <i class="material-icons" style="vertical-align: middle; margin-right: 10px;">open_in_new</i>VIDEO: Simple
+              explanation of "Specific Heat"</div>
+          </div>
+        </div>
+        <div>
+        </div>
+      </div>
     </div>
   </div>
-  
-  </div>
-	  
-  <div class="promoBox rightText">
-  
-  <div class="promoText">
-  <h3><i class="material-icons">shopping_basket</i> Power+ Merch</h3>
-	  <h5>You can buy a Power+ shirt by going <a href="https://www.bonfire.com/store/powerplus/">here</a>.</h5>
-  </div>
-  
-  </div>
-	  
-   <div class="promoBox rightText">
-  
-  <div class="promoText">
-  <h3><i class="material-icons">invert_colors</i> Dark Theme</h3>
-  <h5>Power+ has a built-in dark theme</h5>
-  </div>
-  
-  <div class="promoDemo classContent" style="margin: 0px; padding: 0px; width: 60%; text-align: center;">
-  
-  
-	<div class="btns row themeSelector"></div>
-		
-		
-  </div>
-  
-  </div>
-  
-  <div class="promoBox rightText">
-  
-  <div class="promoText">
-  <h3><i class="material-icons">dashboard</i> Dashboard</h3>
-  <h5>The Power+ dashboard shows every assignment you need to do</h5>
-  </div>
-  
-  <div class="promoDemo classContent" style="margin: 0px; padding: 0px; width: 60%;">
-  
-  
-  <div class="card graded assignment filter_4 color" style="color: white !important; margin: 30px 0px; margin-top: 0px;">
-        <div class="points">
-        <div class="earned numbers"></div>
-	<div class="earned letters"></div>
-        </div>
-        <h4>PT Personal Narrative</h4>
-      	<h5>
-         <div class="infoChip" style="color: white !important;"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Wed Sep 04</div>
-		 <div class="infoChip weighted"><i class="material-icons">category</i> Writing</div>
-		 <div class="infoChip weighted"><i class="material-icons">adjust</i> 6 outcomes</div>
-        </h5>
-        </div>
-		
-		<div class="card graded assignment filter_1 color" style="color: white !important; margin: 30px 0px;">
-        <div class="points">
-        <div class="earned numbers"></div>
-	<div class="earned letters"></div>
-        </div>
-        <h4>Media Literacy Discussion</h4>
-      	<h5>
-         <div class="infoChip" style="color: white !important;"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Tue Sep 10</div>
-		 <div class="infoChip weighted"><i class="material-icons">category</i> Perspectives of Our World</div>
-		 <div class="infoChip weighted"><i class="material-icons">adjust</i> 3 outcomes</div>
-        </h5>
-        </div>
-		
-		<div class="card graded assignment filter_3 color" style="color: white !important; margin: 30px 0px;">
-        <div class="points">
-        <div class="earned numbers"></div>
-	<div class="earned letters"></div>
-        </div>
-        <h4>Understanding the Enigma</h4>
-      	<h5>
-         <div class="infoChip" style="color: white !important;"><i style="margin-top: -4px;" class="material-icons">alarm</i> Due Thu Sep 12</div>
-		 <div class="infoChip weighted"><i class="material-icons">category</i> Assignments</div>
-		 <div class="infoChip weighted"><i class="material-icons">adjust</i> 6 outcomes</div>
-        </h5>
-        </div>
-		
-		
-		
-  </div>
-  
-  </div>
-	  
-  <div class="promoBox leftText">
-  
-  <div class="promoText">
-  <h3><i class="material-icons">book</i> Classes from Canvas</h3>
-  <h5>Power+ uses the class nicknames, colors, and arrangements from Canvas. If you haven't set class nicknames, Power+ will automatically shorten your classes' names</h5>
-  </div>
-  
-  <div class="promoDemo" style="text-align: center;">
-  
-  
- <div class="class 0 filter_5" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">Innovation Diploma</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+
+  <div style="margin-top: 100px;" class="container row">
+
+    <h4 style="text-align: center; font-size: 32px; font-weight: bold;"><i style="margin-right: 10px;"
+        class="material-icons">policy</i> Privacy</h4>
+    <h5 style="text-align: center; font-size: 18px; color: var(--secText); margin-top: 10px;">Privacy is a top priority
+      for Power+. This summary is accurate as of November 14th, 2019.</h5>
+    <br />
+    <div style="margin: 0px;" class="six columns">
+      <h5 style="font-size: 22px; text-align: center;">General Information</h5>
+      <div class="privacyChip">
+        <i class="material-icons">person</i>
+        <p>Power+ is student-made</p>
       </div>
-	  
-	   <div class="class 0 filter_0" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">Algebra 2</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      <div class="privacyChip">
+        <i class="material-icons">visibility_off</i>
+        <p>Power+ does not collect personal information such as grades, classes, and assignments</p>
       </div>
-	  
-	  <div class="class 0 filter_1" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">History</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      <div class="privacyChip">
+        <i class="material-icons">devices</i>
+        <p>Power+ is ran directly on your device</p>
       </div>
-	  
-	  <div class="class 0 filter_2" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">Prototyping</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      <div class="privacyChip">
+        <i class="material-icons">storage</i>
+        <p>Data is processed on your device, never on a Power+ server</p>
       </div>
-	  
-	  <div class="class 0 filter_4" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">English</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      <div class="privacyChip">
+        <i class="material-icons">settings</i>
+        <p>User prefrences are stored locally, on-device</p>
       </div>
-	  
-	  <div class="class 0 filter_3" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">Physics</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      <div class="privacyChip">
+        <i class="material-icons">code</i>
+        <p>Power+ is open-source on <a href="https://github.com/jottocraft/dtps">GitHub</a>
+        </p>
       </div>
-	  
-	  <div class="class 0 filter_8" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">Economics</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+      <div class="privacyChip">
+        <i class="material-icons">group</i>
+        <p>Power+ is not created nor endorsed by Instructure Inc, Canvas LMS, or Design Tech High School</p>
       </div>
-	  
-	  <div class="class 0 filter_10" style="display: inline-block; margin: 0px 10px; text-align: left;">
-      <div class="name">Spanish</div>
-      <div class="grade val"><span class="letter">--</span><span class="points">--%</span></div>
+    </div>
+
+    <div style="margin: 0px; font-size: 18px;" class="six columns">
+      <h5 style="font-size: 22px; text-align: center;">Data Power+ collects</h5>
+      <div class="privacyChip">
+        <i class="material-icons">multiline_chart</i>
+        <p>Power+ collects basic usage statistics with Google Analytics. Information collected by Google Analytics is
+          anonymous. This data includes (but is not limited to):</p>
+        <ul>
+          <li>IP Addresses</li>
+          <li>Basic device information</li>
+          <li>Usage statistics</li>
+        </ul>
+        <p style="margin: 10px 50px;">Because data is collected anonymously, users cannot request or delete their Google
+          Analytics data.</p>
       </div>
-		
-		
-		
+      <div class="privacyChip">
+        <i class="material-icons">stars</i>
+        <p>For the small percentage of users that have manually opted into the PowerPoints rewards program and accepted
+          the risks, Power+ also
+          collects:</p>
+        <ul>
+          <li>Full name</li>
+          <li>Usage statistics</li>
+          <li>Points earned and other relevant information</li>
+        </ul>
+        <p style="margin: 10px 50px;">If a user wishes to stop using PowerPoints, they can delete their data by clicking
+          on the link at the bottom of the PowerPoints screen or by <a href="mailto:privacy@jottocraft.com">contacting
+            me</a>.</p>
+      </div>
+    </div>
   </div>
-  
-  </div>
-  
-  
-  <div class="promoBox leftText" style="background-image: url('https://i.imgur.com/BLVbaa7.png');margin: 150px 0px;padding: 150px 30px;text-align: left;border-radius: 30px;background-size: 250px;background-position: right 50px center;background-repeat: no-repeat;">
-  
-  <div style="margin-top: -120px;" class="promoText">
-  <h3>Razer Chroma Integration</h3>
-  <h5>You can use Razer Chroma devices with Power+ by enabling Razer Chroma effects in Power+ settings</h5>
-  <br />
-  <div class="switch active"><span class="head"></span></div>
-  <div class="label" style="color: var(--secText, gray);"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" img=""> Razer Chroma Effects (beta)</div>
-  </div>
- 
-  
-  </div>
-  
-  
-  
+  <p class="container" style="padding: 50px 20px; color: var(--secText);">The privacy summary above is not a privacy
+    policy or legal agreement. While I'll do my best to ensure that it is
+    updated when necessary, I cannot guarentee that it will always be 100% accurate and up to date. The
+    summary posted
+    above is subject to change without notice. If you have questions or concerns about privacy in Power+, please <a
+      href="mailto:privacy@jottocraft.com">contact me</a>.</p>
+
+  <div style="border-radius: 30px; top: 50px;" class="card focus recentChanges close container"><i
+      onclick="fluid.cards.close('.card.recentChanges')" class="material-icons close">close</i>
+    <h5 style="font-weight: bold; margin-top: 0px; font-size: 32px;"><i class="material-icons">restore</i> Recent
+      Changes</h5>
+    <div class="change">
+      <h5 class="changeName">
+        <div class="letter">A</div>Thu Nov 14 2019
+      </h5>
+      <p class="alignmentChange"><span style="color: #4f9e59;">4</span> CC Video Grade- Luther and the Protestant
+        Reformation</p>
+    </div>
+    <div class="change">
+      <h5 class="changeName">
+        <div class="letter">A</div>Wed Nov 13 2019
+      </h5>
+      <p class="alignmentChange"><span style="color: #4f9e59;">4</span> CC Lutheranism vs. Catholicism</p>
+      <p class="alignmentChange"><span style="color: #a1b553;">3</span> CC Lutheranism vs. Catholicism</p>
+    </div>
+    <div class="change">
+      <h5 class="changeName">
+        <div class="letter">A</div>Wed Nov 06 2019
+      </h5>
+      <p class="alignmentChange"><span style="color: #a1b553;">3</span> PT Presentation Menu : What are some of the
+        global consequences of European settlement in the Americas with regards to plants, animals and goods? </p>
+      <p class="alignmentChange"><span style="color: #a1b553;">3</span> PT Presentation Menu : What are some of the
+        global consequences of European settlement in the Americas with regards to plants, animals and goods? </p>
+      <p class="alignmentChange"><span style="color: #4f9e59;">4</span> CC Video Grade: The Renaissance</p>
+    </div>
   </div>
 
-<div style="text-align: center; padding: 50px 0px;">
-  <img style="height: 80px; vertical-align: middle;" src="https://i.imgur.com/2geYYiz.png" />
-  <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
-  <p>(c) jottocraft 2018-2019. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a></p>
+  <script>
+    $("document").ready(() => {
+      $(".card").addClass("filter_" + Math.floor(Math.random() * (11 - 0 + 1) + 0));
+
+      if (dtpsAlert.enabled) {
+        $("#dtpsAlertTitle").html(dtpsAlert.title);
+        $("#dtpsAlertContent").html(dtpsAlert.content);
+        $("#dtpsAlert").show();
+      }
+
+      //hide managed d.tech chromebook instructions on devices that aren't chromebooks
+      if (!/\bCrOS\b/.test(navigator.userAgent)) {
+        $("#managedCrOSinstall").hide();
+      }
+    })
+  </script>
+
+  <br /><br /><br /><br /><br />
+  <div style="text-align: center; padding: 50px 0px;">
+    <img style="height: 80px; vertical-align: middle;" src="https://i.imgur.com/2geYYiz.png" />
+    <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
+    <p>(c) jottocraft 2018-2019. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source
+        code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a></p>
   </div>
-	
 </body>
+
 </html>
