@@ -2747,6 +2747,12 @@ dtps.renderLite = function () {
     <h5>Experiments</h5>
     <p>WARNING: Features listed below are not officially supported and can break Power+. Use at your own risk.</p>
     <p>Want to test out new features as they are developed? <a href="https://github.com/jottocraft/dtps#alternate-install-methods">Try the dev version of Power+</a>.</p>
+<br /><br />
+<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints"><span class="head"></span></div>
+<div class="label"><i class="material-icons">stars</i> PowerPoints (USE AT YOUR OWN RISK, REQUIRES RELOAD)</div>
+<br /><br />
+<div onclick="fluid.set('pref-dtpsRewards')" class="switch pref-dtpsRewards"><span class="head"></span></div>
+<div class="label"><i class="material-icons">scatter_plot</i> Power+ Rewards (the new one, NYI)</div>
 <br />
 </div>
 </div>
