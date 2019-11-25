@@ -477,7 +477,7 @@ dtps.filter = function (color) {
 //Get all JavaScript libraries
 dtps.JS = function (cb) {
     if (dtps.embedded) {
-        jQuery.getScript('https://powerplus.app/fluid.js');
+        jQuery.getScript('https://cdn.jottocraft.com/fluid/v4.min.js');
         jQuery.getScript("https://unpkg.com/sweetalert/dist/sweetalert.min.js")
         jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function () {
             jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
@@ -2546,7 +2546,7 @@ dtps.render = function () {
         jQuery("<link/>", {
             rel: "stylesheet",
             type: "text/css",
-            href: "https://powerplus.app/fluid.css"
+            href: "https://cdn.jottocraft.com/fluid/v4.min.css"
         }).appendTo("head");
         jQuery("<link/>", {
             rel: "stylesheet",
