@@ -523,7 +523,7 @@ dtps.init = function () {
 
     dtps.webReq("canvas", "/api/v1/users/self", function (user) {
         dtps.webReq("canvas", "/api/v1/users/self/observees", function (userObs) {
-            fluidThemes = [["midnight", { name: "Tome", id: "tome", icon: "link" }], ["rainbow"]];
+            fluidThemes = [["midnight", "tome"], ["rainbow"]];
             fluidAutoLoad = false;
 
             document.addEventListener("fluidTheme", function (data) {
