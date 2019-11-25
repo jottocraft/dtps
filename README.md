@@ -14,6 +14,14 @@ For users looking to install Power+, visit the Power+ website by clicking <a hre
 
 <br /><br />
 
+#### Important files in this repo
+- init.js: Main script
+- dtps.css: Main CSS
+- dev.js: Dev script
+- dev.css: Dev CSS
+
+<br /><br />
+
 #### Alternate Install methods
 These install methods are not officially supported. For supported install methods, visit [powerplus.app](https://powerplus.app)
 
