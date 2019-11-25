@@ -3,6 +3,11 @@ Power+ CSS v2.1.0
 (c) jottocraft 2018-2019
 */
 
+/* Fluid UI theme prefs */
+:root {
+	--icons: "Material Icons Outlined", "Material Icons Extended" !important;
+}
+
 .blur * {
     pointer-events: none !important;
 }
@@ -35,9 +40,6 @@ body:not(.dark) .acrylicMaterial.sidebar {
     background: none !important;
 }
 
-.material-icons {
-    font-family: 'Material Icons Outlined';
-}
 
 .fc-today {
     border-radius: 5px;
