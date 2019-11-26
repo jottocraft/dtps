@@ -117,7 +117,7 @@ body:not(.dark) .classGradeCircle {
     color: var(--themeText);
 }
 
-.progress {
+.progressBar .progress {
     height: 32px;
     background-color: var(--theme);
     margin: -6px;
@@ -529,7 +529,7 @@ body.dark .tabs.btns .btn:not(.active) {
     color: var(--text);
 }
 
-.card i.close {
+.card:not(.alert) i.close {
     position: absolute;
     right: 0;
     cursor: pointer;
