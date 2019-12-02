@@ -7,8 +7,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading"
 
 //alert user when loading Power+ on an invalid domain
 if (!window.location.href.includes("instructure.com")) {
-  alert("You need to be on Canvas to load Power+");
-  throw "Error: Invalid domain";
+    alert("You need to be on Canvas to load Power+");
+    throw "Error: Invalid domain";
 }
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
@@ -221,10 +221,10 @@ dtps.http = {};
 dtps.webReq = function (req, url, callback, q) {
     //support optional web requests
     if (!url) {
-      callback();
-      return;
+        callback();
+        return;
     }
-    
+
     //swap "self" user for ID of user being observed if the user is a parent
     if (dtps.user && dtps.user.obsID) {
         if (q ? !q.obsOverride : true) url = url.replace("/self", "/" + dtps.user.obsID).replace(dtps.user.id, dtps.user.obsID);
@@ -958,6 +958,13 @@ dtps.classStream = function (num, renderOv) {
             dtps.classes[num].streamitems = [];
             dtps.classes[num].weights = [];
 
+            function sameDay(d1) {
+                var d2 = new Date();
+                return d1.getFullYear() === d2.getFullYear() &&
+                    d1.getMonth() === d2.getMonth() &&
+                    d1.getDate() === d2.getDate();
+            }
+
             for (var i = 0; i < data.length; i++) {
                 dtps.classes[num].weights.push({ weight: data[i].name + " (" + ((data.length == 1) && (data[i].group_weight == 0) ? 100 : data[i].group_weight) + "%)", assignments: [], possiblePoints: 0, earnedPoints: 0, icon: `<i class="material-icons">category</i> ` });
                 if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
@@ -969,6 +976,9 @@ dtps.classStream = function (num, renderOv) {
                         title: data[i].assignments[ii].name,
                         due: (data[i].assignments[ii].due_at ? new Date(data[i].assignments[ii].due_at).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(data[i].assignments[ii].due_at)) : ""),
                         dueDate: data[i].assignments[ii].due_at,
+                        old: new Date(data[i].assignments[ii].due_at) < new Date(),
+                        upcoming: !sameDay(new Date(data[i].assignments[ii].due_at)) && (new Date(data[i].assignments[ii].due_at) > new Date()),
+                        dueToday: sameDay(new Date(data[i].assignments[ii].due_at)),
                         url: data[i].assignments[ii].html_url,
                         types: data[i].assignments[ii].submission_types,
                         col: dtps.classes[num].col,
@@ -1052,8 +1062,6 @@ dtps.classStream = function (num, renderOv) {
                         var now = new Date().getTime();
                         if (a.dueDate == null) { keyA = 0; }
                         if (b.dueDate == null) { keyB = 0; }
-                        if (keyA < now) { a.old = true; }
-                        if (keyB < now) { b.old = true; }
                         if (b.old || a.old) {
                             // Compare the 2 dates
                             if (keyA < keyB) return 1;
@@ -1243,6 +1251,8 @@ dtps.cblDashboard = function () {
 dtps.renderStream = function (stream, searchRes) {
     var streamlist = [];
     var oldDiv = false;
+    var upcomingDiv = false;
+    var dueTodayDiv = false;
     for (var i = 0; i < stream.length; i++) {
         var outcomeDom = [];
         if (stream[i].rubric) {
@@ -1254,7 +1264,9 @@ dtps.renderStream = function (stream, searchRes) {
         }
         //hide old assignments from dashboard
         if (stream[i].old ? dtps.selectedClass != "dash" : true) {
-        streamlist.push((stream[i].old && !oldDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
+            streamlist.push((stream[i].old && !oldDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
+        ` + (stream[i].upcoming && !upcomingDiv && dtps.selectedClass == "dash" ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">` + (!dueTodayDiv ? "Nothing due today<br /><br /><br />" : "Upcoming Assignments") + `</h5>` : "") + `
+        ` + (stream[i].dueToday && !dueTodayDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Due today</h5>` : "") + `
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment('` + stream[i].id + `', ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
@@ -1274,8 +1286,10 @@ dtps.renderStream = function (stream, searchRes) {
         </h5>
         </div>
       `);
-      if (stream[i].old) oldDiv = true;
-    }
+            if (stream[i].old) oldDiv = true;
+            if (stream[i].upcoming) upcomingDiv = true;
+            if (stream[i].dueToday) dueTodayDiv = true;
+        }
     }
     if (typeof Fuse !== "undefined") {
         if (searchRes == undefined) {
@@ -1356,8 +1370,6 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
         var now = new Date().getTime();
         if (a.dueDate == null) { keyA = 0; }
         if (b.dueDate == null) { keyB = 0; }
-        if (keyA < now) { a.old = true; }
-        if (keyB < now) { b.old = true; }
         if (b.old || a.old) {
             // Compare the 2 dates
             if (keyA < keyB) return 1;
@@ -1708,9 +1720,9 @@ dtps.gradebook = function (num) {
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
     <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
     <div class="classGradeCircle" style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
-    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">` + (dtps.classes[num].gradeCalc.number75thresh * 100).toFixed(0) + `% of outcome scores are ≥
+    <h5 class="numFont" style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">` + (dtps.classes[num].gradeCalc.number75thresh * 100).toFixed(0) + `% of outcome scores are ≥
     <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
-    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
+    <h5 class="numFont" style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
     <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
     <div style="display: none;" id="classGradeMore">
     <br />
@@ -1940,22 +1952,22 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <br /><br />
 <iframe style="width: 100%; height: calc(100vh - 175px); border: none;" src="` + assignment.submissions + `"></iframe>`);
             } else {
-              $(".card.details").html(`<i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close</i>
-<h4 style="font-weight: bold;">Loading...</h4>`);
-              dtps.webReq("canvas", assignment.extToolUrl, (data) => {
-                
-                var extToolData = data && JSON.parse(data);
-                
-                $(".card.details").css("background-color", "")
-                $(".card.details").css("color", "")
-
-                if (assignment.body) {
-                    var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-    <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + assignment.body], { type: 'text/html' });
-                    var newurl = window.URL.createObjectURL(blob);
-                }
-
                 $(".card.details").html(`<i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close</i>
+<h4 style="font-weight: bold;">Loading...</h4>`);
+                dtps.webReq("canvas", assignment.extToolUrl, (data) => {
+
+                    var extToolData = data && JSON.parse(data);
+
+                    $(".card.details").css("background-color", "")
+                    $(".card.details").css("color", "")
+
+                    if (assignment.body) {
+                        var blob = new Blob([`<base target="_blank" /> <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+    <style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}</style>` + assignment.body], { type: 'text/html' });
+                        var newurl = window.URL.createObjectURL(blob);
+                    }
+
+                    $(".card.details").html(`<i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close</i>
 <h4 style="font-weight: bold;">` + assignment.title + `</h4>
 
 <div>
@@ -1992,9 +2004,9 @@ Power+ currently only supports assignments that use online text entry. Other ass
 </div>
 <div style="width: calc(60% - 7px); margin-top: 20px; margin-left: 5px; display: inline-block; overflow: hidden; vertical-align: middle;">
 ` + (assignment.rubric ? assignment.rubric.map(function (rubric) {
-                    if (rubric.ratings) {
-                        dtps.classes[classNum].tmp[rubric.id] = rubric.long_description
-                        return `
+                        if (rubric.ratings) {
+                            dtps.classes[classNum].tmp[rubric.id] = rubric.long_description
+                            return `
                         <div style="margin: 32px 0px;">
                         <h6 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">` + rubric.description + `</h6>
         <div style="margin-right: 20px; vertical-align: middle;">
@@ -2005,16 +2017,16 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <div style="padding: 5px 10px; font-size: 18px; background-color: transparent; color: white; font-weight: bold; width: 200px; text-align: center; display: inline-block;">
 ` + (rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name ? rubric.score + "&nbsp;&nbsp;" + rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name : rubric.score) + `
 </div>` : rubric.ratings.map(function (rating) {
-                            return `
+                                return `
 <div style="padding: 2px 0px; font-size: 16px; background-color: transparent; color: white; width: 50px; text-align: center; display: inline-block;">
 ` + rating.points + `
 </div>`
-                        }).join("")) + `</div></div>`
-                    } else { return ""; }
-                }).join("") : "") + `
+                            }).join("")) + `</div></div>`
+                        } else { return ""; }
+                    }).join("") : "") + `
 </div>
 `)
-}, {noCache: true});
+                }, { noCache: true });
             }
         }
     }
