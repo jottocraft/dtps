@@ -2689,7 +2689,7 @@ dtps.renderLite = function () {
     <div class="label razerChroma" style="display: none;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /img> Razer Chroma Effects (beta)</div>
     <br /><br />
     <button onclick="dtps.schedule()" class="btn small"><i class="material-icons">access_time</i>Schedule classes</button>
-	<div class="embeddedOptions">
+	<div style="display: none" class="embeddedOptions">
 	<br /><br />
     <p>Power+</p>
     <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
@@ -2779,9 +2779,9 @@ dtps.renderLite = function () {
 <div style="font-size: 16px; margin-top: 5px;">` + dtps.readableVer.replace(dtps.trackSuffix, dtps.fullTrackSuffix) + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></div>
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
-<a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to Canvas.') }" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
+<a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to Canvas.') }" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
 <a style="color: var(--lightText); margin: 0px 5px;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GHD8S35VT7H2J&item_name=Donate+to+Power%2B&currency_code=USD&source=url"><i class="material-icons" style="vertical-align: middle">attach_money</i> Donate</a>
-<a style="color: var(--lightText); margin: 0px 5px;" href="https://www.bonfire.com/store/powerplus/"><i class="material-icons" style="vertical-align: middle">shopping_basket</i> Merch</a>
+<a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="material-icons" style="vertical-align: middle">email</i> Contact</a>
 </div>
 </div>
      <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
