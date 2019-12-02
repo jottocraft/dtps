@@ -559,7 +559,7 @@ dtps.init = function () {
             if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
             $ = jQuery;
             var min = new Date().getMinutes();
-            if (String(min).length < 2) min = Number("0" + String(min))
+            if (String(min).length < 2) min = "0" + String(min)
             var time = Number(String(new Date().getHours()) + String(min))
             dtps.period = null;
             if ((new Date().getDay() > 0) && (new Date().getDay() < 6)) {
