@@ -15,6 +15,7 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
    --theme-color: #6d6d6d;
    --theme-text-color: #b39a46;
    --links: #686868;
+   --acrylic: black;
 }
 
 /* Fluid UI theme prefs */
