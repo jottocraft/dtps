@@ -329,13 +329,27 @@ dtps.webReq = function (req, url, callback, q) {
 }
 
 //Calculates the class grade based on Outcomes results from Canvas
-dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) {
+dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb, excludeSS) {
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num ? num : 0].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (resp, classNum) {
         var data = JSON.parse(resp);
         var rollups = data.rollups[0];
 
         //array of outcome averages sorted from highest to lowest. rollupscoreoverride is optional for whatif grades
         var rollupScores = rollupScoreOverride || rollups.scores.map(function (score) { return score.score; });
+
+        //remove SS (optional thing, this will ignore rollupScoreOverride)
+        if (excludeSS) {
+            var ssIDs = ["2269", "2270"];
+            rollupScores = [];
+            for (var i = 0; i < rollups.scores.length; i++) {
+                if (!ssIDs.includes(rollups.scores[i].links.outcome)) {
+                    rollupScores.push(rollups.scores[i].score);
+                }
+            }
+        }
+
+
+        //sort rollupScores
         rollupScores.sort((a, b) => b - a);
 
         //the highest value 75% of outcomes are greater than or equal to
@@ -401,7 +415,7 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb) 
             if (dtps.classes[num].name.toUpperCase().includes(keyword)) letter = "--";
         });
 
-        if ((classNum == undefined) && cb) {
+        if (excludeSS || ((classNum == undefined) && cb)) {
             cb(letter);
             return;
         }
@@ -1779,6 +1793,7 @@ dtps.gradebook = function (num) {
 <br />
 <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
 &nbsp;&nbsp;<a onclick="fluid.cards('.card.recentChanges');" style="color: var(--secText, gray); cursor: pointer;">Recent Changes</a>
+&nbsp;&nbsp;<a onclick="dtps.computeClassGrade(dtps.selectedClass, false, undefined, (grade) => alert('Class grade without SS: ' + grade), true);" style="color: var(--secText, gray); cursor: pointer;">Test grade without SS</a>
 </div>
 <br />` : "") + `
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
