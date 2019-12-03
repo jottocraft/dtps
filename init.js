@@ -1696,8 +1696,8 @@ dtps.gradebook = function (num) {
                     }).join(""));
 
                     var fix = "";
-                    //not all outcomes meeting A criteria
-                    if (dtps.classes[num].gradeCalc.number75Length !== dtps.classes[num].gradeCalc.number75LengthA) {
+                    //not enough outcomes meeting A criteria
+                    if (dtps.classes[num].gradeCalc.number75Length > dtps.classes[num].gradeCalc.number75LengthA) {
                         fix = "Get at least a 3.3 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes to get an A"
                     }
                     //lowest score is below a 3
@@ -1705,7 +1705,7 @@ dtps.gradebook = function (num) {
                         fix = "Make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
                     }
                     //both
-                    if ((dtps.classes[num].gradeCalc.lowestValue < 3) && (dtps.classes[num].gradeCalc.number75Length !== dtps.classes[num].gradeCalc.number75LengthA)) {
+                    if ((dtps.classes[num].gradeCalc.lowestValue < 3) && (dtps.classes[num].gradeCalc.number75Length > dtps.classes[num].gradeCalc.number75LengthA)) {
                         fix = "Get at least a 3.3 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes and make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
                     }
 
@@ -1831,7 +1831,7 @@ dtps.gradebook = function (num) {
   ` + ((dtps.classes[num].letter !== "--") && dtps.classes[num].outcomes[i].lastAssignment ? `
   <p onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 10px; cursor: pointer;">
   <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
-  Simulate additional outcome assessment
+  Test a What-If grade
   </p>` : "") + `
 
   </div>`
