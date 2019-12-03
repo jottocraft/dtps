@@ -3,6 +3,20 @@ Power+ CSS v2.1.0
 (c) jottocraft 2018-2019
 */
 
+/* POWERPOINTS THEME */
+body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
+--flex-light: #b39a46;
+   --flex-bg: #a78e3a;
+   --flex-text: #ffffff;
+   --flex-sectext: #e4d8ae;
+   --flex-layer1: #867027;
+   --flex-layer2: #726021;
+   --flex-layer3: #5f4f1c;
+   --theme-color: #6d6d6d;
+   --theme-text-color: #b39a46;
+   --links: #686868;
+}
+
 /* Fluid UI theme prefs */
 :root {
 	--icons: "Material Icons Outlined", "Material Icons Extended" !important;
