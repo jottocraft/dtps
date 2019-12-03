@@ -554,10 +554,12 @@ dtps.init = function () {
             if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
             contributors = ["669", "672", "560"]
             if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
-            if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("Dev mode enabled"); }
+            if (dtps.user.id == "669") { jQuery("body").addClass("dev"); fluidThemes[0].push("oni"); dtps.log("Dev mode enabled"); }
             if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
             if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
+
             $ = jQuery;
+
             var min = new Date().getMinutes();
             if (String(min).length < 2) min = "0" + String(min)
             var time = Number(String(new Date().getHours()) + String(min))
@@ -2591,13 +2593,12 @@ dtps.render = function () {
             href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
         }).appendTo("head");
 
+        fluid.onLoad();
     }
 
     jQuery('.classContent').bind('heightChange', function () {
         jQuery(".sidebar").css("height", Number(jQuery(".classContent").css("height").slice(0, -2)))
     });
-
-    if (dtps.embedded) fluid.onLoad();
 }
 
 //switch observee (for parent accounts)
@@ -2834,6 +2835,7 @@ dtps.renderLite = function () {
     <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
     if (!dtps.embedded) $(".embeddedOptions").hide();
     if (!dtps.embedded) fluid.onLoad();
+
     if (fluid.get("pref-powerPoints") == "true") $.getScript("https://jottocraft.github.io/dtps-points/points.js");
 }
 
