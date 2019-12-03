@@ -1722,10 +1722,10 @@ dtps.gradebook = function (num) {
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
     <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
     <div class="classGradeCircle" style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
-    <h5 class="numFont" style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">` + (dtps.classes[num].gradeCalc.number75thresh * 100).toFixed(0) + `% of outcome scores are ≥
-    <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
-    <h5 class="numFont" style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
-    <div style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
+    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">` + (dtps.classes[num].gradeCalc.number75thresh * 100).toFixed(0) + `% of outcome scores are ≥
+    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
+    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
+    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
     <div style="display: none;" id="classGradeMore">
     <br />
     ` + (dtps.classes[num].letter !== "A" ? `<p style="text-align: center;">` + fix + `</p>` : "") + `
