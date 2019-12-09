@@ -1282,7 +1282,7 @@ dtps.renderStream = function (stream, searchRes) {
         if (stream[i].old ? dtps.selectedClass != "dash" : true) {
             streamlist.push((stream[i].old && !oldDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
         ` + (stream[i].upcoming && !upcomingDiv && dtps.selectedClass == "dash" ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">` + (!dueTodayDiv ? "Nothing due today<br /><br /><br />" : "Upcoming Assignments") + `</h5>` : "") + `
-        ` + (stream[i].dueToday && !dueTodayDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Due today</h5>` : "") + `
+        ` + (stream[i].dueToday && !dueTodayDiv && dtps.selectedClass == "dash" ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Due today</h5>` : "") + `
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment('` + stream[i].id + `', ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
@@ -1497,7 +1497,7 @@ dtps.outcome = function (num, id, i) {
 }
 
 //Loads the gradebook for a class. The type paramater specifies if it should load the mastery gradebook or not
-dtps.gradebook = function (num) {
+dtps.gradebook = function (num, cb) {
     dtps.showClasses();
     if (dtps.classes[num].noOutcomes) {
         $(".btns .btn.grades").hide();
@@ -1507,7 +1507,7 @@ dtps.gradebook = function (num) {
         dtps.classStream(num);
     } else {
         headsUp = ``;
-        $(".classContent").html(headsUp + `<div class="spinner"></div>`)
+        if (!cb && (dtps.selectedContent == "grades")) $(".classContent").html(headsUp + `<div class="spinner"></div>`)
 
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
             dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
@@ -1723,7 +1723,9 @@ dtps.gradebook = function (num) {
                         fix = "Get at least a 3.3 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes and make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
                     }
 
-                    $(".classContent").html(`
+                    if (cb) cb(num);
+
+                    if (!cb && (dtps.selectedContent == "grades")) $(".classContent").html(`
                     <div style="display: none;" id="whatIfGrade">
                     <div class="letter">--</div>
                     <div class="notice">
@@ -1853,7 +1855,7 @@ dtps.gradebook = function (num) {
                     }).join("") + `
 </div>`)
 
-                    Object.keys(dtps.classes[num].outcomes).map(function (i) {
+                    if (!cb && (dtps.selectedContent == "grades")) Object.keys(dtps.classes[num].outcomes).map(function (i) {
                         dtps.classes[num].outcomes[i].gradedAlignments.map(function (alignment, ii) {
                             $("#" + num + "-" + i + "-" + ii + ", #" + num + "-" + i + "-extra").on("DOMCharacterDataModified", function (e) {
                                 var text = $(this).text();
@@ -2141,6 +2143,123 @@ dtps.clearData = function () {
         window.localStorage.clear()
         window.alert("Power+ data cleared. Reload the page to begin repopulating your userdata.")
     }
+}
+
+//gets Power+ score
+dtps.score = function () {
+    var score = 0;
+
+    function mean(numbers) {
+        var total = 0, i;
+        for (i = 0; i < numbers.length; i += 1) {
+            total += numbers[i];
+        }
+        return total / numbers.length;
+    }
+    function median(numbers) {
+        // median of [3, 5, 4, 4, 1, 1, 2, 3] = 3
+        var median = 0, numsLen = numbers.length;
+        numbers.sort();
+
+        if (
+            numsLen % 2 === 0 // is even
+        ) {
+            // average of two middle numbers
+            median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
+        } else { // is odd
+            // middle number only
+            median = numbers[(numsLen - 1) / 2];
+        }
+
+        return median;
+    }
+    function mode(numbers) {
+        // as result can be bimodal or multi-modal,
+        // the returned result is provided as an array
+        // mode of [3, 5, 4, 4, 1, 1, 2, 3] = [1, 3, 4]
+        var modes = [], count = [], i, number, maxIndex = 0;
+
+        for (i = 0; i < numbers.length; i += 1) {
+            number = numbers[i];
+            count[number] = (count[number] || 0) + 1;
+            if (count[number] > maxIndex) {
+                maxIndex = count[number];
+            }
+        }
+
+        for (i in count)
+            if (count.hasOwnProperty(i)) {
+                if (count[i] === maxIndex) {
+                    modes.push(Number(i));
+                }
+            }
+
+        return modes;
+    }
+    function range(numbers) {
+        numbers.sort();
+        return [numbers[0], numbers[numbers.length - 1]];
+    }
+    String.prototype.hashCode = function () {
+        var hash = 0, i, chr;
+        if (this.length === 0) return hash;
+        for (i = 0; i < this.length; i++) {
+            chr = this.charCodeAt(i);
+            hash = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+        }
+        return hash;
+    };
+
+    var scores = [];
+    var q = 0;
+    var qq = 0;
+
+    dtps.classes.forEach((cclass) => {
+        if (!cclass.noOutcomes) qq++;
+    })
+
+    dtps.classes.forEach((cclass, i) => {
+        if (!cclass.noOutcomes) {
+            dtps.gradebook(i, (num) => {
+                if (dtps.classes[num].outcomes) {
+                    Object.keys(dtps.classes[num].outcomes).forEach((k) => {
+                        if (dtps.classes[num].outcomes[k]) {
+                            dtps.classes[num].outcomes[k].gradedAlignments.forEach((alignment) => {
+                                scores.push(alignment.score);
+                            })
+                        }
+                    })
+                }
+                q++;
+                if (q == qq) {
+                    q = 0;
+                    finishEx();
+                }
+            });
+        }
+    })
+
+    function finishEx() {
+        console.log(scores)
+
+        var toExport = {
+            score: (1 / dtps.user.id) * 1000000,
+            mean: mean(scores).toFixed(1),
+            median: median(scores).toFixed(1),
+            mode: mode(scores)[0].toFixed(1),
+            lowest: range(scores)[0].toFixed(1),
+            highest: range(scores)[1].toFixed(1),
+        }
+        var resJSON = JSON.stringify(toExport);
+        var results = {
+            content: Number(String(resJSON.hashCode()).repeat(2)) / 2,
+            verify: resJSON.length,
+            export: resJSON
+        }
+        console.log(toExport);
+    }
+
 }
 
 //Renders chroma effect for selected class
