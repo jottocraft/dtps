@@ -328,8 +328,83 @@ dtps.webReq = function (req, url, callback, q) {
     }
 }
 
-//Calculates the class grade based on Outcomes results from Canvas
-dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb, excludeSS) {
+//Calculates the letter grade based on an array of assignment scores
+dtps.computeLetterGrade = function (scores) {
+    console.log(scores)
+    //sort rollupScores
+    scores.sort((a, b) => b - a);
+
+    //the highest value 75% of outcomes are greater than or equal to
+    //number75thresh is the percentage of assignments >= number75. number75thresh is always >= 0.75 && <= 1 (update: actually maybe not)
+    //number75length is the amount of outcomes needed to satisfy 75% criteria thing
+    //number75lengthA is amount of outcomes satisfying the A requirement for the 75% criteria thing
+    //moreA is how many more outcomes are not at least 3
+    //number75per is the percentage used
+    var number75per = 0.75;
+    var number75 = null;
+    var number75thresh = null;
+    var number75Length = Math.floor(scores.length * number75per);
+    var number75LengthA = 0;
+    var moreA = 0;
+    scores.map((s) => {
+        if (s >= 3.3) {
+            number75LengthA++;
+        }
+        if (s < 3) {
+            moreA++;
+        }
+    })
+
+    //test values
+    var testValues = [3.3, 2.6, 2.2]
+
+    for (var i = 0; i < testValues.length; i++) {
+        //make sure a higher number for number75 isn't already found
+        if (number75 == null) {
+            //array of numbers equal to or greater than the testing value
+            var equalOrGreater = [];
+
+            //check every score to see if it is >= the test value
+            for (var ii = 0; ii < scores.length; ii++) {
+                if (scores[ii] >= testValues[i]) equalOrGreater.push(scores[ii]);
+            }
+
+            //if the amount of outcomes meeting the criteria are greater than or equal to the amount of outcomes needed, number75 is the test value
+            if (equalOrGreater.length >= number75Length) {
+                number75 = testValues[i];
+                number75thresh = (equalOrGreater.length / scores.length);
+            }
+        }
+    }
+
+    //since scores is sorted greatest to least, the last value is the smallest
+    var lowestValue = scores[scores.length - 1];
+
+    //get letter grade
+    var letter = "I";
+    rank = 0;
+    if (scores.length == 0) { letter = "--"; rank = null; }
+    if ((number75 >= 2.2) && (lowestValue >= 0)) { letter = "C"; rank = 1; }
+    if ((number75 >= 2.6) && (lowestValue >= 2)) { letter = "B-"; rank = 2; }
+    if ((number75 >= 2.6) && (lowestValue >= 2.25)) { letter = "B"; rank = 3; }
+    if ((number75 >= 2.6) && (lowestValue >= 2.5)) { letter = "B+"; rank = 4; }
+    if ((number75 >= 3.3) && (lowestValue >= 2.5)) { letter = "A-"; rank = 5; }
+    if ((number75 >= 3.3) && (lowestValue >= 3)) { letter = "A"; rank = 6; }
+
+    return {
+        number75: number75,
+        number75thresh: number75thresh,
+        number75Length: number75Length,
+        number75LengthA: number75LengthA,
+        lowestValue: lowestValue,
+        moreA: moreA,
+        rank: rank,
+        letter: letter
+    };
+}
+
+//Fetches grades, calls dtps.computeLetter grade with and without SS, then saves the class grade
+dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, rollupScoreOverrideWOSS, cb) {
     dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num ? num : 0].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (resp, classNum) {
         var data = JSON.parse(resp);
         var rollups = data.rollups[0];
@@ -337,99 +412,50 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb, 
         //array of outcome averages sorted from highest to lowest. rollupscoreoverride is optional for whatif grades
         var rollupScores = rollupScoreOverride || rollups.scores.map(function (score) { return score.score; });
 
-        //remove SS (optional thing, this will ignore rollupScoreOverride)
-        if (excludeSS) {
-            var ssIDs = ["2269", "2270"];
-            rollupScores = [];
-            for (var i = 0; i < rollups.scores.length; i++) {
-                if (!ssIDs.includes(rollups.scores[i].links.outcome)) {
-                    rollupScores.push(rollups.scores[i].score);
-                }
+        //array of outcome averages without SS
+        var ssIDs = ["2269", "2270"];
+        rollupScoresWOSS = [];
+        for (var i = 0; i < rollups.scores.length; i++) {
+            if (!ssIDs.includes(rollups.scores[i].links.outcome)) {
+                rollupScoresWOSS.push(rollups.scores[i].score);
             }
         }
+        if (rollupScoreOverrideWOSS) rollupScoresWOSS = rollupScoreOverrideWOSS;
+        console.log(rollupScores, rollupScoresWOSS)
 
-
-        //sort rollupScores
-        rollupScores.sort((a, b) => b - a);
-
-        //the highest value 75% of outcomes are greater than or equal to
-        //number75thresh is the percentage of assignments >= number75. number75thresh is always >= 0.75 && <= 1
-        //number75length is the amount of outcomes needed to satisfy 75% criteria thing
-        //number75lengthA is amount of outcomes satisfying the A requirement for the 75% criteria thing
-        //moreA is how many more outcomes are not at least 3
-        //number75per is the percentage used
-        var number75per = 0.75;
-        var number75 = null;
-        var number75thresh = null;
-        var number75Length = Math.ceil(rollupScores.length * number75per);
-        var number75LengthA = 0;
-        var moreA = 0;
-        rollupScores.map((s) => {
-            if (s >= 3.3) {
-                number75LengthA++;
-            }
-            if (s < 3) {
-                moreA++;
-            }
-        })
-
-        //test values
-        var testValues = [3.3, 2.6, 2.2]
-
-        for (var i = 0; i < testValues.length; i++) {
-            //make sure a higher number for number75 isn't already found
-            if (number75 == null) {
-                //array of numbers equal to or greater than the testing value
-                var equalOrGreater = [];
-
-                //check every score to see if it is >= the test value
-                for (var ii = 0; ii < rollupScores.length; ii++) {
-                    if (rollupScores[ii] >= testValues[i]) equalOrGreater.push(rollupScores[ii]);
-                }
-
-                //if at least 75% of the outcomes are >= test value, number75 is the test value
-                if ((equalOrGreater.length / rollupScores.length) >= number75per) {
-                    number75 = testValues[i];
-                    number75thresh = (equalOrGreater.length / rollupScores.length);
-                }
-            }
+        var results = dtps.computeLetterGrade(rollupScores)
+        var resultsWOSS = dtps.computeLetterGrade(rollupScoresWOSS)
+        var excludesSS = false;
+        if (resultsWOSS.rank > results.rank) {
+            calculated = resultsWOSS;
+            excludesSS = true;
+        } else {
+            calculated = results;
         }
-
-        //since rollupScores is sorted greatest to least, the last value is the smallest
-        var lowestValue = rollupScores[rollupScores.length - 1];
-
-        //get letter grade
-        var letter = "I";
-        if (rollupScores.length == 0) letter = "--";
-        if ((number75 >= 2.2) && (lowestValue >= 0)) letter = "C";
-        if ((number75 >= 2.6) && (lowestValue >= 2)) letter = "B-";
-        if ((number75 >= 2.6) && (lowestValue >= 2.25)) letter = "B";
-        if ((number75 >= 2.6) && (lowestValue >= 2.5)) letter = "B+";
-        if ((number75 >= 3.3) && (lowestValue >= 2.5)) letter = "A-";
-        if ((number75 >= 3.3) && (lowestValue >= 3)) letter = "A";
 
         //hide dlab grades
         //keywords should be in all uppercase
         var dlabKeywords = ["D.LAB", "DLAB", "D-LAB", "OCT19", "JAN20", "MAR20", "JUN20"];
         dtps.classes[num] && dlabKeywords.forEach((keyword) => {
-            if (dtps.classes[num].name.toUpperCase().includes(keyword)) letter = "--";
+            if (dtps.classes[num].name.toUpperCase().includes(keyword)) calculated.letter = "--";
         });
 
-        if (excludeSS || ((classNum == undefined) && cb)) {
-            cb(letter);
+        if ((classNum == undefined) && cb) {
+            cb(calculated.letter);
             return;
         }
 
-        if (fluid.get('pref-calcGrades') !== "false") dtps.classes[classNum].letter = letter;
+        if (fluid.get('pref-calcGrades') !== "false") dtps.classes[classNum].letter = calculated.letter;
 
         //store grade calculation variables to show them in the gradebook
         dtps.classes[classNum].gradeCalc = {
-            lowestValue: lowestValue,
-            number75: (number75 !== null ? number75 : ""),
-            number75thresh: number75thresh,
-            number75Length: number75Length,
-            number75LengthA: number75LengthA,
-            moreA: moreA
+            lowestValue: calculated.lowestValue,
+            number75: (calculated.number75 !== null ? calculated.number75 : ""),
+            number75thresh: calculated.number75thresh,
+            number75Length: calculated.number75Length,
+            number75LengthA: calculated.number75LengthA,
+            moreA: calculated.moreA,
+            excludesSS: excludesSS
             //number75percent: (number75thresh-0.75)/(1-0.75),
             //lowestValuePercent: (),
         }
@@ -439,20 +465,20 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, cb, 
 
         dtps.computedClassGrades++;
         if (renderSidebar) {
-            if (letter !== "--") {
-                if (letter.includes("A")) gpa.push(4)
-                if (letter.includes("B")) gpa.push(3)
-                if (letter.includes("C")) gpa.push(2)
-                if (letter.includes("I")) gpa.push(0)
-                if (letter == "I") score = 0;
-                if (letter == "C") score = 75;
-                if (letter == "B-") score = 80;
-                if (letter == "B") score = 85;
-                if (letter == "B+") score = 88;
-                if (letter == "A-") score = 92;
-                if (letter == "A") score = 100;
+            if (calculated.letter !== "--") {
+                if (calculated.letter.includes("A")) gpa.push(4)
+                if (calculated.letter.includes("B")) gpa.push(3)
+                if (calculated.letter.includes("C")) gpa.push(2)
+                if (calculated.letter.includes("I")) gpa.push(0)
+                if (calculated.letter == "I") score = 0;
+                if (calculated.letter == "C") score = 75;
+                if (calculated.letter == "B-") score = 80;
+                if (calculated.letter == "B") score = 85;
+                if (calculated.letter == "B+") score = 88;
+                if (calculated.letter == "A-") score = 92;
+                if (calculated.letter == "A") score = 100;
                 dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[classNum].col + `">
-            <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[classNum].subject + ` (` + letter + `)</div>
+            <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[classNum].subject + ` (` + calculated.letter + `)</div>
             <div class="progress" style="background-color: var(--light); width: calc(` + score + `% - 300px);"></div></div>`)
             }
         }
@@ -1517,13 +1543,11 @@ dtps.gradebook = function (num, cb) {
                     var resultsData = JSON.parse(resppp).outcome_results;
                     dtps.classes[num].outcomes = {};
                     dtps.classes[num].gradedOutcomes = {};
-                    dtps.classes[num].recentChanges = [];
 
                     for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignments = []
-                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].sandbox = []
                         //lowest score sandbox starts with null since we are testing various different scores. null won't actually change, its just for making sure the length of the array is correct.
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].lowestSandbox = [null]
                         dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignmentIDs = []
@@ -1544,19 +1568,8 @@ dtps.gradebook = function (num, cb) {
                                         gradAlign[gradAlign.length - 1].date = (dtps.assignmentGradeTimes[alignmentData[i].assignment_id] ? dtps.assignmentGradeTimes[alignmentData[i].assignment_id] : resultsData[ii].submitted_or_assessed_at);
                                         gradAlign[gradAlign.length - 1].gradAlignIndex = gradAlign.length - 1;
 
-                                        //save for recent changes sandbox and lowest score sandbox
-                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].sandbox.push(resultsData[ii].score);
+                                        //save for lowest score sandbox
                                         dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].lowestSandbox.push(resultsData[ii].score);
-
-                                        //save recent changes
-                                        var change = dtps.classes[num].recentChanges[new Date(gradAlign[gradAlign.length - 1].date).toDateString()]
-                                        if (change == undefined) {
-                                            dtps.classes[num].recentChanges[new Date(gradAlign[gradAlign.length - 1].date).toDateString()] = {
-                                                letterBefore: "--",
-                                                alignments: []
-                                            }
-                                        }
-                                        dtps.classes[num].recentChanges[new Date(gradAlign[gradAlign.length - 1].date).toDateString()].alignments.push(gradAlign[gradAlign.length - 1]);
                                     }
                                 }
                             }
@@ -1617,98 +1630,6 @@ dtps.gradebook = function (num, cb) {
                         }
                     }
 
-                    //sort recent changes
-                    dtps.classes[num].recentChangesKeys = Object.keys(dtps.classes[num].recentChanges).sort(function (a, b) {
-                        var keyA = new Date(a),
-                            keyB = new Date(b);
-                        // Compare the 2 dates
-                        if (keyA < keyB) return 1;
-                        if (keyA > keyB) return -1;
-                        return 0;
-                    });
-
-                    //get recent changes
-                    dtps.classes[num].recentChangesKeys.map((k, index) => {
-                        if (index < 3) {
-                            console.log(k, index);
-                            var change = dtps.classes[num].recentChanges[k];
-
-                            //update data in sandbox
-                            for (var ii = 0; ii < change.alignments.length; ii++) {
-                                var sandbox = dtps.classes[num].outcomes[change.alignments[ii].learning_outcome_id].sandbox;
-                                sandbox[change.alignments[ii].gradAlignIndex] = null;
-                                //store last time outcome sandbox was modified
-                                dtps.classes[num].outcomes[change.alignments[ii].learning_outcome_id].modded = k;
-                            }
-
-                            //recalculate outcome scores
-                            var outcomeScores = [];
-                            Object.keys(dtps.classes[num].outcomes).map((kk) => {
-                                var outcome = dtps.classes[num].outcomes[kk];
-                                if (outcome.modded == k) {
-                                    //get length of all values in the sandbox, excluding null
-                                    //and also first outcome assessment that is not null
-                                    var counter = 0;
-                                    var firstScore = null;
-                                    for (var ii = 0; ii < outcome.sandbox.length; ii++) {
-                                        if (outcome.sandbox[ii] !== null) {
-                                            counter++;
-                                            if (firstScore == null) firstScore = outcome.sandbox[ii];
-                                        }
-                                    }
-                                    outcome.sandboxLength = counter;
-                                    outcome.sandboxFirst = firstScore;
-
-                                    //outcome alignments affected during this change, recalculate outcome score
-                                    var lastAssessment = outcome.sandboxFirst * (outcome.calculation_int / 100);
-                                    var sum = 0;
-                                    //starting at ii=1 is intentional to omit the latest outcome score from everything else
-                                    for (var ii = 0; ii < outcome.sandbox.length; ii++) {
-                                        if (outcome.sandbox[ii] !== null) {
-                                            sum += outcome.sandbox[ii];
-                                        }
-                                    }
-                                    var everythingElse = (sum / (outcome.sandboxLength - 1)) * (1 - (outcome.calculation_int / 100))
-
-                                    outcome.sandboxScore = lastAssessment + everythingElse;
-                                    if (outcome.sandboxLength == 1) outcome.sandboxScore = outcome.sandboxFirst;
-                                    if (outcome.sandboxLength) outcomeScores.push(outcome.sandboxScore);
-                                } else {
-                                    //outcome alignments not affected during this change, use previous outcome sandbox score or normal score if thats not present
-                                    if (outcome.sandboxScore || outcome.score) outcomeScores.push(outcome.sandboxScore || outcome.score)
-                                }
-                            })
-
-                            console.log("Recent outcome scores before " + k, outcomeScores)
-
-                            //calculate new class grade
-                            dtps.computeClassGrade(undefined, undefined, outcomeScores, (data) => {
-                                change.letter = data;
-                                console.log(change);
-                            })
-                        }
-                    })
-
-                    //temporary variable for if outcome divider is added yet
-                    var dividerAdded = false;
-
-                    $(".card.recentChanges").html(`<i onclick="fluid.cards.close('.card.recentChanges')" class="material-icons close">close</i>
-                    <h5 style="font-weight: bold; margin-top: 0px; font-size: 32px;"><i class="material-icons">restore</i> Recent Changes</h5>
-                    ` + dtps.classes[num].recentChangesKeys.map((k, index) => {
-                        if (index < 3) {
-                            if (index == 0) {
-                                var letter = dtps.classes[num].letter;
-                            } else {
-                                var letter = dtps.classes[num].recentChanges[dtps.classes[num].recentChangesKeys[index - 1]].letter;
-                            }
-                            return `<div class="change"><h5 class="changeName"><div class="letter">` + letter + `</div>` + k + `</h5>` + dtps.classes[num].recentChanges[k].alignments.map((alignment) => {
-                                return `<p class="alignmentChange"><span style="color: ` + dtps.cblColor(alignment.score) + `;">` + alignment.score + `</span> ` + alignment.title + `</p>`
-                            }).join("") + `</div>`
-                        } else {
-                            return ``;
-                        }
-                    }).join(""));
-
                     var fix = "";
                     //not enough outcomes meeting A criteria
                     if (dtps.classes[num].gradeCalc.number75Length > dtps.classes[num].gradeCalc.number75LengthA) {
@@ -1725,6 +1646,10 @@ dtps.gradebook = function (num, cb) {
 
                     if (cb) cb(num);
 
+
+                    //temporary variable for if outcome divider is added yet
+                    var dividerAdded = false;
+
                     if (!cb && (dtps.selectedContent == "grades")) $(".classContent").html(`
                     <div style="display: none;" id="whatIfGrade">
                     <div class="letter">--</div>
@@ -1738,18 +1663,19 @@ dtps.gradebook = function (num, cb) {
     ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
     <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
     <div class="classGradeCircle" style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
-    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">` + (dtps.classes[num].gradeCalc.number75thresh * 100).toFixed(0) + `% of outcome scores are ≥
+    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">75% (rounded down) of outcome scores are ≥
     <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
     <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
     <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
     <div style="display: none;" id="classGradeMore">
     <br />
     ` + (dtps.classes[num].letter !== "A" ? `<p style="text-align: center;">` + fix + `</p>` : "") + `
+    <br />
     <table class="u-full-width dtpsTable">
   <thead>
     <tr>
       <th>&nbsp;&nbsp;Final Letter</th>
-      <th>At least 75% of outcome scores are ≥</th>
+      <th>75% (rounded down) of outcome scores are ≥</th>
       <th>No outcome scores below</th>
     </tr>
   </thead>
@@ -1791,11 +1717,10 @@ dtps.gradebook = function (num, cb) {
     </tr>
   </tbody>
 </table>
+` + (dtps.classes[num].gradeCalc.excludesSS ? `<br /><p style="text-align: center; font-weight: bold;">Your grade was calculated without SS since it was higher than it was with SS</p>` : ``) + `
 </div>
 <br />
 <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
-&nbsp;&nbsp;<a onclick="fluid.cards('.card.recentChanges');" style="color: var(--secText, gray); cursor: pointer;">Recent Changes</a>
-&nbsp;&nbsp;<a onclick="dtps.computeClassGrade(dtps.selectedClass, false, undefined, (grade) => alert('Class grade without SS: ' + grade), true);" style="color: var(--secText, gray); cursor: pointer;">Test grade without SS</a>
 </div>
 <br />` : "") + `
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
@@ -1820,7 +1745,7 @@ dtps.gradebook = function (num, cb) {
   <h5 style="font-size: 1.4rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis; margin-top: 0px; margin-right: 40px;">` + dtps.classes[num].outcomes[i].title + `</h5>
   <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
   ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Decaying Average Ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "% / " + (100 - dtps.classes[num].outcomes[i].calculation_int) + `%</div>` : "") + `
-  ` + (false && dtps.classes[num].outcomes[i].lowestScore && (dtps.classes[num].outcomes[i].calculation_int >= 50) ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.3 or higher in this outcome (beta)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
+  ` + (true && dtps.classes[num].outcomes[i].lowestScore && (dtps.classes[num].outcomes[i].calculation_int >= 50) ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.3 or higher in this outcome (beta)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
   <div class="dev" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">bug_report</i> ` + dtps.classes[num].outcomes[i].id + `</div>
   ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
   </div>
@@ -1887,8 +1812,16 @@ dtps.gradebook = function (num, cb) {
                                     if (outcome.gradedAlignments.length == 1) calculatedScore = outcome.gradedAlignments[0].score;
                                     dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes[$(this).attr("id").split("-")[1]] = calculatedScore;
 
+                                    var scores = [];
+                                    var scoresWOSS = [];
+                                    Object.keys(dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes).forEach((k) => {
+                                        var ssIDs = ["2269", "2270"];
+                                        if (!ssIDs.includes(String(k))) scoresWOSS.push(dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes[k])
+                                        scores.push(dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes[k])
+                                    })
+
                                     //get new class grade
-                                    dtps.computeClassGrade(undefined, undefined, Object.values(dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes), (data) => {
+                                    dtps.computeClassGrade(undefined, undefined, scores, scoresWOSS, (data) => {
                                         $("#whatIfGrade .letter").html(data);
                                         $("#whatIfGrade").show();
                                     })
@@ -2611,11 +2544,6 @@ dtps.render = function () {
 
 <div style="border-radius: 30px; top: 50px;" class="card focus close outcomeCard container">
 <i onclick="fluid.cards.close('.card.outcomeCard')" class="material-icons close">close</i>
-<h4>An error occured</h4>
-</div>
-
-<div style="border-radius: 30px; top: 50px;" class="card focus close recentChanges container">
-<i onclick="fluid.cards.close('.card.recentChanges')" class="material-icons close">close</i>
 <h4>An error occured</h4>
 </div>
 
