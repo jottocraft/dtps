@@ -1,4 +1,4 @@
-/* Power+ v2.1.2
+/* Power+ v2.1.3
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
@@ -13,8 +13,8 @@ if (!window.location.href.includes("instructure.com")) {
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 dtps = {
-    ver: 212,
-    readableVer: "v2.1.2",
+    ver: 213,
+    readableVer: "v2.1.3",
     trackSuffix: "",
     fullTrackSuffix: "",
     trackColor: "#ffa500",
