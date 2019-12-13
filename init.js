@@ -1,4 +1,4 @@
-/* Power+ v2.1.3
+/* Power+ v2.1.4
 (c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
@@ -13,8 +13,8 @@ if (!window.location.href.includes("instructure.com")) {
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 dtps = {
-    ver: 213,
-    readableVer: "v2.1.3",
+    ver: 214,
+    readableVer: "v2.1.4",
     trackSuffix: "",
     fullTrackSuffix: "",
     trackColor: "#ffa500",
@@ -330,6 +330,11 @@ dtps.webReq = function (req, url, callback, q) {
 
 //Calculates the letter grade based on an array of assignment scores
 dtps.computeLetterGrade = function (scores) {
+	//disable grade calc
+	return {
+        letter: "--"
+    };
+	
     console.log(scores)
     //sort rollupScores
     scores.sort((a, b) => b - a);
@@ -457,7 +462,7 @@ dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, roll
             excludesSS: excludesSS
             //number75percent: (number75thresh-0.75)/(1-0.75),
             //lowestValuePercent: (),
-        }
+	}
 
         //if there are no outcomes, remember this so the grades tab can be hidden
         if (!data.linked.outcomes.length) dtps.classes[classNum].noOutcomes = true;
@@ -2251,6 +2256,10 @@ dtps.showClasses = function (override) {
     <span class="label name">Dashboard</span>
     <div class="icon"><i class="material-icons">dashboard</i></div>
     </div>
+<div onclick="dtps.cblDashboard();" class="class item overrideClass">
+    <span class="label name">CBL Grades</span>
+    <div class="icon"><i class="material-icons">assessment</i></div>
+    </div>
     <div class="divider"></div>
   ` + dtps.classlist.join("") + `</div>
   <div onclick="$('body').toggleClass('collapsedSidebar'); if ($('body').hasClass('collapsedSidebar')) { $(this).children('i').html('keyboard_arrow_right'); } else {$(this).children('i').html('keyboard_arrow_left');}" init="true" class="collapse">
@@ -2259,7 +2268,7 @@ dtps.showClasses = function (override) {
         if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
         if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
         if ($(".btn.discuss").hasClass("active")) { $(".btn.discuss").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
-        $(".class:not(.google)").click(function (event) {
+        $(".class:not(.google):not(.overrideClass)").click(function (event) {
             if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
             if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
             dtps.chroma();
@@ -2318,7 +2327,7 @@ dtps.showClasses = function (override) {
             if (dtps.selectedClass == "dash") dtps.masterStream(true);
             if (dtps.selectedClass == "announcements") dtps.announcements();
             if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].pagesTab) { $(".btns .btn.pages").show(); } else { $(".btns .btn.pages").hide(); } }
-            if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].noOutcomes) { $(".btns .btn.grades").hide(); } else { $(".btns .btn.grades").show(); } }
+            if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].noOutcomes) { $(".btns .btn.grades").hide(); } else { $(".btns .btn.grades").hide();/*show*/ } }
         });
     }
     if (override == "first") {
