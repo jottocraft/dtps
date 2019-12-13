@@ -1722,6 +1722,10 @@ dtps.gradebook = function (num, cb) {
 <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
 </div>
 <br />` : "") + `
+<div class="card">
+<p>The decaying averages for each outcome are shown below. For class grade calculation, both the normal, unweighted average and decaying average will be calculated for each outcome and the higher one will be used.</p>
+</div>
+<br />
 ` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
                         var keyA = dtps.classes[num].outcomes[a].score,
                             keyB = dtps.classes[num].outcomes[b].score;
@@ -2327,7 +2331,7 @@ dtps.showClasses = function (override) {
             if (dtps.selectedClass == "dash") dtps.masterStream(true);
             if (dtps.selectedClass == "announcements") dtps.announcements();
             if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].pagesTab) { $(".btns .btn.pages").show(); } else { $(".btns .btn.pages").hide(); } }
-            if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].noOutcomes) { $(".btns .btn.grades").hide(); } else { $(".btns .btn.grades").hide();/*show*/ } }
+            if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].noOutcomes) { $(".btns .btn.grades").hide(); } else { $(".btns .btn.grades").show(); } }
         });
     }
     if (override == "first") {
