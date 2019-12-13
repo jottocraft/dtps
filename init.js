@@ -385,8 +385,7 @@ dtps.computeLetterGrade = function (scores) {
     rank = 0;
     if (scores.length == 0) { letter = "--"; rank = null; }
     if ((number75 >= 2.2) && (lowestValue >= 0)) { letter = "C"; rank = 1; }
-    if ((number75 >= 2.6) && (lowestValue >= 2)) { letter = "B-"; rank = 2; }
-    if ((number75 >= 2.6) && (lowestValue >= 2.25)) { letter = "B"; rank = 3; }
+    if ((number75 >= 2.6) && (lowestValue >= 0)) { letter = "B"; rank = 3; }
     if ((number75 >= 2.6) && (lowestValue >= 2.5)) { letter = "B+"; rank = 4; }
     if ((number75 >= 3.3) && (lowestValue >= 2.5)) { letter = "A-"; rank = 5; }
     if ((number75 >= 3.3) && (lowestValue >= 3)) { letter = "A"; rank = 6; }
@@ -1698,12 +1697,7 @@ dtps.gradebook = function (num, cb) {
     <tr ` + (dtps.classes[num].letter == "B" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;B</td>
       <td>2.6</td>
-      <td>2.25</td>
-    </tr>
-    <tr ` + (dtps.classes[num].letter == "B-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>&nbsp;&nbsp;B-</td>
-      <td>2.6</td>
-      <td>2.0</td>
+      <td>0</td>
     </tr>
     <tr ` + (dtps.classes[num].letter == "C" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
       <td>&nbsp;&nbsp;C</td>
