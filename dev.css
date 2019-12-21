@@ -3,8 +3,32 @@ Power+ CSS v2.2.0 [DEV]
 (c) jottocraft 2018-2019
 */
 
+/* POWERPOINTS THEME */
+body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
+--flex-light: #b39a46;
+   --flex-bg: #a78e3a;
+   --flex-text: #ffffff;
+   --flex-sectext: #e4d8ae;
+   --flex-layer1: #867027;
+   --flex-layer2: #726021;
+   --flex-layer3: #5f4f1c;
+   --theme-color: #6d6d6d;
+   --theme-text-color: #b39a46;
+   --links: #686868;
+   --acrylic: black;
+}
+
+/* Fluid UI theme prefs */
+:root {
+	--icons: "Material Icons Outlined", "Material Icons Extended" !important;
+}
+
 .blur * {
     pointer-events: none !important;
+}
+
+.numFont {
+    font-family: Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace !important;
 }
 
 .classContent .card.collapsed {
@@ -35,16 +59,6 @@ body:not(.dark) .acrylicMaterial.sidebar {
     background: none !important;
 }
 
-@font-face {
-    font-family: 'Material Icons Outline';
-    font-style: normal;
-    font-weight: 400;
-    src: url(outline.woff2) format('woff2');
-}
-
-.material-icons {
-    font-family: 'Material Icons Outline';
-}
 
 .fc-today {
     border-radius: 5px;
@@ -122,7 +136,7 @@ body:not(.dark) .classGradeCircle {
     color: var(--themeText);
 }
 
-.progress {
+.progressBar .progress {
     height: 32px;
     background-color: var(--theme);
     margin: -6px;
@@ -342,13 +356,13 @@ body.hasSidebar {
     border-color: var(--secText) !important;
 }
 
-body:not(.dark) .class.main:not(.active) {
+body.dark .class.main:not(.active), body.dark .class.overrideClass:not(.active) {
     color: #ffffffbf !important;
     border-color: #ffffff36 !important;
 }
 
 .class:not(.main) {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .class.main {
@@ -534,7 +548,7 @@ body.dark .tabs.btns .btn:not(.active) {
     color: var(--text);
 }
 
-.card i.close {
+.card:not(.alert) i.close {
     position: absolute;
     right: 0;
     cursor: pointer;
