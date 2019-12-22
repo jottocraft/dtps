@@ -119,6 +119,7 @@ body:not(.dark) .classGradeCircle {
 
 .assignmentChip i {
     vertical-align: middle;
+    margin-right: 7px;
 }
 
 .progressBar {
