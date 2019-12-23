@@ -52,7 +52,7 @@ body:not(.dark) .acrylicMaterial {
 
 body:not(.dark) .acrylicMaterial.sidebar {
     background-color: white !important;
-    box-shadow: 0px 7px 30px rgba(173, 173, 173, 0.28) !important;
+    box-shadow: 10px 0px 30px rgba(173, 173, 173, 0.24) !important;
 }
 
 .fc .fc-button-group>* {
