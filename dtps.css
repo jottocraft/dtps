@@ -381,7 +381,6 @@ body:not(.dark) .class:not(.main):not(.active) {
 .class:not(.main).active {
     background-color: var(--light) !important;
     color: var(--dark) !important;
-    border-color: var(--norm) !important;
 }
 
 .sidebar {
