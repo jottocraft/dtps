@@ -53,4 +53,4 @@ javascript:(function(){jQuery.getScript('https://powerplus.app/init.js');dtpsLoa
 
 <br /><br /><br /><br /><br /><br />
 
-(c) 2018-2019 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
+(c) 2018-2020 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/master/LICENSE)
