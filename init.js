@@ -1,5 +1,5 @@
 /* Power+ v2.1.4
-(c) 2018 - 2019 jottocraft
+(c) 2018 - 2020 jottocraft
 https://github.com/jottocraft/dtps */
 
 //prevent Power+ from breaking when the button is clicked multiple times
@@ -2890,7 +2890,7 @@ dtps.renderLite = function () {
 <div style="text-align: center; padding: 50px 0px;">
   <img style="height: 80px; vertical-align: middle;" src="https://i.imgur.com/2geYYiz.png" />
   <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
-  <p>(c) jottocraft 2018-2019. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a></p>
+  <p>(c) jottocraft 2018-2020. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a></p>
   </div>
 </div>
   </div>`)
