@@ -908,11 +908,11 @@ body.titlebar .items.toolbar {
 	vertical-align: middle;
 }
 
-body:not(.dark) .items.toolbar, body:not(.dark) .items.toolbar i, body:not(.dark) .items.toolbar h4 {
+body:not(.dark) .items.toolbar, body:not(.dark) .items.toolbar i, body:not(.dark) .items.toolbar h4, body:not(.dark) #timeRemaining {
     color: black !important;
 }
 
-body:not(.dark) .header h1 {
+body:not(.dark) #headText {
     color: black !important;
 }
 
