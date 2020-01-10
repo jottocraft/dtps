@@ -215,7 +215,7 @@ body.isolatedGoogleClass .background {
 }
 
 #calendar h2 {
-    font-size: 40px;
+    font-size: 36px;
 }
 
 .fc .fc-button-group>* {
@@ -878,10 +878,34 @@ body.titlebar .items.toolbar {
     position: absolute;
     right: 0;
     top: 0;
-    margin: 15px;
+    margin: 10px;
     color: white;
     padding-right: 10px;
     z-index: 300;
+}
+
+.items.toolbar .itemButton {
+	display: inline-block; 
+	font-size: 12px; 
+	padding: 5px; 
+	margin: 0px 4px; 
+	border-radius: 12px; 
+	cursor: pointer;
+}
+
+.items.toolbar .itemButton i {
+	font-size: 18px; 
+	margin: 0px; 
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+.items.toolbar .itemButton img {
+	width: 18px;
+	height: 18px;
+	margin: 0px; 
+	margin-right: 5px;
+	vertical-align: middle;
 }
 
 body:not(.dark) .items.toolbar, body:not(.dark) .items.toolbar i, body:not(.dark) .items.toolbar h4 {
