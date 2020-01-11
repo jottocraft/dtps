@@ -1,5 +1,5 @@
 /*
-Power+ CSS v2.1.0
+Power+ CSS v2.2.0
 (c) jottocraft 2018-2020
 */
 
@@ -486,6 +486,7 @@ body.titlebar .classContent {
     border-radius: 0px !important;
     font-weight: normal;
     letter-spacing: normal;
+    font-size: 14px;
     border-color: var(--text) !important;
 }
 
@@ -494,10 +495,14 @@ body.titlebar .classContent {
 }
 
 .tabs.btns .btn.active {
-    font-size: 18px;
+    font-size: 16px;
     color: var(--text) !important;
     border-color: var(--text) !important;
     border-bottom: 2px solid var(--text) !important;
+}
+
+.tabs.btns .btn:not(.active) i {
+    font-size: 22px;
 }
 
 body:not(.dark) .tabs.btns .btn:not(.active), body.midnight.dark .tabs.btns .btn:not(.active) {
@@ -531,7 +536,7 @@ body.dark .tabs.btns .btn:not(.active) {
     margin-left: 275px;
     text-align: center;
     color: white;
-    padding-top: 100px;
+    padding-top: 120px;
     z-index: 200;
     position: absolute;
     top: 0;
