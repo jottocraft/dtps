@@ -330,6 +330,10 @@ body.titlebar .sidebar {
     text-overflow: ellipsis;
 }
 
+body.collapsedSidebar .sidebar .bigLogo {
+    display: none;
+}
+
 body.hasSidebar {
     padding: 0px !important;
 }
