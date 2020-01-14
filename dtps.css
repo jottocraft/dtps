@@ -852,6 +852,10 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
     transition: all 0.5s ease-in-out;
 }
 
+.cover.image {
+    transition: all 0.5s ease-in-out;
+}
+
 body:not(.dashboard) .background:before {
     background: linear-gradient(to right bottom, var(--light), var(--background)) !important;
 }
