@@ -17,8 +17,6 @@ For users looking to install Power+, visit the Power+ website by clicking <a hre
 #### Important files in this repo
 - [init.js](https://github.com/jottocraft/dtps/blob/master/init.js): Main script
 - [dtps.css](https://github.com/jottocraft/dtps/blob/master/dtps.css): Main CSS
-- [dev.js](https://github.com/jottocraft/dtps/blob/master/dev.js): Dev script
-- [dev.css](https://github.com/jottocraft/dtps/blob/master/dev.css): Dev CSS
 
 <br /><br />
 
