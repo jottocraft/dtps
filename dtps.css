@@ -45,12 +45,12 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     display: none;
 }
 
-body:not(.lightAcr):not(.dark) .acrylicMaterial {
+body:not(.enableLightAcr):not(.dark) .acrylicMaterial {
     background-color: var(--elements) !important;
     opacity: 0.9 !important;
 }
 
-body:not(.lightAcr):not(.dark) .acrylicMaterial.sidebar {
+body:not(.enableLightAcr):not(.dark) .acrylicMaterial.sidebar {
     background-color: white !important;
     box-shadow: 10px 0px 30px rgba(173, 173, 173, 0.24) !important;
 }
