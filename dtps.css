@@ -52,7 +52,6 @@ body:not(.enableLightAcr):not(.dark) .acrylicMaterial {
 
 body:not(.enableLightAcr):not(.dark) .acrylicMaterial.sidebar {
     background-color: white !important;
-    box-shadow: 10px 0px 30px rgba(173, 173, 173, 0.24) !important;
 }
 
 .fc .fc-button-group>* {
@@ -332,6 +331,10 @@ body.titlebar .sidebar {
 
 body.collapsedSidebar .sidebar .bigLogo {
     display: none;
+}
+
+.sidebar {
+    box-shadow: 10px 0px 30px rgba(173, 173, 173, 0.24) !important;
 }
 
 body.hasSidebar {
