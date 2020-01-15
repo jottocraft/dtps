@@ -54,6 +54,15 @@ body:not(.enableLightAcr):not(.dark) .acrylicMaterial.sidebar {
     background-color: white !important;
 }
 
+body.enableLightAcr:not(.dark) .sidebar .main {
+    color:#000000c9 !important;
+    border-color: #5a5a5a47 !important;
+}
+
+body.enableLightAcr:not(.dark) .sidebar img {
+    filter: brightness(0) opacity(0.45) !important;
+}
+
 .fc .fc-button-group>* {
     background: none !important;
 }
