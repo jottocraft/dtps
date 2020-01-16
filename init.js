@@ -644,6 +644,8 @@ dtps.JS = function (cb) {
 
 //Remove Canvas CSS & header, set document metadata, load CSS
 dtps.setMetadata = function (cb) {
+    dtps.log("Loading CSS");
+    
     if (dtps.embedded) {
         jQuery("head").html("");
         $("body").attr("class", "")
