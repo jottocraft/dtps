@@ -743,7 +743,7 @@ dtps.init = function () {
             })
 
             if (typeof dtpsPrevUser == "undefined") {
-		if (JSON.parse(user).errors) window.location.href = "/?dtpsLogin=true"; //go to login screen
+		if (JSON.parse(user).error || JSON.parse(user).errors) window.location.href = "/?dtpsLogin=true"; //go to login screen
                 dtps.user = JSON.parse(user);
                 dtps.user.obs = JSON.parse(userObs);
                 if (dtps.user.obs[0]) {
