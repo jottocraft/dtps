@@ -642,17 +642,22 @@ dtps.JS = function (cb) {
     }
 }
 
+//set body classes
+dtps.setBodyClasses = function () {
+    $("body").addClass("dashboard");
+    $("body").addClass("dark"); //dark mode by default
+    $("body").addClass("showThemeWindows");
+    $("body").addClass("hasSidebar");
+    if (window.dtpsPreLoader) $("body").addClass("enableLightAcr");
+}
+
 //Remove Canvas CSS & header, set document metadata, load CSS
 dtps.setMetadata = function (cb) {
     dtps.log("Loading CSS");
-    
+
     if (dtps.embedded) {
         jQuery("head").html("");
-        $("body").addClass("dashboard");
-        $("body").addClass("dark"); //dark mode by default
-        $("body").addClass("showThemeWindows");
-        $("body").addClass("hasSidebar");
-        if (window.dtpsPreLoader) $("body").addClass("enableLightAcr");
+        dtps.setBodyClasses();
     }
     document.title = "Power+" + dtps.trackSuffix;
 
@@ -742,7 +747,7 @@ dtps.init = function () {
             })
 
             if (typeof dtpsPrevUser == "undefined") {
-		if (JSON.parse(user).error || JSON.parse(user).errors) window.location.href = "/?dtpsLogin=true"; //go to login screen
+                if (JSON.parse(user).error || JSON.parse(user).errors) window.location.href = "/?dtpsLogin=true"; //go to login screen
                 dtps.user = JSON.parse(user);
                 dtps.user.obs = JSON.parse(userObs);
                 if (dtps.user.obs[0]) {
@@ -2240,6 +2245,7 @@ dtps.gradeTrend = function (ele) {
 dtps.render = function (fromWelcome) {
     if (window.dtpsPreLoader ? !dtps.shouldRender : true) dtps.setMetadata(); //if dtps is not being preloaded, start loading CSS and other metadata
     if (!dtps.shouldRender && fromWelcome) dtps.shouldRender = true;
+    dtps.setBodyClasses(); //set body classes again just in case
 
     //Full names pref
     if (fluid.get("pref-fullNames") == "true") { dtps.fullNames = true; }
