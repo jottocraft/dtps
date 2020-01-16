@@ -1,5 +1,5 @@
-/* Power+ v2.1.4
-(c) 2018 - 2020 jottocraft
+/* Power+ v2.2.0
+(c) 2018 - 2019 jottocraft
 https://github.com/jottocraft/dtps */
 
 //prevent Power+ from breaking when the button is clicked multiple times
@@ -13,53 +13,17 @@ if (!window.location.href.includes("instructure.com")) {
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 dtps = {
-    ver: 214,
-    readableVer: "v2.1.4",
+    ver: 220,
+    readableVer: "v2.2.0",
     trackSuffix: "",
-    fullTrackSuffix: "",
-    trackColor: "#ffa500",
     showLetters: false,
     fullNames: false,
     classes: [],
     latestStream: [],
     explorer: [],
-    embedded: window.location.href.includes("instructure.com"),
-    auth: {
-        accessToken: window.localStorage.accessToken ? window.localStorage.accessToken : undefined,
-        canvasURL: "https://dtechhs.instructure.com",
-        client_id: "146080000000000005",
-        uri: "https://powerplus.app/app",
-        scope: [
-            "url:GET|/api/v1/courses/:course_id/outcome_rollups",
-            "url:GET|/api/v1/users/:id",
-            "url:GET|/api/v1/users/:id/colors",
-            "url:GET|/api/v1/users/:id/dashboard_positions",
-            "url:GET|/api/v1/courses",
-            "url:GET|/api/v1/courses/:course_id/pages",
-            "url:GET|/api/v1/courses/:course_id/discussion_topics",
-            "url:GET|/api/v1/courses/:course_id/discussion_topics/:topic_id/view",
-            "url:GET|/api/v1/courses/:course_id/outcome_results",
-            "url:GET|/api/v1/courses/:course_id/assignment_groups",
-            "url:GET|/api/v1/courses/:course_id/modules",
-            "url:GET|/api/v1/courses/:course_id/front_page",
-            "url:GET|/api/v1/courses/:course_id/pages/:url",
-            "url:GET|/api/v1/outcomes/:id",
-            "url:GET|/api/v1/courses/:course_id/outcome_alignments",
-            "url:GET|/api/v1/announcements",
-            //not currently used in dtps, might be used later on
-            "url:GET|/api/v1/courses/:course_id/assignments",
-            "url:GET|/api/v1/courses/:course_id/assignment_groups/:assignment_group_id/assignments"
-        ]
-    },
-    chromaProfile: {
-        title: "Power+",
-        description: "Razer Chroma effects for Power+ (beta)",
-        author: "jottocraft",
-        domain: "powerplus.app"
-    }
+    embedded: true,
+    danger: document.currentScript && String(document.currentScript.src).includes("canary.js")
 };
-
-if (dtps.trackSuffix !== "") dtps.auth.uri = "https://powerplus.app/dev"
 
 //alert all errors if dtpsDebug enabled (for chromebooks w/o devtools)
 window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
@@ -102,6 +66,69 @@ dtps.cblColor = function (score) {
     return col;
 }
 
+//time to end function from akron
+dtps.timeToEnd = cb => {
+    dtps.webReq("getJSON", "https://project-dtps.firebaseio.com/flags.json", data => {
+        if (data.on) {
+            var min = new Date().getMinutes();
+            if (String(min).length < 2) min = "0" + String(min)
+            var time = Number(String(new Date().getHours()) + String(min))
+            var period = null;
+            var endTime = new Date();
+            if ((new Date().getDay() > 0) && (new Date().getDay() < 6)) {
+                //Weekday
+                if (data.intersession) {
+                    //Intersession
+                    if ((time > 0844) && (time < 0901)) { period = 7; endTime.setHours(9, 0, 0, 0); }
+                    if ((time > 0902) && (time < 1031)) { period = 1; endTime.setHours(10, 30, 0, 0); } //d.lab part 1
+                    if ((time > 1040) && (time < 1201)) { period = 1.5; endTime.setHours(12, 0, 0, 0); } //d.lab part 2
+                    if ((time > 1232) && (time < 1401)) { period = 2; endTime.setHours(14, 0, 0, 0); } //exploration part 1
+                    if ((time > 1406) && (time < 1536)) { period = 2.5; endTime.setHours(15, 35, 0, 0); } //exploration part 2
+                } else {
+                    if (new Date().getDay() == 3) {
+                        //Wednesday
+                        if ((time > 0844) && (time < 0911)) { period = 7; endTime.setHours(9, 10, 0, 0); }
+                        if ((time > 0912) && (time < 1003)) { period = 1; endTime.setHours(10, 2, 0, 0); }
+                        if ((time > 1004) && (time < 1056)) { period = 2; endTime.setHours(10, 55, 0, 0); }
+                        if ((time > 1057) && (time < 1149)) { period = 3; endTime.setHours(11, 48, 0, 0); }
+                        if ((time > 1220) && (time < 1312)) { period = 4; endTime.setHours(13, 11, 0, 0); }
+                        if ((time > 1313) && (time < 1405)) { period = 5; endTime.setHours(14, 4, 0, 0); }
+                        if ((time > 1406) && (time < 1458)) { period = 6; endTime.setHours(14, 57, 0, 0); }
+                    } else {
+                        if ((new Date().getDay() !== 4) || !data.labDay) {
+                            //M, TU, F
+                            if ((time > 0844) && (time < 0916)) { period = 7; endTime.setHours(9, 15, 0, 0); }
+                            if ((time > 0917) && (time < 1013)) { period = 1; endTime.setHours(10, 12, 0, 0); }
+                            if ((time > 1022) && (time < 1118)) { period = 2; endTime.setHours(11, 17, 0, 0); }
+                            if ((time > 1119) && (time < 1215)) { period = 3; endTime.setHours(12, 14, 0, 0); }
+                            if ((time > 1246) && (time < 1342)) { period = 4; endTime.setHours(13, 41, 0, 0); }
+                            if ((time > 1343) && (time < 1439)) { period = 5; endTime.setHours(14, 38, 0, 0); }
+                            if ((time > 1440) && (time < 1536)) { period = 6; endTime.setHours(15, 35, 0, 0); }
+                        } else {
+                            //lab day
+                            if ((time > 0844) && (time < 0931)) { period = 7; endTime.setHours(9, 30, 0, 0); }
+                            if ((time > 0932) && (time < 1038)) { period = 1; endTime.setHours(10, 37, 0, 0); }
+                            if ((time > 1039) && (time < 1145)) { period = 2; endTime.setHours(11, 44, 0, 0); }
+                            if ((time > 1216) && (time < 1322)) { period = 3; endTime.setHours(13, 21, 0, 0); }
+                            if ((time > 1323) && (time < 1429)) { period = 4; endTime.setHours(14, 28, 0, 0); }
+                            if ((time > 1430) && (time < 1536)) { period = 5; endTime.setHours(15, 35, 0, 0); }
+                        }
+                    }
+                }
+            }
+            if (data.customMsg) {
+                if (cb) cb("CUST" + data.customMsg);
+            } else if (endTime !== 0) {
+                if (cb) cb(Math.round((endTime.getTime() - new Date().getTime()) / 60000));
+            } else {
+                if (cb) cb();
+            }
+        } else {
+            if (cb) cb();
+        }
+    })
+}
+
 //Get CBL name
 dtps.cblName = function (rating) {
     var name = "";
@@ -119,50 +146,6 @@ dtps.getParams = function () {
         vars[key] = value;
     });
     return vars;
-}
-
-//dtps.authenticate and dtps.webReq work together to ensure the user is authenticated
-//the dtps client must not be embedded for dtps.authenticate to work
-dtps.authenticate = function (cb) {
-    /*if (window.localStorage.accessToken) {
-        //manually defined access token
-        cb();
-    } else {
-        var params = dtps.getParams();
-        window.history.replaceState(null, null, window.location.pathname);
-        if (params.code && (params.state == window.localStorage.authState)) {
-            //get tokens
-            dtps.webReq("backend", "/login/oauth2/token?client_id=" + dtps.auth.client_id + "&redirect_uri=" + dtps.auth.uri + "&grant_type=authorization_code&code=" + params.code, function (res) {
-                var data = JSON.parse(res);
-                window.localStorage.setItem("access_token", data.access_token);
-                window.localStorage.setItem("refresh_token", data.refresh_token);
-                window.localStorage.setItem("expires_at", new Date(new Date().getTime() + (1000 * data.expires_in)));
-                dtps.accessToken = data.access_token;
-                cb();
-            });
-        } else {
-            if (window.localStorage.refresh_token) {
-                //refresh token exists
-                if (window.localStorage.expires_at > new Date().getTime()) {
-                    //access token not expired
-                    dtps.auth.accessToken = window.localStorage.access_token;
-                } else {
-                    //get new access token
-                    //COMING SOON
-                }
-            } else {
-                //show login screen
-                var state = "WinterCreek" + Math.floor(1000 + Math.random() * 9000);
-                window.localStorage.authState = state;
-                window.location.href = dtps.auth.canvasURL + "/login/oauth2/auth?client_id=" + dtps.auth.client_id + "&scope=" + dtps.auth.scope.join(" ") + "&purpose=" + encodeURI(navigator.platform) + "&response_type=code&state=" + state + "&redirect_uri=" + dtps.auth.uri
-
-            }
-        }
-    }*/
-
-    //authentication disabled
-    console.error("Authentication disabled");
-    cb();
 }
 
 //Logs debugging messags to both the normal JS console and also Power+'s included debugging log
@@ -196,8 +179,8 @@ dtps.nativeAlert = function (text, sub, loadingSplash) {
     if (text == undefined) var text = "";
     if (sub == undefined) var sub = "";
     if (loadingSplash) {
-        if (dtps.embedded) {
-            jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%;height: 100%;z-index: 500;background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);">&nbsp;
+        if (dtps.embedded && !window.dtpsPreLoader) {
+            jQuery("body").append(`<div id="dtpsNativeOverlay" class="ui-widget-overlay" style="position: fixed; top: 0px; left: 0px; width: 100%;height: 100%;z-index: 500;background: #191919; backdrop-filter: blur(10px);">&nbsp;
             <h1 style="position: fixed;font-size: 125px;background: -webkit-linear-gradient(#f9ca06, #efdf0d);-webkit-background-clip: text;-webkit-text-fill-color: transparent;font-weight: bolder;font-family: Product sans;text-align: center;top: 200px;width: 100%;">Power+</h1><h5 style="font-family: Product sans;font-size: 30px;color: gray;width: 100%;text-align: center;position: fixed;top: 375px;">` + sub + `</h5><div class="spinner" style="margin-top: 500px;"></div>
 <style>@font-face{font-family: 'Product sans'; font-display: auto; font-style: normal; font-weight: 400; src: url(https://fluid.js.org/product-sans.ttf) format('truetype');}.spinner { width: 40px; height: 40px; margin: 40px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style></div>`)
         }
@@ -233,20 +216,25 @@ dtps.webReq = function (req, url, callback, q) {
     if ((dtps.requests[url] == undefined) || url.includes("|") || (q && q.forceLoad)) {
         //Use backend request instead of canvas request for standalone Power+
         if ((req == "canvas") && !dtps.embedded) req = "backend"
+        //jQuery.getJSON w/ cache request
+        if (req == "getJSON") {
+            $.getJSON(url, data => {
+                if (callback) callback(data, q);
+                if (q ? !q.noCache : true) dtps.requests[url] = data;
+            });
+        }
         //"Canvas" request type for making a GET request to the Canvas API
         if (req == "canvas") {
-            dtps.log("Making DTPS Canvas web request")
             dtps.http[url] = new XMLHttpRequest();
             dtps.http[url].onreadystatechange = function () {
                 if (this.readyState == 4) {
                     if (this.status == 200) {
                         if (callback) callback(this.responseText, q);
                         if (q ? !q.noCache : true) dtps.requests[url] = this.responseText;
-                        dtps.log("Returning DTPS data")
                     } else {
                         if (callback) callback(JSON.stringify({ error: this.status }), q);
                         dtps.requests[url] = JSON.stringify({ error: this.status });
-                        dtps.log("DTPS webReq error" + this.status)
+                        console.warn("DTPS webReq error" + this.status)
                     }
                 }
             };
@@ -278,28 +266,6 @@ dtps.webReq = function (req, url, callback, q) {
             dtps.http[url].setRequestHeader("X-CSRF-Token", decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0])
             dtps.http[url].send("_method=POST&collapse=" + q.collapse + "&authenticity_token=" + decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0]);
         }
-        //"backend" request type for making a GET request to the Canvas API w/ jottocraft.com backend
-        if (req == "backend") {
-            dtps.http[url] = new XMLHttpRequest();
-            dtps.http[url].onreadystatechange = function () {
-                if (this.readyState == 4) {
-                    if (this.status == 200) {
-                        if (callback) callback(this.responseText, q);
-                        dtps.requests[url] = this.responseText;
-                        dtps.log("Returning DTPS data")
-                    } else {
-                        if (callback) callback(JSON.stringify({ error: this.status }), q);
-                        dtps.requests[url] = JSON.stringify({ error: this.status });
-                        dtps.log("DTPS webReq error" + this.status)
-                    }
-                }
-            };
-            dtps.http[url].open("GET", "https://lms.jottocraft.com:2755" + url, true);
-            dtps.http[url].setRequestHeader("Accept", "application/json+canvas-string-ids");
-            dtps.http[url].setRequestHeader("dtps", "WinterCreek/" + dtps.ver);
-            dtps.http[url].setRequestHeader("Authorization", "Bearer " + dtps.auth.accessToken);
-            dtps.http[url].send();
-        }
         //"canSUBMIT" request type for submitting assignments using the Canvas API (POST request)
         if (req == "canSUBMIT") {
             console.log("canSUBMIT")
@@ -328,173 +294,313 @@ dtps.webReq = function (req, url, callback, q) {
     }
 }
 
-//Calculates the letter grade based on an array of assignment scores
-dtps.computeLetterGrade = function (scores) {
-	//disable grade calc
-	return {
-        letter: "--"
-    };
-	
-    console.log(scores)
-    //sort rollupScores
-    scores.sort((a, b) => b - a);
+//GRADE CALCULATION
+/*
+    Starting with Power+ v2.2.0 (Jan 2020), fetching outcome scores & rollups is seperate from grade calculation itself 
+    ALL grade calc stuff must be in dtps.gradeCalc. vanilla JS only and NO refrences to any dtps variables can be made so it can be ported to other Power+ apps.
 
-    //the highest value 75% of outcomes are greater than or equal to
-    //number75thresh is the percentage of assignments >= number75. number75thresh is always >= 0.75 && <= 1 (update: actually maybe not)
-    //number75length is the amount of outcomes needed to satisfy 75% criteria thing
-    //number75lengthA is amount of outcomes satisfying the A requirement for the 75% criteria thing
-    //moreA is how many more outcomes are not at least 3
-    //number75per is the percentage used
-    var number75per = 0.75;
-    var number75 = null;
-    var number75thresh = null;
-    var number75Length = Math.floor(scores.length * number75per);
-    var number75LengthA = 0;
-    var moreA = 0;
-    scores.map((s) => {
-        if (s >= 3.3) {
-            number75LengthA++;
+    OUTCOME OBJECT FORMAT (for run function):
+        - SAME AS CANVAS OUTCOME FORMAT W/ ADDED ROLLUP PROP AND ALIGNMENTS ARRAY
+        - assessmentS ARRAY IS SAME AS CANVAS ALIGNMENTS FORMAT (OUTCOME RESULTS) WITH ADDED TITLE PROP
+        (sort of) similar to this:
+        {
+            id: 1234,
+            title: "outcome name",
+            rollup: 3,
+            assessments: [
+                {
+                    id: 1234,
+                    title: "epic assignment",
+                    score: 4
+                }
+            ]
         }
-        if (s < 3) {
-            moreA++;
-        }
-    })
 
-    //test values
-    var testValues = [3.3, 2.6, 2.2]
-
-    for (var i = 0; i < testValues.length; i++) {
-        //make sure a higher number for number75 isn't already found
-        if (number75 == null) {
-            //array of numbers equal to or greater than the testing value
-            var equalOrGreater = [];
-
-            //check every score to see if it is >= the test value
-            for (var ii = 0; ii < scores.length; ii++) {
-                if (scores[ii] >= testValues[i]) equalOrGreater.push(scores[ii]);
+    NOTE: for letter indexes, lower is better
+*/
+dtps.gradeCalc = {
+    letters: ["A", "A-", "B+", "B", "B-", "C", "I"], //This MUST be highest -> lowest
+    percentageEq: [100, 90, 88, 84, 80, 75, 0], //percentage for each letter for grades tab in settings
+    params: {
+        sem2: {
+            percentage: {
+                "A": 3.3,
+                "A-": 3.3,
+                "B+": 2.6,
+                "B": 2.6,
+                "B-": 2.6,
+                "C": 2.2,
+                "I": 0
+            },
+            lowest: {
+                "A": 3,
+                "A-": 2.5,
+                "B+": 2.2,
+                "B": 1.8,
+                "B-": 1.5,
+                "C": 1.5,
+                "I": 0
             }
-
-            //if the amount of outcomes meeting the criteria are greater than or equal to the amount of outcomes needed, number75 is the test value
-            if (equalOrGreater.length >= number75Length) {
-                number75 = testValues[i];
-                number75thresh = (equalOrGreater.length / scores.length);
-            }
-        }
-    }
-
-    //since scores is sorted greatest to least, the last value is the smallest
-    var lowestValue = scores[scores.length - 1];
-
-    //get letter grade
-    var letter = "I";
-    rank = 0;
-    if (scores.length == 0) { letter = "--"; rank = null; }
-    if ((number75 >= 2.2) && (lowestValue >= 0)) { letter = "C"; rank = 1; }
-    if ((number75 >= 2.6) && (lowestValue >= 0)) { letter = "B"; rank = 3; }
-    if ((number75 >= 2.6) && (lowestValue >= 2.5)) { letter = "B+"; rank = 4; }
-    if ((number75 >= 3.3) && (lowestValue >= 2.5)) { letter = "A-"; rank = 5; }
-    if ((number75 >= 3.3) && (lowestValue >= 3)) { letter = "A"; rank = 6; }
-
-    return {
-        number75: number75,
-        number75thresh: number75thresh,
-        number75Length: number75Length,
-        number75LengthA: number75LengthA,
-        lowestValue: lowestValue,
-        moreA: moreA,
-        rank: rank,
-        letter: letter
-    };
-}
-
-//Fetches grades, calls dtps.computeLetter grade with and without SS, then saves the class grade
-dtps.computeClassGrade = function (num, renderSidebar, rollupScoreOverride, rollupScoreOverrideWOSS, cb) {
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num ? num : 0].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (resp, classNum) {
-        var data = JSON.parse(resp);
-        var rollups = data.rollups[0];
-
-        //array of outcome averages sorted from highest to lowest. rollupscoreoverride is optional for whatif grades
-        var rollupScores = rollupScoreOverride || rollups.scores.map(function (score) { return score.score; });
-
-        //array of outcome averages without SS
-        var ssIDs = ["2269", "2270"];
-        rollupScoresWOSS = [];
-        for (var i = 0; i < rollups.scores.length; i++) {
-            if (!ssIDs.includes(rollups.scores[i].links.outcome)) {
-                rollupScoresWOSS.push(rollups.scores[i].score);
+        },
+        sem1: {
+            percentage: {
+                "A": 3.3,
+                "A-": 3.3,
+                "B+": 2.6,
+                "B": 2.6,
+                "B-": 2.6,
+                "C": 2.2,
+                "I": 0
+            },
+            lowest: {
+                "A": 3,
+                "A-": 2.5,
+                "B+": 2.5,
+                "B": 0,
+                "B-": 0,
+                "C": 0,
+                "I": 0
             }
         }
-        if (rollupScoreOverrideWOSS) rollupScoresWOSS = rollupScoreOverrideWOSS;
-        console.log(rollupScores, rollupScoresWOSS)
+    },
+    run: function (outcomes, formula = "sem2") { //Array of outcomes -> letter grade w/ params
+        //formula param is for the type of grade calc (default sem2)
+        //since semester 1 and semester 2 grade calc are extremely similar, they share the same getLetter function
+        //IMPORTANT NOTE: run will NOT return -- for a grade. If a class has no outcomes, that must be determined before this is ran (probably in fetch function)
 
-        var results = dtps.computeLetterGrade(rollupScores)
-        var resultsWOSS = dtps.computeLetterGrade(rollupScoresWOSS)
-        var excludesSS = false;
-        if (resultsWOSS.rank > results.rank) {
-            calculated = resultsWOSS;
-            excludesSS = true;
-        } else {
-            calculated = results;
-        }
+        // ------- STEP 1: CALCULATE OUTCOME AVERAGES -------
+        outcomes.forEach(outcome => {
+            if (outcome.assessments && outcome.assessments.length) { //only calculate score when there are outcome assessments
+                var score = outcome.rollup || 0; //default: use rollup (sem2 calculation prevents this from being used by not including a rollup prop. this will change when sem1 is removed)
+                var scoreType = "rollup";
 
-        //hide dlab grades
-        //keywords should be in all uppercase
-        var dlabKeywords = ["D.LAB", "DLAB", "D-LAB", "OCT19", "JAN20", "MAR20", "JUN20"];
-        dtps.classes[num] && dlabKeywords.forEach((keyword) => {
-            if (dtps.classes[num].name.toUpperCase().includes(keyword)) calculated.letter = "--";
+                //calculate outcome average
+                var sum = 0;
+                outcome.assessments.forEach(assessment => sum += assessment.score);
+                outcome.average = sum / outcome.assessments.length;
+
+                if (outcome.average > score) { score = outcome.average; scoreType = "average"; } //if average > score, set score & scoretype to average
+                outcome.score = score; //add score prop to outcome with highest score
+                outcome.scoreType = scoreType; //add scoreType prop so gradebook knows which was used
+            }
         });
 
-        if ((classNum == undefined) && cb) {
-            cb(calculated.letter);
-            return;
+
+        // -------   STEP 2: CALCULATE LETTER GRADES  -------
+        var gradeVariations = [];
+
+        //with ALL outcomes
+        gradeVariations.push(this.getLetter(outcomes.map(outcome => outcome.score), formula, "all"));
+
+        //with all outcomes, excluding SS
+        var outcomesWithoutSS = [];
+        outcomes.forEach(outcome => {
+            var isSS = false;
+            var keywords = ["SS", "Self-Direction", "Self Direction", "Collaboration"]; //keywords that will trigger SS filter
+
+            keywords.forEach(keyword => {
+                if (outcome.title.includes(keyword)) isSS = true; //for each keyword, if outcome title includes keyword, trigger SS filter
+            })
+
+            if (!isSS) outcomesWithoutSS.push(outcome) //if it isn't SS, add this outcome to list of outcomes without SS
+        });
+        gradeVariations.push(this.getLetter(outcomesWithoutSS.map(outcome => outcome.score), formula, "excludeSS")); //calculate grade without SS
+
+
+        // -------     STEP 3: CHOOSE HIGHEST GRADE   -------
+        var highestVariation = null;
+        var letterType = null;
+        gradeVariations.forEach(variation => {
+            if (!highestVariation) highestVariation = variation; //if no highest variation exists, assume this is the highest
+            if (highestVariation && (variation.letterIndex < highestVariation.letterIndex)) {
+                //variation has a lower letter index (higher grade) than the current highest
+                //also this means that the variations aren't all the same, so type should be shown
+                highestVariation = variation;
+                letterType = variation.type;
+            }
+        });
+
+
+        var letter = highestVariation.letter;
+        var report = highestVariation.report;
+
+        return {
+            letter: letter, //final calculated letter
+            letterType: letterType, //letter type for gradebook
+            variations: gradeVariations, //save all grade variations for gradebook features
+            report: report, //report from getLetter, including things such as number75 and lowest outcome
+            formula: formula //grade calc formula
         }
+    },
+    getLetter: function (allOutcomeAvgs, formula, type) { //number array of outcome averages -> letter grade. Type var is for keeping track on letter type and has no effect. Formula is type of grade calc.
+        var report = {}; //grade calculation report for gradebook stuff
 
-        if (fluid.get('pref-calcGrades') !== "false") dtps.classes[classNum].letter = calculated.letter;
+        var outcomeAvgs = []; //create new array for outcome averages
+        allOutcomeAvgs.forEach(avg => { if (avg !== undefined) { outcomeAvgs.push(avg) } }) //only add outcome averages that aren't undefined
+        outcomeAvgs.sort((a, b) => b - a); //sort highest -> lowest
 
-        //store grade calculation variables to show them in the gradebook
-        dtps.classes[classNum].gradeCalc = {
-            lowestValue: calculated.lowestValue,
-            number75: (calculated.number75 !== null ? calculated.number75 : ""),
-            number75thresh: calculated.number75thresh,
-            number75Length: calculated.number75Length,
-            number75LengthA: calculated.number75LengthA,
-            moreA: calculated.moreA,
-            excludesSS: excludesSS
-            //number75percent: (number75thresh-0.75)/(1-0.75),
-            //lowestValuePercent: (),
-	}
+        var letters = []; //An array of letter grades from each criteria. The lowest letter will be used for final grade.
 
-        //if there are no outcomes, remember this so the grades tab can be hidden
-        if (!data.linked.outcomes.length) dtps.classes[classNum].noOutcomes = true;
 
-        dtps.computedClassGrades++;
-        if (renderSidebar) {
-            if (calculated.letter !== "--") {
-                if (calculated.letter.includes("A")) gpa.push(4)
-                if (calculated.letter.includes("B")) gpa.push(3)
-                if (calculated.letter.includes("C")) gpa.push(2)
-                if (calculated.letter.includes("I")) gpa.push(0)
-                if (calculated.letter == "I") score = 0;
-                if (calculated.letter == "C") score = 75;
-                if (calculated.letter == "B-") score = 80;
-                if (calculated.letter == "B") score = 85;
-                if (calculated.letter == "B+") score = 88;
-                if (calculated.letter == "A-") score = 92;
-                if (calculated.letter == "A") score = 100;
-                dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[classNum].col + `">
-            <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[classNum].subject + ` (` + calculated.letter + `)</div>
-            <div class="progress" style="background-color: var(--light); width: calc(` + score + `% - 300px);"></div></div>`)
+        // ------- CRITERIA 1: PERCENTAGE OF OUTCOMES -------
+        var percentage = .75;
+        var numOutcomesRequired = Math.floor(outcomeAvgs.length * percentage);
+
+        report.number75 = outcomeAvgs[numOutcomesRequired - 1]; // 75% of outcomes >= number75
+        report.number75thresh = numOutcomesRequired; //save threshold for gradebook features
+        if (outcomeAvgs.length == 1) report.number75 = outcomeAvgs[0]; //if there is only 1 outcome, that outcome is number75
+        var bestLetter = Infinity; //best letter index
+
+        //test each letter
+        this.letters.forEach((letter, i) => {
+            if (report.number75 >= this.params[formula].percentage[letter]) { //can get this letter w/ number75
+                if (i < bestLetter) bestLetter = i; //letter is better
+            }
+        });
+
+        letters.push(bestLetter);
+
+
+        // -------  CRITERIA 2: LOWEST OUTCOME SCORE  -------
+        report.lowestScore = outcomeAvgs[outcomeAvgs.length - 1];
+        var bestLetter = Infinity; //best letter index
+
+        //test each letter
+        this.letters.forEach((letter, i) => {
+            if (report.lowestScore >= this.params[formula].lowest[letter]) { //can get this letter w/ lowestScore
+                if (i < bestLetter) bestLetter = i; //letter is better
+            }
+        });
+
+        letters.push(bestLetter);
+
+
+        // -------          GET FINAL LETTER          -------
+        var letterIndex = Math.max.apply(Math, letters); //get lowest letter (highest letter index) from array and get letter
+        var letter = this.letters[letterIndex];
+
+        return {
+            letter: letter,
+            letterIndex: letterIndex,
+            report: report,
+            formula: formula,
+            type: type
+        };
+    }
+}
+
+//Calculates, stores to DTPS stuff, and renders class grades
+dtps.renderGrade = (num, cb) => {
+    dtps.fetchOutcomes(num, () => {
+
+        if (dtps.classes[num].noGrades || dtps.classes[num].isDLab) {
+            //there aren't any grades yet or its dlab
+            dtps.classes[num].letter = "--";
+        } else {
+            dtps.classes[num].gradeCalc = dtps.gradeCalc.run(dtps.classes[num].outcomes, dtps.classes[num].semester == "S1" ? "sem1" : "sem2"); //save all grade calc stuff for gradebook
+            dtps.classes[num].letter = dtps.classes[num].gradeCalc.letter; //save letter grade
+
+            /*
+                Grade change vars:
+                gradeHistory-ID: current|previous (i.e. "A|B+") represents a change of B+ -> A
+                if there is only one grade, it is the current one
+            */
+            if (window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id)) {
+                var cachedCurrent = window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id).split("|")[0];
+                var cachedPrevious = window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id).split("|")[1];
+
+                if (cachedCurrent !== dtps.classes[num].gradeCalc.letter) {
+                    //Grade change
+                    window.localStorage.setItem("gradeHistory-" + dtps.classes[num].id, dtps.classes[num].gradeCalc.letter + "|" + cachedCurrent);
+                    dtps.classes[num].gradeCalc.previousGrade = cachedCurrent;
+                }
+
+                if ((cachedCurrent == dtps.classes[num].gradeCalc.letter) && cachedPrevious) {
+                    //previous grade is already saved
+                    dtps.classes[num].gradeCalc.previousGrade = cachedPrevious;
+                }
+            } else {
+                //no history yet. store current grade
+                window.localStorage.setItem("gradeHistory-" + dtps.classes[num].id, dtps.classes[num].gradeCalc.letter);
             }
         }
-        if ((dtps.computedClassGrades == dtps.classes.length) && renderSidebar) {
-            dtps.showClasses(true);
-            var total = 0;
-            for (var i = 0; i < gpa.length; i++) {
-                total += gpa[i];
+
+        dtps.showClasses(true); //re-render sidebar
+
+        var gpa = [];
+        dtps.classes.forEach((course) => {
+            if (course.letter && (course.letter !== "--")) {
+                if (course.letter.includes("A")) gpa.push(4);
+                if (course.letter.includes("B")) gpa.push(3);
+                if (course.letter.includes("C")) gpa.push(2);
+                if (course.letter.includes("I")) gpa.push(1);
             }
-            dtps.gpa = (total / gpa.length).toFixed(2);
+        });
+        var total = 0; //calculate GPA
+        for (var i = 0; i < gpa.length; i++) total += gpa[i];
+        dtps.gpa = (total / gpa.length).toFixed(1);
+        dtps.gradeHTML[0] = '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>';
+
+        if (dtps.classes[num].letter !== "--") {
+            dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[num].col + `">
+            <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[num].subject + ` (` + dtps.classes[num].letter + `)</div>
+            <div class="progress" style="background-color: var(--light); width: calc(` + dtps.gradeCalc.percentageEq[dtps.gradeCalc.letters.indexOf(dtps.classes[num].letter)] + `% - 300px);"></div></div>`)
         }
-    }, num);
+    })
+}
+
+//Fetches outcomes, rollups, alignments
+dtps.fetchOutcomes = (num, cb) => {
+    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", (resp) => { //rollups
+        var rollupData = JSON.parse(resp).rollups[0].scores;
+        var outcomeData = JSON.parse(resp).linked.outcomes;
+
+        dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?per_page=100&include[]=alignments&user_ids[]=" + dtps.user.id, function (respp) { //alignments
+            var assessmentData = JSON.parse(respp).outcome_results;
+            var alignmentData = JSON.parse(respp).linked.alignments;
+
+            //Add outcome to class
+            dtps.classes[num].outcomes = [];
+            dtps.classes[num].outcomeIDs = [];
+            outcomeData.forEach(outcome => {
+                outcome.assessments = [];
+                dtps.classes[num].outcomes.push(outcome);
+                dtps.classes[num].outcomeIDs.push(outcome.id);
+            });
+
+            //Add rollup to each outcome (sem1 grade calc only)
+            if (dtps.classes[num].semester == "S1") {
+                rollupData.forEach(rollup => {
+                    dtps.classes[num].outcomes[dtps.classes[num].outcomeIDs.indexOf(rollup.links.outcome)].rollup = rollup.score;
+                });
+            }
+
+            //Add assessments to each outcome
+            if (assessmentData.length == 0) dtps.classes[num].noGrades = true; //if there aren't any assessments yet, set noGrades prop to true
+            assessmentData.forEach(assessment => {
+                //get name for assessment
+                assessment.name = null;
+                alignmentData.forEach(alignment => { //search alignment data for assessment assignment name
+                    if (alignment.id == assessment.links.alignment) assessment.title = alignment.name;
+                })
+
+                if (assessment.score !== null) {
+                    dtps.classes[num].outcomes[dtps.classes[num].outcomeIDs.indexOf(assessment.links.learning_outcome)].assessments.push(assessment); //add assessment to outcome if score isn't null
+                }
+            })
+
+            //now that all of the assessments have been added to each outcome, they need to be sorted by date oldest -> newest
+            dtps.classes[num].outcomes.forEach(outcome => {
+                outcome.assessments.sort((a, b) => {
+                    return new Date(a.submitted_or_assessed_at) - new Date(b.submitted_or_assessed_at);
+                });
+            })
+
+            if (!dtps.classes[num].outcomes.length) dtps.classes[num].noOutcomes = true; //disable grades tab if there are no outcomes
+
+            if (cb) cb();
+        });
+    });
 }
 
 dtps.explore = function (path) {
@@ -536,6 +642,54 @@ dtps.JS = function (cb) {
     }
 }
 
+//Remove Canvas CSS & header, set document metadata, load CSS
+dtps.setMetadata = function (cb) {
+    if (dtps.embedded) {
+        jQuery("head").html("");
+        $("body").attr("class", "")
+        $("body").addClass("dashboard");
+        $("body").addClass("dark"); //dark mode by default
+        $("body").addClass("showThemeWindows");
+        $("body").addClass("hasSidebar");
+        if (window.dtpsPreLoader) $("body").addClass("enableLightAcr");
+    }
+    document.title = "Power+" + dtps.trackSuffix;
+
+    $("link").remove();
+    jQuery("<link/>", {
+        rel: "shortcut icon",
+        type: "image/png",
+        href: "https://powerplus.app/favicon.png"
+    }).appendTo("head");
+    jQuery("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "https://cdn.jottocraft.com/fluid/v4.min.css"
+    }).appendTo("head");
+    jQuery("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
+    }).appendTo("head");
+    jQuery("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "https://fonts.googleapis.com/css?family=Material+Icons+Outlined"
+    }).appendTo("head");
+
+    jQuery("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "https://powerplus.app/dtps.css"
+    }).appendTo("head");
+
+    jQuery("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
+    }).appendTo("head");
+}
+
 //Starts Power+, and renders if running a non-embedded client
 dtps.init = function () {
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
@@ -557,6 +711,8 @@ dtps.init = function () {
     if (dtps.shouldRender && !dtps.showChangelog) {
         dtps.nativeAlert("Loading...", undefined, true);
     }
+
+    if (window.dtpsPreLoader) dtps.setMetadata(); //start loading CSS files early if dtps is being preloaded
 
     //add basic explorer items
     dtps.explorer.push({ name: "/users/self/observees", path: "/api/v1/users/self/observees" });
@@ -594,11 +750,10 @@ dtps.init = function () {
                 dtpsPrevUser = true;
             }
 
-            sudoers = ["669", "672", "209", "560"]
+            //User profile badges
+            sudoers = ["669", "672", "209", "560", ""]
             if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-            contributors = ["669", "672", "560"]
-            if (contributors.includes(dtps.user.id)) { jQuery("body").addClass("contributor"); }
-            if (dtps.user.id == "669") { jQuery("body").addClass("dev"); fluidThemes[0].push("oni"); dtps.log("Dev mode enabled"); }
+            if (dtps.user.id == "669") { jQuery("body").addClass("dev"); fluidThemes[0].push("oni"); dtps.log("!! DEVELOPER MODE ENABLED !!"); }
             if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
             if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
 
@@ -676,7 +831,7 @@ dtps.init = function () {
                             var colors = JSON.parse(colorsResp);
                             var dashboard = JSON.parse(dashboardResp);
                             var data = JSON.parse(resp);
-                            dtps.gradeHTML = [];
+                            dtps.gradeHTML = [""]; //add empty string at index 0 for gpa
                             data.sort(function (a, b) {
                                 var keyA = dashboard.dashboard_positions["course_" + a.id],
                                     keyB = dashboard.dashboard_positions["course_" + b.id];
@@ -685,70 +840,80 @@ dtps.init = function () {
                                 return 0;
                             });
                             for (var i = 0; i < data.length; i++) {
-                                var name = data[i].name;
-                                var subject = name.split(" - ")[0];
-                                var icon = null;
-                                if (data[i].name !== data[i].course_code) {
-                                    //Canvas class manually renamed
-                                    subject = null;
-                                }
-                                if (subject == null) var subject = name.split(" - ")[0];
-                                if (colors.custom_colors["course_" + data[i].id]) {
-                                    var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
-                                    //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
-                                    if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
-                                } else {
-                                    var filter = ""
-                                }
-                                pagesTab = false;
-                                for (var ii = 0; ii < data[i].tabs.length; ii++) {
-                                    if (data[i].tabs[ii].id == "pages") pagesTab = true;
-                                }
-                                dtps.classes.push({
-                                    name: name,
-                                    subject: subject,
-                                    description: data[i].public_description,
-                                    totalStudents: data[i].total_students,
-                                    favorite: data[i].is_favorite,
-                                    defaultView: data[i].default_view,
-                                    icon: icon,
-                                    col: filter,
-                                    pagesTab: pagesTab,
-                                    syllabus: data[i].syllabus_body,
-                                    norm: colors.custom_colors["course_" + data[i].id],
-                                    light: tinycolor(colors.custom_colors["course_" + data[i].id]).brighten(20).toHexString(),
-                                    dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
-                                    isBright: (dtps.filter(colors.custom_colors["course_" + data[i].id]) ? false : !tinycolor(colors.custom_colors["course_" + data[i].id]).isDark()),
-                                    id: data[i].id,
-                                    //collection of data used to calculate a letter grade
-                                    grades: {},
-                                    grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
-                                    letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") !== "false" ? false : "--")),
-                                    num: i,
-                                    tmp: {},
-                                    image: data[i].image_download_url,
-                                    teacher: {
-                                        name: data[i].teachers[0].display_name,
-                                        prof: data[i].teachers[0].avatar_image_url
+                                if (data[i].end_at ? new Date() < new Date(data[i].end_at) : true) {
+                                    //inactive class
+                                    var name = data[i].name;
+                                    var subject = name.split(" - ")[0];
+                                    var icon = null;
+                                    if (data[i].name !== data[i].course_code) {
+                                        //Canvas class manually renamed
+                                        subject = null;
                                     }
-                                })
-                                if (!dtps.filter(colors.custom_colors["course_" + data[i].id])) {
-                                    dtps.colorCSS.push(`\n.` + dtps.classes[i].col + ` {
-	--light: ` + dtps.classes[i].light + `;
-	--norm: ` + dtps.classes[i].norm + `;
- 	--dark: ` + dtps.classes[i].dark + `;
-  --filterText: ` + (dtps.classes[i].isBright ? dtps.classes[i].dark : "white") + `;
-	--grad: linear-gradient(to bottom right, ` + dtps.classes[i].light + `, ` + dtps.classes[i].dark + `);;
+                                    if (subject == null) var subject = name.split(" - ")[0];
+                                    if (colors.custom_colors["course_" + data[i].id]) {
+                                        var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
+                                        //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
+                                        if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+                                    } else {
+                                        var filter = ""
+                                    }
+                                    pagesTab = false;
+                                    for (var ii = 0; ii < data[i].tabs.length; ii++) {
+                                        if (data[i].tabs[ii].id == "pages") pagesTab = true;
+                                    }
+                                    var isDLab = false;
+                                    var dlabKeywords = ["D.LAB", "DLAB", "D-LAB", "OCT19", "JAN20", "MAR20", "JUN20"];
+                                    dlabKeywords.forEach(keyword => {
+                                        if (name.includes(keyword)) isDLab = true;
+                                    });
+                                    dtps.classes.push({
+                                        name: name,
+                                        subject: subject,
+                                        description: data[i].public_description,
+                                        totalStudents: data[i].total_students,
+                                        favorite: data[i].is_favorite,
+                                        defaultView: data[i].default_view,
+                                        semester: name.split(" - ")[1],
+                                        icon: icon,
+                                        isDLab: isDLab,
+                                        col: filter,
+                                        pagesTab: pagesTab,
+                                        syllabus: data[i].syllabus_body,
+                                        norm: colors.custom_colors["course_" + data[i].id],
+                                        light: tinycolor(colors.custom_colors["course_" + data[i].id]).brighten(20).toHexString(),
+                                        dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
+                                        isBright: (dtps.filter(colors.custom_colors["course_" + data[i].id]) ? false : !tinycolor(colors.custom_colors["course_" + data[i].id]).isDark()),
+                                        id: data[i].id,
+                                        //collection of data used to calculate a letter grade
+                                        grades: {},
+                                        grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
+                                        letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") !== "false" ? false : "--")),
+                                        num: i,
+                                        tmp: {},
+                                        image: data[i].image_download_url,
+                                        teacher: {
+                                            name: data[i].teachers[0].display_name,
+                                            prof: data[i].teachers[0].avatar_image_url
+                                        }
+                                    })
+                                    var classNum = dtps.classes.length - 1;
+                                    if (!dtps.filter(colors.custom_colors["course_" + data[i].id])) {
+                                        dtps.colorCSS.push(`\n.` + dtps.classes[classNum].col + ` {
+	--light: ` + dtps.classes[classNum].light + `;
+	--norm: ` + dtps.classes[classNum].norm + `;
+ 	--dark: ` + dtps.classes[classNum].dark + `;
+  --filterText: ` + (dtps.classes[classNum].isBright ? dtps.classes[classNum].dark : "white") + `;
+	--grad: linear-gradient(to bottom right, ` + dtps.classes[classNum].light + `, ` + dtps.classes[classNum].dark + `);;
 }`);
+                                    }
+                                    if (fluid.get("pref-calcGrades") !== "false") dtps.renderGrade(classNum);
+                                    if (dtps.currentClass == data[i].id) {
+                                        dtps.selectedClass = classNum;
+                                        dtps.selectedContent = "stream";
+                                        dtps.chroma();
+                                    }
+                                    dtps.classStream(classNum, true);
                                 }
-                                dtps.computedClassGrades = 0;
-                                if (fluid.get("pref-calcGrades") !== "false") dtps.computeClassGrade(i, true);
-                                if (dtps.currentClass == data[i].id) {
-                                    dtps.selectedClass = i;
-                                    dtps.selectedContent = "stream";
-                                    dtps.chroma();
-                                }
-                                dtps.classStream(i, true);
                             }
                             dtps.log("Grades loaded: ", dtps.classes);
 
@@ -983,149 +1148,190 @@ dtps.ampm = function (date) {
 
 //Fetches assignment data for a class
 dtps.classStream = function (num, renderOv) {
-    dtps.log("Fetching assignments for class " + num)
     dtps.selectedContent = "stream";
     if (!renderOv) dtps.showClasses();
-    if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
-        if (!renderOv) {
-            jQuery(".classContent").html(dtps.renderStreamTools(num) + `
+
+    if (dtps.classes[num].streamHTML) {
+        //stream HTML is already rendered
+        console.warn("Using pre-rendered stream HTML. Hopefully it isn't outdated or something")
+        if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) jQuery(".classContent").html(dtps.classes[num].streamHTML);
+    } else {
+        dtps.log("Fetching assignments for class " + num)
+        if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
+            if (!renderOv) {
+                jQuery(".classContent").html(dtps.renderStreamTools(num) + `
     <div class="spinner"></div>
   `);
-        }
-    }
-    var allData = [];
-    var total = null;
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?per_page=100&user_ids[]=" + dtps.user.id, function (respp) {
-        dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/assignment_groups?include[]=assignments&include[]=submissions&include[]=submission", function (resp) {
-            var data = JSON.parse(resp);
-            var outcomes = JSON.parse(respp).outcome_results;
-            dtps.classes[num].stream = [];
-            dtps.classes[num].rawStream = data;
-            dtps.classes[num].streamitems = [];
-            dtps.classes[num].weights = [];
-
-            function sameDay(d1) {
-                var d2 = new Date();
-                return d1.getFullYear() === d2.getFullYear() &&
-                    d1.getMonth() === d2.getMonth() &&
-                    d1.getDate() === d2.getDate();
             }
+        }
+        var allData = [];
+        var total = null;
+        dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?per_page=100&user_ids[]=" + dtps.user.id, function (respp) {
+            dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/assignment_groups?include[]=assignments&include[]=submissions&include[]=submission", function (resp) {
+                var data = JSON.parse(resp);
+                var outcomes = JSON.parse(respp).outcome_results;
+                dtps.classes[num].stream = [];
+                dtps.classes[num].rawStream = data;
+                dtps.classes[num].streamitems = [];
+                dtps.classes[num].weights = [];
 
-            for (var i = 0; i < data.length; i++) {
-                dtps.classes[num].weights.push({ weight: data[i].name + " (" + ((data.length == 1) && (data[i].group_weight == 0) ? 100 : data[i].group_weight) + "%)", assignments: [], possiblePoints: 0, earnedPoints: 0, icon: `<i class="material-icons">category</i> ` });
-                if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
-                if (dtps.classes[num].weights[i].weight.toUpperCase().includes("COMPREHENSION") || dtps.classes[num].weights[i].weight.includes("CC")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `; dtps.classes[num].weights[i].weight = "Comprehension Checks (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
-                if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
-                for (var ii = 0; ii < data[i].assignments.length; ii++) {
-                    dtps.classes[num].stream.push({
-                        id: data[i].assignments[ii].id,
-                        title: data[i].assignments[ii].name,
-                        due: (data[i].assignments[ii].due_at ? new Date(data[i].assignments[ii].due_at).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(data[i].assignments[ii].due_at)) : ""),
-                        dueDate: data[i].assignments[ii].due_at,
-                        old: new Date(data[i].assignments[ii].due_at) < new Date(),
-                        upcoming: !sameDay(new Date(data[i].assignments[ii].due_at)) && (new Date(data[i].assignments[ii].due_at) > new Date()),
-                        dueToday: sameDay(new Date(data[i].assignments[ii].due_at)),
-                        url: data[i].assignments[ii].html_url,
-                        types: data[i].assignments[ii].submission_types,
-                        col: dtps.classes[num].col,
-                        turnedIn: (data[i].assignments[ii].submission !== undefined ? (data[i].assignments[ii].submission.submission_type !== null) : false),
-                        hasSubmissions: data[i].assignments[ii].has_submitted_submissions,
-                        class: num,
-                        subject: dtps.classes[num].subject,
-                        streamItem: dtps.classes[num].stream.length - 1,
-                        weight: dtps.classes[num].weights[i].weight.replace(/ *\([^)]*\) */g, ""),
-                        weightIcon: dtps.classes[num].weights[i].icon,
-                        uniqueWeight: data.length > 1,
-                        published: new Date(data[i].assignments[ii].created_at).toDateString(),
-                        outcomes: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric.map(function (key) { return key.description }) : undefined),
-                        outcomeIDs: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric.map(function (key) { return key.outcome_id }) : undefined),
-                        locksAt: data[i].assignments[ii].lock_at,
-                        unlocksAt: data[i].assignments[ii].unlock_at,
-                        locked: data[i].assignments[ii].locked_for_user,
-                        lockedReason: data[i].assignments[ii].lock_explanation,
-                        submissions: data[i].assignments[ii].submission && data[i].assignments[ii].submission.preview_url,
-                        extTool: data[i].assignments[ii].submission_types && data[i].assignments[ii].submission_types.includes("external_tool"),
-                        extToolUrl: data[i].assignments[ii].submission_types && data[i].assignments[ii].submission_types.includes("external_tool") && data[i].assignments[ii].url,
-                        body: data[i].assignments[ii].description,
-                        rubric: data[i].assignments[ii].rubric,
-                        rubricItems: [],
-                        submissionTypes: data[i].assignments[ii].submission_types,
-                        worth: data[i].assignments[ii].points_possible
-                    });
-                    dtps.assignmentGradeTimes[data[i].assignments[ii].id] = data[i].assignments[ii].submission && data[i].assignments[ii].submission.graded_at;
-                    if (data[i].assignments[ii].rubric) {
-                        for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
-                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].rubricItems.push(data[i].assignments[ii].rubric[iii].outcome_id);
-                            if (data[i].assignments[ii].rubric[iii].ratings) {
-                                data[i].assignments[ii].rubric[iii].ratingItems = [];
-                                for (var iiii = 0; iiii < data[i].assignments[ii].rubric[iii].ratings.length; iiii++) {
-                                    data[i].assignments[ii].rubric[iii].ratings[iiii].name = dtps.cblName(data[i].assignments[ii].rubric[iii].ratings[iiii].name);
-                                    data[i].assignments[ii].rubric[iii].ratings[iiii].color = dtps.cblColor(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
-                                    data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
-                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "";
-                                    if (!data[i].assignments[ii].rubric[iii].ratings[iiii].color) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "gray";
+                function sameDay(d1) {
+                    var d2 = new Date();
+                    return d1.getFullYear() === d2.getFullYear() &&
+                        d1.getMonth() === d2.getMonth() &&
+                        d1.getDate() === d2.getDate();
+                }
+
+                for (var i = 0; i < data.length; i++) {
+                    dtps.classes[num].weights.push({ weight: data[i].name + " (" + ((data.length == 1) && (data[i].group_weight == 0) ? 100 : data[i].group_weight) + "%)", assignments: [], possiblePoints: 0, earnedPoints: 0, icon: `<i class="material-icons">category</i> ` });
+                    if (dtps.classes[num].weights[i].weight.toUpperCase().includes("SUCCESS") || dtps.classes[num].weights[i].weight.includes("SS")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">star_border</i> `; dtps.classes[num].weights[i].weight = "Success Skills (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
+                    if (dtps.classes[num].weights[i].weight.toUpperCase().includes("COMPREHENSION") || dtps.classes[num].weights[i].weight.includes("CC")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">done</i> `; dtps.classes[num].weights[i].weight = "Comprehension Checks (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
+                    if (dtps.classes[num].weights[i].weight.toUpperCase().includes("PERFORMANCE") || dtps.classes[num].weights[i].weight.includes("PT") || dtps.classes[num].weights[i].weight.includes("UE") || dtps.classes[num].weights[i].weight.includes("Exam")) { dtps.classes[num].weights[i].icon = `<i class="material-icons">assessment</i> `; dtps.classes[num].weights[i].weight = "Performance Tasks (" + dtps.classes[num].weights[i].weight.match(/\(([^)]+)\)/)[1] + ")"; }
+                    for (var ii = 0; ii < data[i].assignments.length; ii++) {
+                        dtps.classes[num].stream.push({
+                            id: data[i].assignments[ii].id,
+                            title: data[i].assignments[ii].name,
+                            due: (data[i].assignments[ii].due_at ? new Date(data[i].assignments[ii].due_at).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(data[i].assignments[ii].due_at)) : ""),
+                            dueDate: data[i].assignments[ii].due_at,
+                            old: new Date(data[i].assignments[ii].due_at) < new Date(),
+                            upcoming: !sameDay(new Date(data[i].assignments[ii].due_at)) && (new Date(data[i].assignments[ii].due_at) > new Date()),
+                            dueToday: sameDay(new Date(data[i].assignments[ii].due_at)),
+                            url: data[i].assignments[ii].html_url,
+                            types: data[i].assignments[ii].submission_types,
+                            col: dtps.classes[num].col,
+                            turnedIn: (data[i].assignments[ii].submission !== undefined ? (data[i].assignments[ii].submission.submission_type !== null) : false),
+                            hasSubmissions: data[i].assignments[ii].has_submitted_submissions,
+                            class: num,
+                            subject: dtps.classes[num].subject,
+                            streamItem: dtps.classes[num].stream.length - 1,
+                            weight: dtps.classes[num].weights[i].weight.replace(/ *\([^)]*\) */g, ""),
+                            weightIcon: dtps.classes[num].weights[i].icon,
+                            uniqueWeight: data.length > 1,
+                            published: new Date(data[i].assignments[ii].created_at).toDateString(),
+                            outcomes: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric.map(function (key) { return key.description }) : undefined),
+                            outcomeIDs: (data[i].assignments[ii].rubric ? data[i].assignments[ii].rubric.map(function (key) { return key.outcome_id }) : undefined),
+                            locksAt: data[i].assignments[ii].lock_at,
+                            unlocksAt: data[i].assignments[ii].unlock_at,
+                            locked: data[i].assignments[ii].locked_for_user,
+                            lockedReason: data[i].assignments[ii].lock_explanation,
+                            submissions: data[i].assignments[ii].submission && data[i].assignments[ii].submission.preview_url,
+                            extTool: data[i].assignments[ii].submission_types && data[i].assignments[ii].submission_types.includes("external_tool"),
+                            extToolUrl: data[i].assignments[ii].submission_types && data[i].assignments[ii].submission_types.includes("external_tool") && data[i].assignments[ii].url,
+                            body: data[i].assignments[ii].description,
+                            rubric: data[i].assignments[ii].rubric,
+                            rubricItems: [],
+                            submissionTypes: data[i].assignments[ii].submission_types,
+                            worth: data[i].assignments[ii].points_possible
+                        });
+                        dtps.assignmentGradeTimes[data[i].assignments[ii].id] = data[i].assignments[ii].submission && data[i].assignments[ii].submission.graded_at;
+                        if (data[i].assignments[ii].rubric) {
+                            for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
+                                dtps.classes[num].stream[dtps.classes[num].stream.length - 1].rubricItems.push(data[i].assignments[ii].rubric[iii].outcome_id);
+                                if (data[i].assignments[ii].rubric[iii].ratings) {
+                                    data[i].assignments[ii].rubric[iii].ratingItems = [];
+                                    for (var iiii = 0; iiii < data[i].assignments[ii].rubric[iii].ratings.length; iiii++) {
+                                        data[i].assignments[ii].rubric[iii].ratings[iiii].name = dtps.cblName(data[i].assignments[ii].rubric[iii].ratings[iiii].name);
+                                        data[i].assignments[ii].rubric[iii].ratings[iiii].color = dtps.cblColor(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
+                                        data[i].assignments[ii].rubric[iii].ratingItems.push(data[i].assignments[ii].rubric[iii].ratings[iiii].points);
+                                        if (!data[i].assignments[ii].rubric[iii].ratings[iiii].name) data[i].assignments[ii].rubric[iii].ratings[iiii].name = "";
+                                        if (!data[i].assignments[ii].rubric[iii].ratings[iiii].color) data[i].assignments[ii].rubric[iii].ratings[iiii].color = "gray";
+                                    }
                                 }
                             }
                         }
-                    }
-                    dtps.classes[num].streamitems.push(String(data[i].assignments[ii].id));
-                    if (data[i].assignments[ii].submission !== undefined) {
-                        if ((data[i].assignments[ii].submission.score !== null) && (data[i].assignments[ii].submission.score !== undefined)) {
-                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
-                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].status = data[i].assignments[ii].submission.workflow_state;
-                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].late = data[i].assignments[ii].submission.late;
-                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].letter = (data[i].assignments[ii].submission.grade.match(/[a-z]/i) ? data[i].assignments[ii].submission.grade : data[i].assignments[ii].submission.score);
-                            //Only treat assignment as graded in the gradebook if the assignment status says the grades are published. Scores are still shown with a pending review icon. This is to match native Canvas behavior.
-                            if (data[i].assignments[ii].submission.workflow_state == "graded") {
-                                dtps.classes[num].weights[i].possiblePoints = dtps.classes[num].weights[i].possiblePoints + data[i].assignments[ii].points_possible;
-                                dtps.classes[num].weights[i].earnedPoints = dtps.classes[num].weights[i].earnedPoints + data[i].assignments[ii].submission.score;
-                                dtps.classes[num].weights[i].assignments.push({ id: data[i].assignments[ii].id, disp: data[i].assignments[ii].name + ": " + data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible, percentage: (data[i].assignments[ii].submission.score / data[i].assignments[ii].points_possible).toFixed(2), possible: data[i].assignments[ii].points_possible, earned: data[i].assignments[ii].submission.score });
+                        dtps.classes[num].streamitems.push(String(data[i].assignments[ii].id));
+                        if (data[i].assignments[ii].submission !== undefined) {
+                            if ((data[i].assignments[ii].submission.score !== null) && (data[i].assignments[ii].submission.score !== undefined)) {
+                                dtps.classes[num].stream[dtps.classes[num].stream.length - 1].grade = data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible;
+                                dtps.classes[num].stream[dtps.classes[num].stream.length - 1].status = data[i].assignments[ii].submission.workflow_state;
+                                dtps.classes[num].stream[dtps.classes[num].stream.length - 1].late = data[i].assignments[ii].submission.late;
+                                dtps.classes[num].stream[dtps.classes[num].stream.length - 1].letter = (data[i].assignments[ii].submission.grade.match(/[a-z]/i) ? data[i].assignments[ii].submission.grade : data[i].assignments[ii].submission.score);
+                                //Only treat assignment as graded in the gradebook if the assignment status says the grades are published. Scores are still shown with a pending review icon. This is to match native Canvas behavior.
+                                if (data[i].assignments[ii].submission.workflow_state == "graded") {
+                                    dtps.classes[num].weights[i].possiblePoints = dtps.classes[num].weights[i].possiblePoints + data[i].assignments[ii].points_possible;
+                                    dtps.classes[num].weights[i].earnedPoints = dtps.classes[num].weights[i].earnedPoints + data[i].assignments[ii].submission.score;
+                                    dtps.classes[num].weights[i].assignments.push({ id: data[i].assignments[ii].id, disp: data[i].assignments[ii].name + ": " + data[i].assignments[ii].submission.score + "/" + data[i].assignments[ii].points_possible, percentage: (data[i].assignments[ii].submission.score / data[i].assignments[ii].points_possible).toFixed(2), possible: data[i].assignments[ii].points_possible, earned: data[i].assignments[ii].submission.score });
+                                }
                             }
+                            dtps.classes[num].stream[dtps.classes[num].stream.length - 1].missing = data[i].assignments[ii].submission.missing;
                         }
-                        dtps.classes[num].stream[dtps.classes[num].stream.length - 1].missing = data[i].assignments[ii].submission.missing;
                     }
+                    if (dtps.classes[num].weights[i].possiblePoints !== 0) { dtps.classes[num].weights[i].grade = ((dtps.classes[num].weights[i].earnedPoints / dtps.classes[num].weights[i].possiblePoints) * 100).toFixed(2) + "%" } else { dtps.classes[num].weights[i].grade = "" }
                 }
-                if (dtps.classes[num].weights[i].possiblePoints !== 0) { dtps.classes[num].weights[i].grade = ((dtps.classes[num].weights[i].earnedPoints / dtps.classes[num].weights[i].possiblePoints) * 100).toFixed(2) + "%" } else { dtps.classes[num].weights[i].grade = "" }
-            }
 
-            for (var i = 0; i < outcomes.length; i++) {
-                var streamItem = dtps.classes[num].streamitems.indexOf(outcomes[i].links.assignment.match(/\d+/)[0]);
-                if (streamItem !== -1) {
-                    var rubricItem = dtps.classes[num].stream[streamItem].rubricItems.indexOf(outcomes[i].links.learning_outcome);
-                    if (rubricItem !== -1) {
-                        dtps.classes[num].stream[streamItem].rubric[rubricItem].score = outcomes[i].score
-                        dtps.classes[num].stream[streamItem].rubric[rubricItem].scoreName = outcomes[i].score
-                        if (dtps.classes[num].grades[outcomes[i].links.learning_outcome] == undefined) dtps.classes[num].grades[outcomes[i].links.learning_outcome] = [];
-                        dtps.classes[num].grades[outcomes[i].links.learning_outcome].push({ score: outcomes[i].score, possible: outcomes[i].possible })
+                for (var i = 0; i < outcomes.length; i++) {
+                    var streamItem = dtps.classes[num].streamitems.indexOf(outcomes[i].links.assignment.match(/\d+/)[0]);
+                    if (streamItem !== -1) {
+                        var rubricItem = dtps.classes[num].stream[streamItem].rubricItems.indexOf(outcomes[i].links.learning_outcome);
+                        if (rubricItem !== -1) {
+                            if (dtps.classes[num].stream[streamItem].assessedAt) {
+                                if (new Date(outcomes[i].submitted_or_assessed_at) > new Date(dtps.classes[num].stream[streamItem].assessedAt)) {
+                                    dtps.classes[num].stream[streamItem].assessedAt = outcomes[i].submitted_or_assessed_at;
+                                }
+                            } else {
+                                dtps.classes[num].stream[streamItem].assessedAt = outcomes[i].submitted_or_assessed_at;
+                            }
+                            dtps.classes[num].stream[streamItem].rubric[rubricItem].score = outcomes[i].score;
+                            dtps.classes[num].stream[streamItem].rubric[rubricItem].scoreName = outcomes[i].score;
+                            dtps.classes[num].stream[streamItem].isAssessed = true;
+                            if (dtps.classes[num].grades[outcomes[i].links.learning_outcome] == undefined) dtps.classes[num].grades[outcomes[i].links.learning_outcome] = [];
+                            dtps.classes[num].grades[outcomes[i].links.learning_outcome].push({ score: outcomes[i].score, possible: outcomes[i].possible })
+                        }
                     }
                 }
-            }
-            if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
-                if (!renderOv) {
-                    jQuery(".classContent").html(dtps.renderStream(dtps.classes[num].stream.slice().sort(function (a, b) {
-                        var keyA = new Date(a.dueDate).getTime(),
-                            keyB = new Date(b.dueDate).getTime();
-                        var now = new Date().getTime();
-                        if (a.dueDate == null) { keyA = 0; }
-                        if (b.dueDate == null) { keyB = 0; }
-                        if (b.old || a.old) {
-                            // Compare the 2 dates
-                            if (keyA < keyB) return 1;
-                            if (keyA > keyB) return -1;
-                            return 0;
-                        } else {
-                            // Compare the 2 dates
-                            if (keyA > keyB) return 1;
-                            if (keyA < keyB) return -1;
-                            return 0;
-                        }
-                    })));
+
+                dtps.classes[num].stream.forEach(streamItem => { //add assignments to recently graded
+                    if (streamItem.isAssessed) {
+                        //add graded assessment to recent grades
+                        if (!dtps.recentlyGraded) dtps.recentlyGraded = [];
+                        dtps.recentlyGraded.push({
+                            name: streamItem.title,
+                            rubric: streamItem.rubric,
+                            date: streamItem.assessedAt,
+                            class: num,
+                            id: streamItem.id
+                        })
+                    }
+                });
+
+                if (dtps.recentlyGraded) {
+                    //sort recently Gradeds
+                    dtps.recentlyGraded.sort((a, b) => {
+                        return new Date(b.date) - new Date(a.date);
+                    });
+
+                    //limit recentlyGraded length to 5
+                    dtps.recentlyGraded.length = 5
                 }
-            }
-            dtps.classesReady++;
-            dtps.checkReady(num);
+
+                if ((dtps.selectedClass == num) && (dtps.selectedContent == "stream")) {
+                    if (!renderOv) {
+                        dtps.classes[num].streamHTML = dtps.renderStream(dtps.classes[num].stream.slice().sort(function (a, b) {
+                            var keyA = new Date(a.dueDate).getTime(),
+                                keyB = new Date(b.dueDate).getTime();
+                            var now = new Date().getTime();
+                            if (a.dueDate == null) { keyA = 0; }
+                            if (b.dueDate == null) { keyB = 0; }
+                            if (b.old || a.old) {
+                                // Compare the 2 dates
+                                if (keyA < keyB) return 1;
+                                if (keyA > keyB) return -1;
+                                return 0;
+                            } else {
+                                // Compare the 2 dates
+                                if (keyA > keyB) return 1;
+                                if (keyA < keyB) return -1;
+                                return 0;
+                            }
+                        }));
+                        jQuery(".classContent").html(dtps.classes[num].streamHTML);
+                    }
+                }
+                dtps.classesReady++;
+                dtps.checkReady(num);
+            });
         });
-    });
+    }
 }
 
 //renders stream tools html for a class
@@ -1293,6 +1499,18 @@ dtps.cblDashboard = function () {
     }, { obsOverride: true, noCache: true });
 }
 
+//Renders rubric array into outcome score HTML
+dtps.renderOutcomeScore = rubric => {
+    if (!rubric) return []; //return empty array if rubric does not exist
+
+    var returnDom = [];
+    rubric.forEach(item => {
+        if (item.score) returnDom.push(`<div title="` + item.description + `" style="background-color: ` + dtps.cblColor(item.score) + `" class="outcome"></div>`)
+    })
+
+    return returnDom;
+}
+
 //Converts a Power+ stream array into HTML for displaying the assignment list
 dtps.renderStream = function (stream, searchRes) {
     var streamlist = [];
@@ -1300,17 +1518,10 @@ dtps.renderStream = function (stream, searchRes) {
     var upcomingDiv = false;
     var dueTodayDiv = false;
     for (var i = 0; i < stream.length; i++) {
-        var outcomeDom = [];
-        if (stream[i].rubric) {
-            for (var ii = 0; ii < stream[i].rubric.length; ii++) {
-                if (stream[i].rubric[ii].score) {
-                    outcomeDom.push(`<div title="` + stream[i].rubric[ii].description + `" style="background-color: ` + dtps.cblColor(stream[i].rubric[ii].score) + `" class="outcome"></div>`)
-                }
-            }
-        }
+        var outcomeDom = dtps.renderOutcomeScore(stream[i].rubric);
         //hide old assignments from dashboard
         if (stream[i].old ? dtps.selectedClass != "dash" : true) {
-            streamlist.push((stream[i].old && !oldDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
+            streamlist.push((stream[i].old && streamlist.length && !oldDiv ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Old/Undated Assignments</h5>` : "") + `
         ` + (stream[i].upcoming && !upcomingDiv && dtps.selectedClass == "dash" ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">` + (!dueTodayDiv ? "Nothing due today<br /><br /><br />" : "Upcoming Assignments") + `</h5>` : "") + `
         ` + (stream[i].dueToday && !dueTodayDiv && dtps.selectedClass == "dash" ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Due today</h5>` : "") + `
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment('` + stream[i].id + `', ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
@@ -1321,8 +1532,13 @@ dtps.renderStream = function (stream, searchRes) {
         ` + (stream[i].locked ? `<i title="Assignment submissions are locked" class="material-icons floatingIcon" style="font-family: 'Material Icons Extended'; color: var(--secText, gray);">lock_outline</i>` : ``) + `
         ` + (stream[i].status == "pending_review" ? `<i title="Grade is pending review" class="material-icons floatingIcon" style="color: #b3b70b;">rate_review</i>` : ``) + `
         <div class="points">
-        ` + (outcomeDom.length ? `<div class="earned outcomes">` + outcomeDom.join("") + `</div>` : `<div class="earned numbers">` + (stream[i].letter ? stream[i].grade.split("/")[0] : "") + `</div>`) + `
-        ` + (stream[i].grade ? (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") : "") + `
+        ` + (outcomeDom.length ?
+                    `<div class="earned outcomes">` + outcomeDom.join("") + `</div>`
+                    : (fluid.get("pref-showNumberGrades") == "true" ?
+                        `<div class="earned numbers">` + (stream[i].letter ? stream[i].grade.split("/")[0] : "") + `</div>
+                    ` + (stream[i].grade ? (stream[i].grade.split("/")[1] !== undefined ? `<div class="total possible">/` + stream[i].grade.split("/")[1] + `</div>` : "") : "")
+                        : ``)
+                ) + `
         </div>
         <h4>` + stream[i].title + `</h4>
       	<h5 style="white-space: nowrap; overflow: hidden;">
@@ -1351,7 +1567,10 @@ dtps.renderStream = function (stream, searchRes) {
     return ((streamlist.length == 0) && (dtps.selectedClass !== "dash")) ?
         (searchRes !== "" ? `<div style="text-align: right;"><i class="inputIcon material-icons">search</i><input value="` + searchRes + `" onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" /></div>` : "") + `<div style="cursor: auto;" class="card assignment"><h4>No ` + (searchRes == "" ? "assignments" : "results found") + `</h4><p>` + (searchRes == "" ? "There aren't any assignments in this class yet" : "There aren't any search results.") + `</p></div>`
         : ((typeof Fuse !== "undefined" ? `
-` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? dtps.renderStreamTools(dtps.selectedClass, true) : "") : "") + streamlist.join(""));
+` + ((dtps.selectedClass !== "dash") && (searchRes == "") ? dtps.renderStreamTools(dtps.selectedClass, true) : "") : "") + (
+                (dtps.selectedClass == "dash") && (streamlist.length == 0) ?
+                    `<p style="text-align: center;margin: 75px 25px 10px 75px; font-size: 18px;">No upcoming assignments</p>` : ``
+            ) + streamlist.join(""));
     //return streamlist.join("");
 }
 
@@ -1392,7 +1611,7 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
     }
     var loadingDom = "";
     if (!doneLoading) {
-        loadingDom = `<div class="spinner"></div>`;
+        loadingDom = `<div style="margin: 75px 25px 10px 75px;"><div class="spinner"></div></div>`;
     } else {
         dtps.logGrades();
     }
@@ -1400,7 +1619,14 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
         jQuery(".classContent").html(`
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
 ` + ($.fullCalendar !== undefined ? `<div id="calendar" class="card" style="padding: 20px;"></div>` : ``) + `
+
+<div onclick="dtps.pullSchedule()" class="card recentGrade">
+    <h5>Semester 2 Schedules</h5>
+    <p>Click here to view your Semester 2 schedule. Note that schedules may not be final yet.</p>
+</div>
+
 <div class="announcements"></div>
+<div class="recentlyGraded"></div>
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
 ` + loadingDom + `
@@ -1409,7 +1635,8 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
 `)
     }
 
-    dtps.announcements();
+    dtps.announcements(); //render announcements
+    dtps.renderRecentlyGraded(); //render recently graded assignments
     jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function (a, b) {
         var keyA = new Date(a.dueDate).getTime(),
             keyB = new Date(b.dueDate).getTime();
@@ -1432,42 +1659,34 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
     dtps.calendar(doneLoading);
 }
 
-//Loads Google APIs for Classroom integration
-dtps.gapis = function () {
-    //these 2 lines are temporary. remove them when uncommenting the rest of dtps.gapis
-    jQuery(".googleClassroom").hide();
-    jQuery(".googleSetup").show();
-	/*jQuery.getScript("https://apis.google.com/js/api.js", function() {
-		gapi.load('client:auth2', function() {
-gapi.client.init({
-          apiKey: 'AIzaSyB3l_RWC3UMgNDAjZ4wD_HD2NyrneL9H9g',
-          clientId: '117676227556-lrt444o80hgrli1nlcl4ij6cm2dbop8v.apps.googleusercontent.com',
-          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/classroom/v1/rest"],
-          scope: "https://www.googleapis.com/auth/classroom.courses.readonly https://www.googleapis.com/auth/classroom.coursework.me.readonly"
-        }).then(function () {
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-        }, function(error) {
-          dtps.log(JSON.stringify(error));
-	console.error(error);
-        });
-		function updateSigninStatus(isSignedIn) {
-        if (isSignedIn) {
-          jQuery(".googleClassroom").show();
-	  jQuery(".googleSetup").hide();
-	  if (dtps.googleSetup !== undefined) {
-	  window.alert("Google account linked. You have to sign in to Canvas again to finish setup.")
-	  window.location.reload();
-	  } else {
-          dtps.googleAuth();
-	  }
-        } else {
-         jQuery(".googleClassroom").hide();
-	 jQuery(".googleSetup").show();
-        }
-      }
-		});
-});*/
+//Get and display semester 2 schedule
+dtps.pullSchedule = () => {
+    $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+    <h5>Loading...</h5>`)
+    fluid.modal(".card.classInfoCard")
+    dtps.webReq("canvas", "/api/v1/courses?include[]=sections&include[]=term&state[]=unpublished&per_page=100", function (resp) {
+        var data = JSON.parse(resp);
+        var schedule = [];
+
+        data.forEach(course => {
+            if (course.name && course.name.includes("S2") && course.term && course.term.name.includes("2019/2020")) {
+                //semester 2 class
+                schedule.push({
+                    name: course.name,
+                    period: Number(course.sections[0].name.split(" - ")[2].match(/\d+/)) - 1
+                })
+            }
+        })
+
+        schedule.sort((a, b) => a.period - b.period);
+
+        $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
+        ` + schedule.map(period => {
+            return `<h5 style="font-size: 20px; margin: 22px 0px;">
+            <div style="color: var(--secText); width: 50px; font-size: 18px; vertical-align: middle; display: inline-block; font-size: 34px; text-align: center;">` + period.period + `</div>
+            ` + period.name + `</h5>`
+        }).join(""))
+    });
 }
 
 //Loads a page
@@ -1515,7 +1734,7 @@ dtps.outcome = function (num, id, i) {
             ` + (desc ? `<p>` + desc + `</p>` : "") + `</div>`
         }).join("") : "") + `</div>
 
-        ` + (dtps.classes[num].outcomes[i].alignments && (dtps.classes[num].outcomes[i].alignments.length) ? `<div style="display: inline-block; width: 55%; vertical-align: top;">
+        ` + (dtps.classes[num].outcomes[i].alignments && (dtps.classes[num].outcomes[i].alignments.length) ? `<div style="display: inline-block; width: 55%; vertical-align: top; padding: 10px;">
 	<h5>Assignments</h5>
         ` + dtps.classes[num].outcomes[i].alignments.map(function (alignment, ii) {
             return `<div onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)" style="margin: 5px 0px; color: var(--lightText); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">` + alignment.title + `</div>`
@@ -1536,338 +1755,97 @@ dtps.gradebook = function (num, cb) {
         dtps.selectedContent = "stream";
         dtps.classStream(num);
     } else {
-        headsUp = ``;
-        if (!cb && (dtps.selectedContent == "grades")) $(".classContent").html(headsUp + `<div class="spinner"></div>`)
 
-        dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_alignments?student_id=" + dtps.user.id, function (resp) {
-            dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_rollups?user_ids[]=" + dtps.user.id + "&include[]=outcomes", function (respp) {
-                dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?per_page=100&user_ids[]=" + dtps.user.id, function (resppp) {
-                    var alignmentData = JSON.parse(resp);
-                    var rollupData = JSON.parse(respp);
-                    var resultsData = JSON.parse(resppp).outcome_results;
-                    dtps.classes[num].outcomes = {};
-                    dtps.classes[num].gradedOutcomes = {};
+        //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
+        if (dtps.classes[num].gradeCalc) {
+            var gradeCalcSummary = `<div class="card">
+  <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">
+    ` + dtps.classes[num].subject + `
+    <div class="classGradeCircle"
+      style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">
+      ` + dtps.classes[num].letter + `</div>
+  </h3>
+  <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">75% (rounded down) of outcome scores is ≥
+    <div class="numFont"
+      style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.report.number75.toFixed(1) + `</div>
+  </h5>
+  <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
+    <div class="numFont"
+      style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">
+      ` + dtps.classes[num].gradeCalc.report.lowestScore.toFixed(1) + `</div>
+  </h5>
+  <div style="display: none;" id="classGradeMore">
+    <br>
 
-                    for (var i = 0; i < rollupData.linked.outcomes.length; i++) {
-                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id] = rollupData.linked.outcomes[i]
-                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].alignments = []
-                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignments = []
-                        //lowest score sandbox starts with null since we are testing various different scores. null won't actually change, its just for making sure the length of the array is correct.
-                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].lowestSandbox = [null]
-                        dtps.classes[num].outcomes[rollupData.linked.outcomes[i].id].gradedAlignmentIDs = []
-                    }
-
-                    for (var i = 0; i < alignmentData.length; i++) {
-                        if (dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id] !== undefined) {
-                            dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].alignments.push(alignmentData[i]);
-                            var gradAlign = dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments;
-
-                            //get grades for outcome alignments
-                            for (var ii = 0; ii < resultsData.length; ii++) {
-                                if ((String(resultsData[ii].links.assignment).replace("assignment_", "") == alignmentData[i].assignment_id) && (resultsData[ii].links.learning_outcome == alignmentData[i].learning_outcome_id)) {
-                                    if (resultsData[ii].score && !dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.includes(resultsData[ii].links.assignment)) {
-                                        gradAlign.push(alignmentData[i]);
-                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignmentIDs.push(resultsData[ii].links.assignment);
-                                        gradAlign[gradAlign.length - 1].score = resultsData[ii].score;
-                                        gradAlign[gradAlign.length - 1].date = (dtps.assignmentGradeTimes[alignmentData[i].assignment_id] ? dtps.assignmentGradeTimes[alignmentData[i].assignment_id] : resultsData[ii].submitted_or_assessed_at);
-                                        gradAlign[gradAlign.length - 1].gradAlignIndex = gradAlign.length - 1;
-
-                                        //save for lowest score sandbox
-                                        dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].lowestSandbox.push(resultsData[ii].score);
-                                    }
-                                }
-                            }
-
-                            //sort graded alignments for decaying average
-                            dtps.classes[num].outcomes[alignmentData[i].learning_outcome_id].gradedAlignments.sort(function (a, b) {
-                                var keyA = new Date(a.date),
-                                    keyB = new Date(b.date);
-                                // Compare the 2 dates
-                                if (keyA < keyB) return 1;
-                                if (keyA > keyB) return -1;
-                                return 0;
-                            })
-
-                        } else {
-                            dtps.log("WARNING: GRADEBOOK FOUND AN OUTCOME ALIGNMENT THAT DOES NOT MATCH ANY ROLLUP (dtps.gradebook)")
-                        }
-                    }
-
-                    //get lowest score for each outcome
-                    Object.keys(dtps.classes[num].outcomes).map((k, index) => {
-                        var outcome = dtps.classes[num].outcomes[k];
-                        //5 means that more than just a 4 is needed to get a 3.3. it doesnt mean a 5 is needed
-                        var lowestScore = 5;
-
-                        //check new score for each outcome
-                        outcome.ratings.map((rating) => {
-                            //recalculate outcome decaying average
-                            var lastAssessment = rating.points * (outcome.calculation_int / 100);
-                            var sum = 0;
-                            //starting at ii=1 is intentional to omit the latest outcome score from everything else
-                            for (var ii = 1; ii < outcome.lowestSandbox.length; ii++) sum += outcome.lowestSandbox[ii];
-                            var everythingElse = (sum / (outcome.lowestSandbox.length - 1)) * (1 - (outcome.calculation_int / 100))
-
-                            var calculatedScore = lastAssessment + everythingElse;
-                            if (outcome.lowestSandbox.length == 1) calculatedScore = rating.points;
-
-                            //must get at least a 3.3 outcome average
-                            if (calculatedScore >= 3.3) {
-                                if (rating.points < lowestScore) lowestScore = rating.points;
-                            }
-                        });
-
-                        outcome.lowestScore = lowestScore;
-                    })
-
-
-                    for (var i = 0; i < rollupData.rollups[0].scores.length; i++) {
-                        var outcome = dtps.classes[num].outcomes[rollupData.rollups[0].scores[i].links.outcome];
-                        dtps.classes[num].gradedOutcomes[rollupData.rollups[0].scores[i].links.outcome] = rollupData.rollups[0].scores[i].score;
-                        outcome.score = rollupData.rollups[0].scores[i].score
-                        if (outcome.gradedAlignments[0]) {
-                            outcome.lastAssignment = {
-                                id: outcome.gradedAlignments[0].assignment_id,
-                                name: outcome.gradedAlignments[0].title,
-                                score: outcome.gradedAlignments[0].score
-                            }
-                        }
-                    }
-
-                    var fix = "";
-                    //not enough outcomes meeting A criteria
-                    if (dtps.classes[num].gradeCalc.number75Length > dtps.classes[num].gradeCalc.number75LengthA) {
-                        fix = "Get at least a 3.3 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes to get an A"
-                    }
-                    //lowest score is below a 3
-                    if (dtps.classes[num].gradeCalc.lowestValue < 3) {
-                        fix = "Make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
-                    }
-                    //both
-                    if ((dtps.classes[num].gradeCalc.lowestValue < 3) && (dtps.classes[num].gradeCalc.number75Length > dtps.classes[num].gradeCalc.number75LengthA)) {
-                        fix = "Get at least a 3.3 in " + (dtps.classes[num].gradeCalc.number75Length - dtps.classes[num].gradeCalc.number75LengthA) + " more outcomes and make sure all outcomes are at least a 3 to get an A (" + dtps.classes[num].gradeCalc.moreA + " outcomes are not a 3)"
-                    }
-
-                    if (cb) cb(num);
-
-
-                    //temporary variable for if outcome divider is added yet
-                    var dividerAdded = false;
-
-                    if (!cb && (dtps.selectedContent == "grades")) $(".classContent").html(`
-                    <div style="display: none;" id="whatIfGrade">
-                    <div class="letter">--</div>
-                    <div class="notice">
-                    <h5>What-If Grade (beta)</h5>
-                    <p>This letter grade is hypothetical and does not reflect your actual class grade</p>
-                    <p><a onclick="dtps.gradebook(` + num + `)" href="#">Show actual grades</a></p>
-                    </div>
-                    </div>
-
-    ` + (dtps.classes[num].letter !== "--" ? `<div class="card">
-    <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">` + dtps.classes[num].subject + `
-    <div class="classGradeCircle" style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">` + dtps.classes[num].letter + `</div></h3>
-    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">75% (rounded down) of outcome scores are ≥
-    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + (dtps.classes[num].gradeCalc.number75 ? dtps.classes[num].gradeCalc.number75 : "--") + `</div></h5>
-    <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">No outcome scores are lower than
-    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + dtps.classes[num].gradeCalc.lowestValue + `</div></h5>
-    <div style="display: none;" id="classGradeMore">
-    <br />
-    ` + (dtps.classes[num].letter !== "A" ? `<p style="text-align: center;">` + fix + `</p>` : "") + `
-    <br />
+    ` + (dtps.classes[num].gradeCalc.previousGrade ? `<h5 style="height: 40px; line-height: 40px;color: var(--secText); font-size: 18px; margin: 0px;">Previous grade
+    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 40px; line-height: 40px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px; color: var(--lightText); font-weight: bold;">` + dtps.classes[num].gradeCalc.previousGrade + `</div></h5>` : ``) + `
+    ` + (dtps.classes[num].gradeCalc.report.number75thresh ? `<h5 style="height: 40px; line-height: 40px;color: var(--secText); font-size: 18px; margin: 0px;">75% of outcomes (rounded down) is
+    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 40px; line-height: 40px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px; color: var(--lightText); font-weight: bold;">` + dtps.classes[num].gradeCalc.report.number75thresh + `</div></h5>
+    ` : ``) + `
+    <br>
     <table class="u-full-width dtpsTable">
-  <thead>
-    <tr>
-      <th>&nbsp;&nbsp;Final Letter</th>
-      <th>75% (rounded down) of outcome scores are ≥</th>
-      <th>No outcome scores below</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr ` + (dtps.classes[num].letter == "A" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>&nbsp;&nbsp;A</td>
-      <td>3.3</td>
-      <td>3.0</td>
-    </tr>
-    <tr ` + (dtps.classes[num].letter == "A-" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>&nbsp;&nbsp;A-</td>
-      <td>3.3</td>
-      <td>2.5</td>
-    </tr>
-    <tr ` + (dtps.classes[num].letter == "B+" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>&nbsp;&nbsp;B+</td>
-      <td>2.6</td>
-      <td>2.5</td>
-    </tr>
-    <tr ` + (dtps.classes[num].letter == "B" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>&nbsp;&nbsp;B</td>
-      <td>2.6</td>
-      <td>0</td>
-    </tr>
-    <tr ` + (dtps.classes[num].letter == "C" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>&nbsp;&nbsp;C</td>
-      <td>2.2</td>
-      <td>0</td>
-    </tr>
-    <tr ` + (dtps.classes[num].letter == "I" ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
-      <td>&nbsp;&nbsp;I</td>
-      <td>Anything else</td>
-      <td>--</td>
-    </tr>
-  </tbody>
-</table>
-` + (dtps.classes[num].gradeCalc.excludesSS ? `<br /><p style="text-align: center; font-weight: bold;">Your grade was calculated without SS since it was higher than it was with SS</p>` : ``) + `
-</div>
-<br />
-<a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}" style="color: var(--secText, gray); cursor: pointer;">Show More</a>
-</div>
-<br />` : "") + `
-<div class="card">
-<p>The decaying averages for each outcome are shown below. For class grade calculation, both the normal, unweighted average and decaying average will be calculated for each outcome and the higher one will be used.</p>
-</div>
-<br />
-` + Object.keys(dtps.classes[num].outcomes).sort(function (a, b) {
-                        var keyA = dtps.classes[num].outcomes[a].score,
-                            keyB = dtps.classes[num].outcomes[b].score;
-                        if (keyA == undefined) { keyA = 999999 - dtps.classes[num].outcomes[a].alignments.length; }
-                        if (keyB == undefined) { keyB = 999999 - dtps.classes[num].outcomes[b].alignments.length; }
-                        // Compare the 2 scores
-                        if (keyA > keyB) return 1;
-                        if (keyA < keyB) return -1;
-                        return 0;
-                    }).map(function (i) {
-                        var divider = !dividerAdded && !dtps.classes[num].outcomes[i].score;
-                        if (divider) dividerAdded = true;
-                        return (divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
-<div style="border-radius: 20px;padding: 20px; padding-bottom: 20px;" class="card outcomeResults">
+      <thead>
+        <tr>
+          <th>&nbsp;&nbsp;Final Letter</th>
+          <th>75% (rounded down) of outcome scores is ≥</th>
+          <th>No outcome scores below</th>
+        </tr>
+      </thead>
+      <tbody>
+        ` + dtps.gradeCalc.letters.map(letter => {
+                return `<tr ` + (dtps.classes[num].letter == letter ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
+            <td>&nbsp;&nbsp;` + letter + `</td>
+            <td>` + dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].percentage[letter] + `</td>
+            <td>` + dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].lowest[letter] + `</td>
+          </tr>`
+            }).join("") + `
+      </tbody>
+    </table>
 
-<div onclick="dtps.outcome(` + num + `, '` + dtps.classes[num].outcomes[i].id + `', ` + i + `)" style="cursor: pointer;">
-    ` + (dtps.classes[num].outcomes[i].score ? `<div class="points">
-        <div style="color: ` + dtps.cblColor(dtps.classes[num].outcomes[i].score) + `" class="earned numbers">` + dtps.classes[num].outcomes[i].score + `</div>
-    </div>` : "") + `
-  <h5 style="font-size: 1.4rem; white-space: nowrap;overflow: hidden;text-overflow: ellipsis; margin-top: 0px; margin-right: 40px;">` + dtps.classes[num].outcomes[i].title + `</h5>
-  <div title="Number of assignments that assess this outcome" style="color: var(--secText); display: inline-block; margin-right: 5px;"><i class="material-icons" style=" vertical-align: middle; ">assignment</i> ` + dtps.classes[num].outcomes[i].alignments.length + `</div>
-  ` + (dtps.classes[num].outcomes[i].calculation_method == "decaying_average" ? `<div title="Decaying Average Ratio (last assignment / everything else)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">functions</i> ` + dtps.classes[num].outcomes[i].calculation_int + "% / " + (100 - dtps.classes[num].outcomes[i].calculation_int) + `%</div>` : "") + `
-  ` + (true && dtps.classes[num].outcomes[i].lowestScore && (dtps.classes[num].outcomes[i].calculation_int >= 50) ? `<div title="On your next assignment for this outcome, you must get at least this number to get a 3.3 or higher in this outcome (beta)" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">timeline</i> ` + (dtps.classes[num].outcomes[i].lowestScore == 5 ? ">4" : dtps.classes[num].outcomes[i].lowestScore) + `</div>` : "") + `
-  <div class="dev" style="color: var(--secText); display: inline-block; margin: 0px 5px;"><i class="material-icons" style=" vertical-align: middle; ">bug_report</i> ` + dtps.classes[num].outcomes[i].id + `</div>
-  ` + (dtps.classes[num].outcomes[i].score >= dtps.classes[num].outcomes[i].mastery_points ? `<div title="Outcome has been mastered" style="display: inline-block;margin: 0px 5px;color: #5d985d;">MASTERED</div>` : "") + `
   </div>
+  <br>
+  <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}"
+    style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">Show more</a>
+  <a style="color: var(--secText, gray);">` + (dtps.classes[num].gradeCalc.formula == "sem1" ? "Using first semester grade calculation" : "Using second semester grade calculation") + `</a>
+</div>`;
+        } else {
+            var gradeCalcSummary = ""; //no grade calculation for this class
+        }
 
-  ` + (dtps.classes[num].outcomes[i].lastAssignment ? `<div style="margin: 10px 0px;"></div>
+        //RENDERER: RENDER EACH OUTCOME ------------------------------------
+        var outcomeHTML = []; //array of outcome html to be rendered
+        var dividerAdded = false; //used for determining if the unassessed outcome divided has been added
+        dtps.classes[num].outcomes.sort(function (a, b) {
+            var keyA = a.score,//sort by score lowest -> highest
+                keyB = b.score;
+            if (keyA == undefined) { keyA = 999999 - a.assessments.length; } //put outcomes with no assessments at the bottom
+            if (keyB == undefined) { keyB = 999999 - b.assessments.length; }
+            // Compare the 2 scores
+            if (keyA > keyB) return 1;
+            if (keyA < keyB) return -1;
+            return 0;
+        }).forEach(outcome => {
+            var divider = !dividerAdded && !outcome.assessments.length; //render divider
+            if (divider) dividerAdded = true; //remember that divider is already rendered
 
-  <div style="font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-  <i onclick="$(this).parent().siblings('.fullList').toggle(); if ($(this).parent().siblings('.fullList').is(':visible')) {$(this).html('keyboard_arrow_down')} else {$(this).html('keyboard_arrow_right')}" style="` + (dtps.classes[num].outcomes[i].gradedAlignments.length > 1 ? "" : "display: none;") + `cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons down fullListToggleIcon">keyboard_arrow_right</i>
-
-  <div class="coolEpicLatest" id="` + num + `-` + i + `-` + 0 + `" ` + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ?
-                                    `line-height: 22px; width: 22px; height: 22px; border: none !important; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; background-color: var(--assessmentColor); color: white;`
-                                    : `line-height: 20px; width: 20px; height: 20px; --assessmentColor: ` + dtps.cblColor(dtps.classes[num].outcomes[i].lastAssignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);`) + `
-        display: inline-block; text-align: center; font-size: ` + (String(dtps.classes[num].outcomes[i].lastAssignment.score).length > 2 ? "10px" : "16px") + `; border-radius: 50%; margin-right: 5px; vertical-align: middle; outline: none;">
-  ` + dtps.classes[num].outcomes[i].lastAssignment.score + `</div>
-   <span class="coolEpicLatest" onclick="dtps.assignment('` + dtps.classes[num].outcomes[i].lastAssignment.id + `', ` + num + `)" style="cursor: pointer;">` + dtps.classes[num].outcomes[i].lastAssignment.name + `</span></div>` : "") + `
-  
-<div style="margin-top: 10px; display: none;" class="fullList">
-` + dtps.classes[num].outcomes[i].gradedAlignments.map(function (alignment, ii) {
-                                        return `<div ` + (ii == 0 ? `class="fullListLatest"` : "") + ` style="` + (ii == 0 ? "display: none;" : "") + `padding-left: 29px; margin: 2px 0px; color: var(--lightText); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-<div id="` + num + `-` + i + `-` + ii + `" ` + (dtps.classes[num].letter !== "--" ? `contenteditable="true"` : "") + ` style="` + (dtps.classes[num].outcomes[i].calculation_int >= 50 ? `line-height: 18px; width: 18px; height: 18px; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; border: 1px solid var(--assessmentColor); color: var(--assessmentColor);` : `line-height: 20px; width: 20px; height: 20px; border: none !important; --assessmentColor: ` + dtps.cblColor(alignment.score) + `; background-color: var(--assessmentColor); color: white;`) + `display: inline-block; text-align: center; font-size: ` + (String(alignment.score).length > 2 ? "10px" : "14px") + `; border-radius: 50%; margin-right: 5px; outline: none;">` + alignment.score + `</div>
-<span style="cursor: pointer;" onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)">` + alignment.title + `</span></div>`
-                                    }).join("") + `
-  </div>
-
-  ` + ((dtps.classes[num].letter !== "--") && dtps.classes[num].outcomes[i].lastAssignment ? `
-  <p onclick="dtps.simOutcomeInit(` + num + `, ` + i + `, this);" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 10px; cursor: pointer;">
-  <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
-  Test a What-If grade
-  </p>` : "") + `
-
-  </div>`
-                    }).join("") + `
-</div>`)
-
-                    if (!cb && (dtps.selectedContent == "grades")) Object.keys(dtps.classes[num].outcomes).map(function (i) {
-                        dtps.classes[num].outcomes[i].gradedAlignments.map(function (alignment, ii) {
-                            $("#" + num + "-" + i + "-" + ii + ", #" + num + "-" + i + "-extra").on("DOMCharacterDataModified", function (e) {
-                                var text = $(this).text();
-                                if ((String(text).length > 3) || (text && isNaN(Number(text))) || (text && ((Number(text) > 4) || (Number(text) < 1)))) {
-                                    $(this).css("--assessmentColor", "var(--secText)");
-                                    $("#whatIfGrade .letter").html("--");
-                                    $("#whatIfGrade").show();
-                                    $(this).parents(".card.outcomeResults").find(".earned.numbers").html("--*");
-                                    $(this).parents(".card.outcomeResults").find(".earned.numbers").css("color", "var(--secText)");
-                                } else {
-                                    //update data
-                                    var outcome = dtps.classes[$(this).attr("id").split("-")[0]].outcomes[$(this).attr("id").split("-")[1]];
-                                    if ($(this).attr("sim") == "true") {
-                                        outcome.gradedAlignments[0].score = Number(text);
-                                    } else {
-                                        var iii = $(this).attr("id").split("-")[2];
-                                        if ((iii == 0) && outcome.simReady) iii = outcome.gradedAlignments.length - 1;
-                                        outcome.gradedAlignments[iii].score = Number(text);
-                                    }
-
-                                    //recalculate outcome decaying average
-                                    var lastAssessment = outcome.gradedAlignments[0].score * (outcome.calculation_int / 100);
-                                    var sum = 0;
-                                    //starting at ii=1 is intentional to omit the latest outcome score from everything else
-                                    for (var ii = 1; ii < outcome.gradedAlignments.length; ii++) sum += outcome.gradedAlignments[ii].score;
-                                    var everythingElse = (sum / (outcome.gradedAlignments.length - 1)) * (1 - (outcome.calculation_int / 100))
-
-                                    var calculatedScore = lastAssessment + everythingElse;
-                                    if (outcome.gradedAlignments.length == 1) calculatedScore = outcome.gradedAlignments[0].score;
-                                    dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes[$(this).attr("id").split("-")[1]] = calculatedScore;
-
-                                    var scores = [];
-                                    var scoresWOSS = [];
-                                    Object.keys(dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes).forEach((k) => {
-                                        var ssIDs = ["2269", "2270"];
-                                        if (!ssIDs.includes(String(k))) scoresWOSS.push(dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes[k])
-                                        scores.push(dtps.classes[$(this).attr("id").split("-")[0]].gradedOutcomes[k])
-                                    })
-
-                                    //get new class grade
-                                    dtps.computeClassGrade(undefined, undefined, scores, scoresWOSS, (data) => {
-                                        $("#whatIfGrade .letter").html(data);
-                                        $("#whatIfGrade").show();
-                                    })
-
-                                    //display results
-                                    $(this).parents(".card.outcomeResults").find(".earned.numbers").html(Number(calculatedScore.toFixed(2)) + "*");
-                                    $(this).parents(".card.outcomeResults").find(".earned.numbers").css("color", dtps.cblColor(calculatedScore));
-                                    $(this).css("--assessmentColor", dtps.cblColor(text));
-                                    $(this).siblings("span").html(!$(this).siblings("span").html().endsWith("*") ? $(this).siblings("span").html() + "*" : $(this).siblings("span").html());
-                                }
-                            })
-                        });
-                    })
-                });
-            });
+            outcomeHTML.push((divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
+            <div style="border-radius: 20px;padding: 22px; padding-bottom: 20px;" class="card outcomeResults">
+                <h5 style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${outcome.title}</h5>
+                ` + (outcome.score !== undefined ? `<div style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ` + dtps.cblColor(outcome.score) + `">` + outcome.score.toFixed(2) + `</div>` : ``) + `
+                ` + (outcome.assessments.length == 0 ? `
+                    <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
+                ` : outcome.assessments.slice().reverse().map(assessment => {
+                return `<p onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
+                            <span style="margin-right: 5px; font-size: 20px; vertical-align: middle; color: ` + dtps.cblColor(assessment.score) + `">` + assessment.score + `</span>
+                            ` + assessment.title + `
+                        </p>`;
+            }).join("")) + `
+            </div>`)
         })
-    }
-}
 
-dtps.simOutcomeInit = function (num, i, ele) {
-    $(ele).parents(".card.outcomeResults").find('.fullList').find('.fullListLatest').show();
-    $(ele).parents(".card.outcomeResults").find('.fullListToggleIcon').show();
-    $(ele).parents(".card.outcomeResults").find("div.coolEpicLatest").attr('sim', true);
-    $(ele).parents(".card.outcomeResults").find("div.coolEpicLatest").html('--');
-    $(ele).parents(".card.outcomeResults").find("div.coolEpicLatest").css("--assessmentColor", "var(--secText)");
-    $(ele).parents(".card.outcomeResults").find("span.coolEpicLatest").html('Simulated Outcome Assessment*');
-    $(ele).parents(".card.outcomeResults").find(".earned.numbers").html("--*");
-    $(ele).parents(".card.outcomeResults").find(".earned.numbers").css("color", "var(--secText)");
-    $("#whatIfGrade .letter").html("--");
-    $("#whatIfGrade").show();
-    $(ele).hide();
-    var outcome = dtps.classes[num].outcomes[i];
-    outcome.gradedAlignments.push(outcome.gradedAlignments[0])
-    outcome.gradedAlignments[0] = {
-        learning_outcome_id: "SIM",
-        title: "Simulated Outcome Assessment*",
-        assignment_id: "0",
-        submission_types: "none",
-        url: "https://powerplus.app",
-        score: Number($(ele).text()),
-        date: new Date().toISOString()
+        //WRITE HTML TO CLASS CONTENT
+        if (dtps.selectedContent == "grades") $(".classContent").html(gradeCalcSummary + `<br />` + outcomeHTML.join(""))
     }
-    outcome.simReady = true;
 }
 
 //Shows details for an assignment given the assignment ID and class number
@@ -1940,7 +1918,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <div style="margin-top: 20px;" class="assignmentBody">` + (assignment.body ? `<iframe id="assignmentIframe" onload="dtps.iframeLoad('assignmentIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `</div>
 
 <div style="margin: 5px 0px; background-color: var(--secText); height: 1px; width: 100%;" class="divider"></div>
-<div style="width: calc(40% - 2px); margin-top: 20px; display: inline-block; overflow: hidden; vertical-align: middle;">
+<div style="width: calc(40% - 2px); margin-top: 20px; display: inline-block; overflow: hidden; vertical-align: top;">
 <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">add_box</i> Posted: ` + assignment.published + `</p>
 ` + (assignment.due ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">alarm</i> Due: ` + assignment.due + `</p>` : "") + `
 ` + (assignment.locksAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;font-family: 'Material Icons Extended'" class="material-icons">lock_outline</i> Locks: ` + new Date(assignment.locksAt).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(assignment.locksAt)) + `</p>` : "") + `
@@ -1970,7 +1948,7 @@ Power+ currently only supports assignments that use online text entry. Other ass
 <div style="display: inline-block; border-radius: 8px; white-space: nowrap; overflow: hidden; font-size: 0; vertical-align: middle; background: ` + (rubric.score ? rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].color : `linear-gradient(90deg, ` + rubric.ratings.map(function (rating) { return rating.color + ","; }).join("").slice(0, -1) + `)`) + `;">
 ` + (rubric.score !== undefined ? `
 <div style="padding: 5px 10px; font-size: 18px; background-color: transparent; color: white; font-weight: bold; width: 200px; text-align: center; display: inline-block;">
-` + (rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name ? rubric.score + "&nbsp;&nbsp;" + rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name : rubric.score) + `
+` + (rubric.ratings[rubric.ratingItems.indexOf(rubric.score)] && rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name ? rubric.score + "&nbsp;&nbsp;" + rubric.ratings[rubric.ratingItems.indexOf(rubric.score)].name : rubric.score || "Not assessed") + `
 </div>` : rubric.ratings.map(function (rating) {
                                 return `
 <div style="padding: 2px 0px; font-size: 16px; background-color: transparent; color: white; width: 50px; text-align: center; display: inline-block;">
@@ -2005,12 +1983,7 @@ dtps.announcements = function () {
     }
     dtps.webReq("canvas", "/api/v1/announcements" + context.join(""), function (resp) {
         var ann = JSON.parse(resp);
-        var announcements = [`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
-<div class="label">` + dtps.classes[dtpsClass].subject + `</div>
-<p>Please fill out <a href="https://forms.gle/hui8kmfK3Lf1g2MaA">this easy, one-question CBL form</a>.</p>
-<p>Thank you for your time and for testing the next version of Power+. also sorry that you can't get rid of this. It'll go away by the end of lab day.</p>
-</div>
-`];
+        var announcements = [];
         for (var i = 0; i < ann.length; i++) {
             var dtpsClass = null;
             for (var ii = 0; ii < dtps.classes.length; ii++) {
@@ -2028,6 +2001,21 @@ dtps.announcements = function () {
         }
     });
 };
+
+//Renders recently graded assignments into the dashboard
+dtps.renderRecentlyGraded = () => {
+    if (dtps.recentlyGraded) {
+        if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
+            jQuery(".dash .recentlyGraded").html(dtps.recentlyGraded.map(grade => {
+                return `<div onclick="dtps.assignment('` + grade.id + `', '` + grade.class + `')" class="card ` + dtps.classes[grade.class].col + ` recentGrade">
+                    <div style="float: right; margin-left: 10px;" class="earned outcomes">` + dtps.renderOutcomeScore(grade.rubric).join("") + `</div>
+                    <h5>` + grade.name + `</h5>
+                    <p>Graded at ` + (new Date(grade.date).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(grade.date))) + `</p>
+                </div>`
+            }).join(""));
+        }
+    }
+}
 
 //Compiles and displays assignment due dates in the calendar
 dtps.calendar = function (doneLoading) {
@@ -2081,123 +2069,6 @@ dtps.clearData = function () {
     }
 }
 
-//gets Power+ score
-dtps.score = function () {
-    var score = 0;
-
-    function mean(numbers) {
-        var total = 0, i;
-        for (i = 0; i < numbers.length; i += 1) {
-            total += numbers[i];
-        }
-        return total / numbers.length;
-    }
-    function median(numbers) {
-        // median of [3, 5, 4, 4, 1, 1, 2, 3] = 3
-        var median = 0, numsLen = numbers.length;
-        numbers.sort();
-
-        if (
-            numsLen % 2 === 0 // is even
-        ) {
-            // average of two middle numbers
-            median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
-        } else { // is odd
-            // middle number only
-            median = numbers[(numsLen - 1) / 2];
-        }
-
-        return median;
-    }
-    function mode(numbers) {
-        // as result can be bimodal or multi-modal,
-        // the returned result is provided as an array
-        // mode of [3, 5, 4, 4, 1, 1, 2, 3] = [1, 3, 4]
-        var modes = [], count = [], i, number, maxIndex = 0;
-
-        for (i = 0; i < numbers.length; i += 1) {
-            number = numbers[i];
-            count[number] = (count[number] || 0) + 1;
-            if (count[number] > maxIndex) {
-                maxIndex = count[number];
-            }
-        }
-
-        for (i in count)
-            if (count.hasOwnProperty(i)) {
-                if (count[i] === maxIndex) {
-                    modes.push(Number(i));
-                }
-            }
-
-        return modes;
-    }
-    function range(numbers) {
-        numbers.sort();
-        return [numbers[0], numbers[numbers.length - 1]];
-    }
-    String.prototype.hashCode = function () {
-        var hash = 0, i, chr;
-        if (this.length === 0) return hash;
-        for (i = 0; i < this.length; i++) {
-            chr = this.charCodeAt(i);
-            hash = ((hash << 5) - hash) + chr;
-            hash |= 0; // Convert to 32bit integer
-        }
-        return hash;
-    };
-
-    var scores = [];
-    var q = 0;
-    var qq = 0;
-
-    dtps.classes.forEach((cclass) => {
-        if (!cclass.noOutcomes) qq++;
-    })
-
-    dtps.classes.forEach((cclass, i) => {
-        if (!cclass.noOutcomes) {
-            dtps.gradebook(i, (num) => {
-                if (dtps.classes[num].outcomes) {
-                    Object.keys(dtps.classes[num].outcomes).forEach((k) => {
-                        if (dtps.classes[num].outcomes[k]) {
-                            dtps.classes[num].outcomes[k].gradedAlignments.forEach((alignment) => {
-                                scores.push(alignment.score);
-                            })
-                        }
-                    })
-                }
-                q++;
-                if (q == qq) {
-                    q = 0;
-                    finishEx();
-                }
-            });
-        }
-    })
-
-    function finishEx() {
-        console.log(scores)
-
-        var toExport = {
-            score: (1 / dtps.user.id) * 1000000,
-            mean: mean(scores).toFixed(1),
-            median: median(scores).toFixed(1),
-            mode: mode(scores)[0].toFixed(1),
-            lowest: range(scores)[0].toFixed(1),
-            highest: range(scores)[1].toFixed(1),
-        }
-        var resJSON = JSON.stringify(toExport);
-        var results = {
-            content: Number(String(resJSON.hashCode()).repeat(2)) / 2,
-            verify: resJSON.length,
-            export: resJSON
-        }
-        console.log(toExport);
-    }
-
-}
-
 //Renders chroma effect for selected class
 dtps.chroma = function () {
     if (fluid.chroma) {
@@ -2239,30 +2110,21 @@ dtps.showClasses = function (override) {
       <div onclick="dtps.selectedClass = ` + i + `" class="class item ` + i + ` ` + dtps.classes[i].col + `">
       <span class="label name">` + name + `</span>
       <div ` + (dtps.classes[i].letter == "--" ? `style="letter-spacing:2px;"` : "") + ` class="icon grade val">` + (dtps.classes[i].letter !== false ? dtps.classes[i].letter : `
-      <div class="spinner" style=" background-color: var(--norm); margin: -1px -3px; "></div>`) + `</div>
+      <div class="spinner" style=" background-color: var(--norm); margin: -2px -13px"></div>`) + `</div>
       </div>
     `);
     }
-    var googleClassDom = ""
-    if (dtps.isolatedGoogleClasses) {
-        dtps.classlist.push(`<div class="classDivider"></div>`)
-        for (var i = 0; i < dtps.isolatedGoogleClasses.length; i++) {
-            dtps.classlist.push(`<div style="display: none;" onclick="$('.sidebar .class').removeClass('active'); $(this).addClass('active'); $('body').addClass('isolatedGoogleClass'); dtps.selectedClass = 'isolatedGoogleClass'; $('.classContent').html(dtps.renderStream(dtps.googleClasses[` + dtps.isolatedGoogleClasses[i] + `].stream)); $('#headText').html('` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `')" class="class isolated google ` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].id + `">
-      <div style="width: 100%; padding-right: 10px;" class="name">` + dtps.googleClasses[dtps.isolatedGoogleClasses[i]].name + `</div>
-      </div>`)
-        }
-    }
     if ((!Boolean(jQuery(".sidebar .class.masterStream")[0])) || override) {
-        jQuery(".sidebar").html(`<h4 style="-webkit-text-fill-color: transparent; background: -webkit-linear-gradient(#f9ca06, #efdf0d); -webkit-background-clip: text;">Power+</h4>
+        jQuery(".sidebar").html(`
+        <div class="bigLogo" style="text-align: center; margin: 10px 0 20px;">
+            <img style="width: 28px; margin-right: 7px; vertical-align: middle;" src="https://powerplus.app/outline.png" />
+            <h4 style="color: var(--text); display: inline-block; font-size: 28px; vertical-align: middle; margin: 0px;">Power+</h4>
+        </div>
         <img class="logo" src="https://powerplus.app/favicon.png" />
 <div class="items">
 <div onclick="dtps.selectedClass = 'dash';" class="class item main masterStream ` + streamClass + `">
     <span class="label name">Dashboard</span>
     <div class="icon"><i class="material-icons">dashboard</i></div>
-    </div>
-<div onclick="dtps.cblDashboard();" class="class item overrideClass">
-    <span class="label name">CBL Grades</span>
-    <div class="icon"><i class="material-icons">assessment</i></div>
     </div>
     <div class="divider"></div>
   ` + dtps.classlist.join("") + `</div>
@@ -2272,28 +2134,14 @@ dtps.showClasses = function (override) {
         if (dtps.selectedClass !== "dash") $(".class." + dtps.selectedClass).addClass("active");
         if ($(".btn.pages").hasClass("active")) { $(".btn.pages").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
         if ($(".btn.discuss").hasClass("active")) { $(".btn.discuss").removeClass("active"); $(".btn.stream").addClass("active"); dtps.classStream(dtps.selectedClass); dtps.selectedContent = "stream"; }
-        $(".class:not(.google):not(.overrideClass)").click(function (event) {
+        $(".class:not(.overrideClass)").click(function (event) {
             if (dtps.selectedClass == "dash") $('body').addClass('dashboard');
             if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
             dtps.chroma();
-            $('body').removeClass('isolatedGoogleClass');
-            $(".btn.google").hide();
             $(".background").addClass("trans");
-            if (dtps.classes[dtps.selectedClass]) {
-                if (dtps.classes[dtps.selectedClass].image && (fluid.get("pref-classImages") !== "true")) {
-                    $(".cover.image").css("background-image", 'url("' + dtps.classes[dtps.selectedClass].image + '")');
-                    $(".background").css("opacity", '0.90');
-                    $(".background").css("filter", 'none');
-                } else {
-                    $(".cover.image").css("background-image", 'none');
-                    $(".background").css("opacity", '1');
-                    $(".background").css("filter", 'blur(10px)');
-                }
-            } else {
-                $(".cover.image").css("background-image", 'none');
-                $(".background").css("opacity", '1');
-                $(".background").css("filter", 'blur(10px)');
-            }
+            $(".cover.image").css("background-image", 'url("' + (dtps.classes[dtps.selectedClass] && dtps.classes[dtps.selectedClass].image && (fluid.get("pref-classImages") !== "true") ? dtps.classes[dtps.selectedClass].image : "https://i.imgur.com/SpqHCNo.png") + '")');
+            $(".background").css("opacity", '0.90');
+            $(".background").css("filter", 'none');
             clearTimeout(dtps.bgTimeout);
             dtps.bgTimeout = setTimeout(function () {
                 dtps.oldTheme = "squidward theme park";
@@ -2319,7 +2167,7 @@ dtps.showClasses = function (override) {
             }
             $(this).siblings().removeClass("active")
             $(this).addClass("active")
-            $(".header h1").html($(this).children(".name").text())
+            $("#headText").html($(this).children(".name").text())
             if (!dtps.classes[dtps.selectedClass]) {
                 $(".header .btns").hide();
             } else {
@@ -2329,7 +2177,6 @@ dtps.showClasses = function (override) {
             if ((dtps.selectedContent == "moduleStream") && (dtps.classes[dtps.selectedClass])) dtps.moduleStream(dtps.selectedClass)
             if ((dtps.selectedContent == "grades") && (dtps.classes[dtps.selectedClass])) dtps.gradebook(dtps.selectedClass)
             if (dtps.selectedClass == "dash") dtps.masterStream(true);
-            if (dtps.selectedClass == "announcements") dtps.announcements();
             if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].pagesTab) { $(".btns .btn.pages").show(); } else { $(".btns .btn.pages").hide(); } }
             if (dtps.classes[dtps.selectedClass]) { if (dtps.classes[dtps.selectedClass].noOutcomes) { $(".btns .btn.grades").hide(); } else { $(".btns .btn.grades").show(); } }
         });
@@ -2339,86 +2186,6 @@ dtps.showClasses = function (override) {
             $(".class." + dtps.selectedClass).click();
         }
     }
-}
-
-//Fetches Google Classroom assignment data for all Google Classes
-dtps.googleStream = function () {
-    dtps.log("FETCHING GOOGLE ASSIGNMENTS")
-    function googleStream(i) {
-        if (dtps.googleClasses[i]) {
-            gapi.client.classroom.courses.courseWork.list({ courseId: dtps.googleClasses[i].id }).then(function (resp) {
-                dtps.googleClasses[i].rawData = resp.result;
-                dtps.googleClasses[i].stream = [];
-                for (var ii = 0; ii < resp.result.courseWork.length; ii++) {
-                    if (resp.result.courseWork[ii].dueDate) {
-                        var due = new Date(resp.result.courseWork[ii].dueDate.year, resp.result.courseWork[ii].dueDate.month - 1, resp.result.courseWork[ii].dueDate.day - 1);
-                    } else {
-                        var due = new Date();
-                    }
-                    dtps.googleClasses[i].stream.push({
-                        title: resp.result.courseWork[ii].title,
-                        due: due.toHumanString(),
-                        dueDate: due.toISOString(),
-                        turnedIn: false,
-                        google: true,
-                        url: resp.result.courseWork[ii].alternateLink + "?authuser=" + dtps.user.google.getEmail(),
-                        letter: "--",
-                        grade: "/" + resp.result.courseWork[ii].maxPoints
-                    })
-                    if (dtps.googleClasses[i].psClass !== undefined) {
-                        dtps.googleClasses[i].stream[ii].class = dtps.googleClasses[i].psClass;
-                        dtps.googleClasses[i].stream[ii].subject = dtps.classes[dtps.googleClasses[i].psClass].subject;
-                    }
-                }
-                if (i < (dtps.googleClasses.length - 1)) googleStream(i + 1);
-            });
-        } else {
-            if (i < (dtps.googleClasses.length - 1)) googleStream(i + 1);
-        }
-    }
-    googleStream(0);
-}
-
-//Authenticates the user for Google Classroom integration
-dtps.googleAuth = function () {
-    dtps.log("GOOGLE AUTH")
-    dtps.user.google = gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile();
-    $(".toolbar.items img").attr("src", dtps.user.google.getImageUrl())
-    gapi.client.classroom.courses.list({ pageSize: 40 }).then(function (resp) {
-        dtps.googleClasses = resp.result.courses;
-        if (dtps.googleClasses == undefined) {
-            dtps.gapis();
-        } else {
-            for (var i = 0; i < dtps.googleClasses.length; i++) {
-                if (dtps.googleClasses[i].courseState == "ACTIVE") {
-                    var match = null;
-                    for (var ii = 0; ii < dtps.classes.length; ii++) {
-                        if (dtps.googleClasses[i].name.includes(dtps.classes[ii].subject)) match = ii;
-                    }
-                    if (match !== null) {
-                        if (dtps.classes[match].google == undefined) {
-                            dtps.classes[match].google = dtps.googleClasses[i]
-                            dtps.googleClasses[i].psClass = match
-                        }
-                    }
-                }
-            }
-            dtps.isolatedGoogleClasses = [];
-            var isolatedDom = [];
-            for (var i = 0; i < dtps.googleClasses.length; i++) {
-                if ((dtps.googleClasses[i].psClass == undefined) && (dtps.googleClasses[i].courseState == "ACTIVE")) {
-                    dtps.isolatedGoogleClasses.push(i)
-                    isolatedDom.push(`<br /><br />
-    <div onclick="jQuery('.google.isolated.class.` + dtps.googleClasses[i].id + `').toggle()" class="switch"><span class="head"></span></div>
-    <div class="label">` + dtps.googleClasses[i].name + `</div>`)
-                }
-            }
-            $(".isolatedGClassList").html(isolatedDom.join("").slice(12));
-            dtps.showClasses(true);
-            dtps.googleStream();
-            fluid.init();
-        }
-    });
 }
 
 //Saves grade data locally for grade trend
@@ -2468,13 +2235,7 @@ dtps.gradeTrend = function (ele) {
 //Renders Power+ and removes all Canvas HTML
 //Seperated into static HTML and javascript-based things
 dtps.render = function () {
-    if (dtps.embedded) {
-        jQuery("head").html("");
-        $("body").addClass("dashboard");
-        $("body").addClass("showThemeWindows");
-        $("body").addClass("hasSidebar");
-    }
-    document.title = "Power+" + dtps.trackSuffix;
+    if (!window.dtpsPreLoader) dtps.setMetadata(); //if dtps is not being preloaded, start loading CSS and other metadata
 
     //Full names pref
     if (fluid.get("pref-fullNames") == "true") { dtps.fullNames = true; }
@@ -2495,17 +2256,15 @@ dtps.render = function () {
     <div style="line-height: 0;" class="sidebar acrylicMaterial">
     </div>
     <div class="cover image"></div>
-    <div class="background trans"></div>
+    <div class="background"></div>
 <div class="header">
-    <h1 id="headText">Dashboard</h1>
+    <p id="timeRemaining" style="position: absolute;top: ` + (dtps.danger ? "2" : "14") + `px;margin-left: 20px;"></p>
+    ` + (dtps.danger ? `<p style="position: absolute;top: 45px;margin-left: 20px; color: #ff6e6e; background-color: black; font-size: 12px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</p>` : ``) + `
+    <h2 id="headText">Dashboard</h2>
     <div style="display: none;" class="btns row tabs">
     <button onclick="dtps.selectedContent = 'stream'; dtps.chroma(); dtps.classStream(dtps.selectedClass);" class="btn active stream">
     <i class="material-icons">library_books</i>
     Coursework
-    </button>
-    <button onclick="dtps.selectedContent = 'google'; dtps.chroma(); $('.classContent').html(dtps.renderStream(dtps.classes[dtps.selectedClass].google.stream))" class="btn google">
-    <i class="material-icons">class</i>
-    google_logo Classroom
     </button>
     <button onclick="dtps.selectedContent = 'discuss'; dtps.chroma(); dtps.loadTopics(dtps.selectedClass);" class="btn discuss">
     <i class="material-icons">forum</i>
@@ -2564,7 +2323,6 @@ dtps.render = function () {
   `);
     }
 
-
     jQuery("#colorCSS").html(dtps.colorCSS ? dtps.colorCSS.join("") : "")
     if (dtps.embedded) dtps.renderLite();
 
@@ -2620,49 +2378,11 @@ dtps.render = function () {
     //dtps.gapis();
 
     if (dtps.embedded) {
-        $("link").remove();
-        jQuery("<link/>", {
-            rel: "shortcut icon",
-            type: "image/png",
-            href: "https://powerplus.app/favicon.png"
-        }).appendTo("head");
-        jQuery("<link/>", {
-            rel: "stylesheet",
-            type: "text/css",
-            href: "https://cdn.jottocraft.com/fluid/v4.min.css"
-        }).appendTo("head");
-        jQuery("<link/>", {
-            rel: "stylesheet",
-            type: "text/css",
-            href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css"
-        }).appendTo("head");
-        jQuery("<link/>", {
-            rel: "stylesheet",
-            type: "text/css",
-            href: "https://fonts.googleapis.com/css?family=Material+Icons+Outlined"
-        }).appendTo("head");
-
-        if (dtps.trackSuffix !== "") {
-            jQuery("<link/>", {
-                rel: "stylesheet",
-                type: "text/css",
-                href: "https://powerplus.app/dev.css"
-            }).appendTo("head");
-        } else {
-            jQuery("<link/>", {
-                rel: "stylesheet",
-                type: "text/css",
-                href: "https://powerplus.app/dtps.css"
-            }).appendTo("head");
-        }
-
-        jQuery("<link/>", {
-            rel: "stylesheet",
-            type: "text/css",
-            href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended"
-        }).appendTo("head");
 
         fluid.onLoad();
+        document.dispatchEvent(new CustomEvent('fluidTheme')); //load header background gradient
+
+        console.log("ready?")
     }
 
     jQuery('.classContent').bind('heightChange', function () {
@@ -2687,9 +2407,25 @@ dtps.obsSwitch = function (ele) {
     dtps.init();
 }
 
+dtps.renderCblSim = function () {
+    $("#cblSimData").html(Object.keys(dtps.criteria).map(k => {
+        if (k == "letters") return;
+        return `<p><b>` + dtps.criteria[k].params.name + `</b></p>` + Object.keys(dtps.criteria[k]).map(kk => {
+            if (kk == "params") return;
+            return `<p style="cursor: pointer; color: var(--links);" onclick="dtps.criteria['` + k + `']['` + kk + `'] = window.prompt('Enter a new value'); dtps.renderCblSim();">` + kk + `:&nbsp;&nbsp;&nbsp;` + dtps.criteria[k][kk] + `</p>`;
+        }).join("");
+    }).join("<br /><br />"));
+}
+
 //Render function that can ran before classes are ready
 dtps.renderLite = function () {
     if (fluid.chroma) {
+        dtps.chromaProfile = {
+            title: "Power+",
+            description: "Razer Chroma effects for Power+ (beta)",
+            author: "jottocraft",
+            domain: "powerplus.app"
+        }
         fluid.chroma.supported(function (res) {
             if (res) {
                 //Razer Synapse installed
@@ -2705,7 +2441,7 @@ dtps.renderLite = function () {
     }
     var trackDom = "";
     if (dtps.trackSuffix !== "") {
-        trackDom = `<div style="display:inline-block;font-size: 16px; padding: 3px 4px;background-color: ` + dtps.trackColor + `" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`
+        trackDom = `<div style="display:inline-block;font-size: 16px; padding: 3px 4px;" class="beta badge notice">` + dtps.trackSuffix.replace(" (", "").replace(")", "") + `</div>`
     } else {
         trackDom = ``;
     }
@@ -2727,7 +2463,7 @@ dtps.renderLite = function () {
     <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();" class="item active">
       <i class="material-icons">settings</i> Settings
     </div>
-    <div onclick="$('.abtpage').hide();$('.abtpage.classes').show();" class="item">
+    <div onclick="jQuery('.gradeDom').html(dtps.gradeHTML.join('')); $('.abtpage').hide();$('.abtpage.classes').show();" class="item">
       <i class="material-icons">assessment</i> Grades
     </div>
     <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" style="/*display: none !important;*/" class="item sudo">
@@ -2771,15 +2507,6 @@ dtps.renderLite = function () {
     <div class="label razerChroma" style="display: none;"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /img> Razer Chroma Effects (beta)</div>
     <br /><br />
     <button onclick="dtps.schedule()" class="btn small"><i class="material-icons">access_time</i>Schedule classes</button>
-	<div style="display: none" class="embeddedOptions">
-	<br /><br />
-    <p>Power+</p>
-    <div onclick="fluid.set('pref-autoLoad')" class="switch pref-autoLoad"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">play_circle_outline</i> Automatically load Power+</div>
-    <br /><br />
-    <div onclick="fluid.set('pref-devChannel')" class="switch pref-devChannel"><span class="head"></span></div>
-    <div class="label"><i class="material-icons">bug_report</i> Use the unstable (dev) version of Power+</div>
-	</div>
 </div>
 <div style="display: none;" class="abtpage classes">
 <div id="classGrades">
@@ -2790,22 +2517,6 @@ dtps.renderLite = function () {
 <p>Loading...</p>
 </div>
 </div>
-<!--
-<br /><br />
-<div class="googleClassroom sudo">
-    <h5>google_logo Classes</h5>
-    <button class="btn" onclick="window.alert('On the page that opens, select Project DTPS, and click Remove Access.'); window.open('https://myaccount.google.com/permissions?authuser=' + dtps.user.google.getEmail());"><i class="material-icons">link_off</i>Unlink Google Classroom</button>
-    <br /><br />
-    <p>Classes listed below could not be associated with a Canvas class. You can choose which classes to show in the sidebar.</p>
-    <div class="isolatedGClassList"><p>Loading...</p></div>
-</div>
-<div class="googleSetup sudo">
-    <h5>google_logo Classroom <div class="badge">beta</div></h5>
-    <p>Link google_logo Classroom to see assignments and classes from both Canvas and Google.</p>
-    <p>If Power+ thinks one of your Canvas classes also has a Google Classroom, it'll add a Google Classroom tab to that class. You can choose which extra classes to show in the sidebar.</p>
-    <button onclick="if (window.confirm('EXPERIMENTAL FEATURE: Google Classroom features are still in development. Continue at your own risk. Please leave feedback by clicking the feedback button at the top right corner of Power+.')) { dtps.googleSetup = true; dtps.webReq('psGET', 'https://dtechhs.learning.powerschool.com/do/account/logout', function() { gapi.auth2.getAuthInstance().signIn().catch(function(err) { /*window.location.reload()*/ console.warn(err); }); })}" class="btn sudo"><i class="material-icons">link</i>Link Google Classroom</button>
-</div>
--->
 </div>
 <div style="display: none;" class="abtpage extension">
     <h5>Extension</h5>
@@ -2814,28 +2525,22 @@ dtps.renderLite = function () {
 <div style="display: none;" class="abtpage apiExplorer">
     <h5>API Explorer</h5>
 <br /><br />
-<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints"><span class="head"></span></div>
-<div class="label"><i class="material-icons">stars</i> PowerPoints (USE AT YOUR OWN RISK, REQUIRES RELOAD)</div>
-<br /><br />
     <ul>` + dtps.explorer.map(function (item) {
         return `<li style="cursor: pointer;" onclick="dtps.explore('` + item.path + `')">` + item.name + `</li>`
     }).join("") + `</ul>
 <br />
 <pre><code id="explorerData">Select an item
-</code></pre>
+</code></pre> 
 </div>
 <div style="display: none;" class="abtpage experiments">
 <div class="sudo">
     <h5>Experiments</h5>
     <p>WARNING: Features listed below are not officially supported and can break Power+. Use at your own risk.</p>
     <p>Want to test out new features as they are developed? <a href="https://github.com/jottocraft/dtps#alternate-install-methods">Try the dev version of Power+</a>.</p>
-<br /><br />
-<div onclick="fluid.set('pref-powerPoints')" class="switch pref-powerPoints"><span class="head"></span></div>
-<div class="label"><i class="material-icons">stars</i> PowerPoints (USE AT YOUR OWN RISK, REQUIRES RELOAD)</div>
-<br /><br />
-<div onclick="fluid.set('pref-dtpsRewards')" class="switch pref-dtpsRewards"><span class="head"></span></div>
-<div class="label"><i class="material-icons">scatter_plot</i> Power+ Rewards (the new one, NYI)</div>
-<br />
+    <br /><br /><br />
+    <div onclick="fluid.set('pref-showNumberGrades')" class="switch pref-showNumberGrades"><span class="head"></span></div>
+    <div class="label">Show assignment number grades</div>
+    <br /><br />
 </div>
 </div>
 <div style="display: none;" class="abtpage debug">
@@ -2858,7 +2563,7 @@ dtps.renderLite = function () {
 <img src="https://powerplus.app/outline.png" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
 <div style="display: inline-block; vertical-align: middle;">
 <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">Power+</h4>
-<div style="font-size: 16px; margin-top: 5px;">` + dtps.readableVer.replace(dtps.trackSuffix, dtps.fullTrackSuffix) + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></div>
+<div style="font-size: 16px; margin-top: 5px;">` + dtps.readableVer + ` <div class="buildInfo" style="display: inline-block;margin: 0px 5px;font-size: 12px;cursor: pointer;"></div></div>
 </div>
 <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
 <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to Canvas.') }" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
@@ -2883,7 +2588,7 @@ dtps.renderLite = function () {
 <div style="margin-top: 15px; margin-bottom: 7px;">
 <a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.clearData();" href="#"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
 <a style="color: var(--lightText); margin: 0px 5px;" onclick="$('.abtpage').hide();$('.abtpage.apiExplorer').show();" href="#"><i class="material-icons" style="vertical-align: middle">folder_shared</i> API Explorer</a>
-<a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps/issues/new/choose"><i class="material-icons" style="vertical-align: middle">feedback</i> Send feedback</a></div>
+<a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps/issues/new/choose"><i class="material-icons" style="vertical-align: middle">bug_report</i> Bug Report</a></div>
 </div>
 <br />
 <p style="cursor: pointer; color: var(--secText, gray)" onclick="$('.advancedOptions').toggle(); $(this).hide();" class="advOp">Show advanced options</p>
@@ -2894,18 +2599,44 @@ dtps.renderLite = function () {
   </div>
 </div>
   </div>`)
-    jQuery(".toolbar.items").html((dtps.user.obs && dtps.user.obs.length ? `<select onchange="dtps.obsSwitch(this)">
-    ` + dtps.user.obs.map((ob) => {
+    jQuery(".toolbar.items").html(`
+    
+    <div style="text-align: right;">
+
+        ` + (dtps.user.obs && dtps.user.obs.length ? `<select onchange="dtps.obsSwitch(this)">
+        ` + dtps.user.obs.map((ob) => {
         return `<option ` + (dtps.user.obsID == ob.id ? "selected" : "") + ` value="` + ob.id + `">` + ob.short_name + `</option>`;
     }).join("") + `
-  </select>` : `<h4>` + dtps.user.short_name + `</h4>`) + `
-    <img src="` + dtps.user.avatar_url + `" style="width: 50px; height: 50px; margin: 0px 5px; border-radius: 50%; vertical-align: middle;box-shadow: 0 5px 5px rgba(0, 0, 0, 0.17);" />
-    <i onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="material-icons prerelease">feedback</i>
-    <i onclick="if (dtps.gradeHTML) { $('.gradeDom').html((dtps.gpa ? '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>' : '') + dtps.gradeHTML.join('')); if (dtps.gradeHTML.length == 0) { $('#classGrades').hide(); } else { $('#classGrades').show(); }; } else {$('#classGrades').hide();}; fluid.modal('.abt-new')" class="material-icons">settings</i>`);
+        </select>` : `<h4 style="font-size: 22px;">` + dtps.user.short_name + `</h4>`) + `
+
+        <img src="` + dtps.user.avatar_url + `" style="height: 34px; margin: 0px; margin-right: 10px; border-radius: 50%; vertical-align: middle;" />
+    
+    </div>
+
+    <div style="margin-top: 5px; display: inline-block; text-align: right; float: right;">
+    <div onclick="window.location.href = '/';" class="itemButton"><i class="material-icons">exit_to_app</i> Go to Canvas</div>
+        ` + (dtps.danger ? `<div onclick="window.location.href = 'mailto:canary@jottocraft.com'" class="itemButton"><i class="material-icons">email</i> Feedback</div>` : `
+        <div onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="itemButton sudo"><i class="material-icons">feedback</i> Feedback</div>`) + `
+        <div onclick="fluid.modal('.abt-new')" class="itemButton"><i class="material-icons">settings</i> Settings</div>
+    </div>`);
     if (!dtps.embedded) $(".embeddedOptions").hide();
     if (!dtps.embedded) fluid.onLoad();
 
-    if (fluid.get("pref-powerPoints") == "true") $.getScript("https://jottocraft.github.io/dtps-points/points.js");
+    if (!dtps.timeToEndInt) {
+        function getTTE() {
+            dtps.timeToEnd(timeToEnd => {
+                if (timeToEnd && String(timeToEnd).includes("CUST")) {
+                    $("#timeRemaining").html(timeToEnd.replace("CUST", ""));
+                } else if (timeToEnd) {
+                    $("#timeRemaining").html(timeToEnd + " minutes left in class");
+                } else {
+                    $("#timeRemaining").html("");
+                }
+            });
+        }
+        dtps.timeToEndInt = setInterval(getTTE, 60000);
+        getTTE();
+    }
 }
 
 dtps.init();
