@@ -1629,7 +1629,7 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
 ` + ($.fullCalendar !== undefined ? `<div id="calendar" class="card" style="padding: 20px;"></div>` : ``) + `
 
 <div onclick="dtps.pullSchedule()" class="card recentGrade">
-    <h5>Semester 2 Schedules</h5>
+    <h5 style="color: var(--secText);">Semester 2 Schedules</h5>
     <p>Click here to view your Semester 2 schedule. Note that schedules may not be final yet, so don't be angry if there is a problem with it.</p>
 </div>
 
