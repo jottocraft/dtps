@@ -3,14 +3,15 @@
 
   "name": "Power+",
   "description": "A redesigned UI for Canvas LMS",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "background": {
     "scripts": ["background.js"]
   },
   "content_scripts": [
     {
-      "matches": ["https://canvas.instructure.com/*", "https://dtechhs.instructure.com/*"],
-      "js": ["jquery.min.js", "communicator.js"]
+      "run_at": "document_start",
+      "matches": ["https://dtechhs.instructure.com/*", "https://powerplus.app/"],
+      "js": ["communicator.js"]
     }
   ],
   "icons": {
