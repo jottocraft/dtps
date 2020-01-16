@@ -33,14 +33,6 @@ javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;
 
 <br />
 
-Dev bookmarklet
-
-```javascript
-javascript:jQuery.getScript('https://powerplus.app/dev.js');dtpsLoader=2;
-```
-
-<br />
-
 Firefox bookmarklet
 
 ```javascript
