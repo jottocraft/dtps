@@ -712,7 +712,7 @@ dtps.init = function () {
         dtps.nativeAlert("Loading...", undefined, true);
     }
 
-    if (window.dtpsPreLoader) dtps.setMetadata(); //start loading CSS files early if dtps is being preloaded
+    if (window.dtpsPreLoader && dtps.shouldRender) dtps.setMetadata(); //start loading CSS files early if dtps is being preloaded
 
     //add basic explorer items
     dtps.explorer.push({ name: "/users/self/observees", path: "/api/v1/users/self/observees" });
@@ -2235,7 +2235,7 @@ dtps.gradeTrend = function (ele) {
 //Renders Power+ and removes all Canvas HTML
 //Seperated into static HTML and javascript-based things
 dtps.render = function () {
-    if (!window.dtpsPreLoader) dtps.setMetadata(); //if dtps is not being preloaded, start loading CSS and other metadata
+    if (window.dtpsPreLoader ? !dtps.shouldRender : true) dtps.setMetadata(); //if dtps is not being preloaded, start loading CSS and other metadata
 
     //Full names pref
     if (fluid.get("pref-fullNames") == "true") { dtps.fullNames = true; }
