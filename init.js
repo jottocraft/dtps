@@ -714,6 +714,7 @@ dtps.init = function () {
         dtps.nativeAlert("Loading...", undefined, true);
     }
 
+    console.log("DEBUGGING FIREFOX", window.dtpsPreLoader, dtps.shouldRender, window.dtpsPreLoader && dtps.shouldRender, typeof dtps.setMetadata)
     if (window.dtpsPreLoader && dtps.shouldRender) dtps.setMetadata(); //start loading CSS files early if dtps is being preloaded
 
     //add basic explorer items
