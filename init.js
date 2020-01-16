@@ -850,12 +850,12 @@ dtps.init = function () {
                             for (var i = 0; i < data.length; i++) {
                                 if (data[i].end_at ? new Date() < new Date(data[i].end_at) : true) {
                                     //inactive class
-                                    var name = data[i].name;
+                                    var name = data[i].course_code;
                                     var subject = name.split(" - ")[0];
                                     var icon = null;
                                     if (data[i].name !== data[i].course_code) {
                                         //Canvas class manually renamed
-                                        subject = null;
+                                        subject = data[i].name;
                                     }
                                     if (subject == null) var subject = name.split(" - ")[0];
                                     if (colors.custom_colors["course_" + data[i].id]) {
