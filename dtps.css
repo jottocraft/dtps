@@ -18,6 +18,28 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
    --acrylic: black;
 }
 
+.dash.cal .recentGrade.card {
+                margin-right: 0px;
+                margin: 25px;
+                width: 100%;
+                padding: 20px;
+                cursor: pointer;
+            }
+            .dash.cal .recentGrade h5 {
+                color: var(--light);
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin: 0px;
+                font-weight: bold;
+                font-size: 18px;
+            }
+            .dash.cal .recentGrade p {
+                margin: 0px;
+                margin-top: 7px;
+                color: var(--secText);
+            }
+
 /* Fluid UI theme prefs */
 :root {
 	--icons: "Material Icons Outlined", "Material Icons Extended" !important;
