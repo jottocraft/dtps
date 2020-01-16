@@ -1683,7 +1683,7 @@ dtps.pullSchedule = () => {
         $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
         ` + schedule.map(period => {
             return `<h5 style="font-size: 20px; margin: 22px 0px;">
-            <div style="color: var(--secText); width: 50px; font-size: 18px; vertical-align: middle; display: inline-block; font-size: 34px; text-align: center;">` + period.period + `</div>
+            <div style="color: var(--secText); width: 50px; font-size: 18px; vertical-align: middle; display: inline-block; font-size: 34px; text-align: center;">` + (period.period || "dt") + `</div>
             ` + period.name + `</h5>`
         }).join(""))
     });
