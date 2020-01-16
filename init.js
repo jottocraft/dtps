@@ -1622,7 +1622,7 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
 
 <div onclick="dtps.pullSchedule()" class="card recentGrade">
     <h5>Semester 2 Schedules</h5>
-    <p>Click here to view your Semester 2 schedule. Note that schedules may not be final yet.</p>
+    <p>Click here to view your Semester 2 schedule. Note that schedules may not be final yet, so don't be angry if it's wrong.</p>
 </div>
 
 <div class="announcements"></div>
