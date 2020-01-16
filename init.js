@@ -648,7 +648,6 @@ dtps.setMetadata = function (cb) {
     
     if (dtps.embedded) {
         jQuery("head").html("");
-        $("body").attr("class", "")
         $("body").addClass("dashboard");
         $("body").addClass("dark"); //dark mode by default
         $("body").addClass("showThemeWindows");
