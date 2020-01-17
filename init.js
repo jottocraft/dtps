@@ -718,7 +718,6 @@ dtps.init = function () {
         dtps.nativeAlert("Loading...", undefined, true);
     }
 
-    console.log("DEBUGGING FIREFOX", window.dtpsPreLoader, dtps.shouldRender, window.dtpsPreLoader && dtps.shouldRender, typeof dtps.setMetadata)
     if (window.dtpsPreLoader && dtps.shouldRender) dtps.setMetadata(); //start loading CSS files early if dtps is being preloaded
 
     //add basic explorer items
@@ -828,7 +827,7 @@ dtps.init = function () {
 
                 dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
                     dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
-                        dtps.webReq("canvas", "/api/v1/users/self/courses?include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
+                        dtps.webReq("canvas", "/api/v1/users/self/courses?include[]=term&include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
                             dtps.classesReady = 0;
                             dtps.colorCSS = [];
                             //this object is for keeping track of when each assignment was graded
@@ -855,9 +854,8 @@ dtps.init = function () {
                                     var icon = null;
                                     if (data[i].name !== data[i].course_code) {
                                         //Canvas class manually renamed
-                                        subject = data[i].name;
+                                        subject = data[i].name.split(" - ")[0];
                                     }
-                                    if (subject == null) var subject = name.split(" - ")[0];
                                     if (colors.custom_colors["course_" + data[i].id]) {
                                         var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
                                         //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
@@ -869,11 +867,7 @@ dtps.init = function () {
                                     for (var ii = 0; ii < data[i].tabs.length; ii++) {
                                         if (data[i].tabs[ii].id == "pages") pagesTab = true;
                                     }
-                                    var isDLab = false;
-                                    var dlabKeywords = ["D.LAB", "DLAB", "D-LAB", "OCT19", "JAN20", "MAR20", "JUN20"];
-                                    dlabKeywords.forEach(keyword => {
-                                        if (name.includes(keyword)) isDLab = true;
-                                    });
+                                    var isDLab = data[i].term && String(data[i].term.name).toUpperCase().includes("INTERSESSION");
                                     dtps.classes.push({
                                         name: name,
                                         subject: subject,
