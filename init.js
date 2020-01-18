@@ -1,5 +1,5 @@
 /* Power+ v2.2.0
-(c) 2018 - 2019 jottocraft
+(c) 2018 - 2020 jottocraft
 https://github.com/jottocraft/dtps */
 
 //prevent Power+ from breaking when the button is clicked multiple times
