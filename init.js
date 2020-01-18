@@ -330,7 +330,7 @@ dtps.gradeCalc = {
                 "B": 2.6,
                 "B-": 2.6,
                 "C": 2.2,
-                "I": 0
+                "I": -Infinity
             },
             lowest: {
                 "A": 3,
@@ -339,7 +339,7 @@ dtps.gradeCalc = {
                 "B": 1.8,
                 "B-": 1.5,
                 "C": 1.5,
-                "I": 0
+                "I": -Infinity
             }
         },
         sem1: {
@@ -350,7 +350,7 @@ dtps.gradeCalc = {
                 "B": 2.6,
                 "B-": 2.6,
                 "C": 2.2,
-                "I": 0
+                "I": -Infinity
             },
             lowest: {
                 "A": 3,
@@ -359,7 +359,7 @@ dtps.gradeCalc = {
                 "B": 0,
                 "B-": 0,
                 "C": 0,
-                "I": 0
+                "I": -Infinity
             }
         }
     },
@@ -371,7 +371,7 @@ dtps.gradeCalc = {
         // ------- STEP 1: CALCULATE OUTCOME AVERAGES -------
         outcomes.forEach(outcome => {
             if (outcome.assessments && outcome.assessments.length) { //only calculate score when there are outcome assessments
-                var score = outcome.rollup || -99; //default: use rollup (sem2 calculation prevents this from being used by not including a rollup prop. this will change when sem1 is removed)
+                var score = outcome.rollup || -Infinity; //default: use rollup (sem2 calculation prevents this from being used by not including a rollup prop. this will change when sem1 is removed)
                 var scoreType = "rollup";
 
                 //calculate outcome average
