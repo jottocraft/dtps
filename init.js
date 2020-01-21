@@ -827,7 +827,7 @@ dtps.init = function () {
 
                 dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
                     dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
-                        dtps.webReq("canvas", "/api/v1/users/self/courses?include[]=term&include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
+                        dtps.webReq("canvas", "/api/v1/users/self/courses?per_page=100&include[]=term&include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
                             dtps.classesReady = 0;
                             dtps.colorCSS = [];
                             //this object is for keeping track of when each assignment was graded
