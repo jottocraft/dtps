@@ -850,11 +850,11 @@ dtps.init = function () {
                                 if (data[i].end_at ? new Date() < new Date(data[i].end_at) : true) {
                                     //inactive class
                                     var name = data[i].course_code;
-                                    var subject = name.split(" - ")[0];
+                                    var subject = name.split(" - ")[0] + " (" + name.split(" - ")[1] + ")";
                                     var icon = null;
                                     if (data[i].name !== data[i].course_code) {
                                         //Canvas class manually renamed
-                                        subject = data[i].name.split(" - ")[0];
+                                        subject = data[i].name.split(" - ")[0] + (name.split(" - ")[1] ? " (" + name.split(" - ")[1] + ")" : "");
                                     }
                                     if (colors.custom_colors["course_" + data[i].id]) {
                                         var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
@@ -1622,10 +1622,10 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
 <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
 ` + ($.fullCalendar !== undefined ? `<div id="calendar" class="card" style="padding: 20px;"></div>` : ``) + `
 
-<div onclick="dtps.pullSchedule()" class="card recentGrade">
-    <h5 style="color: var(--secText);">Semester 2 Schedules</h5>
-    <p>Click here to view your Semester 2 schedule. Note that schedules may not be final yet, so don't be angry if there is a problem with it.</p>
-</div>
+<!--<div onclick="dtps.pullSchedule()" class="card recentGrade">
+    <h5 style="color: var(--secText);">2020-2021 Schedule</h5>
+    <p>Click here to view your 2020-2021 schedule. Note that schedules may not be final yet, so don't be angry if there is a problem with it.</p>
+</div>-->
 
 <div class="announcements"></div>
 <div class="recentlyGraded"></div>
@@ -1661,7 +1661,7 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
     dtps.calendar(doneLoading);
 }
 
-//Get and display semester 2 schedule
+//Get and display 2020-2021 schedule
 dtps.pullSchedule = () => {
     $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard')" class="material-icons close">close</i>
     <h5>Loading...</h5>`)
@@ -1671,7 +1671,7 @@ dtps.pullSchedule = () => {
         var schedule = [];
 
         data.forEach(course => {
-            if (course.name && course.name.includes("S2") && course.term && course.term.name.includes("2019/2020")) {
+            if (course.name && course.name.includes("S1") && course.term && course.term.name.includes("2020/2021")) {
                 //semester 2 class
                 schedule.push({
                     name: course.name,
