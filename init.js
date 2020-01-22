@@ -69,7 +69,7 @@ dtps.cblColor = function (score) {
 //time to end function from akron
 dtps.timeToEnd = cb => {
     dtps.webReq("getJSON", "https://project-dtps.firebaseio.com/flags.json", data => {
-        if (data.on) {
+        if (data.on && (data.disabledUntil ? new Date(data.disabledUntil) <= new Date() : true)) {
             var min = new Date().getMinutes();
             if (String(min).length < 2) min = "0" + String(min)
             var time = Number(String(new Date().getHours()) + String(min))
