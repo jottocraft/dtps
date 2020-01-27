@@ -894,8 +894,8 @@ dtps.init = function () {
                                         tmp: {},
                                         image: data[i].image_download_url,
                                         teacher: {
-                                            name: data[i].teachers[0].display_name,
-                                            prof: data[i].teachers[0].avatar_image_url
+                                            name: data[i].teachers[0] && data[i].teachers[0].display_name,
+                                            prof: data[i].teachers[0] && data[i].teachers[0].avatar_image_url
                                         }
                                     })
                                     var classNum = dtps.classes.length - 1;
@@ -1344,8 +1344,8 @@ dtps.renderStreamTools = function (num, search, fromModules) {
     //fromModules (boolean) = rendering stream tools for modules page
     return `
 <div style="position: absolute;display:  inline-block;margin: 82px;">
-<div class="acrylicMaterial" style="border-radius: 20px; display: inline-block; margin-right: 5px;">
-<img src="` + dtps.classes[num].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[num].teacher.name + `</div></div>
+` + (dtps.classes[num].teacher.name ? `<div class="acrylicMaterial" style="border-radius: 20px; display: inline-block; margin-right: 5px;">
+<img src="` + dtps.classes[num].teacher.prof + `" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">` + dtps.classes[num].teacher.name + `</div></div>` : ``) + `
 
 <div onclick="dtps.classInfo(` + num + `)" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
 <i style="line-height: 40px;" class="material-icons">info</i>
