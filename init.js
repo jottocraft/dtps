@@ -760,7 +760,7 @@ dtps.init = function () {
             //User profile badges
             sudoers = ["669", "672", "209", "560", ""]
             if (sudoers.includes(dtps.user.id)) { jQuery("body").addClass("sudo"); dtps.log("Sudo mode enabled"); }
-            if (dtps.user.id == "669") { jQuery("body").addClass("dev"); fluidThemes[0].push("oni"); dtps.log("!! DEVELOPER MODE ENABLED !!"); }
+            if (dtps.user.id == "669") { jQuery("body").addClass("dev"); dtps.log("!! DEVELOPER MODE ENABLED !!"); }
             if ((dtps.trackSuffix !== "") && (!dtps.trackSuffix.includes("GM"))) jQuery("body").addClass("prerelease");
             if (sudoers.includes(dtps.user.id)) jQuery("body").addClass("prerelease");
 
@@ -847,14 +847,14 @@ dtps.init = function () {
                                 return 0;
                             });
                             for (var i = 0; i < data.length; i++) {
-                                if (data[i].end_at ? new Date() < new Date(data[i].end_at) : true) {
+                                if ((data[i].end_at ? new Date() < new Date(data[i].end_at) : true) && !data[i].course_code.includes(" - S1 - ")) {
                                     //inactive class
                                     var name = data[i].course_code;
-                                    var subject = name.split(" - ")[0] + " (" + name.split(" - ")[1] + ")";
+                                    var subject = name.split(" - ")[0];
                                     var icon = null;
                                     if (data[i].name !== data[i].course_code) {
                                         //Canvas class manually renamed
-                                        subject = data[i].name.split(" - ")[0] + (name.split(" - ")[1] ? " (" + name.split(" - ")[1] + ")" : "");
+                                        subject = data[i].name.split(" - ")[0];
                                     }
                                     if (colors.custom_colors["course_" + data[i].id]) {
                                         var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
