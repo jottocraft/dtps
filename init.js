@@ -150,7 +150,7 @@ dtps.getParams = function () {
 
 //Logs debugging messags to both the normal JS console and also Power+'s included debugging log
 dtps.log = function (msg) {
-    console.log("[DTPS" + dtps.trackSuffix + "] ", msg);
+    console.debug("[DTPS" + dtps.trackSuffix + "] ", msg);
     if (typeof msg !== "object") { try { jQuery("span.log").html(`<p>[DTPS` + dtps.trackSuffix + `] ` + msg + `</p>` + jQuery("span.log").html()); } catch (e) { } }
 }
 
