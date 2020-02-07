@@ -564,7 +564,7 @@ dtps.fetchOutcomes = (num, cb) => {
             dtps.classes[num].outcomeIDs = [];
             outcomeData.forEach(outcome => {
                 outcome.assessments = [];
-		if (dtps.classes[num].id == "521") {
+		if ((dtps.classes[num].id == "521") && !outcome.title.includes("SS")) {
 			//add outcome naming exception for class 521
 			outcome.title = $(outcome.description).text() + " (" + outcome.title + ")";
 		}
@@ -1232,6 +1232,10 @@ dtps.classStream = function (num, renderOv) {
                         dtps.assignmentGradeTimes[data[i].assignments[ii].id] = data[i].assignments[ii].submission && data[i].assignments[ii].submission.graded_at;
                         if (data[i].assignments[ii].rubric) {
                             for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
+				if ((dtps.classes[num].id == "521") && !data[i].assignments[ii].rubric[iii].description.includes("SS")) {
+					//add rubric naming exception for class 521
+					data[i].assignments[ii].rubric[iii].description = $(data[i].assignments[ii].rubric[iii].long_description).text() + " (" + data[i].assignments[ii].rubric[iii].description + ")";
+				}
                                 dtps.classes[num].stream[dtps.classes[num].stream.length - 1].rubricItems.push(data[i].assignments[ii].rubric[iii].outcome_id);
                                 if (data[i].assignments[ii].rubric[iii].ratings) {
                                     data[i].assignments[ii].rubric[iii].ratingItems = [];
