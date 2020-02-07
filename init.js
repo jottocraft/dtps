@@ -564,6 +564,10 @@ dtps.fetchOutcomes = (num, cb) => {
             dtps.classes[num].outcomeIDs = [];
             outcomeData.forEach(outcome => {
                 outcome.assessments = [];
+		if (dtps.classes[num].id == "521") {
+			//add outcome naming exception for class 521
+			outcome.title = $(outcome.description).text() + " (" + outcome.title + ")";
+		}
                 dtps.classes[num].outcomes.push(outcome);
                 dtps.classes[num].outcomeIDs.push(outcome.id);
             });
