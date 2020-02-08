@@ -1820,7 +1820,6 @@ dtps.gradebook = function (num, cb) {
   <br>
   <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}"
     style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">Show more</a>
-  <a style="color: var(--secText, gray);">` + (dtps.classes[num].gradeCalc.formula == "sem1" ? "Using first semester grade calculation" : "Using second semester grade calculation") + `</a>
 </div>`;
         } else {
             var gradeCalcSummary = ""; //no grade calculation for this class
