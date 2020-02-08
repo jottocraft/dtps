@@ -320,10 +320,11 @@ dtps.webReq = function (req, url, callback, q) {
 */
 dtps.gradeCalc = {
     letters: ["A", "A-", "B+", "B", "B-", "C", "I"], //This MUST be highest -> lowest
-    percentageEq: [100, 90, 88, 84, 80, 75, 0], //percentage for each letter for grades tab in settings
+    percentageEq: [100, 90, 88, 84, 80, 75, 0], //percentage equivalent for each letter used for visual representations of grades
     params: {
         sem2: {
-            percentage: {
+            cutoff: new Date(2020, 8, 1), //cutoff date for dropping lowest alignment
+            percentage: { //percentage criteria parameters
                 "A": 3.3,
                 "A-": 3.3,
                 "B+": 2.6,
@@ -332,7 +333,7 @@ dtps.gradeCalc = {
                 "C": 2.2,
                 "I": 0
             },
-            lowest: {
+            lowest: { //lowest outcome average criteria parameters
                 "A": 3,
                 "A-": 2.5,
                 "B+": 2.2,
@@ -341,45 +342,48 @@ dtps.gradeCalc = {
                 "C": 1.5,
                 "I": 0
             }
-        },
-        sem1: {
-            percentage: {
-                "A": 3.3,
-                "A-": 3.3,
-                "B+": 2.6,
-                "B": 2.6,
-                "B-": 2.6,
-                "C": 2.2,
-                "I": 0
-            },
-            lowest: {
-                "A": 3,
-                "A-": 2.5,
-                "B+": 2.5,
-                "B": 0,
-                "B-": 0,
-                "C": 0,
-                "I": 0
-            }
         }
     },
+    average: function(array) { //simple average function
+        var sum = 0;
+        array.forEach(item => sum += item);
+        return sum / array.length;
+    },
     run: function (outcomes, formula = "sem2") { //Array of outcomes -> letter grade w/ params
-        //formula param is for the type of grade calc (default sem2)
-        //since semester 1 and semester 2 grade calc are extremely similar, they share the same getLetter function
-        //IMPORTANT NOTE: run will NOT return -- for a grade. If a class has no outcomes, that must be determined before this is ran (probably in fetch function)
+        //formula param is for the type of grade calc (default sem2). Used for running different versions of CBL at the same time.
+        //IMPORTANT NOTE: run will NOT return -- for a grade. If a class has no outcomes, that must be determined before this is ran (probably when pulling grades from canvas)
 
         // ------- STEP 1: CALCULATE OUTCOME AVERAGES -------
         outcomes.forEach(outcome => {
             if (outcome.assessments && outcome.assessments.length) { //only calculate score when there are outcome assessments
-                var score = outcome.rollup || 0; //default: use rollup (sem2 calculation prevents this from being used by not including a rollup prop. this will change when sem1 is removed)
-                var scoreType = "rollup";
+                var score = this.average(outcome.assessments.map(assessment => assessment.score)); //default: include all outcomes
+                var scoreType = "all"; //scoreType either all or dropped
 
-                //calculate outcome average
-                var sum = 0;
-                outcome.assessments.forEach(assessment => sum += assessment.score);
-                outcome.average = sum / outcome.assessments.length;
+                //get lowest eligible score
+                outcome.lowestAssessment = Infinity;
+                outcome.assessments.forEach(assessment => {
+                    if (new Date(assessment.submitted_or_assessed_at) < new Date(this.params[formula].cutoff)) { //before cutoff date
+                        if (assessment.score < outcome.lowestAssessment) { //lower than the lowest
+                            outcome.lowestAssessment = assessment;
+                            assessment.lowest = true;
+                        }
+                    }
+                });
 
-                if (outcome.average > score) { score = outcome.average; scoreType = "average"; } //if average > score, set score & scoretype to average
+                //drop the lowest score to see what happens
+                if (outcome.lowestAssessment != Infinity) { //lowest score was found
+                    var droppedArray = [];
+                    outcome.assessments.forEach(assessment => {
+                        if (assessment.id != outcome.lowestAssessment.id) { //assessment is not the one we are dropping
+                            droppedArray.push(assessment.score); //add assessment to the array of scores excluding the dropped assessment
+                        }
+                    });
+                    outcome.dropped = this.average(droppedArray);
+                } else { //lowest score not found
+                    outcome.dropped = null;
+                }
+
+                if (outcome.dropped > score) { score = outcome.dropped; scoreType = "dropped"; } //if dropped > score, set score & scoretype to dropped
                 outcome.score = score; //add score prop to outcome with highest score
                 outcome.scoreType = scoreType; //add scoreType prop so gradebook knows which was used
             }
@@ -1845,9 +1849,9 @@ dtps.gradebook = function (num, cb) {
                 ` + (outcome.assessments.length == 0 ? `
                     <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
                 ` : outcome.assessments.slice().reverse().map(assessment => {
-                return `<p onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
+                return `<p onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" style="` + ((outcome.scoreType == "dropped") && (assessment.lowest) ? "filter:opacity(0.4);" : "") + `white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
                             <span style="margin-right: 5px; font-size: 20px; vertical-align: middle; color: ` + dtps.cblColor(assessment.score) + `">` + assessment.score + `</span>
-                            ` + assessment.title + `
+                            <span ` + ((outcome.scoreType == "dropped") && (assessment.lowest) ? `style="text-decoration: line-through;"` : "") + `>` + assessment.title + `</span>
                         </p>`;
             }).join("")) + `
             </div>`)
