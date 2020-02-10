@@ -493,64 +493,61 @@ dtps.gradeCalc = {
     }
 }
 
-//Calculates, stores to DTPS stuff, and renders class grades
-dtps.renderGrade = (num, cb) => {
-    dtps.fetchOutcomes(num, () => {
+//Calculates, stores to DTPS stuff, and renders class grades (must run fetchOutcomes first)
+dtps.renderGrade = (num) => {
+    if (dtps.classes[num].noGrades || dtps.classes[num].isDLab) {
+        //there aren't any grades yet or its dlab
+        dtps.classes[num].letter = "--";
+    } else {
+        dtps.classes[num].gradeCalc = dtps.gradeCalc.run(dtps.classes[num].outcomes, dtps.classes[num].semester == "S1" ? "sem1" : "sem2"); //save all grade calc stuff for gradebook
+        dtps.classes[num].letter = dtps.classes[num].gradeCalc.letter; //save letter grade
 
-        if (dtps.classes[num].noGrades || dtps.classes[num].isDLab) {
-            //there aren't any grades yet or its dlab
-            dtps.classes[num].letter = "--";
+        /*
+            Grade change vars:
+            gradeHistory-ID: current|previous (i.e. "A|B+") represents a change of B+ -> A
+            if there is only one grade, it is the current one
+        */
+        if (window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id)) {
+            var cachedCurrent = window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id).split("|")[0];
+            var cachedPrevious = window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id).split("|")[1];
+
+            if (cachedCurrent !== dtps.classes[num].gradeCalc.letter) {
+                //Grade change
+                window.localStorage.setItem("gradeHistory-" + dtps.classes[num].id, dtps.classes[num].gradeCalc.letter + "|" + cachedCurrent);
+                dtps.classes[num].gradeCalc.previousGrade = cachedCurrent;
+            }
+
+            if ((cachedCurrent == dtps.classes[num].gradeCalc.letter) && cachedPrevious) {
+                //previous grade is already saved
+                dtps.classes[num].gradeCalc.previousGrade = cachedPrevious;
+            }
         } else {
-            dtps.classes[num].gradeCalc = dtps.gradeCalc.run(dtps.classes[num].outcomes, dtps.classes[num].semester == "S1" ? "sem1" : "sem2"); //save all grade calc stuff for gradebook
-            dtps.classes[num].letter = dtps.classes[num].gradeCalc.letter; //save letter grade
-
-            /*
-                Grade change vars:
-                gradeHistory-ID: current|previous (i.e. "A|B+") represents a change of B+ -> A
-                if there is only one grade, it is the current one
-            */
-            if (window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id)) {
-                var cachedCurrent = window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id).split("|")[0];
-                var cachedPrevious = window.localStorage.getItem("gradeHistory-" + dtps.classes[num].id).split("|")[1];
-
-                if (cachedCurrent !== dtps.classes[num].gradeCalc.letter) {
-                    //Grade change
-                    window.localStorage.setItem("gradeHistory-" + dtps.classes[num].id, dtps.classes[num].gradeCalc.letter + "|" + cachedCurrent);
-                    dtps.classes[num].gradeCalc.previousGrade = cachedCurrent;
-                }
-
-                if ((cachedCurrent == dtps.classes[num].gradeCalc.letter) && cachedPrevious) {
-                    //previous grade is already saved
-                    dtps.classes[num].gradeCalc.previousGrade = cachedPrevious;
-                }
-            } else {
-                //no history yet. store current grade
-                window.localStorage.setItem("gradeHistory-" + dtps.classes[num].id, dtps.classes[num].gradeCalc.letter);
-            }
+            //no history yet. store current grade
+            window.localStorage.setItem("gradeHistory-" + dtps.classes[num].id, dtps.classes[num].gradeCalc.letter);
         }
+    }
 
-        dtps.showClasses(true); //re-render sidebar
+    dtps.showClasses(true); //re-render sidebar
 
-        var gpa = [];
-        dtps.classes.forEach((course) => {
-            if (course.letter && (course.letter !== "--")) {
-                if (course.letter.includes("A")) gpa.push(4);
-                if (course.letter.includes("B")) gpa.push(3);
-                if (course.letter.includes("C")) gpa.push(2);
-                if (course.letter.includes("I")) gpa.push(1);
-            }
-        });
-        var total = 0; //calculate GPA
-        for (var i = 0; i < gpa.length; i++) total += gpa[i];
-        dtps.gpa = (total / gpa.length).toFixed(1);
-        dtps.gradeHTML[0] = '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>';
+    var gpa = [];
+    dtps.classes.forEach((course) => {
+        if (course.letter && (course.letter !== "--")) {
+            if (course.letter.includes("A")) gpa.push(4);
+            if (course.letter.includes("B")) gpa.push(3);
+            if (course.letter.includes("C")) gpa.push(2);
+            if (course.letter.includes("I")) gpa.push(1);
+        }
+    });
+    var total = 0; //calculate GPA
+    for (var i = 0; i < gpa.length; i++) total += gpa[i];
+    dtps.gpa = (total / gpa.length).toFixed(1);
+    dtps.gradeHTML[0] = '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>';
 
-        if (dtps.classes[num].letter !== "--") {
-            dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[num].col + `">
+    if (dtps.classes[num].letter !== "--") {
+        dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[num].col + `">
             <div style="color: var(--dark);" class="progressLabel">` + dtps.classes[num].subject + ` (` + dtps.classes[num].letter + `)</div>
             <div class="progress" style="background-color: var(--light); width: calc(` + dtps.gradeCalc.percentageEq[dtps.gradeCalc.letters.indexOf(dtps.classes[num].letter)] + `% - 300px);"></div></div>`)
-        }
-    })
+    }
 }
 
 //Fetches outcomes, rollups, alignments
@@ -606,7 +603,7 @@ dtps.fetchOutcomes = (num, cb) => {
 
             if (!dtps.classes[num].outcomes.length) dtps.classes[num].noOutcomes = true; //disable grades tab if there are no outcomes
 
-            if (cb) cb();
+            if (cb) cb(num);
         });
     });
 }
@@ -835,7 +832,7 @@ dtps.init = function () {
 
                 dtps.webReq("canvas", "/api/v1/users/self/colors", function (colorsResp) {
                     dtps.webReq("canvas", "/api/v1/users/self/dashboard_positions", function (dashboardResp) {
-                        dtps.webReq("canvas", "/api/v1/users/self/courses?per_page=100&include[]=term&include[]=total_scores&include[]=public_description&include[]=favorites&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
+                        dtps.webReq("canvas", "/api/v1/users/self/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=public_description&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs", function (resp) {
                             dtps.classesReady = 0;
                             dtps.colorCSS = [];
                             //this object is for keeping track of when each assignment was graded
@@ -881,7 +878,6 @@ dtps.init = function () {
                                         subject: subject,
                                         description: data[i].public_description,
                                         totalStudents: data[i].total_students,
-                                        favorite: data[i].is_favorite,
                                         defaultView: data[i].default_view,
                                         semester: name.split(" - ")[1],
                                         icon: icon,
@@ -916,7 +912,10 @@ dtps.init = function () {
 	--grad: linear-gradient(to bottom right, ` + dtps.classes[classNum].light + `, ` + dtps.classes[classNum].dark + `);;
 }`);
                                     }
-                                    if (fluid.get("pref-calcGrades") !== "false") dtps.renderGrade(classNum);
+                                    //fetch outcomes, render grade
+                                    dtps.fetchOutcomes(classNum, num => {
+                                        if (fluid.get("pref-calcGrades") !== "false") dtps.renderGrade(num);
+                                    });
                                     if (dtps.currentClass == data[i].id) {
                                         dtps.selectedClass = classNum;
                                         dtps.selectedContent = "stream";
@@ -1733,7 +1732,11 @@ dtps.getPage = function (classID, id, fromModuleStream) {
     });
 }
 
-dtps.outcome = function (num, id, i) {
+dtps.outcome = function (num, id) {
+    var i = null;
+    dtps.classes[num].outcomes.forEach((outcome, index) => {
+        if (outcome.id == id) i = index;
+    });
     dtps.webReq("canvas", "/api/v1/outcomes/" + id, function (resp) {
         var data = JSON.parse(resp);
 
@@ -1753,7 +1756,7 @@ dtps.outcome = function (num, id, i) {
             ` + (desc ? `<p>` + desc + `</p>` : "") + `</div>`
         }).join("") : "") + `</div>
 
-        ` + (dtps.classes[num].outcomes[i].alignments && (dtps.classes[num].outcomes[i].alignments.length) ? `<div style="display: inline-block; width: 55%; vertical-align: top; padding: 10px;">
+        ` + (false && dtps.classes[num].outcomes[i].alignments && (dtps.classes[num].outcomes[i].alignments.length) ? `<div style="display: inline-block; width: 55%; vertical-align: top; padding: 10px;">
 	<h5>Assignments</h5>
         ` + dtps.classes[num].outcomes[i].alignments.map(function (alignment, ii) {
             return `<div onclick="dtps.assignment('` + alignment.assignment_id + `', ` + num + `)" style="margin: 5px 0px; color: var(--lightText); cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">` + alignment.title + `</div>`
@@ -1848,7 +1851,7 @@ dtps.gradebook = function (num, cb) {
 
             outcomeHTML.push((divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
             <div style="border-radius: 20px;padding: 22px; padding-bottom: 20px;" class="card outcomeResults">
-                <h5 style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${outcome.title}</h5>
+                <h5 onclick="dtps.outcome(` + num + `, '` + outcome.id + `')" style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;">${outcome.title}</h5>
                 ` + (outcome.score !== undefined ? `<div style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ` + dtps.cblColor(outcome.score) + `">` + outcome.score.toFixed(2) + `</div>` : ``) + `
                 ` + (outcome.assessments.length == 0 ? `
                     <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
