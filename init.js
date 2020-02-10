@@ -852,77 +852,74 @@ dtps.init = function () {
                                 return 0;
                             });
                             for (var i = 0; i < data.length; i++) {
-                                if ((data[i].end_at ? new Date() < new Date(data[i].end_at) : true) && !data[i].course_code.includes(" - S1 - ")) {
-                                    //inactive class
-                                    var name = data[i].course_code;
-                                    var subject = name.split(" - ")[0];
-                                    var icon = null;
-                                    if (data[i].name !== data[i].course_code) {
-                                        //Canvas class manually renamed
-                                        subject = data[i].name.split(" - ")[0];
+                                var name = data[i].course_code;
+                                var subject = name.split(" - ")[0];
+                                var icon = null;
+                                if (data[i].name !== data[i].course_code) {
+                                    //Canvas class manually renamed
+                                    subject = data[i].name.split(" - ")[0];
+                                }
+                                if (colors.custom_colors["course_" + data[i].id]) {
+                                    var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
+                                    //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
+                                    if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
+                                } else {
+                                    var filter = ""
+                                }
+                                pagesTab = false;
+                                for (var ii = 0; ii < data[i].tabs.length; ii++) {
+                                    if (data[i].tabs[ii].id == "pages") pagesTab = true;
+                                }
+                                var isDLab = data[i].term && String(data[i].term.name).toUpperCase().includes("INTERSESSION");
+                                dtps.classes.push({
+                                    name: name,
+                                    subject: subject,
+                                    description: data[i].public_description,
+                                    totalStudents: data[i].total_students,
+                                    defaultView: data[i].default_view,
+                                    semester: name.split(" - ")[1],
+                                    icon: icon,
+                                    isDLab: isDLab,
+                                    col: filter,
+                                    pagesTab: pagesTab,
+                                    syllabus: data[i].syllabus_body,
+                                    norm: colors.custom_colors["course_" + data[i].id],
+                                    light: tinycolor(colors.custom_colors["course_" + data[i].id]).brighten(20).toHexString(),
+                                    dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
+                                    isBright: (dtps.filter(colors.custom_colors["course_" + data[i].id]) ? false : !tinycolor(colors.custom_colors["course_" + data[i].id]).isDark()),
+                                    id: data[i].id,
+                                    //collection of data used to calculate a letter grade
+                                    grades: {},
+                                    grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
+                                    letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") !== "false" ? false : "--")),
+                                    num: i,
+                                    tmp: {},
+                                    image: data[i].image_download_url,
+                                    teacher: {
+                                        name: data[i].teachers[0] && data[i].teachers[0].display_name,
+                                        prof: data[i].teachers[0] && data[i].teachers[0].avatar_image_url
                                     }
-                                    if (colors.custom_colors["course_" + data[i].id]) {
-                                        var filter = "filter_" + colors.custom_colors["course_" + data[i].id].toLowerCase().replace("#", "");
-                                        //Suport Power+ v1.x.x Colors by detecting if the user selects a native canvas color
-                                        if (dtps.filter(colors.custom_colors["course_" + data[i].id])) filter = dtps.filter(colors.custom_colors["course_" + data[i].id]);
-                                    } else {
-                                        var filter = ""
-                                    }
-                                    pagesTab = false;
-                                    for (var ii = 0; ii < data[i].tabs.length; ii++) {
-                                        if (data[i].tabs[ii].id == "pages") pagesTab = true;
-                                    }
-                                    var isDLab = data[i].term && String(data[i].term.name).toUpperCase().includes("INTERSESSION");
-                                    dtps.classes.push({
-                                        name: name,
-                                        subject: subject,
-                                        description: data[i].public_description,
-                                        totalStudents: data[i].total_students,
-                                        defaultView: data[i].default_view,
-                                        semester: name.split(" - ")[1],
-                                        icon: icon,
-                                        isDLab: isDLab,
-                                        col: filter,
-                                        pagesTab: pagesTab,
-                                        syllabus: data[i].syllabus_body,
-                                        norm: colors.custom_colors["course_" + data[i].id],
-                                        light: tinycolor(colors.custom_colors["course_" + data[i].id]).brighten(20).toHexString(),
-                                        dark: tinycolor(colors.custom_colors["course_" + data[i].id]).darken(20).toHexString(),
-                                        isBright: (dtps.filter(colors.custom_colors["course_" + data[i].id]) ? false : !tinycolor(colors.custom_colors["course_" + data[i].id]).isDark()),
-                                        id: data[i].id,
-                                        //collection of data used to calculate a letter grade
-                                        grades: {},
-                                        grade: (data[i].enrollments[0].computed_current_score ? data[i].enrollments[0].computed_current_score : "--"),
-                                        letter: (data[i].enrollments[0].computed_current_grade ? data[i].enrollments[0].computed_current_grade : (fluid.get("pref-calcGrades") !== "false" ? false : "--")),
-                                        num: i,
-                                        tmp: {},
-                                        image: data[i].image_download_url,
-                                        teacher: {
-                                            name: data[i].teachers[0] && data[i].teachers[0].display_name,
-                                            prof: data[i].teachers[0] && data[i].teachers[0].avatar_image_url
-                                        }
-                                    })
-                                    var classNum = dtps.classes.length - 1;
-                                    if (!dtps.filter(colors.custom_colors["course_" + data[i].id])) {
-                                        dtps.colorCSS.push(`\n.` + dtps.classes[classNum].col + ` {
+                                })
+                                var classNum = dtps.classes.length - 1;
+                                if (!dtps.filter(colors.custom_colors["course_" + data[i].id])) {
+                                    dtps.colorCSS.push(`\n.` + dtps.classes[classNum].col + ` {
 	--light: ` + dtps.classes[classNum].light + `;
 	--norm: ` + dtps.classes[classNum].norm + `;
  	--dark: ` + dtps.classes[classNum].dark + `;
   --filterText: ` + (dtps.classes[classNum].isBright ? dtps.classes[classNum].dark : "white") + `;
 	--grad: linear-gradient(to bottom right, ` + dtps.classes[classNum].light + `, ` + dtps.classes[classNum].dark + `);;
 }`);
-                                    }
-                                    //fetch outcomes, render grade
-                                    dtps.fetchOutcomes(classNum, num => {
-                                        if (fluid.get("pref-calcGrades") !== "false") dtps.renderGrade(num);
-                                    });
-                                    if (dtps.currentClass == data[i].id) {
-                                        dtps.selectedClass = classNum;
-                                        dtps.selectedContent = "stream";
-                                        dtps.chroma();
-                                    }
-                                    dtps.classStream(classNum, true);
                                 }
+                                //fetch outcomes, render grade
+                                dtps.fetchOutcomes(classNum, num => {
+                                    if (fluid.get("pref-calcGrades") !== "false") dtps.renderGrade(num);
+                                });
+                                if (dtps.currentClass == data[i].id) {
+                                    dtps.selectedClass = classNum;
+                                    dtps.selectedContent = "stream";
+                                    dtps.chroma();
+                                }
+                                dtps.classStream(classNum, true);
                             }
                             dtps.log("Grades loaded: ", dtps.classes);
 
