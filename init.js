@@ -344,7 +344,7 @@ dtps.gradeCalc = {
             }
         }
     },
-    average: function(array) { //simple average function
+    average: function (array) { //simple average function
         var sum = 0;
         array.forEach(item => sum += item);
         return sum / array.length;
@@ -396,7 +396,7 @@ dtps.gradeCalc = {
         //with ALL outcomes
         gradeVariations.push(this.getLetter(outcomes.map(outcome => outcome.score), formula, "all"));
 
-        //with all outcomes, excluding SS
+        /* with all outcomes, excluding SS
         var outcomesWithoutSS = [];
         outcomes.forEach(outcome => {
             var isSS = false;
@@ -408,7 +408,7 @@ dtps.gradeCalc = {
 
             if (!isSS) outcomesWithoutSS.push(outcome) //if it isn't SS, add this outcome to list of outcomes without SS
         });
-        gradeVariations.push(this.getLetter(outcomesWithoutSS.map(outcome => outcome.score), formula, "excludeSS")); //calculate grade without SS
+        gradeVariations.push(this.getLetter(outcomesWithoutSS.map(outcome => outcome.score), formula, "excludeSS")); //calculate grade without SS */
 
 
         // -------     STEP 3: CHOOSE HIGHEST GRADE   -------
@@ -568,10 +568,10 @@ dtps.fetchOutcomes = (num, cb) => {
             dtps.classes[num].outcomeIDs = [];
             outcomeData.forEach(outcome => {
                 outcome.assessments = [];
-		if ((dtps.classes[num].id == "521") && !outcome.title.includes("SS")) {
-			//add outcome naming exception for class 521
-			outcome.title = $(outcome.description).text() + " (" + outcome.title + ")";
-		}
+                if ((dtps.classes[num].id == "521") && !outcome.title.includes("SS")) {
+                    //add outcome naming exception for class 521
+                    outcome.title = $(outcome.description).text() + " (" + outcome.title + ")";
+                }
                 dtps.classes[num].outcomes.push(outcome);
                 dtps.classes[num].outcomeIDs.push(outcome.id);
             });
@@ -1236,10 +1236,10 @@ dtps.classStream = function (num, renderOv) {
                         dtps.assignmentGradeTimes[data[i].assignments[ii].id] = data[i].assignments[ii].submission && data[i].assignments[ii].submission.graded_at;
                         if (data[i].assignments[ii].rubric) {
                             for (var iii = 0; iii < data[i].assignments[ii].rubric.length; iii++) {
-				if ((dtps.classes[num].id == "521") && !data[i].assignments[ii].rubric[iii].description.includes("SS")) {
-					//add rubric naming exception for class 521
-					data[i].assignments[ii].rubric[iii].description = $(data[i].assignments[ii].rubric[iii].long_description).text() + " (" + data[i].assignments[ii].rubric[iii].description + ")";
-				}
+                                if ((dtps.classes[num].id == "521") && !data[i].assignments[ii].rubric[iii].description.includes("SS")) {
+                                    //add rubric naming exception for class 521
+                                    data[i].assignments[ii].rubric[iii].description = $(data[i].assignments[ii].rubric[iii].long_description).text() + " (" + data[i].assignments[ii].rubric[iii].description + ")";
+                                }
                                 dtps.classes[num].stream[dtps.classes[num].stream.length - 1].rubricItems.push(data[i].assignments[ii].rubric[iii].outcome_id);
                                 if (data[i].assignments[ii].rubric[iii].ratings) {
                                     data[i].assignments[ii].rubric[iii].ratingItems = [];
@@ -1294,19 +1294,23 @@ dtps.classStream = function (num, renderOv) {
                     }
                 }
 
-                dtps.classes[num].stream.forEach(streamItem => { //add assignments to recently graded
-                    if (streamItem.isAssessed) {
-                        //add graded assessment to recent grades
-                        if (!dtps.recentlyGraded) dtps.recentlyGraded = [];
-                        dtps.recentlyGraded.push({
-                            name: streamItem.title,
-                            rubric: streamItem.rubric,
-                            date: streamItem.assessedAt,
-                            class: num,
-                            id: streamItem.id
-                        })
-                    }
-                });
+                if (dtps.recentlyGradedClasses ? !dtps.recentlyGradedClasses.includes(dtps.classes[num].id) : true) {
+                    dtps.classes[num].stream.forEach(streamItem => { //add assignments to recently graded
+                        if (streamItem.isAssessed) {
+                            //add graded assessment to recent grades
+                            if (!dtps.recentlyGraded) dtps.recentlyGraded = [];
+                            if (!dtps.recentlyGradedClasses) dtps.recentlyGradedClasses = [];
+                            dtps.recentlyGradedClasses.push(dtps.classes[num].id);
+                            dtps.recentlyGraded.push({
+                                name: streamItem.title,
+                                rubric: streamItem.rubric,
+                                date: streamItem.assessedAt,
+                                class: num,
+                                id: streamItem.id
+                            })
+                        }
+                    });
+                }
 
                 if (dtps.recentlyGraded) {
                     //sort recently Gradeds
