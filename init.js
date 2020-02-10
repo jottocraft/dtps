@@ -1543,6 +1543,7 @@ dtps.renderStream = function (stream, searchRes) {
         ` + (stream[i].upcoming && !upcomingDiv && dtps.selectedClass == "dash" ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">` + (!dueTodayDiv ? "Nothing due today<br /><br /><br />" : "Upcoming Assignments") + `</h5>` : "") + `
         ` + (stream[i].dueToday && !dueTodayDiv && dtps.selectedClass == "dash" ? `<h5 style="margin: 75px 75px 10px 75px;` + (dtps.selectedClass == "dash" ? `text-align: center;margin: 75px 25px 10px 75px;` : ``) + ` font-weight: bold;">Due today</h5>` : "") + `
         <div onclick="` + (stream[i].google ? `window.open('` + stream[i].url + `')` : `dtps.assignment('` + stream[i].id + `', ` + stream[i].class + `)`) + `" class="card graded assignment ` + stream[i].col + `">
+        <div class="colorBar"></div>
         ` + (stream[i].turnedIn && (stream[i].status !== "unsubmitted") ? `<i title="Assignment submitted" class="material-icons floatingIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``) + `
         ` + (stream[i].status == "unsubmitted" ? `<i title="Assignment unsubmitted" class="material-icons floatingIcon" style="color: #b3b70b;">warning</i>` : ``) + `
         ` + (stream[i].missing ? `<i title="Assignment is missing" class="material-icons floatingIcon" style="color: #c44848;">remove_circle_outline</i>` : ``) + `
@@ -1611,7 +1612,7 @@ dtps.search = function () {
 }
 
 //Renders the Power+ master stream / dashboard showing an overview of all classes
-dtps.masterStream = function (doneLoading, omitOldAssignments) {
+dtps.masterStream = function (doneLoading) {
     dtps.log("RENDERING DASHBOARD")
     dtps.showClasses();
     if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
@@ -1643,8 +1644,8 @@ dtps.masterStream = function (doneLoading, omitOldAssignments) {
     <p>Click here to view your 2020-2021 schedule. Note that schedules may not be final yet, so don't be angry if there is a problem with it.</p>
 </div>-->
 
-<div class="announcements"></div>
 <div class="recentlyGraded"></div>
+<div class="announcements"></div>
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
 ` + loadingDom + `
@@ -2008,8 +2009,8 @@ dtps.announcements = function () {
                     dtpsClass = ii;
                 }
             }
-            announcements.push(`<div onclick="$(this).toggleClass('open');" style="cursor: pointer;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
-<div class="label">` + dtps.classes[dtpsClass].subject + `</div>` + ann[i].message + `
+            announcements.push(`<div onclick="$(this).toggleClass('open');" style="cursor: pointer; padding: 20px;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
+<div class="className">` + dtps.classes[dtpsClass].subject + `</div>` + ann[i].message + `
 </div>
 `);
         }
