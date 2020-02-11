@@ -4,11 +4,12 @@ Power+ CSS v2.2.0
 */      
 
 .card.color .colorBar {
-            width: 7px;
-            height: calc(100% - 28px);
-            position: absolute;
-            top: 14px; left: 14px;
-            border-radius: 10px;
+    width: 7px;
+    height: calc(100% - 40px);
+    position: absolute;
+    top: 20px;
+    left: 14px;
+    border-radius: 10px;
         }
 
         body.dark .card.color .colorBar {
