@@ -360,12 +360,13 @@ dtps.gradeCalc = {
                 var scoreType = "all"; //scoreType either all or dropped
 
                 //get lowest eligible score
-                outcome.lowestAssessment = Infinity;
+                outcome.lowestAssessment = null;
+                outcome.lowestAssessmentScore = Infinity;
                 outcome.assessments.forEach(assessment => {
                     if (new Date(assessment.submitted_or_assessed_at) < new Date(this.params[formula].cutoff)) { //before cutoff date
-                        if (assessment.score < outcome.lowestAssessment) { //lower than the lowest
+                        if (assessment.score < outcome.lowestAssessmentScore) { //lower than the lowest
                             outcome.lowestAssessment = assessment;
-                            assessment.lowest = true;
+                            outcome.lowestAssessmentScore = assessment.score;
                         }
                     }
                 });
@@ -597,7 +598,7 @@ dtps.fetchOutcomes = (num, cb) => {
             //now that all of the assessments have been added to each outcome, they need to be sorted by date oldest -> newest
             dtps.classes[num].outcomes.forEach(outcome => {
                 outcome.assessments.sort((a, b) => {
-                    return new Date(a.submitted_or_assessed_at) - new Date(b.submitted_or_assessed_at);
+                    return new Date(b.submitted_or_assessed_at) - new Date(a.submitted_or_assessed_at);
                 });
             })
 
@@ -1853,9 +1854,9 @@ dtps.gradebook = function (num, cb) {
                 ` + (outcome.assessments.length == 0 ? `
                     <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
                 ` : outcome.assessments.slice().reverse().map(assessment => {
-                return `<p onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" style="` + ((outcome.scoreType == "dropped") && (assessment.lowest) ? "filter:opacity(0.4);" : "") + `white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
+                return `<p onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" style="` + ((outcome.scoreType == "dropped") && (assessment.id == outcome.lowestAssessment.id) ? "filter:opacity(0.4);" : "") + `white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
                             <span style="margin-right: 5px; font-size: 20px; vertical-align: middle; color: ` + dtps.cblColor(assessment.score) + `">` + assessment.score + `</span>
-                            <span ` + ((outcome.scoreType == "dropped") && (assessment.lowest) ? `style="text-decoration: line-through;"` : "") + `>` + assessment.title + `</span>
+                            <span ` + ((outcome.scoreType == "dropped") && (assessment.id == outcome.lowestAssessment.id) ? `style="text-decoration: line-through;"` : "") + `>` + assessment.title + `</span>
                         </p>`;
             }).join("")) + `
             </div>`)
