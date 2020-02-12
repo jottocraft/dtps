@@ -2011,7 +2011,7 @@ dtps.announcements = function () {
                 }
             }
             announcements.push(`<div onclick="$(this).toggleClass('open');" style="cursor: pointer; padding: 20px;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
-<div class="className">` + dtps.classes[dtpsClass].subject + `</div>` + ann[i].message + `
+<div class="className">` + ann[i].title + `</div>` + ann[i].message + `
 </div>
 `);
         }
