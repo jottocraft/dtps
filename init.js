@@ -323,7 +323,7 @@ dtps.gradeCalc = {
     percentageEq: [100, 90, 88, 84, 80, 75, 0], //percentage equivalent for each letter used for visual representations of grades
     params: {
         sem2: {
-            cutoff: new Date(2020, 3, 24), //cutoff date for dropping lowest alignment
+            cutoff: new Date(2020, 3, 25), //cutoff date for dropping lowest alignment
             percentage: { //percentage criteria parameters
                 "A": 3.3,
                 "A-": 3.3,
