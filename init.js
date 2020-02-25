@@ -1609,6 +1609,7 @@ dtps.search = function () {
 }
 
 //Renders the Power+ master stream / dashboard showing an overview of all classes
+//Also calls dtps.renderUpdates so the updates stream can be rendered
 dtps.masterStream = function (doneLoading) {
     dtps.log("RENDERING DASHBOARD")
     dtps.showClasses();
@@ -1641,8 +1642,7 @@ dtps.masterStream = function (doneLoading) {
     <p>Click here to view your 2020-2021 schedule. Note that schedules may not be final yet, so don't be angry if there is a problem with it.</p>
 </div>-->
 
-<div class="recentlyGraded"></div>
-<div class="announcements"></div>
+<div class="updatesStream recentlyGraded announcements"></div>
 </div>
 <div style="width: 59%; display: inline-block;" class="dash stream">
 ` + loadingDom + `
@@ -1651,8 +1651,7 @@ dtps.masterStream = function (doneLoading) {
 `)
     }
 
-    dtps.announcements(); //render announcements
-    dtps.renderRecentlyGraded(); //render recently graded assignments
+    dtps.renderUpdates(); //render updates stream
     jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function (a, b) {
         var keyA = new Date(a.dueDate).getTime(),
             keyB = new Date(b.dueDate).getTime();
@@ -1995,19 +1994,14 @@ dtps.iframeLoad = function (iframe) {
 }
 
 //renders updates stream (recently graded & announcements)
-dtps.renderUpdates = function() {
-    //coming soon
-}
-
-//Fetches and displays announcements
-dtps.announcements = function () {
+dtps.renderUpdates = function () {
     var context = [];
     for (var i = 0; i < dtps.classes.length; i++) {
         if (i == 0) { context.push("?context_codes[]=course_" + dtps.classes[i].id) } else { context.push("&context_codes[]=course_" + dtps.classes[i].id) }
     }
     dtps.webReq("canvas", "/api/v1/announcements" + context.join(""), function (resp) {
         var ann = JSON.parse(resp);
-        var announcements = [];
+        var updates = [];
         for (var i = 0; i < ann.length; i++) {
             var dtpsClass = null;
             for (var ii = 0; ii < dtps.classes.length; ii++) {
@@ -2015,30 +2009,35 @@ dtps.announcements = function () {
                     dtpsClass = ii;
                 }
             }
-            announcements.push(`<div onclick="$(this).toggleClass('open');" style="cursor: pointer; padding: 20px;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
-<div class="className">` + ann[i].title + `</div>` + ann[i].message + `
-</div>
-`);
+            updates.push({
+                type: "announcement",
+                date: ann[i].posted_at,
+                dom: `<div onclick="$(this).toggleClass('open');" style="cursor: pointer; padding: 20px;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
+                <div class="className">` + ann[i].title + `</div>` + ann[i].message + `
+                </div>
+                `
+            });
         }
-        if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-            jQuery(".dash .announcements").html(announcements.join(""));
-        }
-    });
-};
-
-//Renders recently graded assignments into the dashboard
-dtps.renderRecentlyGraded = () => {
-    if (dtps.recentlyGraded) {
-        if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
-            jQuery(".dash .recentlyGraded").html(dtps.recentlyGraded.map(grade => {
-                return `<div onclick="dtps.assignment('` + grade.id + `', '` + grade.class + `')" class="card ` + dtps.classes[grade.class].col + ` recentGrade">
+        if (dtps.recentlyGraded) {
+            dtps.recentlyGraded.forEach(grade => {
+                updates.push({
+                    type: "grade",
+                    date: grade.date,
+                    dom: `<div onclick="dtps.assignment('` + grade.id + `', '` + grade.class + `')" class="card ` + dtps.classes[grade.class].col + ` recentGrade">
                     <div style="float: right; margin-left: 10px;" class="earned outcomes">` + dtps.renderOutcomeScore(grade.rubric).join("") + `</div>
                     <h5>` + grade.name + `</h5>
                     <p>Graded at ` + (new Date(grade.date).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(grade.date))) + `</p>
                 </div>`
-            }).join(""));
+                })
+            })
         }
-    }
+        updates.sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        })
+        if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
+            jQuery(".dash .updatesStream").html(updates.map(update => update.dom).join(""));
+        }
+    });
 }
 
 //Compiles and displays assignment due dates in the calendar
