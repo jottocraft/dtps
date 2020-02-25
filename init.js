@@ -1794,7 +1794,7 @@ dtps.gradebook = function (num, cb) {
       style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">
       ` + dtps.classes[num].gradeCalc.report.lowestScore.toFixed(1) + `</div>
   </h5>
-  <div style="display: none;" id="classGradeMore">
+  <div ` + (dtps.detailedGradebook ? "" : `style="display: none;"`) + ` id="classGradeMore">
     <br>
 
     ` + (dtps.classes[num].gradeCalc.previousGrade ? `<h5 style="height: 40px; line-height: 40px;color: var(--secText); font-size: 18px; margin: 0px;">Previous grade
@@ -1824,8 +1824,8 @@ dtps.gradebook = function (num, cb) {
 
   </div>
   <br>
-  <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less')} else {$(this).html('Show more')}"
-    style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">Show more</a>
+  <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.detailedGradebook = true;} else {$(this).html('Show more'); dtps.detailedGradebook = false;}"
+    style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">` + (dtps.detailedGradebook ? "Show less" : "Show more") + `</a>
 </div>`;
         } else {
             var gradeCalcSummary = ""; //no grade calculation for this class
@@ -1992,6 +1992,11 @@ dtps.iframeLoad = function (iframe) {
         iFrameID.height = "";
         iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
     }
+}
+
+//renders updates stream (recently graded & announcements)
+dtps.renderUpdates = function() {
+    //coming soon
 }
 
 //Fetches and displays announcements
