@@ -1847,22 +1847,123 @@ dtps.gradebook = function (num, cb) {
             if (divider) dividerAdded = true; //remember that divider is already rendered
 
             outcomeHTML.push((divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : "") + `
-            <div style="border-radius: 20px;padding: 22px; padding-bottom: 20px;" class="card outcomeResults">
+            <div style="border-radius: 20px;padding: 22px; padding-bottom: 20px;" class="card outcomeResults outcome-` + outcome.id + `">
                 <h5 onclick="dtps.outcome(` + num + `, '` + outcome.id + `')" style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;">${outcome.title}</h5>
-                ` + (outcome.score !== undefined ? `<div style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ` + dtps.cblColor(outcome.score) + `">` + outcome.score.toFixed(2) + `</div>` : ``) + `
-                ` + (outcome.assessments.length == 0 ? `
-                    <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
-                ` : outcome.assessments.slice().reverse().map(assessment => {
-                return `<p onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" style="` + ((outcome.scoreType == "dropped") && (assessment.id == outcome.lowestAssessment.id) ? "filter:opacity(0.4);" : "") + `white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
-                            <span style="margin-right: 5px; font-size: 20px; vertical-align: middle; color: ` + dtps.cblColor(assessment.score) + `">` + assessment.score + `</span>
-                            <span ` + ((outcome.scoreType == "dropped") && (assessment.id == outcome.lowestAssessment.id) ? `style="text-decoration: line-through;"` : "") + `>` + assessment.title + `</span>
-                        </p>`;
-            }).join("")) + `
+                ` + (outcome.score !== undefined ? `<div id="outcomeScore` + outcome.id + `" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ` + dtps.cblColor(outcome.score) + `">` + outcome.score.toFixed(2) + `</div>` : ``) + `
+                <div class="assessments">
+                    ` + (outcome.assessments.length == 0 ? `
+                         <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
+                     ` : outcome.assessments.slice().reverse().map(assessment => {
+                        return `<p id="outcome` + outcome.id + `assessment` + assessment.id + `" onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" class="` + ((outcome.scoreType == "dropped") && (assessment.id == outcome.lowestAssessment.id) ? "dropped" : "") + `" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
+                                  <span style="margin-right: 5px; font-size: 20px; vertical-align: middle; color: ` + dtps.cblColor(assessment.score) + `">` + assessment.score + `</span>
+                                  <span class="assessmentTitle">` + assessment.title + `</span>
+                            </p>`;
+                }).join("")) + `
+                </div>
+
+            ` + (outcome.assessments.length ? `<p onclick="dtps.addWhatIf(` +  num + `, '` + outcome.id + `')" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 16px; cursor: pointer;">
+  <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
+  Add a What-If grade
+  </p>` : "") + `
             </div>`)
         })
 
+        //RENDERER: RENDER WHAT-IF RESULTS -----------------------
+        var whatIfResults = `<div class="card" style="display: none; border: 2px solid var(--cards);background-color: var(--elements);position: fixed;top: 0;width: 400px;z-index: 99999 !important;padding: 20px;margin: 10px;box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.51);" id="WhatIfResults">
+        <div style="display: inline-block;">
+           <h5 style="
+              font-weight: bold;
+              margin-bottom: 28px;
+              ">
+              What-If Grade
+              <div class="resultLetter" style="
+                 color: gray;
+                 font-weight: bold;
+                 float: right;
+                 display: inline-block;
+                 font-size: 32px;
+                 ">--</div>
+           </h5>
+           <p>This grade is hypothetical and does not represent your actual grade for this class.</p>
+           <p onclick="dtps.gradebook(` + num + `)" style="
+              color: var(--secText);
+              cursor: pointer;
+              ">Show actual grades</p>
+        </div>
+     </div>`;
+
         //WRITE HTML TO CLASS CONTENT
-        if (dtps.selectedContent == "grades") $(".classContent").html(gradeCalcSummary + `<br />` + outcomeHTML.join(""))
+        if (dtps.selectedContent == "grades") $(".classContent").html(whatIfResults + gradeCalcSummary + `<br />` + outcomeHTML.join(""))
+    }
+}
+
+//Add a what-if grade to an outcome
+dtps.addWhatIf = function(num, outcomeID) {
+    if (!$(".card#WhatIfResults").is(":visible")) {
+        //Initialize what-if grades
+        dtps.classes[num].whatIfOutcomes = JSON.parse(JSON.stringify(dtps.classes[num].outcomes));
+        $(".card#WhatIfResults").show();
+        $(".card#WhatIfResults .resultLetter").html("--");
+        $(".card#WhatIfResults .resultLetter").css("color", "gray");
+    }
+
+    var index = dtps.classes[num].whatIfOutcomes.map(outcome => outcome.id).indexOf(outcomeID);
+    var aIndex = dtps.classes[num].whatIfOutcomes[index].assessments.length;
+    dtps.classes[num].whatIfOutcomes[index].assessments.push({ //most of the stuff in this object is optional but I'm adding it anyways
+        id: "whatIf" + aIndex, //if changing this, update the id for the rendered what-if grade assessment as well
+        score: "--",
+        possible: 4,
+        submitted_or_assessed_at: new Date().toISOString(),
+        whatIfGrade: true,
+        links: {
+            user: dtps.user.id,
+            learning_outcome: outcomeID
+        },
+        title: "What-If Grade"
+    });
+
+    $(".card.outcomeResults.outcome-" + outcomeID + " .assessments").append(`<p id="outcome` + outcomeID + `assessmentwhatIf` + aIndex + `" class="assessment` + aIndex + `" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+        <span outcomeIndex="` + index + `" aIndex="` + aIndex + `" class="editableScore" contenteditable style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: var(--secText);">-</span>
+        <span class="assessmentTitle">What-If Grade</span>
+    </p>`)
+
+    $(".card#WhatIfResults .resultLetter").html("--");
+    $(".card#WhatIfResults .resultLetter").css("color", "gray");
+
+    var ele = $(".card.outcomeResults.outcome-" + outcomeID + " .assessments p.assessment" + aIndex + " span.editableScore")[0];
+    ele.addEventListener("input", function() {
+        var outcomeNum = Number($(ele).text());
+        if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(outcomeNum) && (outcomeNum > 0) && (outcomeNum < 5)) {
+            $(ele).css("color", dtps.cblColor(outcomeNum))
+            dtps.classes[num].whatIfOutcomes[Number($(ele).attr("outcomeIndex"))].assessments[Number($(ele).attr("aIndex"))].score = outcomeNum;
+            dtps.calcWhatIf(dtps.selectedClass);
+        } else {
+            $(ele).css("color", "gray");
+            $(".card#WhatIfResults .resultLetter").html("--");
+            $(".card#WhatIfResults .resultLetter").css("color", "gray");
+        }
+    }, false);
+}
+
+
+//Calculate what-if grade
+dtps.calcWhatIf = function(num) {
+    if (dtps.classes[num].whatIfOutcomes) {
+        var grade = dtps.gradeCalc.run(dtps.classes[num].whatIfOutcomes);
+        $(".card#WhatIfResults .resultLetter").html(grade.letter);
+        $(".card#WhatIfResults .resultLetter").css("color", "var(--light)");
+
+        //show dropped outcomes
+        $("p.dropped").removeClass("dropped");
+        dtps.classes[num].whatIfOutcomes.map(outcome => {
+            if (outcome.score) {
+                $("#outcomeScore" + outcome.id).html(outcome.score.toFixed(2));
+                $("#outcomeScore" + outcome.id).css("color", dtps.cblColor(outcome.score));
+            }
+            if (outcome.scoreType == "dropped") {
+                $("#outcome" + outcome.id + "assessment" + outcome.lowestAssessment.id).addClass("dropped");
+            }
+        })
     }
 }
 
