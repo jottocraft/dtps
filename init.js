@@ -1812,7 +1812,7 @@ dtps.gradebook = function (num, cb) {
       </thead>
       <tbody>
         ` + dtps.gradeCalc.letters.map(letter => {
-                return `<tr ` + (dtps.classes[num].letter == letter ? `style="background-color: var(--norm); color: var(--light);font-size:20px;"` : ``) + `>
+                return `<tr ` + (dtps.classes[num].letter == letter ? `style="background-color: var(--dark); color: var(--light);font-size:20px;"` : ``) + `>
             <td>&nbsp;&nbsp;` + letter + `</td>
             <td>` + dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].percentage[letter] + `</td>
             <td>` + dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].lowest[letter] + `</td>
