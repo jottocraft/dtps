@@ -34,6 +34,10 @@ Power+ CSS v2.2.0
     filter: opacity(0.4);
 }
 
+.fc-day-grid-event .fc-time {
+	display: none;
+}
+
 .dropped span.assessmentTitle {
     text-decoration: line-through;
 }
