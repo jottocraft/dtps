@@ -125,6 +125,12 @@
       font-size: 14px;
       margin: 0px 60px;
     }
+	.coolGray {
+  color: #454545;
+  }
+  body.dark .coolGray {
+  color: #e4e4e4;
+  }
   </style>
   <script>fluidThemes = [];</script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -181,10 +187,12 @@
   <div style="margin-top: 100px;" class="container row">
 
     <div class="five columns" style="text-align: center; padding: 20px; padding-top: 0px;">
-      <img src="https://i.imgur.com/vCGOvPp.png"
-        style="width: 92px; border-radius: 25px; vertical-align: middle; margin-right: 20px;" />
-      <h1 style="font-size: 69px; display: inline-block; vertical-align: middle;">Power+</h1>
-      <h5 style="color: var(--secText); font-size: 24px; margin: 20px 0px;">A better way to manage your work at d.tech
+		<div style="margin-bottom: 38px;">
+      <img src="outline.png"
+        style="height: 60px; vertical-align: middle; margin-right: 20px;" />
+      <h1 class="coolGray" style="font-size: 46px; display: inline-block; vertical-align: middle; margin: 0px;">Power+</h1>
+	  </div>
+      <h5 style="color: var(--secText); font-size: 20px; margin: 20px 0px;">A better way to manage your work at d.tech
       </h5>
       <div
         style="display: none;padding: 7px 17px; margin: 20px 0px; margin-top: 30px; border: 2px solid #ffe9a3; background-color: #ffd85d4f; border-radius: 10px; text-align: left;"
@@ -275,7 +283,7 @@
 
   </div>
 
-  <div style="margin-top: 150px;" class="container row">
+  <div style="margin-top: 200px;" class="container row">
     <h4 style="text-align: center; font-size: 34px; font-weight: bold;"><i style="margin-right: 10px;"
         class="material-icons">library_books</i> Coursework in Power+</h4>
     <h5 style="text-align: center; font-size: 18px; color: var(--secText); margin-top: 10px;">Power+ lets you see your
