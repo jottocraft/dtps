@@ -395,6 +395,10 @@ body.titlebar .sidebar {
     text-overflow: ellipsis;
 }
 
+.sidebar .item:not(.active) {
+    filter: none !important;
+}  
+
 body.collapsedSidebar .sidebar .bigLogo {
     display: none;
 }
