@@ -3,7 +3,7 @@
 
   "name": "Power+",
   "description": "A redesigned UI for Canvas LMS",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "background": {
     "scripts": ["background.js"]
   },

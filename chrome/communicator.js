@@ -30,13 +30,13 @@ if (window.location.hostname == "powerplus.app") {
         //Power+ preloader
         if (node.nodeType === 1 && node.tagName === 'H1' && node.innerHTML.toUpperCase().includes("PAGE NOT FOUND")) {
           node.innerHTML = "";
-          node.insertAdjacentHTML("afterend", `<div style="background-color: #191919; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;">
-          <img style="height: 115px; margin-top: 120px;" src="https://i.imgur.com/W2Di5X3.png" /><div class="loader"></div>
+          node.insertAdjacentHTML("afterend", `<div style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;">
+          <img style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/eiTE2sW.png" /><div class="loader"></div>
           </div>`);
           node.remove();
 
           var s = document.createElement("style");
-          s.innerHTML = `body {background-color: #191919; overflow: hidden;}*,:after,:before{box-sizing:border-box}.loader{position:absolute;top:450px;left:50%;transform:translate(-50%,-50%);width:50px;height:10px;background:#3498db;border-radius:5px;animation:load 1.8s ease-in-out infinite}.loader:after,.loader:before{position:absolute;display:block;content:"";animation:load 1.8s ease-in-out infinite;height:10px;border-radius:5px}.loader:before{top:-20px;left:10px;width:40px;background:#ef4836}.loader:after{bottom:-20px;width:35px;background:#f5ab35}@keyframes load{0%{transform:translateX(40px)}50%{transform:translateX(-30px)}100%{transform:translateX(40px)}}`;
+          s.innerHTML = `body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.loader{position:absolute;top:450px;left:50%;transform:translate(-50%,-50%);width:50px;height:10px;background:#3498db;border-radius:5px;animation:load 1.8s ease-in-out infinite}.loader:after,.loader:before{position:absolute;display:block;content:"";animation:load 1.8s ease-in-out infinite;height:10px;border-radius:5px}.loader:before{top:-20px;left:10px;width:40px;background:#ef4836}.loader:after{bottom:-20px;width:35px;background:#f5ab35}@keyframes load{0%{transform:translateX(40px)}50%{transform:translateX(-30px)}100%{transform:translateX(40px)}}`;
           document.body.appendChild(s);
         }
         if (node.nodeType === 1 && node.tagName === 'HEADER' && node.id == "header") {
