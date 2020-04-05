@@ -1,6 +1,8 @@
 <p align="center">
-  <img width="400" src="https://i.imgur.com/z7doH7n.png" />
+  <img width="320" src="https://i.imgur.com/z7doH7n.png" />
 </p>
+
+<br />
 
 <p align="center">
   <img src="https://img.shields.io/github/release/jottocraft/dtps.svg" />
