@@ -1,4 +1,4 @@
-/* Power+ v2.2.0
+/* Power+ v2.3.0
 (c) 2018 - 2020 jottocraft
 https://github.com/jottocraft/dtps */
 
@@ -13,8 +13,8 @@ if (!window.location.href.includes("instructure.com")) {
 
 //Basic global Power+ configuration. All global Power+ variables go under dtps
 dtps = {
-    ver: 220,
-    readableVer: "v2.2.0",
+    ver: 230,
+    readableVer: "v2.3.0",
     trackSuffix: "",
     showLetters: false,
     fullNames: false,
@@ -342,6 +342,13 @@ dtps.gradeCalc = {
                 "C": 1.5,
                 "I": 0
             }
+        },
+        dl: {
+            normal: {
+                "A": 0.825,
+                "B": 0.65,
+                "C": 0.55
+            }
         }
     },
     average: function (array) { //simple average function
@@ -350,67 +357,101 @@ dtps.gradeCalc = {
         return sum / array.length;
     },
     run: function (outcomes, formula = "sem2") { //Array of outcomes -> letter grade w/ params
-        //formula param is for the type of grade calc (default sem2). Used for running different versions of CBL at the same time.
-        //IMPORTANT NOTE: run will NOT return -- for a grade. If a class has no outcomes, that must be determined before this is ran (probably when pulling grades from canvas)
+        //formula param is for the type of grade calc (default sem2). Used for running different versions of grade calc at the same time.
+        //IMPORTANT NOTE: run will NOT return -- for a grade. If a class has no outcomes, that must be determined before this is ran (ideally when pulling grades from canvas)
 
-        // ------- STEP 1: CALCULATE OUTCOME AVERAGES -------
-        outcomes.forEach(outcome => {
-            if (outcome.assessments && outcome.assessments.length) { //only calculate score when there are outcome assessments
-                var score = this.average(outcome.assessments.map(assessment => assessment.score)); //default: include all outcomes
-                var scoreType = "all"; //scoreType either all or dropped
+        // --------------------------------------------------------------- SEM2 GRADE CALC -----------------------------------------------------
+        if (formula == "sem2") {
+            // ------- STEP 1: CALCULATE OUTCOME AVERAGES -------
+            outcomes.forEach(outcome => {
+                if (outcome.assessments && outcome.assessments.length) { //only calculate score when there are outcome assessments
+                    var score = this.average(outcome.assessments.map(assessment => assessment.score)); //default: include all outcomes
+                    var scoreType = "all"; //scoreType either all or dropped
 
-                //get lowest eligible score
-                outcome.lowestAssessment = null;
-                outcome.lowestAssessmentScore = Infinity;
-                outcome.assessments.forEach(assessment => {
-                    if (new Date(assessment.submitted_or_assessed_at) < new Date(this.params[formula].cutoff)) { //before cutoff date
-                        if (assessment.score < outcome.lowestAssessmentScore) { //lower than the lowest
-                            outcome.lowestAssessment = assessment;
-                            outcome.lowestAssessmentScore = assessment.score;
-                        }
-                    }
-                });
-
-                //drop the lowest score to see what happens
-                if (outcome.lowestAssessment != Infinity) { //lowest score was found
-                    var droppedArray = [];
+                    //get lowest eligible score
+                    outcome.lowestAssessment = null;
+                    outcome.lowestAssessmentScore = Infinity;
                     outcome.assessments.forEach(assessment => {
-                        if (assessment.id != outcome.lowestAssessment.id) { //assessment is not the one we are dropping
-                            droppedArray.push(assessment.score); //add assessment to the array of scores excluding the dropped assessment
+                        if (new Date(assessment.submitted_or_assessed_at) < new Date(this.params[formula].cutoff)) { //before cutoff date
+                            if (assessment.score < outcome.lowestAssessmentScore) { //lower than the lowest
+                                outcome.lowestAssessment = assessment;
+                                outcome.lowestAssessmentScore = assessment.score;
+                            }
                         }
                     });
-                    outcome.dropped = this.average(droppedArray);
-                } else { //lowest score not found
-                    outcome.dropped = null;
+
+                    //drop the lowest score to see what happens
+                    if (outcome.lowestAssessment != Infinity) { //lowest score was found
+                        var droppedArray = [];
+                        outcome.assessments.forEach(assessment => {
+                            if (assessment.id != outcome.lowestAssessment.id) { //assessment is not the one we are dropping
+                                droppedArray.push(assessment.score); //add assessment to the array of scores excluding the dropped assessment
+                            }
+                        });
+                        outcome.dropped = this.average(droppedArray);
+                    } else { //lowest score not found
+                        outcome.dropped = null;
+                    }
+
+                    if (outcome.dropped > score) { score = outcome.dropped; scoreType = "dropped"; } //if dropped > score, set score & scoretype to dropped
+                    outcome.score = score; //add score prop to outcome with highest score
+                    outcome.scoreType = scoreType; //add scoreType prop so gradebook knows which was used
                 }
-
-                if (outcome.dropped > score) { score = outcome.dropped; scoreType = "dropped"; } //if dropped > score, set score & scoretype to dropped
-                outcome.score = score; //add score prop to outcome with highest score
-                outcome.scoreType = scoreType; //add scoreType prop so gradebook knows which was used
-            }
-        });
+            });
 
 
-        // -------   STEP 2: CALCULATE LETTER GRADES  -------
-        var gradeVariations = [];
+            // -------   STEP 2: CALCULATE LETTER GRADE VARIATIONS  -------
+            var gradeVariations = [];
 
-        //with ALL outcomes
-        gradeVariations.push(this.getLetter(outcomes.map(outcome => outcome.score), formula, "all"));
+            //with ALL outcomes
+            gradeVariations.push(this.getLetter(outcomes.map(outcome => outcome.score), formula, "all"));
 
-        /* with all outcomes, excluding SS
-        var outcomesWithoutSS = [];
-        outcomes.forEach(outcome => {
-            var isSS = false;
-            var keywords = ["SS", "Self-Direction", "Self Direction", "Collaboration"]; //keywords that will trigger SS filter
+            /* with all outcomes, excluding SS
+            var outcomesWithoutSS = [];
+            outcomes.forEach(outcome => {
+                var isSS = false;
+                var keywords = ["SS", "Self-Direction", "Self Direction", "Collaboration"]; //keywords that will trigger SS filter
+    
+                keywords.forEach(keyword => {
+                    if (outcome.title.includes(keyword)) isSS = true; //for each keyword, if outcome title includes keyword, trigger SS filter
+                })
+    
+                if (!isSS) outcomesWithoutSS.push(outcome) //if it isn't SS, add this outcome to list of outcomes without SS
+            });
+            gradeVariations.push(this.getLetter(outcomesWithoutSS.map(outcome => outcome.score), formula, "excludeSS")); //calculate grade without SS */
+        } else if (formula == "dl") {
+            // -------     STEP 1: CALCULATE ASSESSMENT AVERAGE   -------
+            var assessmentScores = [];
+            outcomes.forEach(outcome => {
+                if (outcome.assessments && outcome.assessments.length) { //only calculate score when there are outcome assessments
+                    assessmentScores = assessmentScores.concat(outcome.assessments.map(assessment => assessment.score)); //add assessment scores from this outcome to array
+                }
+            });
 
-            keywords.forEach(keyword => {
-                if (outcome.title.includes(keyword)) isSS = true; //for each keyword, if outcome title includes keyword, trigger SS filter
-            })
+            var percentage = this.average(assessmentScores) / 4;
 
-            if (!isSS) outcomesWithoutSS.push(outcome) //if it isn't SS, add this outcome to list of outcomes without SS
-        });
-        gradeVariations.push(this.getLetter(outcomesWithoutSS.map(outcome => outcome.score), formula, "excludeSS")); //calculate grade without SS */
+            var letter = null;
+            var letterIndex = Infinity;
 
+            Object.keys(this.params.dl.normal).forEach(testLetter => {
+                if (percentage >= this.params.dl.normal[testLetter]) {
+                    if (this.letters.indexOf(testLetter) < letterIndex) {
+                        letter = testLetter;
+                        letterIndex = this.letters.indexOf(testLetter);
+                    }
+                }
+            });
+
+            var gradeVariations = [];
+            gradeVariations.push({
+                letter: letter,
+                letterIndex: letterIndex,
+                report: {
+                    percentage: percentage
+                },
+                formula: formula
+            });
+        }
 
         // -------     STEP 3: CHOOSE HIGHEST GRADE   -------
         var highestVariation = null;
@@ -500,7 +541,7 @@ dtps.renderGrade = (num) => {
         //there aren't any grades yet or its dlab
         dtps.classes[num].letter = "--";
     } else {
-        dtps.classes[num].gradeCalc = dtps.gradeCalc.run(dtps.classes[num].outcomes, dtps.classes[num].semester == "S1" ? "sem1" : "sem2"); //save all grade calc stuff for gradebook
+        dtps.classes[num].gradeCalc = dtps.gradeCalc.run(dtps.classes[num].outcomes, dtps.classes[num].semester == "S2-DL" ? "dl" : "sem2"); //save all grade calc stuff for gradebook
         dtps.classes[num].letter = dtps.classes[num].gradeCalc.letter; //save letter grade
 
         /*
@@ -542,7 +583,8 @@ dtps.renderGrade = (num) => {
     var total = 0; //calculate GPA
     for (var i = 0; i < gpa.length; i++) total += gpa[i];
     dtps.gpa = (total / gpa.length).toFixed(1);
-    dtps.gradeHTML[0] = '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>';
+    //dtps.gradeHTML[0] = '<p>Estimated GPA (beta): ' + dtps.gpa + '</p>';
+    dtps.gradeHTML[0] = '<p>Estimated GPA has been disabled due to distance learning</p>';
 
     if (dtps.classes[num].letter !== "--") {
         dtps.gradeHTML.push(`<div style="cursor: auto; background-color: var(--norm);" class="progressBar big ` + dtps.classes[num].col + `">
@@ -848,6 +890,15 @@ dtps.init = function () {
                             data.sort(function (a, b) {
                                 var keyA = dashboard.dashboard_positions["course_" + a.id],
                                     keyB = dashboard.dashboard_positions["course_" + b.id];
+
+                                //put distance learning classes on top
+                                if (keyA == undefined) keyA = 100;
+                                if (keyB == undefined) keyB = 100;
+                                if (a.name.includes(" S2-DL ")) keyA -= 1000;
+                                if (b.name.includes(" S2-DL ")) keyB -= 1000;
+
+                                console.log(keyA, keyB)
+
                                 if (keyA < keyB) return -1;
                                 if (keyA > keyB) return 1;
                                 return 0;
@@ -1776,7 +1827,7 @@ dtps.gradebook = function (num, cb) {
     } else {
 
         //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
-        if (dtps.classes[num].gradeCalc) {
+        if (dtps.classes[num].gradeCalc && (dtps.classes[num].gradeCalc.formula == "sem2")) {
             var gradeCalcSummary = `<div class="card">
   <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">
     ` + dtps.classes[num].subject + `
@@ -1825,6 +1876,51 @@ dtps.gradebook = function (num, cb) {
   <br>
   <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.detailedGradebook = true;} else {$(this).html('Show more'); dtps.detailedGradebook = false;}"
     style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">` + (dtps.detailedGradebook ? "Show less" : "Show more") + `</a>
+  <a style="color: var(--secText, gray);">` + (dtps.classes[num].gradeCalc.formula == "dl" ? "Using distance learning grade calculation" : "Using Jan-Mar CBL grade calculation") + `</a>
+</div>`;
+        } else if (dtps.classes[num].gradeCalc && (dtps.classes[num].gradeCalc.formula == "dl")) {
+            var gradeCalcSummary = `<div class="card">
+  <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">
+    ` + dtps.classes[num].subject + `
+    <div class="classGradeCircle"
+      style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">
+      ` + dtps.classes[num].letter + `</div>
+  </h3>
+  <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">Percentage
+    <div class="numFont"
+      style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + ((100 * dtps.classes[num].gradeCalc.report.percentage).toFixed(2)) + `%</div>
+  </h5>
+  <div ` + (dtps.detailedGradebook ? "" : `style="display: none;"`) + ` id="classGradeMore">
+    <br>
+
+    ` + (dtps.classes[num].gradeCalc.previousGrade ? `<h5 style="height: 40px; line-height: 40px;color: var(--secText); font-size: 18px; margin: 0px;">Previous grade
+    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 40px; line-height: 40px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px; color: var(--lightText); font-weight: bold;">` + dtps.classes[num].gradeCalc.previousGrade + `</div></h5>` : ``) + `
+    ` + (dtps.classes[num].gradeCalc.report.number75thresh ? `<h5 style="height: 40px; line-height: 40px;color: var(--secText); font-size: 18px; margin: 0px;">75% of outcomes (rounded down) is
+    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 40px; line-height: 40px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px; color: var(--lightText); font-weight: bold;">` + dtps.classes[num].gradeCalc.report.number75thresh + `</div></h5>
+    ` : ``) + `
+    <br>
+    <table class="u-full-width dtpsTable">
+      <thead>
+        <tr>
+          <th>&nbsp;&nbsp;Final Letter</th>
+          <th>Percentage is ≥</th>
+        </tr>
+      </thead>
+      <tbody>
+        ` + dtps.gradeCalc.letters.map(letter => {
+                return (dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].normal[letter] ? `<tr ` + (dtps.classes[num].letter == letter ? `style="background-color: var(--dark); color: var(--light);font-size:20px;"` : ``) + `>
+            <td>&nbsp;&nbsp;` + letter + `</td>
+            <td>` + (100 * dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].normal[letter]).toFixed(2) + `%</td>
+          </tr>` : ``)
+            }).join("") + `
+      </tbody>
+    </table>
+
+  </div>
+  <br>
+  <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.detailedGradebook = true;} else {$(this).html('Show more'); dtps.detailedGradebook = false;}"
+    style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">` + (dtps.detailedGradebook ? "Show less" : "Show more") + `</a>
+  <a style="color: var(--secText, gray);">` + (dtps.classes[num].gradeCalc.formula == "dl" ? "Using distance learning grade calculation" : "Using Jan-Mar CBL grade calculation") + `</a>
 </div>`;
         } else {
             var gradeCalcSummary = ""; //no grade calculation for this class
@@ -1842,7 +1938,7 @@ dtps.gradebook = function (num, cb) {
             if (keyA > keyB) return 1;
             if (keyA < keyB) return -1;
             return 0;
-        }).forEach(outcome => {
+        }).forEach((outcome, outcomeIndex) => {
             var divider = !dividerAdded && !outcome.assessments.length; //render divider
             if (divider) dividerAdded = true; //remember that divider is already rendered
 
@@ -1853,15 +1949,15 @@ dtps.gradebook = function (num, cb) {
                 <div class="assessments">
                     ` + (outcome.assessments.length == 0 ? `
                          <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
-                     ` : outcome.assessments.slice().reverse().map(assessment => {
-                        return `<p id="outcome` + outcome.id + `assessment` + assessment.id + `" onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);" class="` + ((outcome.scoreType == "dropped") && (assessment.id == outcome.lowestAssessment.id) ? "dropped" : "") + `" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;cursor: pointer;">
-                                  <span style="margin-right: 5px; font-size: 20px; vertical-align: middle; color: ` + dtps.cblColor(assessment.score) + `">` + assessment.score + `</span>
-                                  <span class="assessmentTitle">` + assessment.title + `</span>
+                     ` : outcome.assessments.slice().reverse().map((assessment, aIndex) => {
+                return `<p id="outcome` + outcome.id + `assessment` + assessment.id + `" class="` + ((outcome.scoreType == "dropped") && (assessment.id == outcome.lowestAssessment.id) ? "dropped" : "") + `" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+                                  <span aIndex="` + aIndex + `" outcomeIndex="` + outcomeIndex + `" ` + (outcome.assessments.length && dtps.classes[num].gradeCalc ? `class="editableScore" contenteditable` : "") + ` style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: ` + dtps.cblColor(assessment.score) + `">` + assessment.score + `</span>
+                                  <span class="assessmentTitle" style="cursor: pointer;" onclick="dtps.assignment('` + assessment.links.assignment.replace("assignment_", "") + `', ` + num + `);">` + assessment.title + `</span>
                             </p>`;
-                }).join("")) + `
+            }).join("")) + `
                 </div>
 
-            ` + (outcome.assessments.length ? `<p onclick="dtps.addWhatIf(` +  num + `, '` + outcome.id + `')" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 16px; cursor: pointer;">
+            ` + (outcome.assessments.length && dtps.classes[num].gradeCalc ? `<p onclick="dtps.addWhatIf(` + num + `, '` + outcome.id + `')" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 16px; cursor: pointer;">
   <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
   Add a What-If grade
   </p>` : "") + `
@@ -1884,6 +1980,7 @@ dtps.gradebook = function (num, cb) {
                  font-size: 32px;
                  ">--</div>
            </h5>
+           <p style="color: var(--lightText);" class="resultPercentage"></p>
            <p>This grade is hypothetical and does not represent your actual grade for this class.</p>
            <p onclick="dtps.gradebook(` + num + `)" style="
               color: var(--secText);
@@ -1894,11 +1991,12 @@ dtps.gradebook = function (num, cb) {
 
         //WRITE HTML TO CLASS CONTENT
         if (dtps.selectedContent == "grades") $(".classContent").html(whatIfResults + gradeCalcSummary + `<br />` + outcomeHTML.join(""))
+        dtps.bindWhatIf(num);
     }
 }
 
-//Add a what-if grade to an outcome
-dtps.addWhatIf = function(num, outcomeID) {
+//shows the what-if ui
+dtps.initWhatIf = function (num) {
     if (!$(".card#WhatIfResults").is(":visible")) {
         //Initialize what-if grades
         dtps.classes[num].whatIfOutcomes = JSON.parse(JSON.stringify(dtps.classes[num].outcomes));
@@ -1906,6 +2004,30 @@ dtps.addWhatIf = function(num, outcomeID) {
         $(".card#WhatIfResults .resultLetter").html("--");
         $(".card#WhatIfResults .resultLetter").css("color", "gray");
     }
+}
+
+//bind what-if event listeners to existing grades
+dtps.bindWhatIf = function (num) {
+    $(".card.outcomeResults .assessments p span.editableScore").toArray().forEach(ele => {
+        ele.addEventListener("input", function () {
+            dtps.initWhatIf(num);
+            var outcomeNum = Number($(ele).text());
+            if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(outcomeNum) && (outcomeNum > 0) && (outcomeNum < 5)) {
+                $(ele).css("color", dtps.cblColor(outcomeNum))
+                dtps.classes[num].whatIfOutcomes[Number($(ele).attr("outcomeIndex"))].assessments[Number($(ele).attr("aIndex"))].score = outcomeNum;
+                dtps.calcWhatIf(dtps.selectedClass);
+            } else {
+                $(ele).css("color", "gray");
+                $(".card#WhatIfResults .resultLetter").html("--");
+                $(".card#WhatIfResults .resultLetter").css("color", "gray");
+            }
+        }, false);
+    });
+}
+
+//Add a what-if grade to an outcome
+dtps.addWhatIf = function (num, outcomeID) {
+    dtps.initWhatIf(num);
 
     var index = dtps.classes[num].whatIfOutcomes.map(outcome => outcome.id).indexOf(outcomeID);
     var aIndex = dtps.classes[num].whatIfOutcomes[index].assessments.length;
@@ -1931,7 +2053,7 @@ dtps.addWhatIf = function(num, outcomeID) {
     $(".card#WhatIfResults .resultLetter").css("color", "gray");
 
     var ele = $(".card.outcomeResults.outcome-" + outcomeID + " .assessments p.assessment" + aIndex + " span.editableScore")[0];
-    ele.addEventListener("input", function() {
+    ele.addEventListener("input", function () {
         var outcomeNum = Number($(ele).text());
         if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(outcomeNum) && (outcomeNum > 0) && (outcomeNum < 5)) {
             $(ele).css("color", dtps.cblColor(outcomeNum))
@@ -1947,10 +2069,15 @@ dtps.addWhatIf = function(num, outcomeID) {
 
 
 //Calculate what-if grade
-dtps.calcWhatIf = function(num) {
+dtps.calcWhatIf = function (num) {
     if (dtps.classes[num].whatIfOutcomes) {
-        var grade = dtps.gradeCalc.run(dtps.classes[num].whatIfOutcomes);
+        var grade = dtps.gradeCalc.run(dtps.classes[num].whatIfOutcomes, dtps.classes[num].gradeCalc.formula);
         $(".card#WhatIfResults .resultLetter").html(grade.letter);
+        if (dtps.classes[num].gradeCalc.formula == "dl") {
+            $(".card#WhatIfResults .resultPercentage").html("Percentage: " + (100 * grade.report.percentage).toFixed(2) + "%");
+        } else {
+            $(".card#WhatIfResults .resultPercentage").html("");
+        }
         $(".card#WhatIfResults .resultLetter").css("color", "var(--light)");
 
         //show dropped outcomes
@@ -2226,10 +2353,24 @@ dtps.chroma = function () {
 dtps.showClasses = function (override) {
     var streamClass = "active"
     if (dtps.selectedClass !== "dash") var streamClass = "";
-    dtps.classlist = [];
+
+    var shownSem2 = false;
+    var showDL = false;
+    dtps.classes.forEach(course => { if (course.semester == "S2-DL") { showDL = true; } })
+
+    if (showDL) {
+        dtps.classlist = [`<div class="divider"></div><h5 style="font-size: 18px;text-align: center;margin: 20px 0px;color: var(--lightText);">Distance Learning</h5>`];
+    } else {
+        dtps.classlist = [];
+    }
+
     for (var i = 0; i < dtps.classes.length; i++) {
         var name = dtps.classes[i].subject
         if (dtps.fullNames) name = dtps.classes[i].name
+        if ((dtps.classes[i].semester !== "S2-DL") && !shownSem2) {
+            dtps.classlist.push(`<div class="divider"></div><div class="divider"></div><h5 style="font-size: 18px;text-align: center;margin: 20px 0px;color: var(--lightText);">Semester 2 CBL</h5>`);
+            shownSem2 = true;
+        }
         dtps.classlist.push(`
       <div onclick="dtps.selectedClass = ` + i + `" class="class item ` + i + ` ` + dtps.classes[i].col + `">
       <span class="label name">` + name + `</span>
