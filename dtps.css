@@ -1,8 +1,7 @@
 /*
 Power+ CSS v2.2.0
 (c) jottocraft 2018-2020
-*/      
-
+*/
 .card.color .colorBar {
     width: 7px;
     height: calc(100% - 40px);
@@ -10,80 +9,69 @@ Power+ CSS v2.2.0
     top: 20px;
     left: 14px;
     border-radius: 10px;
-        }
+}
 
-        body.dark .card.color .colorBar {
-            background: var(--light);
-        }
+body.dark .card.color .colorBar {
+    background: var(--light);
+}
 
-        body.light .card.color .colorBar {
-            background: var(--norm);
-        }
+body.light .card.color .colorBar {
+    background: var(--norm);
+}
 
-        .card:not(.color) .colorBar {
-            display: none;
-        }
+.card:not(.color) .colorBar {
+    display: none;
+}
 
-        .announcement .className {
-            color: var(--light);
-            font-weight: bold;
-            font-size: 16px;
-        }
+.announcement .className {
+    color: var(--light);
+    font-weight: bold;
+    font-size: 16px;
+}
 
 .dropped {
     filter: opacity(0.4);
 }
 
 .fc-day-grid-event .fc-time {
-	display: none;
+    display: none;
 }
 
 .dropped span.assessmentTitle {
     text-decoration: line-through;
 }
 
-
 /* POWERPOINTS THEME */
 body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
---flex-light: #b39a46;
-   --flex-bg: #a78e3a;
-   --flex-text: #ffffff;
-   --flex-sectext: #e4d8ae;
-   --flex-layer1: #867027;
-   --flex-layer2: #726021;
-   --flex-layer3: #5f4f1c;
-   --theme-color: #6d6d6d;
-   --theme-text-color: #b39a46;
-   --links: #686868;
-   --acrylic: black;
-}
+    --flex-light: #b39a46; --flex-bg: #a78e3a; --flex-text: #ffffff; --flex-sectext: #e4d8ae; --flex-layer1: #867027; --flex-layer2: #726021; --flex-layer3: #5f4f1c; --theme-color: #6d6d6d; --theme-text-color: #b39a46; --links: #686868; --acrylic: black; }
 
 .dash.cal .recentGrade.card {
-                margin-right: 0px;
-                margin: 25px;
-                width: 100%;
-                padding: 20px;
-                cursor: pointer;
-            }
-            .dash.cal .recentGrade h5 {
-                color: var(--light);
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                margin: 0px;
-                font-weight: bold;
-                font-size: 18px;
-            }
-            .dash.cal .recentGrade p {
-                margin: 0px;
-                margin-top: 7px;
-                color: var(--secText);
-            }
+    margin-right: 0px;
+    margin: 25px;
+    width: 100%;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.dash.cal .recentGrade h5 {
+    color: var(--light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.dash.cal .recentGrade p {
+    margin: 0px;
+    margin-top: 7px;
+    color: var(--secText);
+}
 
 /* Fluid UI theme prefs */
 :root {
-	--icons: "Material Icons Outlined", "Material Icons Extended" !important;
-}
+    --icons: "Material Icons Outlined", "Material Icons Extended" !important; }
 
 .blur * {
     pointer-events: none !important;
@@ -96,39 +84,31 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
 .classContent .card.collapsed {
     padding: 10px 20px;
 }
+
 .classContent .card.collapsed h4 {
     font-size: 24px !important;
     font-weight: normal !important;
 }
+
 .classContent .card.collapsed h4 i {
     margin-top: -6px;
 }
+
 .classContent .card.collapsed .moduleContents {
     display: none;
 }
 
-body:not(.enableLightAcr):not(.dark) .acrylicMaterial {
-    background-color: var(--elements) !important;
-    opacity: 0.9 !important;
+body:not(.dark) .sidebar img {
+    filter: saturate(1.5) brightness(0.8) !important;
 }
 
-body:not(.enableLightAcr):not(.dark) .acrylicMaterial.sidebar {
-    background-color: white !important;
-}
-
-body.enableLightAcr:not(.dark) .sidebar .main {
-    color:#000000c9 !important;
-    border-color: #5a5a5a47 !important;
-}
-
-body.enableLightAcr:not(.dark) .sidebar img {
-    filter: brightness(0) opacity(0.45) !important;
+body:not(.dark) .sidenav .title img {
+    filter: saturate(1.5) brightness(0.9) !important;
 }
 
 .fc .fc-button-group>* {
     background: none !important;
 }
-
 
 .fc-today {
     border-radius: 5px;
@@ -154,8 +134,15 @@ table.dtpsTable th {
     padding-right: 0px;
 }
 
-table.dtpsTable td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-table.dtpsTable td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+table.dtpsTable td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+table.dtpsTable td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
 
 body.dark .classGradeCircle {
     background-color: var(--norm);
@@ -346,7 +333,6 @@ body {
     vertical-align: middle;
 }
 
-
 .search, .classContent i.inputIcon {
     margin: 15px 75px 0px 10px !important;
 }
@@ -359,7 +345,6 @@ body {
     background: #7b7b7b45 !important;
     color: inherit !important;
 }
-
 
 .class.active .dot {
     background-color: var(--dark);
@@ -397,7 +382,7 @@ body.titlebar .sidebar {
 
 .sidebar .item:not(.active) {
     filter: none !important;
-}  
+}
 
 body.collapsedSidebar .sidebar .bigLogo {
     display: none;
@@ -681,7 +666,7 @@ body.dark .tabs.btns .btn:not(.active) {
     position: absolute;
     display: inline-block;
     right: 25px;
-    white-space:nowrap;
+    white-space: nowrap;
 }
 
 .classContent .card .points.spinner {
@@ -939,16 +924,16 @@ body.midnight:not(.dashboard) .background:before {
 }
 
 .card.color {
-            padding-left: 34px;
-        }
+    padding-left: 34px;
+}
 
-        body.dark .card.color .weighted {
-            color: var(--light) !important;
-        }
+body.dark .card.color .weighted {
+    color: var(--light) !important;
+}
 
-        body.light .card.color .weighted {
-            color: var(--norm) !important;
-        }
+body.light .card.color .weighted {
+    color: var(--norm) !important;
+}
 
 .card.color .weighted {
     opacity: 0.7;
@@ -973,27 +958,27 @@ body.titlebar .items.toolbar {
 }
 
 .items.toolbar .itemButton {
-	display: inline-block; 
-	font-size: 12px; 
-	padding: 5px; 
-	margin: 0px 4px; 
-	border-radius: 12px; 
-	cursor: pointer;
+    display: inline-block;
+    font-size: 12px;
+    padding: 5px;
+    margin: 0px 4px;
+    border-radius: 12px;
+    cursor: pointer;
 }
 
 .items.toolbar .itemButton i {
-	font-size: 18px; 
-	margin: 0px; 
-	margin-right: 5px;
-	vertical-align: middle;
+    font-size: 18px;
+    margin: 0px;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 
 .items.toolbar .itemButton img {
-	width: 18px;
-	height: 18px;
-	margin: 0px; 
-	margin-right: 5px;
-	vertical-align: middle;
+    width: 18px;
+    height: 18px;
+    margin: 0px;
+    margin-right: 5px;
+    vertical-align: middle;
 }
 
 body:not(.dark) .items.toolbar, body:not(.dark) .items.toolbar i, body:not(.dark) .items.toolbar h4, body:not(.dark) #timeRemaining {
@@ -1040,45 +1025,46 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
 }
 
 .earned.outcomes {
-    height:20px;
-    text-align:right;
+    height: 20px;
+    text-align: right;
     writing-mode: vertical-rl;
-    line-height:0px;
-    font-size:0px !important;
+    line-height: 0px;
+    font-size: 0px !important;
     white-space: normal;
 }
+
 .earned.outcomes .outcome {
-    background-color:var(--text);
+    background-color: var(--text);
     display: inline-block;
     vertical-align: middle;
-    width:7px;
-    height:7px;
-    border-radius:50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
     margin: 1px;
 }
 
 .earned.outcomes .outcome.score1 {
-    background-color:#b90000;
+    background-color: #b90000;
 }
 
 .earned.outcomes .outcome.score2 {
-    background-color:#cc8400;
+    background-color: #cc8400;
 }
 
 .earned.outcomes .outcome.score3 {
-    background-color:#b5b500;
+    background-color: #b5b500;
 }
 
 .earned.outcomes .outcome.score4 {
-    background-color:#007700;
+    background-color: #007700;
 }
 
 #whatIfGrade {
-    position:fixed;
+    position: fixed;
     top: 0px;
-    margin:20px;
+    margin: 20px;
     border-radius: 15px;
-    background-color:var(--elements);
+    background-color: var(--elements);
     border: 2px solid var(--secText);
     padding: 20px;
     z-index: 800;
@@ -1106,7 +1092,7 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
 }
 
 #whatIfGrade .notice h5 {
-    font-size:22px;
+    font-size: 22px;
     margin: 0px;
     font-weight: bold;
 }
@@ -1133,10 +1119,10 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
 }
 
 .recentChanges .letter {
-    display:inline-block;
+    display: inline-block;
     vertical-align: middle;
-    background-color:var(--elements);
-    width:32px;
+    background-color: var(--elements);
+    width: 32px;
     height: 32px;
     text-align: center;
     line-height: 32px;
