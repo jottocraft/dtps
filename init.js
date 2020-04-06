@@ -347,7 +347,8 @@ dtps.gradeCalc = {
             normal: {
                 "A": 0.825,
                 "B": 0.65,
-                "C": 0.55
+                "C": 0.55,
+		"I": 0
             }
         }
     },
@@ -1904,21 +1905,18 @@ dtps.gradebook = function (num, cb) {
   <h3 style="margin-bottom: 10px; height: 80px; line-height: 80px; margin-top: 0px; font-weight: bold; -webkit-text-fill-color: transparent; background: -webkit-linear-gradient(var(--light), var(--norm)); -webkit-background-clip: text;">
     ` + dtps.classes[num].subject + `
     <div class="classGradeCircle"
-      style="background-color: transparent; display: inline-block;width: 80px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">
+      style="background-color: transparent; display: inline-block;width: 90px;height: 80px; font-size: 40px; font-weight: bold; text-align: center;line-height: 80px;border-radius: 50%;float: right;vertical-align: middle;color: var(--light);">
       ` + dtps.classes[num].letter + `</div>
   </h3>
   <h5 style="height: 60px; line-height: 60px;color: var(--lightText); font-size: 24px; margin: 0px;">Percentage
     <div class="numFont"
-      style=" display: inline-block; width: 80px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 26px; color: var(--text); font-weight: bold;">` + ((100 * dtps.classes[num].gradeCalc.report.percentage).toFixed(2)) + `%</div>
+      style=" display: inline-block; width: 90px; text-align: center; height: 60px; line-height: 60px; border-radius: 50%; float: right; vertical-align: middle; font-size: 20px; color: var(--text); font-weight: bold;">` + ((100 * dtps.classes[num].gradeCalc.report.percentage).toFixed(2)) + `%</div>
   </h5>
   <div ` + (dtps.detailedGradebook ? "" : `style="display: none;"`) + ` id="classGradeMore">
     <br>
 
     ` + (dtps.classes[num].gradeCalc.previousGrade ? `<h5 style="height: 40px; line-height: 40px;color: var(--secText); font-size: 18px; margin: 0px;">Previous grade
     <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 40px; line-height: 40px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px; color: var(--lightText); font-weight: bold;">` + dtps.classes[num].gradeCalc.previousGrade + `</div></h5>` : ``) + `
-    ` + (dtps.classes[num].gradeCalc.report.number75thresh ? `<h5 style="height: 40px; line-height: 40px;color: var(--secText); font-size: 18px; margin: 0px;">75% of outcomes (rounded down) is
-    <div class="numFont" style=" display: inline-block; width: 80px; text-align: center; height: 40px; line-height: 40px; border-radius: 50%; float: right; vertical-align: middle; font-size: 22px; color: var(--lightText); font-weight: bold;">` + dtps.classes[num].gradeCalc.report.number75thresh + `</div></h5>
-    ` : ``) + `
     <br>
     <table class="u-full-width dtpsTable">
       <thead>
@@ -1929,7 +1927,7 @@ dtps.gradebook = function (num, cb) {
       </thead>
       <tbody>
         ` + dtps.gradeCalc.letters.map(letter => {
-                return (dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].normal[letter] ? `<tr ` + (dtps.classes[num].letter == letter ? `style="background-color: var(--dark); color: var(--light);font-size:20px;"` : ``) + `>
+                return (dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].normal[letter] !== undefined ? `<tr ` + (dtps.classes[num].letter == letter ? `style="background-color: var(--dark); color: var(--light);font-size:20px;"` : ``) + `>
             <td>&nbsp;&nbsp;` + letter + `</td>
             <td>` + (100 * dtps.gradeCalc.params[dtps.classes[num].gradeCalc.formula].normal[letter]).toFixed(2) + `%</td>
           </tr>` : ``)
