@@ -2245,7 +2245,7 @@ dtps.renderUpdates = function () {
     var context = [];
     for (var i = 0; i < dtps.classes.length; i++) {
 	if (fluid.get("pref-hideClass" + dtps.classes[i].id) !== "true") {
-		if (i == 0) { context.push("?context_codes[]=course_" + dtps.classes[i].id) } else { context.push("&context_codes[]=course_" + dtps.classes[i].id) }
+		if (!context.length) { context.push("?context_codes[]=course_" + dtps.classes[i].id) } else { context.push("&context_codes[]=course_" + dtps.classes[i].id) }
 	}
     }
     dtps.webReq("canvas", "/api/v1/announcements" + context.join(""), function (resp) {
