@@ -1659,6 +1659,20 @@ dtps.search = function () {
     }
 }
 
+//hide distant learning classes
+dtps.hideClassDiag = function () {
+    $(".card.classInfoCard").html(`<i onclick="fluid.cards.close('.card.classInfoCard'); dtps.masterStream(true);" class="material-icons close">close</i>
+    <h4>Choose class assignments to hide</h4>
+    <p>Hiding a class will only hide its assignments from the dashboard. You'll still be able to see and interact with the class in the sidebar. You may have to reload Power+ for changes to take effect.</p>
+        ` + dtps.classes.map(course => {
+        return `<br /><br />
+        <div onclick="fluid.set('pref-hideClass` + course.id + `')" class="switch ` + (fluid.get('pref-hideClass' + course.id) == "true" ? "active" : "") + ` pref-hideClass` + course.id + `"><span class="head"></span></div>
+        <div class="label">Hide assignments from <span class="` + course.col + `" style="color: var(--light);">` + course.name + `</span></div>`
+    }).join(""))
+    fluid.modal(".card.classInfoCard");
+    fluid.init();
+}
+
 //Renders the Power+ master stream / dashboard showing an overview of all classes
 //Also calls dtps.renderUpdates so the updates stream can be rendered
 dtps.masterStream = function (doneLoading) {
@@ -1672,7 +1686,7 @@ dtps.masterStream = function (doneLoading) {
     var buffer = [];
     if (dtps.classes) {
         for (var i = 0; i < dtps.classes.length; i++) {
-            if (dtps.classes[i].stream) {
+            if (dtps.classes[i].stream && (fluid.get("pref-hideClass" + dtps.classes[i].id) !== "true")) {
                 buffer = buffer.concat(dtps.classes[i].stream)
             }
         }
@@ -1703,7 +1717,14 @@ dtps.masterStream = function (doneLoading) {
     }
 
     dtps.renderUpdates(); //render updates stream
-    jQuery(".classContent .dash .assignmentStream").html(dtps.renderStream(buffer.sort(function (a, b) {
+    jQuery(".classContent .dash .assignmentStream").html(`<div style="text-align: right;">
+
+    <div onclick="dtps.hideClassDiag()" class="acrylicMaterial" style="border-radius: 20px; height: 40px; padding: 0px 10px; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
+    <i style="line-height: 40px; margin-right: 10px; vertical-align: middle;" class="material-icons">visibility_off</i>
+    <span style="vertical-align: middle;">Hide class assignments</span>
+    </div>
+    
+    </div>` + dtps.renderStream(buffer.sort(function (a, b) {
         var keyA = new Date(a.dueDate).getTime(),
             keyB = new Date(b.dueDate).getTime();
         var now = new Date().getTime();
