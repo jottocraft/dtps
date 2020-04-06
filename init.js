@@ -2244,7 +2244,9 @@ dtps.iframeLoad = function (iframe) {
 dtps.renderUpdates = function () {
     var context = [];
     for (var i = 0; i < dtps.classes.length; i++) {
-        if (i == 0) { context.push("?context_codes[]=course_" + dtps.classes[i].id) } else { context.push("&context_codes[]=course_" + dtps.classes[i].id) }
+	if (fluid.get("pref-hideClass" + dtps.classes[i].id) !== "true") {
+		if (i == 0) { context.push("?context_codes[]=course_" + dtps.classes[i].id) } else { context.push("&context_codes[]=course_" + dtps.classes[i].id) }
+	}
     }
     dtps.webReq("canvas", "/api/v1/announcements" + context.join(""), function (resp) {
         var ann = JSON.parse(resp);
@@ -2293,7 +2295,7 @@ dtps.calendar = function (doneLoading) {
     if ((dtps.selectedClass == "dash") && (dtps.masterContent == "assignments")) {
         calEvents = [];
         for (var i = 0; i < dtps.classes.length; i++) {
-            if (dtps.classes[i].stream) {
+            if (dtps.classes[i].stream && (fluid.get("pref-hideClass" + dtps.classes[i].id) !== "true")) {
                 for (var ii = 0; ii < dtps.classes[i].stream.length; ii++) {
                     if (dtps.classes[i].stream[ii].dueDate) {
                         var styles = window.getComputedStyle($(".class." + i)[0]);
