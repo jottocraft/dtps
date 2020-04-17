@@ -1226,7 +1226,7 @@ dtps.classStream = function (num, renderOv) {
         var allData = [];
         var total = null;
         dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/outcome_results?per_page=100&user_ids[]=" + dtps.user.id, function (respp) {
-            dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/assignment_groups?include[]=assignments&include[]=submissions&include[]=submission", function (resp) {
+            dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/assignment_groups?per_page=100&include[]=assignments&include[]=submissions&include[]=submission", function (resp) {
                 var data = JSON.parse(resp);
                 var outcomes = JSON.parse(respp).outcome_results;
                 dtps.classes[num].stream = [];
