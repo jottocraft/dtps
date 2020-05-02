@@ -16,7 +16,17 @@ For users looking to install Power+, visit the Power+ website by clicking <a hre
 
 <br /><br />
 
-#### Important files in this repo
+#### 2020-2021 School Year
+Power+ v3 is now in development for the 2020-2021 school year. This release will focus on reliability and bringing much-needed improvements to existing features. The first Power+ v3 beta will be released by July. Some goals for Power+ v3 include:
+
+- Splitting Power+ into multiple files for lazy loading
+- Separating LMS integration and CBL from the Power+ UI
+- Reorganizing and simplifying a large portion of Power+ for improved code readability and reliability
+- Provide full open-source documentation by the end of 2020
+
+<br /><br />
+
+#### Important files
 - [init.js](https://github.com/jottocraft/dtps/blob/master/init.js): Main script
 - [dtps.css](https://github.com/jottocraft/dtps/blob/master/dtps.css): Main CSS
 
