@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: init.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: init.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* Power+ Canvas LMS Integration
+Copyright (c) 2018-2020 jottocraft. All rights reserved.
+Licenced under the GNU General Public License v2.0 (https://github.com/jottocraft/dtps/blob/master/LICENSE)
+*/
+
+/**
+ * DTPS LMS configuration
+ * 
+ * @type {LMS}
+ */
+window.dtpsLMS = {
+    name: "Canvas"
+}
+
+
+/**
+ * Common headers used for Canvas web requests.
+ * This variable is specific to Canvas LMS integration in DTPS and is not required for other LMS integrations.
+ */
+dtpsLMS.commonHeaders = { Accept: "application/json+canvas-string-ids, application/json" };
+
+/**
+ * Gets user data from Canvas
+ * 
+ * @return {Promise&lt;User>} A promise which resolves to a User object
+ */
+dtpsLMS.fetchUser = function () {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/api/v1/users/self",
+            type: "GET",
+            headers: dtpsLMS.commonHeaders,
+            success: function (data) {
+                resolve({
+                    name: data.name,
+                    id: data.id,
+                    photoURL: data.avatar_url
+                });
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    })
+}
+
+/**
+ * Fetch course data from the LMS
+ * 
+ * @return {Promise&lt;Class[]>} A promise which resolves to an array of Class objects
+ */
+dtpsLMS.fetchClasses = function () {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/api/v1/users/self/colors",
+            type: "GET",
+            headers: dtpsLMS.commonHeaders,
+            success: function (colorData) {
+                jQuery.ajax({
+                    url: "/api/v1/users/self/dashboard_positions",
+                    type: "GET",
+                    headers: dtpsLMS.commonHeaders,
+                    success: function (dashboardData) {
+                        jQuery.ajax({
+                            url: "/api/v1/users/self/courses?per_page=100&amp;enrollment_state=active&amp;include[]=term&amp;include[]=total_scores&amp;include[]=public_description&amp;include[]=total_students&amp;include[]=account&amp;include[]=teachers&amp;include[]=course_image&amp;include[]=syllabus_body&amp;include[]=tabs",
+                            type: "GET",
+                            headers: dtpsLMS.commonHeaders,
+                            success: function (courseData) {
+                                //All fetches have been completed successfully
+
+                                var courses = [];
+
+                                //Add courses from canvas to courses array as a DTPS course object
+                                courseData.forEach((course, index) => {
+                                    var dtpsCourse = {
+                                        name: course.course_code,
+                                        id: course.id,
+                                        num: index,
+                                        subject: course.course_code.split(" - ")[0],
+                                        syllabus: course.syllabus_body,
+                                        description: course.public_description,
+                                        numStudents: course.total_students,
+                                        term: course.course_code.split(" - ")[1],
+                                        color: colorData.custom_colors["course_" + course.id],
+                                        grade: course.enrollments[0].computed_current_score,
+                                        letter: course.enrollments[0].computed_current_grade,
+                                        image: course.image_download_url
+                                    };
+
+                                    if (course.teachers[0]) {
+                                        dtpsCourse.teacher = {
+                                            name: course.teachers[0] &amp;&amp; course.teachers[0].display_name,
+                                            id: course.teachers[0] &amp;&amp; course.teachers[0].id,
+                                            photoURL: course.teachers[0] &amp;&amp; course.teachers[0].avatar_image_url
+                                        };
+                                    }
+
+                                    courses.push(dtpsCourse);
+                                });
+
+                                //Sort courses array
+                                courses.sort(function (a, b) {
+                                    var keyA = dashboardData.dashboard_positions["course_" + a.id],
+                                        keyB = dashboardData.dashboard_positions["course_" + b.id];
+
+                                    if (keyA &lt; keyB) return -1;
+                                    if (keyA > keyB) return 1;
+                                    return 0;
+                                });
+
+                                resolve(courses);
+                            },
+                            error: function (err) {
+                                reject(err);
+                            }
+                        });
+                    },
+                    error: function (err) {
+                        reject(err);
+                    }
+                });
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    })
+}
+
+/**
+ * Fetch assignment data for a course from the LMS
+ * 
+ * @param {string} classID The class ID to fetch assignments for
+ * @return {Promise&lt;Assignment[]>} A promise which resolves to an array of Assignment objects
+ */
+dtpsLMS.fetchAssignments = function (classID) {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/api/v1/courses/" + classID + "/outcome_results?per_page=100&amp;include[]=outcomes&amp;user_ids[]=" + dtps.user.id,
+            type: "GET",
+            headers: dtpsLMS.commonHeaders,
+            success: function (outcomeData) {
+                jQuery.ajax({
+                    url: "/api/v1/courses/" + classID + "/assignment_groups?per_page=100&amp;include[]=assignments&amp;include[]=submissions&amp;include[]=submission",
+                    type: "GET",
+                    headers: dtpsLMS.commonHeaders,
+                    success: function (assignmentGroupData) {
+                        //All fetches have been completed successfully
+                        var assignments = [];
+
+                        //Add assignments from canvas to assignments array as a DTPS assignment object
+                        assignmentGroupData.forEach(group => {
+                            group.assignments.forEach((assignment, index) => {
+                                //Define dtpsAssignment
+                                var dtpsAssignment = {
+                                    title: assignment.name,
+                                    body: assignment.description,
+                                    id: assignment.id,
+                                    dueAt: assignment.due_at,
+                                    url: assignment.html_url,
+                                    turnedIn: (assignment.submission ? (assignment.submission.submission_type !== null) : false),
+                                    late: assignment.submission &amp;&amp; assignment.submission.late,
+                                    missing: assignment.submission &amp;&amp; assignment.submission.missing,
+                                    locked: assignment.locked_for_user,
+                                    category: assignmentGroupData.length == 1 ? null : group.name,
+                                    publishedAt: assignment.created_at,
+                                    gradedAt: assignment.submission &amp;&amp; assignment.submission.graded_at,
+                                    grade: 100,
+                                    letter: "A",
+                                    value: assignment.points_possible
+                                };
+
+                                //Save score names to an array temporarily
+                                //This is because the scoreNames can only be found in the rubric data from Canvas
+                                //And we don't know which name to use until the outcome score data is processed
+                                var temporaryScoreNames = {};
+
+                                //Add rubric data from Canvas to the dtpsAssignment
+                                if (assignment.rubric) {
+                                    assignment.rubric.forEach(canvasRubric => {
+                                        //Add rubric array to assignment if it doesn't exist yet
+                                        if (!dtpsAssignment.rubric) dtpsAssignment.rubric = [];
+
+                                        dtpsAssignment.rubric.push({
+                                            title: canvasRubric.description,
+                                            description: canvasRubric.long_description,
+                                            id: canvasRubric.outcome_id,
+                                            value: canvasRubric.points
+                                        });
+
+                                        temporaryScoreNames[canvasRubric.outcome_id] = {};
+                                        canvasRubric.ratings.forEach(canvasRating => {
+                                            temporaryScoreNames[canvasRubric.outcome_id][canvasRating.points] = canvasRating.description;
+                                        });
+                                    })
+                                }
+
+                                //Add outcome assessment score data from Canvas to the dtpsAssignment
+                                outcomeData.outcome_results.forEach(outcomeResult => {
+                                    if (outcomeResult.links.assignment.replace("assignment_", "") == assignment.id) {
+                                        //Find which rubric this score belongs to
+                                        var rubricIndex = dtpsAssignment.rubric.map(dtpsRubric => dtpsRubric.id).indexOf(outcomeResult.links.learning_outcome);
+                                        var dtpsRubric = dtpsAssignment.rubric[rubricIndex];
+
+                                        if (dtpsRubric) {
+                                            //Now that we know the score, find the scoreName from temporaryScoreNames
+                                            var scoreName = undefined;
+                                            if (temporaryScoreNames[outcomeResult.links.learning_outcome]) {
+                                                //Score names for this outcome exist
+                                                scoreName = dtps.cblName(temporaryScoreNames[outcomeResult.links.learning_outcome][outcomeResult.score]);
+                                            }
+
+                                            dtpsRubric.score = outcomeResult.score;
+                                            dtpsRubric.scoreName = scoreName;
+                                        }
+                                    }
+                                });
+
+                                //Add assignment to results array
+                                assignments.push(dtpsAssignment);
+                            });
+                        });
+
+                        resolve(assignments);
+                    },
+                    error: function (err) {
+                        reject(err);
+                    }
+                });
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    })
+}
+
+//Get baseURL from the URL of this script
+var baseURL = document.currentScript.src.split('/')[0] + '//' + document.currentScript.src.split('/')[2];
+
+//Load Power+
+jQuery.getScript(baseURL + "/core.js");</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="dtps.html">dtps</a></li><li><a href="dtps.gradeCalc.html">gradeCalc</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue May 12 2020 17:18:48 GMT-0700 (Pacific Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

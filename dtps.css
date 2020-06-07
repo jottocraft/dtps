@@ -1,25 +1,223 @@
 /*
-Power+ CSS v2.2.0
+Power+ CSS v2.9.1
 (c) jottocraft 2018-2020
 */
-.card.color .colorBar {
+
+.dashboardItem {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--elements);
+    background: var(--cards);
+    cursor: move;
+    margin: 10px;
+    user-select: none; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.dashboardColumn {
+    vertical-align: top;
+    display: inline-block;
+    width: calc(50% - 20px);
+    margin: 0px 5px;
+    min-height: 100px;
+    padding-bottom: 100px;
+    padding-top: 25px;
+}
+
+.dashboardItem h5 span {
+    font-size: 20px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.dashboardItem i {
+    vertical-align: middle;
+}
+
+.dashboardItem .compactModeSwitch {
+    cursor: auto;
+    margin-top: 20px;
+}
+
+.dashboardItem .compactModeSwitch .switch {
+    text-align: left;
+}
+
+.btns.tabs .btn {
+    transition: color 0.4s, font-size 0.4s !important;
+}
+
+.welcomeSection {
+    margin: 50px 0px;
+}
+
+.welcomeSection h5 {
+    font-weight: bold;
+    font-size: 22px;
+    margin: 0px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.welcomeSection i {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.welcomeSection p {
+    color: var(--lightText);
+}
+
+.dtpsSubmissionComment {
+    margin: 32px 12px;
+}
+
+.dtpsSubmissionComment img {
+    width: 34px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.dtpsSubmissionComment h5 {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+    font-size: 17px;
+    color: var(--lightText);
+}
+
+.dtpsAssignmentRubricItem {
+    margin: 32px 12px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--lightShadow);
+    background: var(--elements);
+}
+
+.dtpsAssignmentRubricItem:nth-child(1), .dtpsSubmissionComment:nth-child(1) {
+    margin-top: 12px;
+}
+
+.dtpsAssignmentRubricItem h5 {
+    font-size: 20px;
+    margin: 0px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dtpsAssignmentRubricItem .score p {
+    display: inline-block;
+    margin: 0px;
+}
+
+.dtpsAssignmentRubricItem .score .scoreName {
+    font-size: 16px;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.dtpsAssignmentRubricItem .score .points {
+    float: right;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.dtpsAssignmentRubricItem .score .points .earned {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.dtpsAssignmentRubricItem .score .points .possible {
+    opacity: 0.5;
+    font-size: 12px;
+    vertical-align: bottom;
+}
+
+.dtpsRubricScore {
+    height: 24px;
+}
+
+.dtpsRubricScore div {
+    display: inline-block;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+    font-weight: bold;
+}
+
+.discussionHeader {
+    margin: 12px 0px;
+    margin-bottom: 20px;
+}
+
+.discussionHeader h5 {
+    display: inline-block; 
+    vertical-align: middle;
+    color: var(--lightText);
+    font-size: 18px;
+    margin: 0px;
+}
+
+.discussionHeader img {
+    width: 28px;
+    vertical-align: middle;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.discussionHeader i {
+    color: var(--secText);
+    vertical-align: middle;
+    margin-left: 20px;
+    font-size: 16px;
+}
+
+.discussionHeader span {
+    color: var(--secText);
+    vertical-align: middle;
+    margin-left: 5px;
+    font-size: 14px;
+}
+
+.discussionFooter {
+    margin-top: 22px;
+}
+
+.discussionReply {
+    border-left: 2px solid var(--darker);
+    padding: 10px 0px;
+    padding-left: 30px;
+}
+
+.discussionReply h5 {
+    font-size: 18px;
+    color: var(--lightText);
+}
+
+.dash .card .colorBar {
     width: 7px;
     height: calc(100% - 40px);
     position: absolute;
     top: 20px;
     left: 14px;
     border-radius: 10px;
+    display: block !important;
 }
 
-body.dark .card.color .colorBar {
-    background: var(--light);
+body.dark .dash .card .colorBar {
+    background: var(--classColor);
 }
 
-body.light .card.color .colorBar {
-    background: var(--norm);
+body.light .dash .card .colorBar {
+    background: var(--classColor);
 }
 
-.card:not(.color) .colorBar {
+.card .colorBar {
     display: none;
 }
 
@@ -78,7 +276,7 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
 }
 
 .numFont {
-    font-family: Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace !important;
+    font-family: Cascadia Code,Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace !important;
 }
 
 .classContent .card.collapsed {
@@ -144,39 +342,124 @@ table.dtpsTable td:last-child {
     border-bottom-right-radius: 10px;
 }
 
-body.dark .classGradeCircle {
-    background-color: var(--norm);
-    -webkit-text-fill-color: var(--light);
-    color: var(--light);
+.classGradeCircle {
+    display: inline-block;
+    height: 60px; 
+    font-size: 40px; 
+    text-align: right;
+    line-height: 60px;
+    border-radius: 50%;
+    float: right;
+    vertical-align: middle;
 }
 
-body:not(.dark) .classGradeCircle {
-    background-color: var(--light);
-    -webkit-text-fill-color: var(--norm);
-    color: var(--norm);
+.classGradeCircle .percentage {
+    color: var(--lightText);
+    font-size: 20px;
+    font-weight: bold;
+    vertical-align: middle;
+    margin-right: 20px;
+}
+
+.classGradeCircle .letter {
+    color: var(--classColor);
+    font-weight: bold;
+    vertical-align: middle;
+    width: 110px;
+    text-align: center;
+    display: inline-block;
+}
+
+.gradeStat {
+    height: 60px; 
+    line-height: 60px;
+    color: var(--lightText); 
+    font-size: 24px; 
+    margin: 0px;
+}
+
+.smallStat {
+    height: 40px; 
+    line-height: 40px;
+    color: var(--secText); 
+    font-size: 20px; 
+    margin: 5px 0px;
+}
+
+.gradeStat .numFont, .smallStat .numFont {
+    display: inline-block; 
+    width: 110px; 
+    text-align: center; 
+    height: 60px; 
+    line-height: 60px; 
+    border-radius: 50%; 
+    float: right; 
+    vertical-align: middle; 
+    font-size: 26px; 
+    color: var(--text); 
+    font-weight: bold;
+}
+
+.smallStat .numFont {
+    height: 40px; 
+    line-height: 40px;
+    font-size: 18px; 
+    color: var(--lightText);
+}
+
+.numFont.fraction {
+    font-size: 0px;
+}
+
+.numFont .earned {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.numFont .total {
+    color: var(--secText);
+    font-size: 12px;
+}
+
+.gradeTitle {
+    margin-bottom: 10px; 
+    height: 60px; 
+    line-height: 60px; 
+    margin-top: 0px; 
+    font-weight: bold;
+    font-size: 36px;
 }
 
 .infoChip {
     vertical-align: middle;
-    margin: 0px;
+    margin: 0px 5px;
     display: inline-block;
-    font-size: 16px;
+    font-size: 14px;
     height: 20px;
     line-height: 20px;
 }
 
+.infoChip:nth-child(1) {
+    margin-left: 0px;
+}
+
 .assignmentChip {
     padding: 5px 10px;
-    background-color: var(--elements);
     display: inline-block;
     border-radius: 20px;
     line-height: 24px;
     margin: 0px 2px;
+    color: var(--lightText);
+    vertical-align: middle;
 }
 
 .assignmentChip i {
     vertical-align: middle;
-    margin-right: 7px;
+}
+
+.assignmentChip span {
+    margin-left: 7px;
+    vertical-align: middle;
 }
 
 .progressBar {
@@ -217,18 +500,12 @@ body:not(.dark) .classGradeCircle {
     height: 42px;
 }
 
-.floatingIcon {
-    float: right;
-    margin-top: 40px;
+.infoChip i {
+    vertical-align: middle;
     font-size: 18px;
 }
 
-.infoChip i {
-    vertical-align: middle;
-    font-size: 20px;
-}
-
-.dash.cal #calendar, .dash.cal .announcement {
+.dash.cal .card {
     margin: 25px;
     width: 100%;
 }
@@ -374,7 +651,7 @@ body.titlebar .sidebar {
 }
 
 .sidebar .item .label {
-    max-width: calc(100% - 32px);
+    max-width: calc(100% - 40px);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -382,6 +659,10 @@ body.titlebar .sidebar {
 
 .sidebar .item:not(.active) {
     filter: none !important;
+}
+
+body.dark .sidebar .item:not(.active) {
+    filter: brightness(1.2) !important;
 }
 
 body.collapsedSidebar .sidebar .bigLogo {
@@ -424,7 +705,7 @@ body.dark .class.main:not(.active), body.dark .class.overrideClass:not(.active) 
     border-color: #ffffff36 !important;
 }
 
-.class:not(.main) {
+.class:not(.main), .sidebar .item:not(.main) {
     font-size: 16px;
 }
 
@@ -432,17 +713,13 @@ body.dark .class.main:not(.active), body.dark .class.overrideClass:not(.active) 
     font-size: 22px !important;
 }
 
-body.dark .class:not(.main):not(.active) {
-    color: var(--light) !important;
-}
-
-body:not(.dark) .class:not(.main):not(.active) {
-    color: var(--norm) !important;
+.class:not(.main):not(.active) {
+    color: var(--classColor);
 }
 
 .class:not(.main).active {
-    background-color: var(--light) !important;
-    color: var(--dark) !important;
+    background-color: var(--classColor) !important;
+    color: white !important;
 }
 
 .sidebar, .abtheader {
@@ -563,12 +840,14 @@ body.titlebar .classContent {
     font-size: 22px;
 }
 
-body:not(.dark) .tabs.btns .btn:not(.active), body.midnight.dark .tabs.btns .btn:not(.active) {
-    color: var(--norm, var(--secText)) !important;
+body:not(.dark) .tabs.btns .btn:not(.active) {
+    color: black !important;
+    opacity: 0.5;
 }
 
 body.dark .tabs.btns .btn:not(.active) {
-    color: var(--light, var(--secText)) !important;
+    color: white !important;
+    opacity: 0.5;
 }
 
 .sidebar, .header {
@@ -663,10 +942,10 @@ body.dark .tabs.btns .btn:not(.active) {
 
 .classContent .card .points {
     float: right;
-    position: absolute;
     display: inline-block;
-    right: 25px;
     white-space: nowrap;
+    overflow: hidden;
+    height: 24px;
 }
 
 .classContent .card .points.spinner {
@@ -692,11 +971,11 @@ body.dark .tabs.btns .btn:not(.active) {
 
 .assignment .weighted {
     color: var(--secText);
-    font-size: 0.9rem;
+    font-size: 0.82rem;
 }
 
 .assignment .weighted i {
-    font-size: 20px !important;
+    font-size: 16px !important;
     margin-top: -3px;
 }
 
@@ -784,17 +1063,12 @@ body.dark .tabs.btns .btn:not(.active) {
     padding: 0 !important;
 }
 
-.assignment .weighted i {
-    vertical-align: middle;
-    font-size: 24px;
+.dash .card .points .total {
+    color: var(--classColor);
 }
 
-.classContent .card.color .points .total {
-    color: var(--light);
-}
-
-.classContent .card.color .floatingIcon {
-    color: var(--light) !important;
+.dash .card .floatingIcon {
+    color: var(--classColor) !important;
 }
 
 .card.details fieldset, .card.details #tb_handin_link, .card.details div.p, .card.details label {
@@ -803,30 +1077,30 @@ body.dark .tabs.btns .btn:not(.active) {
 
 .card.assignment {
     cursor: pointer;
-    padding: 20px 25px;
+    padding: 18px 25px;
 }
 
 .classContent .card.assignment h5 {
+    margin: 0px;
+    margin-top: 10px;
     font-size: 1rem !important;
     min-height: 20px;
 }
 
 .classContent .card.assignment h4 {
-    margin-bottom: 5px;
-    font-size: 1.25rem;
-    margin-top: 0px !important;
+    font-size: 1.2rem;
+    margin: 0px !important;
     white-space: nowrap;
     text-overflow: ellipsis;
-    margin-right: 0px;
     overflow: hidden;
+    height: 24px;
+    line-height: 24px;
 }
 
-.classContent .card.assignment.nograde h4 {
-    margin: 1.14rem 0 .912rem 0 !important;
-}
-
-.classContent .card.assignment.graded h4 {
-    width: calc(100% - 125px);
+.card.assignment .statusIcon {
+    float: right;
+    font-size: 16px;
+    vertical-align: middle;
 }
 
 .class.active .name {
@@ -893,7 +1167,7 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 
 .background:before {
     border-radius: inherit;
-    background: var(--grad);
+    background: linear-gradient(to bottom right, var(--classColor), var(--background));
     content: '';
     display: block;
     height: 100%;
@@ -906,16 +1180,12 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
     transition: all 0.5s ease-in-out;
 }
 
+body.dashboard .background:before {
+    background: linear-gradient(to bottom right, var(--cards), var(--background));
+}
+
 .cover.image {
     transition: all 0.2s ease-in-out;
-}
-
-body:not(.dashboard) .background:before {
-    background: linear-gradient(to right bottom, var(--light), var(--background)) !important;
-}
-
-body.midnight:not(.dashboard) .background:before {
-    background: linear-gradient(to right bottom, var(--dark), var(--background)) !important;
 }
 
 .background.trans:before {
@@ -923,19 +1193,15 @@ body.midnight:not(.dashboard) .background:before {
     transition: all 0.5s;
 }
 
-.card.color {
+.dash .card {
     padding-left: 34px;
 }
 
-body.dark .card.color .weighted {
-    color: var(--light) !important;
+.dash .card .weighted {
+    color: var(--classColor) !important;
 }
 
-body.light .card.color .weighted {
-    color: var(--norm) !important;
-}
-
-.card.color .weighted {
+.dash .card .weighted {
     opacity: 0.7;
 }
 
