@@ -437,6 +437,7 @@ table.dtpsTable td:last-child {
     font-size: 14px;
     height: 20px;
     line-height: 20px;
+	color: var(--lightText);
 }
 
 .infoChip:nth-child(1) {
