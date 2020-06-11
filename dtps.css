@@ -694,6 +694,8 @@ body.hasSidebar {
 .class .icon {
     font-size: 20px;
     font-weight: bold;
+    height: 24px;
+    line-height: 24px;
 }
 
 .class.main:not(.active) {
@@ -704,14 +706,6 @@ body.hasSidebar {
 body.dark .class.main:not(.active), body.dark .class.overrideClass:not(.active) {
     color: #ffffffbf !important;
     border-color: #ffffff36 !important;
-}
-
-.class:not(.main), .sidebar .item:not(.main) {
-    font-size: 16px;
-}
-
-.class.main {
-    font-size: 22px !important;
 }
 
 .class:not(.main):not(.active) {
@@ -823,6 +817,7 @@ body.titlebar .classContent {
     font-weight: normal;
     letter-spacing: normal;
     font-size: 14px;
+    border: none;
     border-color: var(--text) !important;
 }
 
