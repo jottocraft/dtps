@@ -34,7 +34,7 @@ var dtps = {
     ver: 291,
     readableVer: "v2.9.1 (beta)",
     classes: [],
-    baseURL: "https://powerplus.app",
+    baseURL: String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2],
     unstable: true || window.localStorage.dtpsLoaderPref == "canary" || window.localStorage.dtpsLoaderPref == "debugging" || String(document.currentScript.src).includes("http://localhost"),
     dashboardItems: [
         {
@@ -639,7 +639,7 @@ dtps.showClasses = function (override) {
         var letterGradeHTML = "";
         if (dtps.classes[i].letter) letterGradeHTML = dtps.classes[i].letter;
         if (dtps.classes[i].letter == null) letterGradeHTML = "--";
-        if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="spinner" style="background-color: var(--norm); margin: -2px -13px"></div>`; //Show loading indicator for ...
+        if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="spinner" style="background-color: var(--norm); margin: -8px -10px;"></div>`; //Show loading indicator for ...
 
         //Add class HTML to array
         dtps.classlist.push(/*html*/`

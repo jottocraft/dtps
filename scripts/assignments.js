@@ -696,7 +696,7 @@ dtps.renderClassTools = function (num, type, modulesSelector) {
         ${(type == "modules") || (type == "stream") ? /*html*/`
             <div style="text-align: right;${modulesSelector ? "" : "margin-top: 20px;"}">
 
-                ${type == "stream" ? `<i class="inputIcon material-icons">search</i><input onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />` : ""}
+                ${type == "stream" ? `<i class="inputIcon material-icons">search</i><input onchange="dtps.search()" class="search inputIcon filled shadow" placeholder="Search assignments" type="search" />` : ""}
 
                 <br />
                 ${modulesSelector ? /*html*/`
