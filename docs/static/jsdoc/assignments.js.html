@@ -34,34 +34,15 @@
  * @license GPL-2.0-only
  */
 
-
 /**
  * Renders HTML for an assignment item in a list
  * 
  * @param {Assignment} assignment The assignment object to render
- * @todo Add support for points/letter scores
  * @return {string} Assignment HTML for use in a list
  */
 dtps.renderAssignment = function (assignment) {
-    var scoreHTML = "";
     //Render points/letter score
-
-    //Use rubric score over points score if possible
-    if (assignment.rubric) {
-        var rubricHTML = [];
-
-        assignment.rubric.forEach(rubricItem => {
-            if (rubricItem.score) {
-                rubricHTML.push(/*html*/`
-                    &lt;div title="${rubricItem.title}" style="color: ${rubricItem.color || "var(--text)"};">
-                        ${rubricItem.score}
-                    &lt;/div>
-                `);
-            }
-        });
-
-        scoreHTML = `&lt;div class="dtpsRubricScore">${rubricHTML.join("")}&lt;/div>`;
-    }
+    var scoreHTML = dtps.renderAssignmentScore(assignment);
 
     var HTML = /*html*/`
         &lt;div 
@@ -78,9 +59,7 @@ dtps.renderAssignment = function (assignment) {
                 ${assignment.title}
 
                 &lt;!-- Points display -->
-                &lt;div class="points">
-                    ${scoreHTML}
-                &lt;/div>
+                ${scoreHTML ? `&lt;div class="points">${scoreHTML}&lt;/div>` : ``}
             &lt;/h4>
 
             &lt;h5 style="white-space: nowrap; overflow: hidden;">
@@ -103,12 +82,54 @@ dtps.renderAssignment = function (assignment) {
 }
 
 /**
+* Renders HTML for an assignment score if the assignment is graded
+* 
+* @param {Assignment} assignment The assignment object to render a score for
+* @return {string} Assignment score HTML
+*/
+dtps.renderAssignmentScore = function (assignment) {
+    var scoreHTML = "";
+
+    //Use rubric score over points score if possible
+    if (dtpsLMS.useRubricGrades &amp;&amp; assignment.rubric) {
+        var rubricHTML = [];
+
+        assignment.rubric.forEach(rubricItem => {
+            if (rubricItem.score) {
+                rubricHTML.push(/*html*/`
+                    &lt;div title="${rubricItem.title}" style="color: ${rubricItem.color || "var(--text)"};">
+                        ${rubricItem.score}
+                    &lt;/div>
+                `);
+            }
+        });
+
+        if (rubricHTML.length) scoreHTML = `&lt;div class="dtpsRubricScore">${rubricHTML.join("")}&lt;/div>`;
+
+    } else if (!dtpsLMS.useRubricGrades &amp;&amp; (assignment.grade || (assignment.grade == 0))) {
+        scoreHTML = /*html*/`
+            &lt;div class="assignmentGrade">
+                &lt;div class="grade">${assignment.grade}&lt;/div>
+                &lt;div class="value">/${assignment.value}&lt;/div>
+                ${assignment.letter ? `&lt;div class="letter">${assignment.letter.replace("incomplete", `&lt;i class="material-icons">cancel&lt;/i>`).replace("complete", `&lt;i class="material-icons">done&lt;/i>`)}&lt;/div>` : ""}
+                &lt;div class="percentage">${Math.round((assignment.grade / assignment.value) * 100)}%&lt;/div>
+            &lt;/div>
+        `;
+    }
+
+    return scoreHTML;
+}
+
+/**
  * Renders the DTPS dashboard and calls dtps.renderCalendar, dtps.renderUpdates, and dtps.renderUpcoming
  */
 dtps.masterStream = function () {
     //Ensure classes are rendered in the sidebar
     dtps.presentClass("dash");
     dtps.showClasses();
+
+    //Clear active state from all tabs
+    $("#dtpsTabBar .btn").removeClass("active");
 
     //Count amount of classes that are loaded
     var ready = 0;
@@ -137,15 +158,15 @@ dtps.masterStream = function () {
         jQuery(".classContent").html(/*html*/`
             &lt;div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
                 ${dtps.leftDashboard.map(dashboardItem => {
-                    return dashboardContainerHTML(dashboardItem);
-                }).join("")}
+            return dashboardContainerHTML(dashboardItem);
+        }).join("")}
             &lt;/div>
 
             &lt;div style="width: 59%; display: inline-block;" class="dash stream">
                 ${!doneLoading ? `&lt;div style="margin: 75px 25px 10px 75px;">&lt;div class="spinner">&lt;/div>&lt;/div>` : ""}
                 ${dtps.rightDashboard.map(dashboardItem => {
-                    return dashboardContainerHTML(dashboardItem);
-                }).join("")}
+            return dashboardContainerHTML(dashboardItem);
+        }).join("")}
             &lt;/div>
         `);
     }
@@ -262,55 +283,39 @@ dtps.renderUpcoming = function () {
 
 /**
  * Renders updates stream (recently graded &amp; announcements)
- * 
- * @todo pending v3 support
  */
 dtps.renderUpdates = function () {
-    /*var context = [];
-    for (var i = 0; i &lt; dtps.classes.length; i++) {
-        if (fluid.get("pref-hideClass" + dtps.classes[i].id) !== "true") {
-            if (!context.length) { context.push("?context_codes[]=course_" + dtps.classes[i].id) } else { context.push("&amp;context_codes[]=course_" + dtps.classes[i].id) }
-        }
-    }
-    dtps.webReq("canvas", "/api/v1/announcements" + context.join(""), function (resp) {
-        var ann = JSON.parse(resp);
-        var updates = [];
-        for (var i = 0; i &lt; ann.length; i++) {
-            var dtpsClass = null;
-            for (var ii = 0; ii &lt; dtps.classes.length; ii++) {
-                if (dtps.classes[ii].id == ann[i].context_code.split("_")[1]) {
-                    dtpsClass = ii;
-                }
-            }
-            updates.push({
-                type: "announcement",
-                date: ann[i].posted_at,
-                dom: `&lt;div onclick="$(this).toggleClass('open');" style="cursor: pointer; padding: 20px;" class="announcement card color ` + dtps.classes[dtpsClass].col + `">
-                &lt;div class="className">` + ann[i].title + `&lt;/div>` + ann[i].message + `
+    //Get updates HTML
+    var updatesHTML = "";
+
+    dtps.updates.forEach(update => {
+        if (update.type == "announcement") {
+            updatesHTML += /*html*/`
+                &lt;div onclick="$(this).toggleClass('open');" style="cursor: pointer; padding: 20px; --classColor: ${dtps.classes[update.class].color};" class="announcement card">
+                    &lt;div class="className">${dtps.classes[update.class].subject}&lt;/div>
+                    ${update.body}
                 &lt;/div>
-                `
-            });
+            `;
+        } else if (update.type == "assignment") {
+            var scoreHTML = dtps.renderAssignmentScore(update);
+            updatesHTML += `
+                &lt;div onclick="dtps.assignment('${update.id}', ${update.class})" style="--classColor: ${dtps.classes[update.class].color};" class="card recentGrade">
+                    &lt;h5>
+                        ${update.title}
+
+                        &lt;!-- Points display -->
+                        ${scoreHTML ? `&lt;div class="points">${scoreHTML}&lt;/div>` : ``}
+                    &lt;/h5>
+
+                    &lt;p>Graded at ${dtps.formatDate(update.gradedAt)}&lt;/p>
+                &lt;/div>
+            `;
         }
-        if (dtps.recentlyGraded) {
-            dtps.recentlyGraded.forEach(grade => {
-                updates.push({
-                    type: "grade",
-                    date: grade.date,
-                    dom: `&lt;div onclick="dtps.assignment('` + grade.id + `', '` + grade.class + `')" class="card ` + dtps.classes[grade.class].col + ` recentGrade">
-                    &lt;div style="float: right; margin-left: 10px;" class="earned outcomes">` + dtps.renderOutcomeScore(grade.rubric).join("") + `&lt;/div>
-                    &lt;h5>` + grade.name + `&lt;/h5>
-                    &lt;p>Graded at ` + (new Date(grade.date).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(grade.date))) + `&lt;/p>
-                &lt;/div>`
-                })
-            })
-        }
-        updates.sort((a, b) => {
-            return new Date(b.date) - new Date(a.date);
-        })
-        if ((dtps.selectedClass == "dash") &amp;&amp; (dtps.masterContent == "assignments")) {
-            jQuery(".dash .updatesStream").html(updates.map(update => update.dom).join(""));
-        }
-    });*/
+    })
+
+    if (dtps.selectedClass == "dash") {
+        jQuery(".classContent .dash .updatesStream").html(updatesHTML);
+    }
 }
 
 
@@ -366,8 +371,10 @@ dtps.calendar = function () {
  * Shows the assignments stream for a class
  * 
  * @param {string} classID The class ID to show assignments for
+ * @param {Assignment[]} [searchResults] An array of assignemnts to render instead of course.assignments. Used for assignment search.
+ * @param {string} [searchText] Text to render in the search box. Used for assignment search.
  */
-dtps.classStream = function (classID) {
+dtps.classStream = function (classID, searchResults, searchText) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(classID);
     dtps.selectedClass = classNum;
@@ -388,16 +395,30 @@ dtps.classStream = function (classID) {
         dtps.error("The selected class doesn't exist", "classNum check failed @ dtps.classStream");
     }
 
+    //Use search results to render or render all class assignments
+    var assignments = searchResults || dtps.classes[classNum].assignments;
+
     //Render assignments
-    if (!dtps.classes[dtps.selectedClass].assignments) {
+    if (!assignments) {
         //Assignments are still loading
         jQuery(".classContent").html(`&lt;div class="spinner">&lt;/div>`);
-    } else if (dtps.classes[dtps.selectedClass].assignments.length == 0) {
-        //This class doesn't have any assignments
-        $(".classContent").html(`&lt;div style="cursor: auto;" class="card assignment">&lt;h4>No assignments&lt;/h4>&lt;p>There aren't any assignments in this class yet&lt;/p>&lt;/div>`);
+    } else if (assignments.length == 0) {
+        if (searchText) {
+            //No search results
+            $(".classContent").html(/*html*/`
+                &lt;div style="cursor: auto;" class="card assignment">
+                    &lt;h4>No results&lt;/h4>
+                    &lt;p>There weren't any search results&lt;/p>
+                    &lt;button onclick="fluid.screen()" class="btn">&lt;i class="material-icons">arrow_back&lt;/i> Back&lt;/button>
+                &lt;/div>
+            `);
+        } else {
+            //This class doesn't have any assignments
+            $(".classContent").html(`&lt;div style="cursor: auto;" class="card assignment">&lt;h4>No assignments&lt;/h4>&lt;p>There aren't any assignments in this class yet&lt;/p>&lt;/div>`);
+        }
     } else {
         //Sort assignments
-        dtps.classes[dtps.selectedClass].assignments.sort(function (a, b) {
+        assignments.sort(function (a, b) {
             var keyA = new Date(a.dueAt).getTime(),
                 keyB = new Date(b.dueAt).getTime();
 
@@ -422,12 +443,12 @@ dtps.classStream = function (classID) {
         });
 
         //Render assignments
-        var streamHTML = dtps.classes[dtps.selectedClass].assignments.map(assignment => {
+        var streamHTML = assignments.map(assignment => {
             return dtps.renderAssignment(assignment);
         }).join("");
 
         //Add stream header with class info buttons and search box
-        streamHTML = dtps.renderClassTools(classNum, "stream") + streamHTML;
+        streamHTML = dtps.renderClassTools(classNum, "stream", searchText) + streamHTML;
 
         $(".classContent").html(streamHTML);
     }
@@ -438,48 +459,34 @@ dtps.classStream = function (classID) {
  * 
  * @param {string} id Assignment ID
  * @param {number} classNum Assignment class number
- * @param {boolean} [submissions] If true, assignment submissions will be shown
- * @todo Support numerical grades
  */
-dtps.assignment = function (id, classNum, submissions) {
+dtps.assignment = function (id, classNum) {
     //Get assignment from the id prop
     var assignmentIDs = dtps.classes[classNum].assignments.map(assignment => assignment.id);
     var assignment = dtps.classes[classNum].assignments[assignmentIDs.indexOf(id)];
 
-    if (submissions) {
-        //Render assignment submissions
-        $(".card.details").css("background-color", "white");
-        $(".card.details").css("color", "black")
-        $(".card.details").html(`&lt;i style="color: black !important;" onclick="fluid.cards.close('.card.details')" class="material-icons close">close&lt;/i>
-            &lt;i style="left: 0; right: auto; color: black !important;" onclick="dtps.assignment(` + id + `, ` + classNum + `)" class="material-icons close">arrow_back&lt;/i>
-            &lt;br />&lt;br />
-            &lt;iframe style="width: 100%; height: calc(100vh - 175px); border: none;" src="` + assignment.submissions + `">&lt;/iframe>
-        `);
-    } else {
-        //Render assignment
+    //The assignment body is rendered in an iFrame to keep its content and styling isolated from the rest of the page
+    var assignmentBodyURL = null;
+    if (assignment.body) {
+        //Get computed background and text color to style the iFrame with
+        var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
+        var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
 
-        //The assignment body is rendered in an iFrame to keep its content and styling isolated from the rest of the page
-        var assignmentBodyURL = null;
-        if (assignment.body) {
-            //Get computed background and text color to style the iFrame with
-            var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
-            var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
-
-            //Generate a blob with the assignment body and get its data URL
-            var blob = new Blob([`
+        //Generate a blob with the assignment body and get its data URL
+        var blob = new Blob([`
                 &lt;base target="_blank" /> 
                 &lt;link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
                 &lt;style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};&lt;/style>
                 ${assignment.body}
             `], { type: 'text/html' });
-            assignmentBodyURL = window.URL.createObjectURL(blob);
-        }
+        assignmentBodyURL = window.URL.createObjectURL(blob);
+    }
 
-        //Get assignment rubric HTML
-        var assignmentRubricHTML = "";
-        if (assignment.rubric) {
-            var assignmentRubricHTML = assignment.rubric.map(function (rubricItem) {
-                return /*html*/`
+    //Get assignment rubric HTML
+    var assignmentRubricHTML = "";
+    if (assignment.rubric) {
+        var assignmentRubricHTML = assignment.rubric.map(function (rubricItem) {
+            return /*html*/`
                     &lt;div class="dtpsAssignmentRubricItem">
                         &lt;h5>${rubricItem.title}&lt;/h5>
                         &lt;div class="score">
@@ -494,14 +501,14 @@ dtps.assignment = function (id, classNum, submissions) {
                         &lt;/div>
                     &lt;/div>
                 `
-            }).join("");
-        }
+        }).join("");
+    }
 
-        //Get assignment feedback HTML
-        var assignmentFeedbackHTML = "";
-        if (assignment.feedback) {
-            var assignmentFeedbackHTML = assignment.feedback.map(feedback => {
-                return /*html*/`
+    //Get assignment feedback HTML
+    var assignmentFeedbackHTML = "";
+    if (assignment.feedback) {
+        var assignmentFeedbackHTML = assignment.feedback.map(feedback => {
+            return /*html*/`
                     &lt;div class="dtpsSubmissionComment">
                         ${feedback.author ? /*html*/`
                             &lt;img src="${feedback.author.photoURL}" />
@@ -511,32 +518,14 @@ dtps.assignment = function (id, classNum, submissions) {
                         &lt;p>${feedback.comment}&lt;/p>
                     &lt;/div>
                 `
-            }).join("");
-        }
+        }).join("");
+    }
 
-        //Get assignment score HTML
-        var scoreHTML = "";
+    //Get assignment score HTML
+    var scoreHTML = dtps.renderAssignmentScore(assignment);
 
-        //Use rubric score over points score if possible
-        if (assignment.rubric) {
-            var rubricHTML = [];
-
-            //Loop over every rubric item to get HTML for each
-            assignment.rubric.forEach(rubricItem => {
-                if (rubricItem.score) {
-                    rubricHTML.push(/*html*/`
-                    &lt;div class="assignmentChip" title="${rubricItem.title}" style="color: ${rubricItem.color || "var(--text)"}; font-weight: bold;">
-                        ${rubricItem.score}
-                    &lt;/div>
-                `);
-                }
-            });
-
-            scoreHTML = rubricHTML.join("");
-        }
-
-        //Render assignment details
-        $(".card.details").html(/*html*/`
+    //Render assignment details
+    $(".card.details").html(/*html*/`
             &lt;i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close&lt;/i>
 
             &lt;h4 style="font-weight: bold;">${assignment.title}&lt;/h4>
@@ -560,7 +549,7 @@ dtps.assignment = function (id, classNum, submissions) {
                 ${assignment.publishedAt ? `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">add_box&lt;/i> Published: ${dtps.formatDate(assignment.publishedAt)}&lt;/p>` : ""}
                 ${assignment.dueAt ? `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">alarm&lt;/i> Due: ${dtps.formatDate(assignment.dueAt)}&lt;/p>` : ""}
                 ${assignment.value ? `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">bar_chart&lt;/i> Point value: ${assignment.value}&lt;/p>` : ""}
-                ${assignment.grade ? `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">assessment&lt;/i> Points earned: ${assignment.grade}&lt;/p>` : ""}
+                ${(assignment.grade || (assignment.grade == 0)) ? `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">assessment&lt;/i> Points earned: ${assignment.grade}&lt;/p>` : ""}
                 ${assignment.letter ? `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">font_download&lt;/i> Letter grade: ${assignment.letter}&lt;/p>` : ""}
                 ${assignment.category ? `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">category&lt;/i> Category: ${assignment.category}&lt;/p>` : ""}
                 ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `&lt;p style="color: var(--secText); margin: 5px 0px;">&lt;i style="vertical-align: middle;" class="material-icons">adjust&lt;/i> ${rubricItem.title}&lt;/p>`; }).join("") : ""}
@@ -569,7 +558,6 @@ dtps.assignment = function (id, classNum, submissions) {
 
                 &lt;br />
                 &lt;div class="row">
-                    &lt;div class="btn small outline" onclick="dtps.assignment('${assignment.id}', ${classNum}, true)">&lt;i class="material-icons">assignment&lt;/i> Submissions&lt;/div>
                     &lt;div class="btn small outline" onclick="window.open('${assignment.url}')">&lt;i class="material-icons">open_in_new&lt;/i> Open in ${dtpsLMS.shortName || dtpsLMS.name}&lt;/div>
                 &lt;/div>
             &lt;/div>
@@ -580,7 +568,6 @@ dtps.assignment = function (id, classNum, submissions) {
                 ${assignmentRubricHTML}
             &lt;/div>
         `);
-    }
 
     //Close other active cards and open the assignment details card
     fluid.cards.close(".card.focus");
@@ -589,82 +576,118 @@ dtps.assignment = function (id, classNum, submissions) {
 
 /**
  * Searches the assignment stream for a keyword using Fuse.js
- * 
- * @todo pending v3 support
  */
 dtps.search = function () {
-    alert("This feature has not been implemented yet");
-    throw "DTPS v3 IMPLEMENTATION ERR";
-    if (dtps.selectedClass == "dash") {
-        if ($("input.search").val() == "") {
-            jQuery(".classContent .stream").html(dtps.renderStream(dtps.latestStream, ""))
-        } else {
-            jQuery(".classContent .stream").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
-        }
-        $(".card.assignment").addClass("color");
+    if ($("input.search").val() == "") {
+        fluid.screen();
     } else {
-        if ($("input.search").val() == "") {
-            jQuery(".classContent").html(dtps.renderStream(dtps.latestStream, ""))
-        } else {
-            jQuery(".classContent").html(dtps.renderStream(dtps.fuse.search($("input.search").val()), $("input.search").val()))
-        }
+        var input = $("input.search").val();
+        var search = new Fuse(dtps.classes[dtps.selectedClass].assignments, {
+            keys: ["title", "body"]
+        });
+        dtps.classStream(dtps.classes[dtps.selectedClass].id, search.search(input), input);
     }
 }
 
 /**
- * Fetches module stream for a class
+ * Shows the module stream for a class
  * 
- * @param {number} num Class number to fetch modules for
- * @todo pending v3 support
+ * @param {string} classID Class number to fetch modules for
  */
-dtps.moduleStream = function (num) {
-    alert("This feature has not been implemented yet");
-    throw "DTPS v3 IMPLEMENTATION ERR";
+dtps.moduleStream = function (classID) {
+    //Get class index and set as selected class
+    var classNum = dtps.classes.map(course => course.id).indexOf(classID);
+    dtps.selectedClass = classNum;
+
+    //Set stream as the selected content
     dtps.selectedContent = "moduleStream";
-    var moduleRootHTML = dtps.renderClassTools(num, false, true);
-    if (dtps.selectedContent == "moduleStream") jQuery(".classContent").html(moduleRootHTML + `&lt;div class="spinner">&lt;/div>`);
-    streamData = [];
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/modules?include[]=items&amp;include[]=content_details", function (resp) {
-        dtps.webReq("canvas", "/courses/" + dtps.classes[num].id + "/modules/progressions", function (progResp) {
-            var data = JSON.parse(resp);
-            var progData = JSON.parse(progResp);
-            var collapsed = {};
-            for (var i = 0; i &lt; progData.length; i++) {
-                collapsed[progData[i].context_module_progression.context_module_id] = progData[i].context_module_progression.collapsed;
-            }
-            for (var i = 0; i &lt; data.length; i++) {
-                var subsetData = [];
-                for (var ii = 0; ii &lt; data[i].items.length; ii++) {
-                    var icon = "star_border";
-                    if (data[i].items[ii].type == "ExternalTool") icon = "insert_link";
-                    if (data[i].items[ii].type == "ExternalUrl") icon = "open_in_new";
-                    if (data[i].items[ii].type == "Assignment") icon = "assignment";
-                    if (data[i].items[ii].type == "Page") icon = "insert_drive_file";
-                    if (data[i].items[ii].type == "Discussion") icon = "forum";
-                    if (data[i].items[ii].type == "Quiz") icon = "assessment";
-                    if (data[i].items[ii].type == "SubHeader") icon = "format_size";
-                    var open = `window.open('` + data[i].items[ii].html_url + `')`;
-                    if (data[i].items[ii].type == "ExternalTool") open = `$('#moduleIFrame').attr('src', ''); fluid.cards('.card.moduleURL'); $.getJSON('` + data[i].items[ii].url + `', function (data) { $('#moduleIFrame').attr('src', data.url); });`
-                    if (data[i].items[ii].type == "Assignment") open = `dtps.assignment(` + data[i].items[ii].content_id + `, dtps.selectedClass);`
-                    if (data[i].items[ii].type == "Page") open = `dtps.getPage(dtps.classes[dtps.selectedClass].id, '` + data[i].items[ii].page_url + `', true)`
-                    if (data[i].items[ii].type == "SubHeader") {
-                        subsetData.push(`&lt;h5 style="font-size: 22px;padding: 2px 10px;">` + data[i].items[ii].title + `&lt;/h5>`);
-                    } else {
-                        subsetData.push(`&lt;div onclick="` + open + `" style="color: var(--lightText); padding:10px;font-size:17px;border-radius:15px;margin:5px 0;margin-left: ` + (data[i].items[ii].indent * 15) + `px; cursor: pointer;">
-&lt;i class="material-icons" style="vertical-align: middle; margin-right: 10px;">` + icon + `&lt;/i>` + data[i].items[ii].title + `&lt;/div>`);
-                    }
+    $("#dtpsTabBar .btn").removeClass("active");
+    $("#dtpsTabBar .btn.stream").addClass("active");
+
+    //Load class color, name, etc.
+    dtps.presentClass(classNum);
+
+    //Ensure classes are shown in the sidebar
+    dtps.showClasses();
+
+    if (classNum == -1) {
+        //Class does not exist
+        dtps.error("The selected class doesn't exist", "classNum check failed @ dtps.moduleStream");
+    }
+
+    //Show loading indicator
+    jQuery(".classContent").html(`&lt;div class="spinner">&lt;/div>`);
+
+    new Promise(resolve => {
+        if (dtps.classes[classNum].modules &amp;&amp; (dtps.classes[classNum].modules !== true)) {
+            resolve(dtps.classes[classNum].modules);
+        } else {
+            dtpsLMS.fetchModules(dtps.classes[classNum].id).then(data => resolve(data));
+        }
+    }).then(data => {
+        //Save modules data in the class object for future use
+        dtps.classes[classNum].modules = data;
+
+        var modulesHTML = dtps.renderClassTools(classNum, "modules");
+
+        data.forEach(module => {
+            var moduleItemHTML = "";
+
+            //Get HTML for each module item
+            module.items.forEach(item => {
+                //Get module item icon
+                var icon = "list";
+                if (item.type == "assignment") icon = "assignment";
+                if (item.type == "page") icon = "insert_drive_file";
+                if (item.type == "discussion") icon = "forum";
+                if (item.type == "url") icon = "open_in_new";
+                if (item.type == "header") icon = "format_size";
+                if (item.type == "embed") icon = "web";
+
+                //Get module action
+                var action = "";
+                if (item.type == "assignment") action = "dtps.assignment('" + item.id + "', " + classNum + ")";
+                if (item.type == "page") action = "fluid.screen('pages', '" + classID + "|" + item.id + "')";
+                if (item.type == "discussion") action = "fluid.screen('discussions', '" + classID + "|" + item.id + "')";
+                if (item.type == "url") action = "window.open('" + item.url + "')";
+                if (item.type == "header") action = "";
+                if (item.type == "embed") action = "dtps.showIFrameCard('" + item.url + "')";
+
+                //Get module HTML
+                if (item.type == "header") {
+                    moduleItemHTML += `&lt;h5 style="font-size: 22px;padding: 2px 10px;">${item.title}&lt;/h5>`;
+                } else {
+                    moduleItemHTML += `
+                        &lt;div class="moduleItem" onclick="${action}" style="margin-left: ${item.indent * 15}px;">
+                            &lt;i class="material-icons">${icon}&lt;/i>
+                            ${item.title}
+                        &lt;/div>
+                    `;
                 }
-                streamData.push(`&lt;div class="card ` + (collapsed[data[i].id] ? "collapsed" : "") + `">
-&lt;h4 style="margin: 5px 2px; font-size: 32px; font-weight: bold;">
-&lt;i onclick="dtps.moduleCollapse(this, '` + dtps.classes[num].id + `', '` + data[i].id + `');" style="cursor: pointer; vertical-align: middle; color:var(--lightText);" class="material-icons collapseIcon">` + (collapsed[data[i].id] ? "keyboard_arrow_right" : "keyboard_arrow_down") + `&lt;/i>
-` + data[i].name + `&lt;/h4>
-&lt;div class="moduleContents" style="padding-top: 10px;">
-` + subsetData.join("") + `
-&lt;/div>
-&lt;/div>`)
-            }
-            if (dtps.selectedContent == "moduleStream") jQuery(".classContent").html(moduleRootHTML + streamData.join(""));
+            });
+
+            //Add HTML for this module to the string
+            modulesHTML += /*html*/`
+                &lt;div class="module card ${module.collapsed ? "collapsed" : ""}">
+                    &lt;h4>
+                        &lt;i onclick="dtps.moduleCollapse(this, '${dtps.classes[classNum].id}', '${module.id}');" 
+                            class="material-icons collapseIcon">${module.collapsed ? "keyboard_arrow_right" : "keyboard_arrow_down"}&lt;/i>
+                        ${module.title}
+                    &lt;/h4>
+
+                    &lt;div class="moduleContents" style="padding-top: 10px;">
+                        ${moduleItemHTML}
+                    &lt;/div>
+                &lt;/div>
+            `;
         });
+
+        //Render module HTML
+        if ((dtps.selectedClass == classNum) &amp;&amp; (dtps.selectedContent == "moduleStream")) {
+            jQuery(".classContent").html(modulesHTML);
+        }
+    }).catch(err => {
+        dtps.error("Could not load modules", "Caught promise rejection @ dtps.moduleStream", err);
     });
 }
 
@@ -674,17 +697,17 @@ dtps.moduleStream = function (num) {
  * @param {Element} ele Element of the module collapse arrow
  * @param {string} classID Class ID
  * @param {string} modID Module ID of the module to collapse
- * @todo pending v3 support
  */
 dtps.moduleCollapse = function (ele, classID, modID) {
-    alert("This feature has not been implemented yet");
-    throw "DTPS v3 IMPLEMENTATION ERR";
+    //Add collapsed class to module card
     $(ele).parents('.card').toggleClass('collapsed');
+
+    //Update arrow icon and, if the LMS supports it, collapse the module in the LMS as well
     if ($(ele).parents('.card').hasClass('collapsed')) {
-        dtps.webReq("canCOLLAPSE", "/courses/" + classID + "/modules/" + modID + "/collapse", undefined, { collapse: 1, forceLoad: true })
+        if (dtpsLMS.collapseModule) dtpsLMS.collapseModule(classID, modID, true);
         $(ele).html('keyboard_arrow_right');
     } else {
-        dtps.webReq("canCOLLAPSE", "/courses/" + classID + "/modules/" + modID + "/collapse", undefined, { collapse: 0, forceLoad: true })
+        if (dtpsLMS.collapseModule) dtpsLMS.collapseModule(classID, modID, false);
         $(ele).html('keyboard_arrow_down');
     }
 
@@ -695,10 +718,11 @@ dtps.moduleCollapse = function (ele, classID, modID) {
  * 
  * @param {number} num Class number
  * @param {string} type Class content these tools are for (e.g. "stream")
- * @param {boolean} [modulesSelector] True if the class supports modules
+ * @param {string} [searchText] Text to render in the search box for assignment search
  * @return {string} Stream tools HTML
  */
-dtps.renderClassTools = function (num, type, modulesSelector) {
+dtps.renderClassTools = function (num, type, searchText) {
+    var modulesSelector = dtps.classes[num].modules;
     return /*html*/`
         &lt;div style="position: absolute;display:inline-block;margin: ${modulesSelector ? "82px" : "38px 82px"};">
 
@@ -713,7 +737,7 @@ dtps.renderClassTools = function (num, type, modulesSelector) {
                 &lt;i style="line-height: 40px;" class="material-icons">info&lt;/i>
             &lt;/div>
 
-            ${dtps.classes[num].defaultView == "wiki" ? /*html*/`
+            ${dtps.classes[num].homepage ? /*html*/`
                 &lt;div onclick="dtps.classHome(${num})" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer;">
                     &lt;i style="line-height: 40px;" class="material-icons">home&lt;/i>
                 &lt;/div>` : ""
@@ -724,13 +748,13 @@ dtps.renderClassTools = function (num, type, modulesSelector) {
         ${(type == "modules") || (type == "stream") ? /*html*/`
             &lt;div style="text-align: right;${modulesSelector ? "" : "margin-top: 20px;"}">
 
-                ${type == "stream" ? `&lt;i class="inputIcon material-icons">search&lt;/i>&lt;input onchange="dtps.search()" class="search inputIcon shadow" placeholder="Search assignments" type="search" />` : ""}
+                ${type == "stream" ? `&lt;i class="inputIcon material-icons">search&lt;/i>&lt;input ${searchText ? `value="${searchText}"` : ``} onchange="dtps.search()" class="search inputIcon filled shadow" placeholder="Search assignments" type="search" />` : ""}
 
                 &lt;br />
                 ${modulesSelector ? /*html*/`
                     &lt;div class="btns row small acrylicMaterial assignmentPicker" style="margin: ${type == "stream" ? `20px 80px 20px 0px !important` : `63px 80px 20px 0px !important`};">
-                        &lt;button class="btn ${type == "stream" ? "active" : ""}" onclick="dtps.classStream(dtps.selectedClass);">&lt;i class="material-icons">assignment&lt;/i>Assignments&lt;/button>
-                        &lt;button class="btn ${type == "modules" ? "active" : ""}" onclick="dtps.moduleStream(dtps.selectedClass);">&lt;i class="material-icons">view_module&lt;/i>Modules&lt;/button>
+                        &lt;button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);">&lt;i class="material-icons">assignment&lt;/i>Assignments&lt;/button>
+                        &lt;button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);">&lt;i class="material-icons">view_module&lt;/i>Modules&lt;/button>
                     &lt;/div>
                 ` : ``}
                 
@@ -745,20 +769,41 @@ dtps.renderClassTools = function (num, type, modulesSelector) {
  * @param {number} num Class number to show info for
  */
 dtps.classInfo = function (num) {
+    //Get syllabus blob if the class has a syllabus
     if ((dtps.classes[num].syllabus !== "") &amp;&amp; dtps.classes[num].syllabus !== null) {
-        var blob = new Blob([`&lt;base target="_blank" /> &lt;link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-    &lt;style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}&lt;/style>` + dtps.classes[num].syllabus], { type: 'text/html' });
-        var newurl = window.URL.createObjectURL(blob);
+        //Get computed background and text color to style the iFrame with
+        var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
+        var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
+
+        //Generate a blob with the assignment body and get its data URL
+        var blob = new Blob([`
+            &lt;base target="_blank" /> 
+            &lt;link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+            &lt;style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};&lt;/style>
+            ${dtps.classes[num].syllabus}
+        `], { type: 'text/html' });
+        var syllabusURL = window.URL.createObjectURL(blob);
     }
-    $(".card.details").html(`&lt;i onclick="fluid.cards.close('.card.details')" class="material-icons close">close&lt;/i>
-    &lt;h4 style="font-weight: bold;">` + dtps.classes[num].name + `&lt;/h4>
-    &lt;p style="color: var(--secText)">` + (dtps.classes[num].description ? dtps.classes[num].description : "") + `&lt;/p>
-    &lt;div class="assignmentChip">&lt;i class="material-icons">group&lt;/i>&lt;span>` + dtps.classes[num].numStudents + ` students&lt;/span>&lt;/div>
-    &lt;div class="assignmentChip">&lt;i class="material-icons">bug_report&lt;/i>&lt;span>Class ID: ` + dtps.classes[num].id + `&lt;/span>&lt;/div>
-    ` + (dtps.classes[num].favorite ? `&lt;div title="Favorited class" class="assignmentChip" style="background-color: #daa520">&lt;i style="color:white;font-family: 'Material Icons Outline'" class="material-icons">star_border&lt;/i>&lt;/div>` : "") + `
-    &lt;br />
-    &lt;div style="margin-top: 20px;" class="syllabusBody">` + ((dtps.classes[num].syllabus !== "") &amp;&amp; dtps.classes[num].syllabus !== null ? `&lt;iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />` : "") + `&lt;/div>
+
+    //Show class info HTML
+    $(".card.details").html(/*html*/`
+        &lt;i onclick="fluid.cards.close('.card.details')" class="material-icons close">close&lt;/i>
+
+        &lt;h4 style="font-weight: bold;">${dtps.classes[num].name}&lt;/h4>
+        &lt;p style="color: var(--secText)">${dtps.classes[num].description || ""}&lt;/p>
+
+        &lt;div class="assignmentChip">&lt;i class="material-icons">group&lt;/i>&lt;span>${dtps.classes[num].numStudents} students&lt;/span>&lt;/div>
+        &lt;div class="assignmentChip">&lt;i class="material-icons">bug_report&lt;/i>&lt;span>Class ID: ${dtps.classes[num].id}&lt;/span>&lt;/div>
+    
+        &lt;br />
+
+        &lt;div style="margin-top: 20px;" class="syllabusBody">
+            ${dtps.classes[num].syllabus ? `
+                &lt;iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${syllabusURL}" />` : ""}
+        &lt;/div>
     `)
+
+    //Show the class info card
     fluid.modal(".card.details")
 }
 
@@ -777,23 +822,170 @@ dtps.classHome = function (num) {
         &lt;p>Loading...&lt;/p>
     `);
 
-    dtps.webReq("canvas", "/api/v1/courses/" + dtps.classes[num].id + "/front_page", function (resp) {
-        var data = JSON.parse(resp);
-        if (!data.message) {
-            var blob = new Blob([`&lt;base target="_blank" /> &lt;link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-        &lt;style>body {background-color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--cards") + `; color: ` + getComputedStyle($(".card.details")[0]).getPropertyValue("--text") + `}&lt;/style>` + data.body], { type: 'text/html' });
-            var newurl = window.URL.createObjectURL(blob);
-            $(".card.details").html(`&lt;i onclick="fluid.cards.close('.card.details')" class="material-icons close">close&lt;/i>
-        &lt;h4 style="font-weight: bold;">` + data.title + `&lt;/h4>
-        &lt;br />
-        &lt;div style="margin-top: 20px;" class="homepageBody">&lt;iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="` + newurl + `" />&lt;/div>
-        `)
-            fluid.modal(".card.details")
+    //Fetch homepage from the LMS
+    dtpsLMS.fetchHomepage(dtps.classes[num].id).then(homepage => {
+        if (homepage) {
+            //Get computed background and text color to style the iFrame with
+            var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
+            var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
+
+            //Generate a blob with the assignment body and get its data URL
+            var blob = new Blob([`
+                &lt;base target="_blank" /> 
+                &lt;link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                &lt;style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};&lt;/style>
+                ${homepage}
+            `], { type: 'text/html' });
+            var homepageURL = window.URL.createObjectURL(blob);
+
+            $(".card.details").html(/*html*/`
+                &lt;i onclick="fluid.cards.close('.card.details')" class="material-icons close">close&lt;/i>
+
+                &lt;h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage&lt;/h4>
+
+                &lt;br />
+                &lt;div style="margin-top: 20px;" class="homepageBody">
+                    &lt;iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${homepageURL}" />
+                &lt;/div>
+            `);
+
+            fluid.modal(".card.details");
         } else {
-            alert("Error: No homepage found for this class")
-            fluid.cards.close('.card.details')
+            fluid.cards.close('.card.details');
+            dtps.error("Homepage unavailable", "homepage is either empty or undefined @ dtps.classHome");
+        }
+    }).catch(e => {
+        dtps.error("Couldn't load homepage", "Caught a promise rejection @ dtps.classHome", e);
+    })
+}
+
+/**
+ * Shows the generic gradebook
+ * 
+ * @param {string} classID Class ID
+ */
+dtps.gradebook = function (classID) {
+    //Get class index and set as selected class
+    var classNum = dtps.classes.map(course => course.id).indexOf(classID);
+    dtps.selectedClass = classNum;
+
+    //Set stream as the selected content
+    dtps.selectedContent = "grades";
+    $("#dtpsTabBar .btn").removeClass("active");
+    $("#dtpsTabBar .btn.grades").addClass("active");
+
+    //Load class color, name, etc.
+    dtps.presentClass(classNum);
+
+    //Ensure classes are shown in the sidebar
+    dtps.showClasses();
+
+    if (classNum == -1) {
+        //Class does not exist
+        dtps.error("The selected class doesn't exist", "classNum check failed @ dtps.gradebook");
+    }
+
+    //Show loading indicator
+    jQuery(".classContent").html(`&lt;div class="spinner">&lt;/div>`);
+
+    //Terminate function if the class doesn't have a letter grade or assignments
+    if (!dtps.classes[classNum].letter || !dtps.classes[classNum].assignments) {
+        return;
+    }
+
+    //Define variables for total points and zeros
+    var zeros = 0;
+    var totalPoints = 0;
+    var earnedPoints = 0;
+    var gradedAssignments = 0;
+
+    //Define variable for assignment HTML string
+    var assignmentHTML = "";
+
+    //Calculate total points and zeros
+    dtps.classes[classNum].assignments.forEach(assignment => {
+        if (assignment.grade || (assignment.grade == 0)) {
+            earnedPoints += assignment.grade;
+            gradedAssignments++;
+
+            assignmentHTML += /*html*/`
+                &lt;div onclick="dtps.assignment('${assignment.id}', ${classNum})" class="gradebookAssignment card">
+                    &lt;h5>
+                        ${assignment.title}
+
+                        &lt;div class="stats">
+                            ${assignment.letter ? `&lt;div class="gradebookLetter">${assignment.letter}&lt;/div>` : ""}
+                            &lt;div class="gradebookScore">${assignment.grade}&lt;/div>
+                            &lt;div class="gradebookValue">/${assignment.value}&lt;/div>
+                            &lt;div class="gradebookPercentage">${Math.round((assignment.grade / assignment.value) * 100)}%&lt;/div>
+                        &lt;/div>
+                    &lt;/h5>
+                &lt;/div>
+            `;
+        }
+
+        if (assignment.value) {
+            totalPoints += assignment.value;
+        }
+
+        if ((assignment.grade == 0) &amp;&amp; assignment.value) {
+            zeros++;
         }
     })
+
+    //Grade calculation summary
+    var gradeCalcSummary = /*html*/`
+        &lt;div style="--classColor: ${dtps.classes[classNum].color}" class="card">
+            &lt;h3 class="gradeTitle">
+                Grade Summary
+                &lt;div class="classGradeCircle">
+                    ${dtps.classes[classNum].grade ? `&lt;span class="percentage">${dtps.classes[classNum].grade}%&lt;/span>` : ``}
+                    &lt;div class="letter">${dtps.classes[classNum].letter || ``}&lt;/div>
+                &lt;/div>
+            &lt;/h3>
+
+            ${zeros ? /*html*/`
+                &lt;h5 style="color: #d63d3d;" class="gradeStat">
+                    Zeros
+                    &lt;div style="color: #d63d3d;" class="numFont">${zeros}&lt;/div>
+                &lt;/h5>
+            ` : ``}
+
+            &lt;div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
+                &lt;br />
+
+                ${dtps.classes[classNum].previousLetter ? /*html*/`
+                    &lt;h5 class="smallStat">
+                        Previous Grade
+                        &lt;div class="numFont">${dtps.classes[classNum].previousLetter}&lt;/div>
+                    &lt;/h5>
+                ` : ``}
+
+                &lt;h5 class="smallStat">
+                    Points
+                    &lt;div class="numFont fraction">
+                        &lt;span class="earned">${earnedPoints}&lt;/span>
+                        &lt;span class="total">/${totalPoints}&lt;/span>
+                    &lt;/div>
+                &lt;/h5>
+
+                &lt;h5 class="smallStat">
+                    Graded Assignments
+                    &lt;div class="numFont">${gradedAssignments}&lt;/div>
+                &lt;/h5>
+            &lt;/div>
+
+            &lt;br />
+            &lt;a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
+                style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">${dtps.gradebookExpanded ? "Show less" : "Show more"}&lt;/a>
+        &lt;/div>
+
+        &lt;br />
+    `;
+
+
+    //Render HTML
+    $(".classContent").html(gradeCalcSummary + assignmentHTML);
 }
 
 //Fluid UI screen definitions
@@ -803,6 +995,14 @@ fluid.externalScreens.dashboard = () => {
 
 fluid.externalScreens.stream = (courseID) => {
     dtps.classStream(courseID);
+}
+
+fluid.externalScreens.moduleStream = (courseID) => {
+    dtps.moduleStream(courseID);
+}
+
+fluid.externalScreens.gradebook = (courseID) => {
+    dtps.gradebook(courseID);
 }
 
 //Type definitions
@@ -828,6 +1028,33 @@ fluid.externalScreens.stream = (courseID) => {
 * @property {string} [letter] Letter grade on this assignment
 * @property {number} [value] Total amount of points possible for this assignment
 * @property {RubricItem[]} [rubric] Assignment rubric
+*/
+
+/**
+* @typedef {Object} Module
+* @description Defines module objects in DTPS
+* @property {string} title Title of the module
+* @property {string} id Module ID
+* @property {boolean} [collapsed] True if the module is collapsed, false otherwise. undefined or null if this module does not support collapsing.
+* @property {ModuleItem[]} items An array of items for this module.
+*/
+
+/**
+ * @typedef {Object} ModuleItem
+ * @description Defines module items in DTPS
+ * @property {string} type Either "assignment", "page", "discussion", "url", "embed", or "header".
+ * @property {string} [title] Required for URL and header items, and can be used to override the title of assignment, page, and discussion items.
+ * @property {string} [id] Required for assignment, page, and discussion items.
+ * @property {string} [url] Required for URL and embed items.
+ * @property {number} [indent] Indent level
+ */
+
+/**
+* @typedef {Object} Announcement
+* @description Defines announcement objects in DTPS
+* @property {string} title Title of the announcement
+* @property {Date} postedAt Date when the announcement was posted
+* @property {string} body Announcement content
 */
 
 /**
@@ -876,7 +1103,7 @@ fluid.externalScreens.stream = (courseID) => {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Jun 07 2020 14:02:58 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Fri Jul 24 2020 19:25:37 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

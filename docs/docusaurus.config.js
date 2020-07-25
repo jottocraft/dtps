@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Power+ Documentation',
-  tagline: 'Source code guides, reference, and documentation for Power+ v3 (beta)',
+  tagline: 'Reference documentation for Power+ v3. Updated every version bump.',
   url: 'https://docs.powerplus.app',
   baseUrl: '/',
   favicon: 'img/favicon.png',
@@ -14,12 +14,6 @@ module.exports = {
         src: 'img/logo.svg',
       },
       links: [
-        {
-          to: 'docs/guides/getting-started',
-          activeBasePath: 'docs/guides',
-          label: 'Guides',
-          position: 'left',
-        },
         {
           to: 'docs/reference',
           activeBasePath: 'docs/reference',
@@ -37,11 +31,15 @@ module.exports = {
       style: 'dark',
       links: [
         {
-          title: 'Guides',
+          title: 'Documentation',
           items: [
             {
-              label: 'Getting Started',
-              to: 'docs/guides/getting-started',
+              label: 'Reference',
+              to: 'docs/reference',
+            },
+            {
+              label: 'JSDoc',
+              to: 'https://docs.powerplus.app/jsdoc/index.html',
             },
           ],
         },

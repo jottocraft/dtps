@@ -1,22 +1,14 @@
 @echo off
 
-mkdir output
-
-cd output
-
-mkdir lms
-
-cd ..
-
-cmd /q /c terser init.js --source-map -o output/init.js
+cmd /q /c terser init.js --source-map "url='/init.js.map'" -o ../v3.minified/init.js
 
 cd scripts
 
-forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map -o ../output/%%~I.js"
+forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map \"url='/scripts/%%~I.js.map',includeSources\" -o ../../v3.minified/%%~I.js"
 
 cd lms
 
-forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map -o ../../output/lms/%%~I.js"
+forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map \"url='/scripts/lms/%%~I.js.map',includeSources\" -o ../../../v3.minified/lms/%%~I.js"
 
 cd ../..
 

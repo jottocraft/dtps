@@ -11,8 +11,9 @@
  * Renders the discussions list for a class
  * 
  * @param {string} courseID The course ID to render discussion threads for
+ * @param {string} [defaultThread] The thread to load by default
  */
-dtps.loadThreadsList = function (courseID) {
+dtps.loadThreadsList = function (courseID, defaultThread) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(courseID);
     dtps.selectedClass = classNum;
@@ -106,6 +107,11 @@ dtps.loadThreadsList = function (courseID) {
                 `);
             }
 
+            //Load default thread if provided
+            if (defaultThread) {
+                dtps.loadThreadPosts(classNum, defaultThread);
+            }
+
             //Add click event listeners for discussion threads
             $(".sidebar .item:not(.back)").click(function (event) {
                 //Show the selected thread as active
@@ -138,12 +144,17 @@ dtps.loadThreadPosts = function (classNum, threadID) {
     }
 
     //Get discussion data
-    var thread = {};
+    var thread = null;
     dtps.classes[classNum].discussions.forEach(discussionThread => {
         if (discussionThread.id == threadID) {
             thread = discussionThread;
         }
     });
+
+    if (!thread) {
+        dtps.error("Thread does not exist", "thread is null @ dtps.loadThreadPosts");
+        throw null;
+    }
 
     //Fetch discussion posts from the LMS
     dtpsLMS.fetchDiscussionPosts(dtps.classes[classNum].id, threadID).then(function (postData) {
@@ -256,8 +267,9 @@ dtps.loadThreadPosts = function (classNum, threadID) {
  * Renders the pages list for a class
  * 
  * @param {string} courseID The course ID to render pages for
+ * @param {string} [defaultPage] If provided, load the pageID by default
  */
-dtps.loadPagesList = function (courseID) {
+dtps.loadPagesList = function (courseID, defaultPage) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(courseID);
     dtps.selectedClass = classNum;
@@ -314,7 +326,7 @@ dtps.loadPagesList = function (courseID) {
             //Loop over discusson threads array to create discussion thread HTML for the sidebar
             var pageHTML = dtps.classes[classNum].pages.map(page => {
                 return /*html*/`
-                    <div data-pageID="${page.id}" class="item">
+                    <div data-pageID="${page.id}" class="item ${(defaultPage && (page.id == defaultPage)) ? "active" : ""}">
                         <span class="label">${page.title}</span>
                         <div class="icon">
                             <i class="material-icons">insert_drive_file</i>
@@ -337,6 +349,11 @@ dtps.loadPagesList = function (courseID) {
 
                     ${pageHTML}
                 `);
+            }
+
+            //Load default page if provided
+            if (defaultPage) {
+                dtps.loadPage(classNum, defaultPage);
             }
 
             //Add click event listeners for pages
@@ -370,12 +387,17 @@ dtps.loadPage = function (classNum, pageID) {
     }
 
     //Get page data
-    var page = {};
+    var page = null;
     dtps.classes[classNum].pages.forEach(pageCheck => {
         if (pageCheck.id == pageID) {
             page = pageCheck;
         }
     });
+
+    if (!page) {
+        dtps.error("Page does not exist", "page is null @ dtps.loadPage");
+        throw null;
+    }
 
     //Fetch page content
     dtpsLMS.fetchPageContent(dtps.classes[classNum].id, page.id).then(function (pageContentData) {
@@ -427,12 +449,20 @@ dtps.loadPage = function (classNum, pageID) {
 }
 
 //Fluid UI screen definitions
-fluid.externalScreens.discussions = (courseID) => {
-    dtps.loadThreadsList(courseID);
+fluid.externalScreens.discussions = (param) => {
+    //Split parameter string into variables
+    var courseID = param.split("|")[0];
+    var threadID = param.split("|")[1];
+
+    dtps.loadThreadsList(courseID, threadID);
 }
 
-fluid.externalScreens.pages = (courseID) => {
-    dtps.loadPagesList(courseID);
+fluid.externalScreens.pages = (param) => {
+    //Split parameter string into variables
+    var courseID = param.split("|")[0];
+    var pageID = param.split("|")[1];
+
+    dtps.loadPagesList(courseID, pageID);
 }
 
 //Type definitions

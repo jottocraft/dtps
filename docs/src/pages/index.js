@@ -8,12 +8,12 @@ import styles from './styles.module.css';
 
 const features = [
   {
-    title: <>Guides</>,
+    title: <>Open Source</>,
     imageUrl: 'img/undraw_docs.svg',
     description: (
       <>
-        Get an overview of how Power+ works, how Power+ is designed, and
-        how Power+ calculates grades with CBL.
+        All of Power+&apos;s code is open source. Versions of Power+ that
+        are compiled or minified are distributed with their source maps.
       </>
     ),
   },
@@ -71,8 +71,8 @@ function Home() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={useBaseUrl('docs/guides/getting-started')}>
-              Get Started
+              to={useBaseUrl('docs/reference')}>
+              Read the docs
             </Link>
           </div>
         </div>
