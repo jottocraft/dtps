@@ -2,6 +2,8 @@
 
 cmd /q /c terser init.js --source-map "url='/init.js.map'" -o ../v3.minified/init.js
 
+copy dtps.css ..\v3.minified\dtps.css
+
 cd scripts
 
 forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map \"url='/scripts/%%~I.js.map',includeSources\" -o ../../v3.minified/scripts/%%~I.js"
