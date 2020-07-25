@@ -140,6 +140,7 @@ Power+ CSS v2.9.1
 
 .dtpsRubricScore {
     height: 24px;
+    display: inline-block;
 }
 
 .dtpsRubricScore div {
@@ -222,7 +223,7 @@ body.light .dash .card .colorBar {
 }
 
 .announcement .className {
-    color: var(--light);
+    color: var(--classColor);
     font-weight: bold;
     font-size: 16px;
 }
@@ -252,7 +253,7 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
 }
 
 .dash.cal .recentGrade h5 {
-    color: var(--light);
+    color: var(--classColor);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -563,18 +564,6 @@ body.isolatedGoogleClass .background {
     color: var(--text);
 }
 
-.announcement .label {
-    position: absolute;
-    right: 0;
-    margin-right: 15px;
-    margin-top: -15px;
-    background-color: var(--light);
-    color: var(--dark);
-    padding: 3px 6px;
-    border-radius: 20px;
-    line-height: 18px;
-}
-
 .announcement:not(.open) {
     max-height: 200px;
 }
@@ -850,6 +839,10 @@ body.dark .tabs.btns .btn:not(.active) {
     transition: all 0.5s;
 }
 
+.classContent {
+    transition: all 0.5s, color 0s, background-color 0s, background 0s;
+}
+
 .dot {
     display: none;
 }
@@ -1113,47 +1106,133 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
     --grad: linear-gradient(to bottom right, var(--darker), var(--background)) !important; color: black !important;
 }
 
-.filter_0 {
-    --light: #f34848; --norm: #ab3030; --dark: #650808; --grad: linear-gradient(to bottom right, #f34848, #650808); }
+.assignmentGrade {
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0px;
+    display: inline-block;
+    vertical-align: middle;
+}
 
-.filter_1 {
-    --light: #ff8e37; --norm: #b95425; --dark: #863109; --grad: linear-gradient(to bottom right, #ff8e37, #863109); }
+.assignmentGrade div {
+    display: inline-block;
+}
 
-.filter_2 {
-    --light: #ffe672; --norm: #c3a51c; --dark: #675b0e; --grad: linear-gradient(to bottom right, #ffe672, #716307); }
+.assignmentGrade .grade {
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--text);
+    vertical-align: bottom;
+}
 
-.filter_3 {
-    --light: #70d070; --norm: #136d2a; --dark: #044013; --grad: linear-gradient(to bottom right, #70d070, #044013); }
+.assignmentGrade .value {
+    font-size: 14px;
+    color: var(--secText);
+    vertical-align: bottom;
+    margin-left: 2px;
+}
 
-.filter_4 {
-    --light: #4cb4ea; --norm: #0d6a9a; --dark: #032f46; --grad: linear-gradient(to bottom right, #4cb4ea, #032f46); }
+.assignmentGrade:not(:hover) .letter, .assignmentGrade:not(:hover) .percentage {
+    display: none;
+}
 
-.filter_5 {
-    --light: #f091ff; --norm: #9446a0; --dark: #44114c; --grad: linear-gradient(to bottom right, #f091ff, #44114c); }
+.assignmentGrade:hover .grade, .assignmentGrade:hover .value {
+    display: none;
+}
 
-.filter_6 {
-    --light: #ffa3d0; --norm: #c15689; --dark: #6b2044; --grad: linear-gradient(to bottom right, #ffa3d0, #6b2044); }
+.assignmentGrade .letter {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text);
+    vertical-align: middle;
+}
 
-.filter_7 {
-    --light: #b59785; --norm: #584a41; --dark: #382c24; --grad: linear-gradient(to bottom right, #b59785, #382c24); }
+.assignmentGrade .percentage {
+    font-size: 14px;
+    color: var(--secText);
+    margin-left: 4px;
+    vertical-align: middle;
+}
 
-.filter_8 {
-    --light: #fbd287; --norm: #94763d; --dark: #5d410c; --grad: linear-gradient(to bottom right, #fbd287, #5d410c); }
+.gradebookAssignment {
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 
-.filter_9 {
-    --light: #d3f1ac; --norm: #81926a; --dark: #434a39; --grad: linear-gradient(to bottom right, #d3f1ac, #434a39); }
+.gradebookAssignment h5 {
+    margin: 0px;
+    font-size: 18px;
+    height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+}
 
-.filter_10 {
-    --light: #bfe8ff; --norm: #768c98; --dark: #435158; --grad: linear-gradient(to bottom right, #bfe8ff, #435158); }
+.gradebookAssignment .stats div {
+    display: inline-block;
+    vertical-align: middle;
+}
 
-.filter_11 {
-    --light: #d9c5ff; --norm: #7c748c; --dark: #4a4554; --grad: linear-gradient(to bottom right, #d9c5ff, #4a4554); }
+.gradebookAssignment .stats {
+    float: right;
+    text-align: right;
+}
 
-.filter_20 {
-    --light: #e64c81; --norm: #bb2f5f; --dark: #751636; --grad: linear-gradient(to bottom right, #e64c81, #751636); }
+.gradebookAssignment .gradebookLetter {
+    font-weight: bold;
+    font-size: 24px;
+    width: 50px;
+    text-align: center;
+    margin-right: 15px;
+}
 
-.filter_21 {
-    --light: #c9d63b; --norm: #88920f; --dark: #525808; --grad: linear-gradient(to bottom right, #c9d63b, #525808); }
+.gradebookAssignment .gradebookScore {
+    font-weight: bold;
+    font-size: 20px;
+    width: 80px;
+    text-align: right;
+}
+
+.gradebookAssignment .gradebookValue {
+    color: var(--secText);
+    font-size: 16px;
+    width: 70px;
+    margin-right: 10px;
+    text-align: left;
+}
+
+.gradebookAssignment .gradebookPercentage {
+    color: var(--lightText);
+    font-size: 18px;
+    width: 60px;
+    text-align: center;
+}
+
+.card.module h4 {
+    margin: 5px 2px; 
+    font-size: 32px; 
+    font-weight: bold;
+}
+
+.card.module h4 i {
+    cursor: pointer; 
+    vertical-align: middle; 
+    color: var(--lightText);
+}
+
+.moduleItem {
+    color: var(--lightText); 
+    padding:10px;
+    font-size:17px;
+    border-radius:15px;
+    margin:5px 0; 
+    cursor: pointer;
+}
+
+.moduleItem i {
+    vertical-align: middle; 
+    margin-right: 10px;
+}
 
 .background, .cover.image {
     background-size: 100%;

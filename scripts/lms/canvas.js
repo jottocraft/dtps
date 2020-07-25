@@ -16,7 +16,8 @@ var dtpsLMS = {
     description: "Power+ integration for Canvas LMS",
     url: "https://www.instructure.com/canvas/",
     logo: "https://i.imgur.com/rGjNVoc.png",
-    source: "https://github.com/jottocraft/dtps/tree/master/lms"
+    source: "https://github.com/jottocraft/dtps/blob/master/scripts/lms/canvas.js",
+    genericGradebook: true
 };
 
 
@@ -33,11 +34,34 @@ dtpsLMS.fetchUser = function () {
             url: "/api/v1/users/self",
             type: "GET",
             headers: dtpsLMS.commonHeaders,
-            success: function (data) {
-                resolve({
-                    name: data.name,
-                    id: data.id,
-                    photoURL: data.avatar_url
+            success: function (userData) {
+                jQuery.ajax({
+                    url: "/api/v1/users/self/observees?include[]=avatar_url",
+                    type: "GET",
+                    headers: dtpsLMS.commonHeaders,
+                    success: function (childrenData) {
+                        var user = {
+                            name: userData.name,
+                            id: userData.id,
+                            photoURL: userData.avatar_url
+                        };
+
+                        if (childrenData && childrenData.length) {
+                            //Parent account
+                            user.children = childrenData.map(child => {
+                                return {
+                                    name: child.name,
+                                    id: child.id,
+                                    photoURL: child.avatar_url
+                                }
+                            });
+                        }
+
+                        resolve(user);
+                    },
+                    error: function (err) {
+                        reject(err);
+                    }
                 });
             },
             error: function (err) {
@@ -61,7 +85,7 @@ dtpsLMS.fetchClasses = function () {
                     headers: dtpsLMS.commonHeaders,
                     success: function (dashboardData) {
                         jQuery.ajax({
-                            url: "/api/v1/users/self/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=public_description&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs",
+                            url: "/api/v1/users/" + dtps.user.lmsID + "/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=public_description&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs",
                             type: "GET",
                             headers: dtpsLMS.commonHeaders,
                             success: function (courseData) {
@@ -74,9 +98,9 @@ dtpsLMS.fetchClasses = function () {
                                     var dtpsCourse = {
                                         name: course.course_code,
                                         id: course.id,
-                                        num: index,
                                         subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : course.course_code.split(" - ")[0],
                                         syllabus: course.syllabus_body,
+                                        homepage: course.default_view == "wiki",
                                         description: course.public_description,
                                         numStudents: course.total_students,
                                         term: course.course_code.split(" - ")[1],
@@ -86,6 +110,7 @@ dtpsLMS.fetchClasses = function () {
                                         image: course.image_download_url,
                                         newDiscussionThreadURL: '/courses/' + course.id + '/discussion_topics/new',
                                         pages: course.tabs.map(tab => tab.id).includes("pages"),
+                                        modules: course.tabs.map(tab => tab.id).includes("modules"),
                                         discussions: course.tabs.map(tab => tab.id).includes("discussions")
                                     };
 
@@ -110,6 +135,9 @@ dtpsLMS.fetchClasses = function () {
                                     return 0;
                                 });
 
+                                //Add course num props
+                                courses.forEach((course, index) => course.num = index);
+
                                 resolve(courses);
                             },
                             error: function (err) {
@@ -133,110 +161,109 @@ dtpsLMS.fetchClasses = function () {
 dtpsLMS.fetchAssignments = function (classID) {
     return new Promise(function (resolve, reject) {
         jQuery.ajax({
-            url: "/api/v1/courses/" + classID + "/students/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=100&student_ids[]=" + dtps.user.id,
+            url: "/api/v1/courses/" + classID + "/students/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=100&student_ids[]=" + dtps.user.lmsID,
             type: "GET",
             headers: dtpsLMS.commonHeaders,
             success: function (submissionData) {
                 jQuery.ajax({
-                    url: "/api/v1/courses/" + classID + "/assignment_groups?per_page=100&include[]=assignments&include[]=submissions&include[]=submission",
+                    url: "/api/v1/users/" + dtps.user.lmsID + "/courses/" + classID + "/assignments?per_page=100&include[]=submission",
                     type: "GET",
                     headers: dtpsLMS.commonHeaders,
-                    success: function (assignmentGroupData) {
+                    success: function (assignmentData) {
                         //All fetches have been completed successfully
                         var assignments = [];
 
                         //Add assignments from canvas to assignments array as a DTPS assignment object
-                        assignmentGroupData.forEach(group => {
-                            group.assignments.forEach((assignment, index) => {
-                                //Define dtpsAssignment
-                                var dtpsAssignment = {
-                                    title: assignment.name,
-                                    body: assignment.description,
-                                    id: assignment.id,
-                                    dueAt: assignment.due_at,
-                                    url: assignment.html_url,
-                                    locked: assignment.locked_for_user,
-                                    category: assignmentGroupData.length == 1 ? null : group.name,
-                                    publishedAt: assignment.created_at,
-                                    value: assignment.points_possible
-                                };
+                        assignmentData.forEach((assignment, index) => {
+                            //Define dtpsAssignment
+                            var dtpsAssignment = {
+                                title: assignment.name,
+                                body: assignment.description,
+                                id: assignment.id,
+                                dueAt: assignment.due_at,
+                                url: assignment.html_url,
+                                locked: assignment.locked_for_user,
+                                publishedAt: assignment.created_at,
+                                value: assignment.points_possible
+                            };
 
-                                //Save score names to an array temporarily
-                                //This is because the scoreNames can only be found in the rubric data from Canvas
-                                //And we don't know which name to use until the outcome score data is processed
-                                var temporaryScoreNames = {};
+                            //Save score names to an array temporarily
+                            //This is because the scoreNames can only be found in the rubric data from Canvas
+                            //And we don't know which name to use until the outcome score data is processed
+                            var temporaryScoreNames = {};
 
-                                //Add rubric data from Canvas to the dtpsAssignment
-                                if (assignment.rubric) {
-                                    assignment.rubric.forEach(canvasRubric => {
-                                        //Add rubric array to assignment if it doesn't exist yet
-                                        if (!dtpsAssignment.rubric) dtpsAssignment.rubric = [];
+                            //Add rubric data from Canvas to the dtpsAssignment
+                            if (assignment.rubric) {
+                                assignment.rubric.forEach(canvasRubric => {
+                                    //Add rubric array to assignment if it doesn't exist yet
+                                    if (!dtpsAssignment.rubric) dtpsAssignment.rubric = [];
 
-                                        dtpsAssignment.rubric.push({
-                                            title: canvasRubric.description,
-                                            description: canvasRubric.long_description,
-                                            id: canvasRubric.id,
-                                            value: canvasRubric.points,
-                                            outcome: canvasRubric.outcome_id
+                                    dtpsAssignment.rubric.push({
+                                        title: canvasRubric.description,
+                                        description: canvasRubric.long_description,
+                                        id: canvasRubric.id,
+                                        value: canvasRubric.points,
+                                        outcome: canvasRubric.outcome_id,
+                                        assignmentTitle: assignment.name,
+                                        assignmentID: assignment.id
+                                    });
+
+                                    temporaryScoreNames[canvasRubric.id] = {};
+                                    canvasRubric.ratings.forEach(canvasRating => {
+                                        temporaryScoreNames[canvasRubric.id][canvasRating.points] = canvasRating.description;
+                                    });
+                                })
+                            }
+
+                            //Add submission data from Canvas to the dtpsAssignment
+                            submissionData.forEach(submission => {
+                                if (submission.assignment_id == assignment.id) {
+                                    //Add scores from this submission to the rubric
+                                    if (submission.rubric_assessment) {
+                                        dtpsAssignment.rubric.forEach(rubric => {
+                                            if (submission.rubric_assessment[rubric.id]) {
+                                                rubric.score = submission.rubric_assessment[rubric.id].points;
+                                                rubric.scoreName = temporaryScoreNames[rubric.id][rubric.score];
+                                            }
                                         });
-
-                                        temporaryScoreNames[canvasRubric.id] = {};
-                                        canvasRubric.ratings.forEach(canvasRating => {
-                                            temporaryScoreNames[canvasRubric.id][canvasRating.points] = canvasRating.description;
-                                        });
-                                    })
-                                }
-
-                                //Add submission data from Canvas to the dtpsAssignment
-                                submissionData.forEach(submission => {
-                                    if (submission.assignment_id == assignment.id) {
-                                        //Add scores from this submission to the rubric
-                                        if (submission.rubric_assessment) {
-                                            dtpsAssignment.rubric.forEach(rubric => {
-                                                if (submission.rubric_assessment[rubric.id]) {
-                                                    rubric.score = submission.rubric_assessment[rubric.id].points;
-                                                    rubric.scoreName = temporaryScoreNames[rubric.id][rubric.score];
-                                                }
-                                            });
-                                        }
-
-                                        //Check for turned in, late, missing, gradedAt, and feedback
-                                        dtpsAssignment.turnedIn = submission.submission_type !== null;
-                                        dtpsAssignment.late = submission.late;
-                                        dtpsAssignment.missing = submission.missing;
-                                        dtpsAssignment.gradedAt = submission.graded_at;
-                                        dtpsAssignment.grade = submission.score;
-                                        if (isNaN(submission.grade)) dtpsAssignment.letter = submission.grade; //letter cannot be a number
-
-                                        //Check for submission comments
-                                        if (submission.submission_comments) {
-                                            //Add feedback array to assignment
-                                            dtpsAssignment.feedback = [];
-
-                                            //Add each comment to feedback array
-                                            submission.submission_comments.forEach(comment => {
-                                                var feedback = {
-                                                    comment: comment.comment
-                                                };
-
-                                                //Add author to feedback if found
-                                                if (comment.author) {
-                                                    feedback.author = {
-                                                        name: comment.author.display_name,
-                                                        id: comment.author.id,
-                                                        photoURL: comment.author.avatar_image_url
-                                                    }
-                                                }
-
-                                                dtpsAssignment.feedback.push(feedback)
-                                            });
-                                        }
                                     }
-                                });
 
-                                //Add assignment to results array
-                                assignments.push(dtpsAssignment);
+                                    //Check for turned in, late, missing, gradedAt, and feedback
+                                    dtpsAssignment.turnedIn = submission.submission_type !== null;
+                                    dtpsAssignment.late = submission.late;
+                                    dtpsAssignment.missing = submission.missing;
+                                    dtpsAssignment.gradedAt = submission.graded_at;
+                                    dtpsAssignment.grade = submission.score;
+                                    if (isNaN(submission.grade)) dtpsAssignment.letter = submission.grade; //letter cannot be a number
+
+                                    //Check for submission comments
+                                    if (submission.submission_comments) {
+                                        //Add feedback array to assignment
+                                        dtpsAssignment.feedback = [];
+
+                                        //Add each comment to feedback array
+                                        submission.submission_comments.forEach(comment => {
+                                            var feedback = {
+                                                comment: comment.comment
+                                            };
+
+                                            //Add author to feedback if found
+                                            if (comment.author) {
+                                                feedback.author = {
+                                                    name: comment.author.display_name,
+                                                    id: comment.author.id,
+                                                    photoURL: comment.author.avatar_image_url
+                                                }
+                                            }
+
+                                            dtpsAssignment.feedback.push(feedback)
+                                        });
+                                    }
+                                }
                             });
+
+                            //Add assignment to results array
+                            assignments.push(dtpsAssignment);
                         });
 
                         resolve(assignments);
@@ -251,6 +278,166 @@ dtpsLMS.fetchAssignments = function (classID) {
             }
         });
     })
+}
+
+//Fetches modules data from Canvas
+dtpsLMS.fetchModules = function (classID) {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/api/v1/courses/" + classID + "/modules?include[]=items&include[]=content_details",
+            type: "GET",
+            headers: dtpsLMS.commonHeaders,
+            success: function (modulesData) {
+                jQuery.ajax({
+                    url: "/courses/" + classID + "/modules/progressions",
+                    type: "GET",
+                    headers: dtpsLMS.commonHeaders,
+                    success: function (progressionData) {
+                        //Get collapsed modules from progression data
+                        var collapsedModules = {};
+
+                        //Loop over progression data
+                        progressionData.forEach(prog => {
+                            //Store collapsed state
+                            collapsedModules[prog.context_module_progression.context_module_id] = prog.context_module_progression.collapsed;
+                        })
+
+                        //Parse data from Canvas
+                        var dtpsModules = modulesData.map(module => {
+                            //Create module items array
+                            var moduleItems = [];
+
+                            //Add module items to array
+                            module.items.forEach(item => {
+                                if (item.type.toUpperCase() == "ASSIGNMENT") {
+                                    moduleItems.push({
+                                        type: "assignment",
+                                        title: item.title,
+                                        id: item.content_id,
+                                        indent: item.indent
+                                    })
+                                } else if (item.type.toUpperCase() == "PAGE") {
+                                    moduleItems.push({
+                                        type: "page",
+                                        title: item.title,
+                                        id: item.page_url,
+                                        indent: item.indent
+                                    })
+                                } else if (item.type.toUpperCase() == "DISCUSSION") {
+                                    moduleItems.push({
+                                        type: "discussion",
+                                        title: item.title,
+                                        id: item.content_id,
+                                        indent: item.indent
+                                    })
+                                } else if (item.type.toUpperCase() == "EXTERNALURL") {
+                                    moduleItems.push({
+                                        type: "url",
+                                        title: item.title,
+                                        url: item.external_url,
+                                        indent: item.indent
+                                    })
+                                } else if (item.type.toUpperCase() == "EXTERNALTOOL") {
+                                    moduleItems.push({
+                                        type: "embed",
+                                        title: item.title,
+                                        url: item.html_url,
+                                        indent: item.indent
+                                    });
+                                } else if (item.type.toUpperCase() == "SUBHEADER") {
+                                    moduleItems.push({
+                                        type: "header",
+                                        title: item.title,
+                                        indent: item.indent
+                                    })
+                                }
+                            })
+
+                            return {
+                                id: module.id,
+                                title: module.name,
+                                collapsed: collapsedModules[module.id] || false,
+                                items: moduleItems
+                            }
+                        })
+
+                        //Resolve with module data
+                        resolve(dtpsModules);
+                    },
+                    error: function (err) {
+                        reject(err);
+                    }
+                });
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    });
+}
+
+//Collapses a module in Canvas
+dtpsLMS.collapseModule = function (classID, modID, collapsed) {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/courses/" + classID + "/modules/" + modID + "/collapse",
+            type: "POST",
+            headers: {
+                "Accept": "application/json, text/javascript, application/json+canvas-string-ids, */*; q=0.01",
+                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                "X-CSRF-Token": decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0]
+            },
+            body: "_method=POST&collapse=" + (collapsed ? 1 : 0) + "&authenticity_token=" + decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0],
+            success: function (data) {
+                resolve();
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    });
+}
+
+//Fetches announcement data from Canvas
+dtpsLMS.fetchAnnouncements = function (classID) {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/api/v1/announcements?context_codes[]=course_" + classID,
+            type: "GET",
+            headers: dtpsLMS.commonHeaders,
+            success: function (data) {
+                var dtpsAnnouncements = data.map(function (announcement) {
+                    return {
+                        title: announcement.title,
+                        postedAt: announcement.created_at,
+                        body: announcement.message
+                    }
+                });
+
+                resolve(dtpsAnnouncements);
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    });
+}
+
+//Fetches homepage data from Canvas
+dtpsLMS.fetchHomepage = function (classID) {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/api/v1/courses/" + classID + "/front_page",
+            type: "GET",
+            headers: dtpsLMS.commonHeaders,
+            success: function (data) {
+                resolve(data.body);
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    });
 }
 
 //Fetches discussion thread data from Canvas
@@ -356,7 +543,7 @@ dtpsLMS.fetchDiscussionPosts = function (classID, threadID) {
                         }
                     });
                 }
-                
+
 
                 //This function handles the response from Canavs and returns the data to DTPS
                 //BaseURL is the baseURL of the thread, since this might be different for group discussions
@@ -481,7 +668,7 @@ dtpsLMS.fetchPages = function (classID) {
                 var dtpsPages = data.map(function (page) {
                     var dtpsPage = {
                         title: page.title,
-                        id: page.page_id,
+                        id: page.url,
                         updatedAt: page.updated_at
                     };
 

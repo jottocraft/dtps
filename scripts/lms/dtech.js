@@ -19,8 +19,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     dtpsLMS.legalName = "Canvas LMS, Design Tech High School, and Instructure Inc";
     dtpsLMS.description = "Power+ integration for Canvas LMS, customized for d.tech";
     dtpsLMS.logo = "https://i.imgur.com/efGrLq3.png";
-    dtpsLMS.source = "https://github.com/jottocraft/dtps/tree/master/lms";
-    dtpsLMS.preferRubricGrades = true;
+    dtpsLMS.source = "https://github.com/jottocraft/dtps/blob/master/scripts/lms/dtech.js";
+    dtpsLMS.useRubricGrades = true;
     dtpsLMS.institutionSpecific = true;
     dtpsLMS.genericGradebook = false;
 
@@ -172,6 +172,9 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
                                 //Add RubricItem to outcome array
                                 outcomes[rubricItem.outcome].scores.push(rubricItem);
+
+                                //Save outcome name as rubric title
+                                if (rubricItem.title) outcomes[rubricItem.outcome].title = rubricItem.title;
                             }
                         });
                     }
@@ -203,7 +206,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     if (droppedAverage > average) {
                         //The dropped score was higher
                         outcome.scoreType = "dropped";
-                        outcome.droppedScore = lowestScore;
+                        outcome.droppedScore = outcomeScores.indexOf(lowestScore);
                         outcome.average = droppedAverage;
                     } else {
                         //Calculating with all outcome scores was the same or higher
@@ -323,5 +326,136 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 variation: variation
             };
         }
+    };
+
+    dtpsLMS.gradebook = function (course) {
+        return new Promise((resolve, reject) => {
+            if (course.gradeCalculation && course.gradeCalculation.dtech) {
+                //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
+                if (course.gradeCalculation.dtech.formula == "sem2") {
+                    var gradeCalcSummary = /*html*/`
+                    <div style="--classColor: ${course.color}" class="card">
+
+                        <h3 class="gradeTitle">
+                            Grades
+
+                            <div class="classGradeCircle">
+                                <div class="letter">${course.letter}</div>
+                            </div>
+
+                        </h3>
+
+                        <h5 class="gradeStat">
+                            75% (rounded down) of outcome scores are ≥
+                            <div class="numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(1)}</div>
+                        </h5>
+
+                        <h5 class="gradeStat">
+                            No outcome scores are lower than
+                            <div class="numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(1)}</div>
+                        </h5>
+
+                        <div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
+                            <br />
+
+                            ${course.previousLetter ? /*html*/`
+                            <h5 class="smallStat">
+                                Previous Grade
+                                <div class="numFont">${course.previousLetter}</div>
+                            </h5>
+                            ` : ``}
+
+                            ${course.gradeCalculation.dtech.results.parameters.number75thresh ? /*html*/`
+                            <h5 class="smallStat">
+                                75% of outcomes (rounded down) is
+                                <div class="numFont">${course.gradeCalculation.dtech.results.parameters.number75thresh}</div>
+                            </h5>
+                            ` : ``}
+                        
+                            <br />
+
+                            <table class="u-full-width dtpsTable">
+                                <thead>
+                                    <tr>
+                                    <th>&nbsp;&nbsp;Final Letter</th>
+                                    <th>75% (rounded down) of outcome scores is ≥</th>
+                                    <th>No outcome scores below</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    ${dtechGradeCalc.letters.map(letter => {
+                        return /*html*/`
+                                            <tr ${course.letter == letter ? `style="background-color: var(--classColor); font-size:20px; font-weight: bold;"` : ``}>
+                                                <td>&nbsp;&nbsp;${letter}</td>
+                                                <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].percentage[letter]}</td>
+                                                <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].lowest[letter]}</td>
+                                            </tr>
+                                        `
+                    }).join("")}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <br />
+
+                        <br />
+                        <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
+                            style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">${dtps.gradebookExpanded ? "Show less" : "Show more"}</a>
+                        <a style="color: var(--secText, gray);">Using Jan-Mar 2020 Grade Calculation</a>
+                    </div>
+                `;
+                } else {
+                    var gradeCalcSummary = ""; //no grade calculation for this class
+                }
+
+                //RENDERER: RENDER EACH OUTCOME ------------------------------------
+                var outcomeHTML = []; //array of outcome html to be rendered
+                var dividerAdded = false; //used for determining if the unassessed outcome divided has been added
+                Object.keys(course.gradeCalculation.dtech.outcomes).sort(function (a, b) {
+                    var keyA = course.gradeCalculation.dtech.outcomes[a].average,//sort by score lowest -> highest
+                        keyB = course.gradeCalculation.dtech.outcomes[b].average;
+                    if (keyA == undefined) { keyA = 999999 - course.gradeCalculation.dtech.outcomes[a].scores.length; } //put outcomes with no assessments at the bottom
+                    if (keyB == undefined) { keyB = 999999 - course.gradeCalculation.dtech.outcomes[b].scores.length; }
+                    // Compare the 2 scores
+                    if (keyA > keyB) return 1;
+                    if (keyA < keyB) return -1;
+                    return 0;
+                }).forEach((outcomeID) => {
+                    var outcome = course.gradeCalculation.dtech.outcomes[outcomeID];
+
+                    var divider = !dividerAdded && !outcome.scores.length; //render divider
+                    if (divider) dividerAdded = true; //remember that divider is already rendered
+
+                    outcomeHTML.push(/*html*/`
+                    ${divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : ""}
+
+                    <div style="border-radius: 20px;padding: 22px; padding-bottom: 20px;" class="card outcomeResults outcome-${outcomeID}">
+                        <h5 style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;">${outcome.title}</h5>
+
+                        ${outcome.average !== undefined ? `
+                            <div id="outcomeScore${outcomeID}" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ${dtechRubricColor(outcome.average / 4)}">${outcome.average.toFixed(2)}</div>
+                        ` : ``}
+                        
+                        <div class="assessments">
+                            ${outcome.scores.length == 0 ? `
+                                    <p style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px; color: var(--secText);">This outcome has not been assessed yet</p>
+                            ` : outcome.scores.map((assessment, aIndex) => {
+                        return `<p id="outcome${assessment.outcome}assessment${assessment.id}" class="${aIndex == outcome.droppedScore ? "dropped" : ""}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+                                            <span aIndex="${aIndex}" style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: ${assessment.color}">${assessment.score}</span>
+                                            <span class="assessmentTitle" style="cursor: pointer;" onclick="dtps.assignment('${assessment.assignmentID}', ${course.num});">${assessment.assignmentTitle}</span>
+                                        </p>`;
+                    }).join("")}
+                        </div>
+                    </div>
+                `);
+                })
+
+                //RESOLVE WITH HTML
+                resolve(gradeCalcSummary + `<br />` + outcomeHTML.join(""));
+            } else {
+                resolve();
+            }
+        });
     }
 });
