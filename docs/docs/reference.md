@@ -2,12 +2,9 @@
 id: reference 
 title: Reference 
 --- 
-Generated on Sun 06/07/2020 
+Generated on Fri 07/24/2020 
  
-Reference documentation is also available in [JSDoc format](/jsdoc/index.html)
-
-Power+ v3 is still in active development. This documentation is for testing purposes only and can change at any time.
-
+Reference documentation is also available in [JSDoc format](/jsdoc/index.html) 
 ## Objects
 
 <dl>
@@ -25,6 +22,15 @@ All global DTPS functions and variables are stored in this object</p>
 <dl>
 <dt><a href="#Assignment">Assignment</a> : <monospace>Object</monospace></dt>
 <dd><p>Defines assignments objects in DTPS</p>
+</dd>
+<dt><a href="#Module">Module</a> : <monospace>Object</monospace></dt>
+<dd><p>Defines module objects in DTPS</p>
+</dd>
+<dt><a href="#ModuleItem">ModuleItem</a> : <monospace>Object</monospace></dt>
+<dd><p>Defines module items in DTPS</p>
+</dd>
+<dt><a href="#Announcement">Announcement</a> : <monospace>Object</monospace></dt>
+<dd><p>Defines announcement objects in DTPS</p>
 </dd>
 <dt><a href="#AssignmentFeedback">AssignmentFeedback</a> : <monospace>Object</monospace></dt>
 <dd><p>Defines assignment feedback objects in DTPS</p>
@@ -72,7 +78,7 @@ Global DTPS LMS integration object. All LMS-related tasks, such as fetching data
 | logo | <monospace>string</monospace> | LMS logo image URL |
 | url | <monospace>string</monospace> | URL to the LMS' website |
 | source | <monospace>string</monospace> | URL to the LMS integration's source code |
-| [institutionSpecific] | <monospace>boolean</monospace> | True if the LMS is designed for a specific institution |
+| [institutionSpecific] | <monospace>boolean</monospace> | True if the LMS is designed for a specific institution instead of a broader LMS |
 | [preferRubricGrades] | <monospace>boolean</monospace> | True if DTPS should prefer rubric grades for assignments |
 | [genericGradebook] | <monospace>boolean</monospace> | True if DTPS should show the generic gradebook. Ignored if dtpsLMS.gradebook defined. |
 
@@ -81,6 +87,10 @@ Global DTPS LMS integration object. All LMS-related tasks, such as fetching data
     * [.fetchUser()](#dtpsLMS.fetchUser) ??? [<monospace>Promise.&lt;User&gt;</monospace>](#User)
     * [.fetchClasses()](#dtpsLMS.fetchClasses) ??? <monospace>Promise.&lt;Array.&lt;Class&gt;&gt;</monospace>
     * [.fetchAssignments(classID)](#dtpsLMS.fetchAssignments) ??? <monospace>Promise.&lt;Array.&lt;Assignment&gt;&gt;</monospace>
+    * [.fetchModules(classID)](#dtpsLMS.fetchModules) ??? <monospace>Promise.&lt;Array.&lt;Module&gt;&gt;</monospace>
+    * [.collapseModule(classID, moduleID, collapsed)](#dtpsLMS.collapseModule) ??? <monospace>Promise</monospace>
+    * [.fetchAnnouncements(classID)](#dtpsLMS.fetchAnnouncements) ??? <monospace>Promise.&lt;Array.&lt;Announcement&gt;&gt;</monospace>
+    * [.fetchHomepage(classID)](#dtpsLMS.fetchHomepage) ??? <monospace>Promise.&lt;string&gt;</monospace>
     * [.fetchDiscussionThreads(classID)](#dtpsLMS.fetchDiscussionThreads) ??? <monospace>Promise.&lt;Array.&lt;DiscussionThread&gt;&gt;</monospace>
     * [.fetchDiscussionPosts(classID, threadID)](#dtpsLMS.fetchDiscussionPosts) ??? <monospace>Promise.&lt;Array.&lt;DiscussionPost&gt;&gt;</monospace>
     * [.fetchPages(classID)](#dtpsLMS.fetchPages) ??? <monospace>Promise.&lt;Array.&lt;Page&gt;&gt;</monospace>
@@ -124,6 +134,68 @@ Global DTPS LMS integration object. All LMS-related tasks, such as fetching data
 | Param | Type | Description |
 | --- | --- | --- |
 | classID | <monospace>string</monospace> | The class ID to fetch assignments for |
+
+
+* * *
+
+<a name="dtpsLMS.fetchModules"></a>
+
+### dtpsLMS.fetchModules(classID) ??? <monospace>Promise.&lt;Array.&lt;Module&gt;&gt;</monospace>
+[OPTIONAL] Fetches module data for a course from the LMS
+
+**Kind**: static method of [<monospace>dtpsLMS</monospace>](#dtpsLMS)  
+**Returns**: <monospace>Promise.&lt;Array.&lt;Module&gt;&gt;</monospace> - A promise which resolves to an array of Module objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| classID | <monospace>string</monospace> | The class ID to fetch modules for |
+
+
+* * *
+
+<a name="dtpsLMS.collapseModule"></a>
+
+### dtpsLMS.collapseModule(classID, moduleID, collapsed) ??? <monospace>Promise</monospace>
+[OPTIONAL] Collapses a module in the LMS
+
+**Kind**: static method of [<monospace>dtpsLMS</monospace>](#dtpsLMS)  
+**Returns**: <monospace>Promise</monospace> - A promise which resolves when the operation is completed  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| classID | <monospace>string</monospace> | The ID of the class |
+| moduleID | <monospace>string</monospace> | The ID of the module to collapse |
+| collapsed | <monospace>boolean</monospace> | True if the module is collapsed, false otherwise |
+
+
+* * *
+
+<a name="dtpsLMS.fetchAnnouncements"></a>
+
+### dtpsLMS.fetchAnnouncements(classID) ??? <monospace>Promise.&lt;Array.&lt;Announcement&gt;&gt;</monospace>
+[OPTIONAL] Fetches recent announcements for a course from the LMS
+
+**Kind**: static method of [<monospace>dtpsLMS</monospace>](#dtpsLMS)  
+**Returns**: <monospace>Promise.&lt;Array.&lt;Announcement&gt;&gt;</monospace> - A promise which resolves to an array of Announcement objects  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| classID | <monospace>string</monospace> | The class ID to fetch announcements for |
+
+
+* * *
+
+<a name="dtpsLMS.fetchHomepage"></a>
+
+### dtpsLMS.fetchHomepage(classID) ??? <monospace>Promise.&lt;string&gt;</monospace>
+[OPTIONAL] Fetches homepage HTML for a course from the LMS
+
+**Kind**: static method of [<monospace>dtpsLMS</monospace>](#dtpsLMS)  
+**Returns**: <monospace>Promise.&lt;string&gt;</monospace> - A promise which resolves to the HTML for the class homepage  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| classID | <monospace>string</monospace> | The class ID to get the homepage for |
 
 
 * * *
@@ -267,11 +339,13 @@ All global DTPS functions and variables are stored in this object
 | classes | [<monospace>Array.&lt;Class&gt;</monospace>](#Class) | DTPS classes array |
 | baseURL | <monospace>string</monospace> | The base URL that DTPS is being loaded from |
 | unstable | <monospace>boolean</monospace> | This is true if loading an unstable version of DTPS |
+| gradebookExpanded | <monospace>boolean</monospace> | True if gradebook details (Show more...) is open. Used in the generic gradebook and may be used in custom gradebook implementations. |
 | popup | <monospace>string</monospace> \| <monospace>undefined</monospace> | Popup to show when loaded. Either undefined (no popup), "firstrun", or "changelog". |
 | user | [<monospace>User</monospace>](#User) | Current user, fetched with dtps.init |
 | selectedClass | <monospace>number</monospace> \| <monospace>string</monospace> | The selected class number, or "dash" if the dashboard is selected. Set when the first screen is loaded in dtps.init. |
 | selectedContent | <monospace>string</monospace> | The selected class content/tab. Set when the first class content is loaded. Defaults to "stream". |
 | bgTimeout | <monospace>number</monospace> \| <monospace>undefined</monospace> | Background transition timeout when switching between classes |
+| updates | <monospace>Array.&lt;(Assignment\|Announcement)&gt;</monospace> | Array of up to 10 recently graded assignments or announcements. |
 | dashboardItems | [<monospace>Array.&lt;DashboardItem&gt;</monospace>](#DashboardItem) | Array of items that can be shown on the dashboard |
 | leftDashboard | [<monospace>Array.&lt;DashboardItem&gt;</monospace>](#DashboardItem) | Items on the left side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs. |
 | rightDashboard | [<monospace>Array.&lt;DashboardItem&gt;</monospace>](#DashboardItem) | Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs. |
@@ -279,19 +353,21 @@ All global DTPS functions and variables are stored in this object
 
 * [dtps](#dtps) : <monospace>object</monospace>
     * [.renderAssignment(assignment)](#dtps.renderAssignment) ??? <monospace>string</monospace>
+    * [.renderAssignmentScore(assignment)](#dtps.renderAssignmentScore) ??? <monospace>string</monospace>
     * [.masterStream()](#dtps.masterStream)
     * [.renderDueToday()](#dtps.renderDueToday)
     * [.renderUpcoming()](#dtps.renderUpcoming)
     * [.renderUpdates()](#dtps.renderUpdates)
     * [.calendar()](#dtps.calendar)
-    * [.classStream(classID)](#dtps.classStream)
-    * [.assignment(id, classNum, [submissions])](#dtps.assignment)
+    * [.classStream(classID, [searchResults], [searchText])](#dtps.classStream)
+    * [.assignment(id, classNum)](#dtps.assignment)
     * [.search()](#dtps.search)
-    * [.moduleStream(num)](#dtps.moduleStream)
+    * [.moduleStream(classID)](#dtps.moduleStream)
     * [.moduleCollapse(ele, classID, modID)](#dtps.moduleCollapse)
-    * [.renderClassTools(num, type, [modulesSelector])](#dtps.renderClassTools) ??? <monospace>string</monospace>
+    * [.renderClassTools(num, type, [searchText])](#dtps.renderClassTools) ??? <monospace>string</monospace>
     * [.classInfo(num)](#dtps.classInfo)
     * [.classHome(num)](#dtps.classHome)
+    * [.gradebook(classID)](#dtps.gradebook)
     * [.class()](#dtps.class) ??? <monospace>object</monospace> \| <monospace>undefined</monospace>
     * [.isToday(date)](#dtps.isToday)
     * [.changelog(onlyIfNewVersion)](#dtps.changelog)
@@ -304,22 +380,23 @@ All global DTPS functions and variables are stored in this object
     * [.init()](#dtps.init)
     * [.ampm(date)](#dtps.ampm) ??? <monospace>string</monospace>
     * [.formatDate(date)](#dtps.formatDate) ??? <monospace>string</monospace>
+    * [.obsSwitch(ele)](#dtps.obsSwitch)
     * [.iframeLoad(iframeID)](#dtps.iframeLoad)
     * [.clearData()](#dtps.clearData)
     * [.chroma()](#dtps.chroma)
     * [.showClasses([override])](#dtps.showClasses)
     * [.presentClass(classNum)](#dtps.presentClass)
     * [.showLMSGradebook(classID)](#dtps.showLMSGradebook)
+    * [.showIFrameCard(url)](#dtps.showIFrameCard)
     * [.logGrades(classNum)](#dtps.logGrades)
     * [.settings()](#dtps.settings)
     * [.saveDashboardPrefs()](#dtps.saveDashboardPrefs)
     * [.loadDashboardPrefs()](#dtps.loadDashboardPrefs)
     * [.render()](#dtps.render)
     * [.renderLite()](#dtps.renderLite)
-    * [.gradebook(classID)](#dtps.gradebook)
-    * [.loadThreadsList(courseID)](#dtps.loadThreadsList)
+    * [.loadThreadsList(courseID, [defaultThread])](#dtps.loadThreadsList)
     * [.loadThreadPosts(classNum, threadID)](#dtps.loadThreadPosts)
-    * [.loadPagesList(courseID)](#dtps.loadPagesList)
+    * [.loadPagesList(courseID, [defaultPage])](#dtps.loadPagesList)
     * [.loadPage(classNum, pageID)](#dtps.loadPage)
 
 
@@ -332,14 +409,25 @@ Renders HTML for an assignment item in a list
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
 **Returns**: <monospace>string</monospace> - Assignment HTML for use in a list  
-**Todo**
-
-- [ ] Add support for points/letter scores
-
 
 | Param | Type | Description |
 | --- | --- | --- |
 | assignment | [<monospace>Assignment</monospace>](#Assignment) | The assignment object to render |
+
+
+* * *
+
+<a name="dtps.renderAssignmentScore"></a>
+
+### dtps.renderAssignmentScore(assignment) ??? <monospace>string</monospace>
+Renders HTML for an assignment score if the assignment is graded
+
+**Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
+**Returns**: <monospace>string</monospace> - Assignment score HTML  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| assignment | [<monospace>Assignment</monospace>](#Assignment) | The assignment object to render a score for |
 
 
 * * *
@@ -377,10 +465,6 @@ Compiles and displays upcoming assignments stream
 Renders updates stream (recently graded & announcements)
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
-**Todo**
-
-- [ ] pending v3 support
-
 
 * * *
 
@@ -395,7 +479,7 @@ Compiles and displays the assignment calendar
 
 <a name="dtps.classStream"></a>
 
-### dtps.classStream(classID)
+### dtps.classStream(classID, [searchResults], [searchText])
 Shows the assignments stream for a class
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
@@ -403,26 +487,23 @@ Shows the assignments stream for a class
 | Param | Type | Description |
 | --- | --- | --- |
 | classID | <monospace>string</monospace> | The class ID to show assignments for |
+| [searchResults] | [<monospace>Array.&lt;Assignment&gt;</monospace>](#Assignment) | An array of assignemnts to render instead of course.assignments. Used for assignment search. |
+| [searchText] | <monospace>string</monospace> | Text to render in the search box. Used for assignment search. |
 
 
 * * *
 
 <a name="dtps.assignment"></a>
 
-### dtps.assignment(id, classNum, [submissions])
+### dtps.assignment(id, classNum)
 Shows details for an assignment given the assignment ID and class number
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
-**Todo**
-
-- [ ] Support numerical grades
-
 
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <monospace>string</monospace> | Assignment ID |
 | classNum | <monospace>number</monospace> | Assignment class number |
-| [submissions] | <monospace>boolean</monospace> | If true, assignment submissions will be shown |
 
 
 * * *
@@ -433,27 +514,19 @@ Shows details for an assignment given the assignment ID and class number
 Searches the assignment stream for a keyword using Fuse.js
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
-**Todo**
-
-- [ ] pending v3 support
-
 
 * * *
 
 <a name="dtps.moduleStream"></a>
 
-### dtps.moduleStream(num)
-Fetches module stream for a class
+### dtps.moduleStream(classID)
+Shows the module stream for a class
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
-**Todo**
-
-- [ ] pending v3 support
-
 
 | Param | Type | Description |
 | --- | --- | --- |
-| num | <monospace>number</monospace> | Class number to fetch modules for |
+| classID | <monospace>string</monospace> | Class number to fetch modules for |
 
 
 * * *
@@ -464,10 +537,6 @@ Fetches module stream for a class
 Collapses a module
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
-**Todo**
-
-- [ ] pending v3 support
-
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -480,7 +549,7 @@ Collapses a module
 
 <a name="dtps.renderClassTools"></a>
 
-### dtps.renderClassTools(num, type, [modulesSelector]) ??? <monospace>string</monospace>
+### dtps.renderClassTools(num, type, [searchText]) ??? <monospace>string</monospace>
 Gets stream tools HTML (search box, class info, and modules/assignment switcher)
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
@@ -490,7 +559,7 @@ Gets stream tools HTML (search box, class info, and modules/assignment switcher)
 | --- | --- | --- |
 | num | <monospace>number</monospace> | Class number |
 | type | <monospace>string</monospace> | Class content these tools are for (e.g. "stream") |
-| [modulesSelector] | <monospace>boolean</monospace> | True if the class supports modules |
+| [searchText] | <monospace>string</monospace> | Text to render in the search box for assignment search |
 
 
 * * *
@@ -519,6 +588,20 @@ Displays the class homepage
 | Param | Type | Description |
 | --- | --- | --- |
 | num | <monospace>number</monospace> | Class number to show the homepage for |
+
+
+* * *
+
+<a name="dtps.gradebook"></a>
+
+### dtps.gradebook(classID)
+Shows the generic gradebook
+
+**Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| classID | <monospace>string</monospace> | Class ID |
 
 
 * * *
@@ -586,7 +669,7 @@ Shows an error message alert and logs to console
 | --- | --- | --- |
 | msg | <monospace>string</monospace> | The error to display |
 | [devNotes] | <monospace>string</monospace> | Technical error details displayed in a smaller font |
-| [err] | <monospace>Error</monospace> | An error object to log to the console |
+| [err] | <monospace>Error</monospace> | An error object to log to the console. If this is null, DTPS will assume the error has been handled elsewhere. |
 
 
 * * *
@@ -603,7 +686,7 @@ Renders "Welcome to Project DTPS" screen on the first run
 <a name="dtps.renderLoadingScreen"></a>
 
 ### dtps.renderLoadingScreen()
-Renders the Power+ loading screen
+Renders the DTPS loading screen
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
 
@@ -667,6 +750,20 @@ Formats a date to a readable date string
 | Param | Type | Description |
 | --- | --- | --- |
 | date | [<monospace>Date</monospace>](#Date) | The date to format |
+
+
+* * *
+
+<a name="dtps.obsSwitch"></a>
+
+### dtps.obsSwitch(ele)
+Switches the current child account being observed
+
+**Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ele | <monospace>Element</monospace> | The dropdown element used to switch accounts |
 
 
 * * *
@@ -749,6 +846,20 @@ Shows the gradebook using HTML from dtpsLMS.gradebook
 
 * * *
 
+<a name="dtps.showIFrameCard"></a>
+
+### dtps.showIFrameCard(url)
+Shows a URL in the iFrame card
+
+**Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <monospace>string</monospace> | The URL to load |
+
+
+* * *
+
 <a name="dtps.logGrades"></a>
 
 ### dtps.logGrades(classNum)
@@ -808,27 +919,9 @@ Renders basic content after the user has been loaded
 
 * * *
 
-<a name="dtps.gradebook"></a>
-
-### dtps.gradebook(classID)
-Shows the generic gradebook
-
-**Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
-**Todo**
-
-- [ ] Show assignments
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| classID | <monospace>string</monospace> | Class ID |
-
-
-* * *
-
 <a name="dtps.loadThreadsList"></a>
 
-### dtps.loadThreadsList(courseID)
+### dtps.loadThreadsList(courseID, [defaultThread])
 Renders the discussions list for a class
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
@@ -836,6 +929,7 @@ Renders the discussions list for a class
 | Param | Type | Description |
 | --- | --- | --- |
 | courseID | <monospace>string</monospace> | The course ID to render discussion threads for |
+| [defaultThread] | <monospace>string</monospace> | The thread to load by default |
 
 
 * * *
@@ -857,7 +951,7 @@ Fetches and displays posts in a discussion
 
 <a name="dtps.loadPagesList"></a>
 
-### dtps.loadPagesList(courseID)
+### dtps.loadPagesList(courseID, [defaultPage])
 Renders the pages list for a class
 
 **Kind**: static method of [<monospace>dtps</monospace>](#dtps)  
@@ -865,6 +959,7 @@ Renders the pages list for a class
 | Param | Type | Description |
 | --- | --- | --- |
 | courseID | <monospace>string</monospace> | The course ID to render pages for |
+| [defaultPage] | <monospace>string</monospace> | If provided, load the pageID by default |
 
 
 * * *
@@ -912,6 +1007,60 @@ Defines assignments objects in DTPS
 | [letter] | <monospace>string</monospace> | Letter grade on this assignment |
 | [value] | <monospace>number</monospace> | Total amount of points possible for this assignment |
 | [rubric] | [<monospace>Array.&lt;RubricItem&gt;</monospace>](#RubricItem) | Assignment rubric |
+
+
+* * *
+
+<a name="Module"></a>
+
+## Module : <monospace>Object</monospace>
+Defines module objects in DTPS
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| title | <monospace>string</monospace> | Title of the module |
+| id | <monospace>string</monospace> | Module ID |
+| [collapsed] | <monospace>boolean</monospace> | True if the module is collapsed, false otherwise. undefined or null if this module does not support collapsing. |
+| items | [<monospace>Array.&lt;ModuleItem&gt;</monospace>](#ModuleItem) | An array of items for this module. |
+
+
+* * *
+
+<a name="ModuleItem"></a>
+
+## ModuleItem : <monospace>Object</monospace>
+Defines module items in DTPS
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| type | <monospace>string</monospace> | Either "assignment", "page", "discussion", "url", "embed", or "header". |
+| [title] | <monospace>string</monospace> | Required for URL and header items, and can be used to override the title of assignment, page, and discussion items. |
+| [id] | <monospace>string</monospace> | Required for assignment, page, and discussion items. |
+| [url] | <monospace>string</monospace> | Required for URL and embed items. |
+| [indent] | <monospace>number</monospace> | Indent level |
+
+
+* * *
+
+<a name="Announcement"></a>
+
+## Announcement : <monospace>Object</monospace>
+Defines announcement objects in DTPS
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| title | <monospace>string</monospace> | Title of the announcement |
+| postedAt | [<monospace>Date</monospace>](#Date) | Date when the announcement was posted |
+| body | <monospace>string</monospace> | Announcement content |
 
 
 * * *
@@ -997,6 +1146,9 @@ Defines user objects in DTPS
 | name | <monospace>string</monospace> | User name |
 | id | <monospace>string</monospace> | User ID |
 | photoURL | <monospace>string</monospace> | User photo URL |
+| [children] | [<monospace>Array.&lt;User&gt;</monospace>](#User) | [ONLY FOR DTPS.USER] Array of child users. If this is defined, the user is treated as a parent account. Sub-children are not allowed. |
+| parent | <monospace>boolean</monospace> | [ONLY FOR DTPS.USER] Automatically managed by DTPS. True if the user is a parent account. |
+| lmsID | <monospace>string</monospace> | [ONLY FOR DTPS.USER] Automatically managed by DTPS. This is the user ID that all LMS web requests should use. Can change when a parent account changes the selected child. |
 
 
 * * *
@@ -1016,10 +1168,12 @@ Defines class objects in DTPS
 | num | <monospace>number</monospace> | Index of the class in the dtps.classes array |
 | subject | <monospace>string</monospace> | Class subject |
 | assignments | [<monospace>Array.&lt;Assignment&gt;</monospace>](#Assignment) | Class assignments. Assume assignments are still loading if this is undefined. The class has no assignments if this is an empty array. Loaded in dtps.init. |
+| [modules] | [<monospace>Array.&lt;Module&gt;</monospace>](#Module) \| <monospace>boolean</monospace> | Class modules. Assume this class supports the modules feature, but is not yet loaded, if this is true and that the class has no modules if this is an empty array. For LMSs that do not support modules, either keep it undefined or set it to false. |
 | [discussions] | [<monospace>Array.&lt;DiscussionThread&gt;</monospace>](#DiscussionThread) \| <monospace>boolean</monospace> | Class discussion threads. Assume this class supports discussions, but not yet loaded, if this is true and that the class has no threads if this is an empty array. For LMSs that do not support discussions, either keep it undefined or set it to false. |
 | [pages] | [<monospace>Array.&lt;Page&gt;</monospace>](#Page) \| <monospace>boolean</monospace> | Class pages. Assume this class supports the pages feature, but not yet loaded, if true and that the class has no pages if this is an empty array. For LMSs that do not support pages, either keep it undefined or set it to false. |
 | [newDiscussionThreadURL] | <monospace>string</monospace> | A URL the user can visit to create a new discussion thread in this class |
 | [syllabus] | <monospace>string</monospace> | Class syllabus HTML |
+| [homepage] | <monospace>boolean</monospace> | True if the class has a homepage. If a class has a homepage, dtpsLMS.fetchHomepage must be implemented. |
 | [description] | <monospace>string</monospace> | Class description HTML |
 | [numStudents] | <monospace>number</monospace> | Number of students in the class |
 | [term] | <monospace>string</monospace> | Class term |

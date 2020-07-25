@@ -102,6 +102,176 @@
 
         
                 
+<h4 class="name" id="Announcement">Announcement</h4>
+
+
+
+
+<div class="description">
+    Defines announcement objects in DTPS
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Title of the announcement</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>postedAt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Date">Date</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Date when the announcement was posted</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>body</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Announcement content</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line1024">line 1024</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
 <h4 class="name" id="Assignment">Assignment</h4>
 
 
@@ -739,7 +909,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line782">line 782</a>
+        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line982">line 982</a>
     </li></ul></dd>
     
 
@@ -902,7 +1072,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line805">line 805</a>
+        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line1032">line 1032</a>
     </li></ul></dd>
     
 
@@ -1118,6 +1288,40 @@
 
         <tr>
             
+                <td class="name"><code>modules</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#Module">Module</a>></span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Class modules. Assume this class supports the modules feature, but is not yet loaded, if this is true and that the class has no modules if this is an empty array. For LMSs that do not support modules, either keep it undefined or set it to false.</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>discussions</code></td>
             
 
@@ -1242,6 +1446,37 @@
             
 
             <td class="description last">Class syllabus HTML</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>homepage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">True if the class has a homepage. If a class has a homepage, dtpsLMS.fetchHomepage must be implemented.</td>
         </tr>
 
     
@@ -1621,7 +1856,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.js.html">core.js</a>, <a href="core.js.html#line1470">line 1470</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line1609">line 1609</a>
     </li></ul></dd>
     
 
@@ -1883,7 +2118,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line825">line 825</a>
+        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line1052">line 1052</a>
     </li></ul></dd>
     
 
@@ -1955,7 +2190,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.js.html">core.js</a>, <a href="core.js.html#line1457">line 1457</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line1593">line 1593</a>
     </li></ul></dd>
     
 
@@ -2269,7 +2504,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line450">line 450</a>
+        <a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line480">line 480</a>
     </li></ul></dd>
     
 
@@ -2521,7 +2756,484 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line440">line 440</a>
+        <a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line470">line 470</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Module">Module</h4>
+
+
+
+
+<div class="description">
+    Defines module objects in DTPS
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Title of the module</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Module ID</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>collapsed</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">True if the module is collapsed, false otherwise. undefined or null if this module does not support collapsing.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>items</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#ModuleItem">ModuleItem</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">An array of items for this module.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line1005">line 1005</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="ModuleItem">ModuleItem</h4>
+
+
+
+
+<div class="description">
+    Defines module items in DTPS
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Either "assignment", "page", "discussion", "url", "embed", or "header".</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Required for URL and header items, and can be used to override the title of assignment, page, and discussion items.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Required for assignment, page, and discussion items.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Required for URL and embed items.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>indent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Indent level</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line1014">line 1014</a>
     </li></ul></dd>
     
 
@@ -2773,7 +3485,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line462">line 462</a>
+        <a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line492">line 492</a>
     </li></ul></dd>
     
 
@@ -3118,7 +3830,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line812">line 812</a>
+        <a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line1039">line 1039</a>
     </li></ul></dd>
     
 
@@ -3175,6 +3887,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -3200,6 +3914,12 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+                </td>
+            
 
             
 
@@ -3222,6 +3942,12 @@
             
             </td>
 
+            
+                <td class="attributes">
+                
+
+                
+                </td>
             
 
             
@@ -3246,10 +3972,105 @@
             </td>
 
             
+                <td class="attributes">
+                
+
+                
+                </td>
+            
 
             
 
             <td class="description last">User photo URL</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>children</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#User">User</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">[ONLY FOR DTPS.USER] Array of child users. If this is defined, the user is treated as a parent account. Sub-children are not allowed.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">[ONLY FOR DTPS.USER] Automatically managed by DTPS. True if the user is a parent account.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lmsID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">[ONLY FOR DTPS.USER] Automatically managed by DTPS. This is the user ID that all LMS web requests should use. Can change when a parent account changes the selected child.</td>
         </tr>
 
     
@@ -3288,7 +4109,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core.js.html">core.js</a>, <a href="core.js.html#line1462">line 1462</a>
+        <a href="core.js.html">core.js</a>, <a href="core.js.html#line1598">line 1598</a>
     </li></ul></dd>
     
 
@@ -3324,7 +4145,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Jun 07 2020 14:02:58 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Fri Jul 24 2020 19:25:37 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
