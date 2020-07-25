@@ -4,11 +4,11 @@ cmd /q /c terser init.js --source-map "url='/init.js.map'" -o ../v3.minified/ini
 
 cd scripts
 
-forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map \"url='/scripts/%%~I.js.map',includeSources\" -o ../../v3.minified/%%~I.js"
+forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map \"url='/scripts/%%~I.js.map',includeSources\" -o ../../v3.minified/scripts/%%~I.js"
 
 cd lms
 
-forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map \"url='/scripts/lms/%%~I.js.map',includeSources\" -o ../../../v3.minified/lms/%%~I.js"
+forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-map \"url='/scripts/lms/%%~I.js.map',includeSources\" -o ../../../v3.minified/scripts/lms/%%~I.js"
 
 cd ../..
 
