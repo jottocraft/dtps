@@ -297,14 +297,6 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     display: none;
 }
 
-body:not(.dark) .sidebar img {
-    filter: saturate(1.5) brightness(0.8) !important;
-}
-
-body:not(.dark) .sidenav .title img {
-    filter: saturate(1.5) brightness(0.9) !important;
-}
-
 .fc .fc-button-group>* {
     background: none !important;
 }
