@@ -24,9 +24,10 @@ if (window.location.hostname == "powerplus.app") {
         if (node.nodeType === 1 && node.tagName === 'BODY') {
           node.innerHTML = /*html*/`
             <div dtps="true" id="dtpsNativeOverlay" style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
-              <img dtps="true" style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/eiTE2sW.png" />
-              <div dtps="true" class="loader"></div>
-              <style dtps="true">body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.loader{position:absolute;top:450px;left:50%;transform:translate(-50%,-50%);width:50px;height:10px;background:#3498db;border-radius:5px;animation:load 1.8s ease-in-out infinite}.loader:after,.loader:before{position:absolute;display:block;content:"";animation:load 1.8s ease-in-out infinite;height:10px;border-radius:5px}.loader:before{top:-20px;left:10px;width:40px;background:#ef4836}.loader:after{bottom:-20px;width:35px;background:#f5ab35}@keyframes load{0%{transform:translateX(40px)}50%{transform:translateX(-30px)}100%{transform:translateX(40px)}}</style>
+              <img dtps="true" style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/7dDUVh2.png" />
+			  <br dtps="true" />
+              <div dtps="true" class="progress"><div dtps="true" class="indeterminate"></div></div>
+              <style dtps="true">body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;background:#262626;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}</style>
             </div>
           `;
         } else if (node.nodeType === 1 && node.tagName === 'HEAD') {
@@ -35,7 +36,7 @@ if (window.location.hostname == "powerplus.app") {
             <meta dtps="true" name="viewport" content="width=device-width, initial-scale=1">
             <meta dtps="true" charset="utf-8">
             <title dtps="true">Power+</title>
-            <meta dtps="true" name="description" content="A better way to manage coursework">
+            <meta dtps="true" name="description" content="A better UI for Canvas LMS">
             <meta dtps="true" name="author" content="jottocraft">
           `;
         } else if (node.nodeType === 1 && node.getAttribute("dtps") != "true") {
