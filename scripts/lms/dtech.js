@@ -47,6 +47,9 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
     //Run d.tech grade calculation algorithm (defined below)
     dtpsLMS.calculateGrade = function (course, assignments) {
+        //Temporarily disable grade calculation for the 2020-2021 school year
+        return;
+
         //Get d.tech grade calculation formula
         var formula = "sem2";
 
