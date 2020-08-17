@@ -244,25 +244,27 @@ body.light .dash .card .colorBar {
 body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     --flex-light: #b39a46; --flex-bg: #a78e3a; --flex-text: #ffffff; --flex-sectext: #e4d8ae; --flex-layer1: #867027; --flex-layer2: #726021; --flex-layer3: #5f4f1c; --theme-color: #6d6d6d; --theme-text-color: #b39a46; --links: #686868; --acrylic: black; }
 
-.dash.cal .recentGrade.card {
-    margin-right: 0px;
-    margin: 25px;
-    width: 100%;
+.recentGrade.card {
     padding: 20px;
     cursor: pointer;
 }
 
-.dash.cal .recentGrade h5 {
+.recentGrade h5 {
     color: var(--classColor);
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     margin: 0px;
-    font-weight: bold;
     font-size: 18px;
 }
 
-.dash.cal .recentGrade p {
+.recentGrade h5 span {
+    font-weight: bold;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 50px);
+}
+
+.recentGrade p {
     margin: 0px;
     margin-top: 7px;
     color: var(--secText);
@@ -1072,10 +1074,20 @@ body.dark .tabs.btns .btn:not(.active) {
     font-size: 1.2rem;
     margin: 0px !important;
     white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
     height: 24px;
     line-height: 24px;
+    overflow: hidden;
+}
+
+.classContent .card.assignment h4 span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.classContent .card.assignment.graded h4 span {
+    max-width: calc(100% - 50px);
 }
 
 .card.assignment .statusIcon {
@@ -1096,6 +1108,32 @@ body.dark {
 
 body:not(.dark) .background, body:not(.dark) .header h1 {
     --grad: linear-gradient(to bottom right, var(--darker), var(--background)) !important; color: black !important;
+}
+
+#whatIfResults {
+    display: none; 
+    border: 2px solid var(--cards);
+    background-color: var(--elements);
+    position: fixed;
+    top: 0;
+    width: 400px;
+    z-index: 999 !important;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.51);
+}
+
+#whatIfResults h5 {
+    font-weight: bold;
+    margin-bottom: 28px;
+}
+
+#whatIfResults .resultLetter {
+    color: gray;
+    font-weight: bold;
+    float: right;
+    display: inline-block;
+    font-size: 32px;
 }
 
 .assignmentGrade {
@@ -1260,7 +1298,7 @@ body.dashboard .background:before {
     transition: all 0.5s;
 }
 
-.dash .card {
+.dash .card.assignment {
     padding-left: 34px;
 }
 

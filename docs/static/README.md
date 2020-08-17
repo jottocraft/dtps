@@ -1,1 +1,0 @@
-The source code for the Power+ docs website is hosted [here](https://github.com/jottocraft/dtps/tree/master/docs)

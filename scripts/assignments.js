@@ -19,7 +19,7 @@ dtps.renderAssignment = function (assignment) {
     var HTML = /*html*/`
         <div 
             onclick="${`dtps.assignment('` + assignment.id + `', ` + assignment.class + `)`}" 
-            class="card graded assignment"
+            class="card ${scoreHTML ? "graded assignment" : "assignment"}"
             style="${'--classColor: ' + dtps.classes[assignment.class].color}"
         >
 
@@ -28,7 +28,7 @@ dtps.renderAssignment = function (assignment) {
 
             <!-- Assignment title and points -->
             <h4>
-                ${assignment.title}
+                <span>${assignment.title}</span>
 
                 <!-- Points display -->
                 ${scoreHTML ? `<div class="points">${scoreHTML}</div>` : ``}
@@ -270,10 +270,10 @@ dtps.renderUpdates = function () {
             `;
         } else if (update.type == "assignment") {
             var scoreHTML = dtps.renderAssignmentScore(update);
-            updatesHTML += `
+            updatesHTML += /*html*/`
                 <div onclick="dtps.assignment('${update.id}', ${update.class})" style="--classColor: ${dtps.classes[update.class].color};" class="card recentGrade">
                     <h5>
-                        ${update.title}
+                        <span>${update.title}</span>
 
                         <!-- Points display -->
                         ${scoreHTML ? `<div class="points">${scoreHTML}</div>` : ``}
@@ -373,20 +373,26 @@ dtps.classStream = function (classID, searchResults, searchText) {
     //Render assignments
     if (!assignments) {
         //Assignments are still loading
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
+            jQuery(".classContent").html(dtps.renderClassTools(classNum, "stream", searchText) + `<div class="spinner"></div>`);
+        }
     } else if (assignments.length == 0) {
         if (searchText) {
             //No search results
-            $(".classContent").html(/*html*/`
-                <div style="cursor: auto;" class="card assignment">
-                    <h4>No results</h4>
-                    <p>There weren't any search results</p>
-                    <button onclick="fluid.screen()" class="btn"><i class="material-icons">arrow_back</i> Back</button>
-                </div>
-            `);
+            if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
+                $(".classContent").html(/*html*/ dtps.renderClassTools(classNum, "stream", searchText) + `
+                    <div style="cursor: auto;" class="card assignment">
+                        <h4>No results</h4>
+                        <p>There weren't any search results</p>
+                        <button onclick="fluid.screen()" class="btn"><i class="material-icons">arrow_back</i> Back</button>
+                    </div>
+                `);
+            }
         } else {
             //This class doesn't have any assignments
-            $(".classContent").html(`<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
+            if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
+                $(".classContent").html(dtps.renderClassTools(classNum, "stream", searchText) + `<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
+            }
         }
     } else {
         //Sort assignments
@@ -415,14 +421,35 @@ dtps.classStream = function (classID, searchResults, searchText) {
         });
 
         //Render assignments
+        var prevAssignment = null;
         var streamHTML = assignments.map(assignment => {
-            return dtps.renderAssignment(assignment);
+            var divider = "";
+
+            if (!assignment.dueAt) {
+                if (prevAssignment && (prevAssignment !== "undated")) {
+                    divider = `<h5 style="margin: 75px 75px 10px 75px;font-weight: bold;">Undated Assignments</h5>`;
+                }
+
+                prevAssignment = "undated";
+            } else if (new Date(assignment.dueAt) < new Date()) {
+                if (prevAssignment && (prevAssignment !== "old")) {
+                    divider = `<h5 style="margin: 75px 75px 10px 75px;font-weight: bold;">Old Assignments</h5>`;
+                }
+
+                prevAssignment = "old";
+            } else {
+                prevAssignment = "upcoming";
+            }
+
+            return divider + dtps.renderAssignment(assignment);
         }).join("");
 
         //Add stream header with class info buttons and search box
         streamHTML = dtps.renderClassTools(classNum, "stream", searchText) + streamHTML;
 
-        $(".classContent").html(streamHTML);
+        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
+            $(".classContent").html(streamHTML);
+        }
     }
 }
 
@@ -466,7 +493,7 @@ dtps.assignment = function (id, classNum) {
                                 ${rubricItem.score ? rubricItem.scoreName || "" : "Not assessed"}
 
                                 <div class="points">
-                                    <p class="earned">${rubricItem.score || ""}</p>
+                                    <p class="earned">${rubricItem.score || "-"}</p>
                                     <p class="possible">${"/" + rubricItem.value}</p>
                                 </div>
                             </p>
@@ -526,7 +553,7 @@ dtps.assignment = function (id, classNum) {
                 ${assignment.category ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">category</i> Category: ${assignment.category}</p>` : ""}
                 ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">adjust</i> ${rubricItem.title}</p>`; }).join("") : ""}
                 <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">class</i> Class: ${dtps.classes[assignment.class].subject}</p>
-                <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">bug_report</i> Assignment ID: ${assignment.id}</p>
+                <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">code</i> Assignment ID: ${assignment.id}</p>
 
                 <br />
                 <div class="row">
@@ -588,7 +615,9 @@ dtps.moduleStream = function (classID) {
     }
 
     //Show loading indicator
-    jQuery(".classContent").html(`<div class="spinner"></div>`);
+    if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
+        jQuery(".classContent").html(dtps.renderClassTools(classNum, "modules") + `<div class="spinner"></div>`);
+    }
 
     new Promise(resolve => {
         if (dtps.classes[classNum].modules && (dtps.classes[classNum].modules !== true)) {
@@ -710,8 +739,14 @@ dtps.renderClassTools = function (num, type, searchText) {
             </div>
 
             ${dtps.classes[num].homepage ? /*html*/`
-                <div onclick="dtps.classHome(${num})" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer;">
+                <div onclick="dtps.classHome(${num})" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
                     <i style="line-height: 40px;" class="material-icons">home</i>
+                </div>` : ""
+        }
+
+        ${dtps.classes[num].videoMeetingURL ? /*html*/`
+                <div onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
+                    <i style="line-height: 40px;" class="material-icons">videocam</i>
                 </div>` : ""
         }
 
@@ -765,7 +800,7 @@ dtps.classInfo = function (num) {
         <p style="color: var(--secText)">${dtps.classes[num].description || ""}</p>
 
         <div class="assignmentChip"><i class="material-icons">group</i><span>${dtps.classes[num].numStudents} students</span></div>
-        <div class="assignmentChip"><i class="material-icons">bug_report</i><span>Class ID: ${dtps.classes[num].id}</span></div>
+        <div class="assignmentChip"><i class="material-icons">code</i><span>Class ID: ${dtps.classes[num].id}</span></div>
     
         <br />
 
@@ -858,7 +893,9 @@ dtps.gradebook = function (classID) {
     }
 
     //Show loading indicator
-    jQuery(".classContent").html(`<div class="spinner"></div>`);
+    if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "grades")) {
+        jQuery(".classContent").html(`<div class="spinner"></div>`);
+    }
 
     //Terminate function if the class doesn't have a letter grade or assignments
     if (!dtps.classes[classNum].letter || !dtps.classes[classNum].assignments) {
@@ -957,7 +994,9 @@ dtps.gradebook = function (classID) {
 
 
     //Render HTML
-    $(".classContent").html(gradeCalcSummary + assignmentHTML);
+    if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "grades")) {
+        $(".classContent").html(gradeCalcSummary + assignmentHTML);
+    }
 }
 
 //Fluid UI screen definitions

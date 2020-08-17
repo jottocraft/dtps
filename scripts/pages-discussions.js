@@ -105,25 +105,25 @@ dtps.loadThreadsList = function (courseID, defaultThread) {
 
                     ${discussionHTML}
                 `);
+
+                //Load default thread if provided
+                if (defaultThread) {
+                    dtps.loadThreadPosts(classNum, defaultThread);
+                }
+
+                //Add click event listeners for discussion threads
+                $(".sidebar .item:not(.back)").click(function (event) {
+                    //Show the selected thread as active
+                    $(this).siblings().removeClass("active");
+                    $(this).addClass("active");
+
+                    //Get thread ID from HTML attribute
+                    var postID = $(this).attr("data-threadID");
+
+                    //Load the thread
+                    dtps.loadThreadPosts(classNum, postID);
+                });
             }
-
-            //Load default thread if provided
-            if (defaultThread) {
-                dtps.loadThreadPosts(classNum, defaultThread);
-            }
-
-            //Add click event listeners for discussion threads
-            $(".sidebar .item:not(.back)").click(function (event) {
-                //Show the selected thread as active
-                $(this).siblings().removeClass("active");
-                $(this).addClass("active");
-
-                //Get thread ID from HTML attribute
-                var postID = $(this).attr("data-threadID");
-
-                //Load the thread
-                dtps.loadThreadPosts(classNum, postID);
-            });
         }
 
     }).catch(function (err) {
@@ -257,7 +257,9 @@ dtps.loadThreadPosts = function (classNum, threadID) {
         });
 
         //Render HTML
-        jQuery(".classContent").html(postHTML.join(""));
+        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
+            jQuery(".classContent").html(postHTML.join(""));
+        }
     }).catch(function (err) {
         dtps.error("Could not fetch discussion posts", "Caught promise rejection @ dtps.loadThreadPosts", err);
     });
@@ -335,8 +337,8 @@ dtps.loadPagesList = function (courseID, defaultPage) {
                 `;
             }).join("");
 
-             //Render discussion threads in the sidebar
-             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
+            //Render discussion threads in the sidebar
+            if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
                 jQuery(".sidebar .items").html(/*html*/`
                     <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
                         <span class="label">Classes</span>
@@ -404,7 +406,7 @@ dtps.loadPage = function (classNum, pageID) {
         //Store page content in the page object
         page.content = pageContentData;
 
-        if ((dtps.classes[dtps.selectedClass].id == dtps.classes[classNum].id) && (dtps.selectedContent == "pages")) {
+        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
             //Get computed background and text color to style the iFrame with
             var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
             var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");

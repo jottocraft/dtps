@@ -1,8 +1,9 @@
 @echo off
 
-cmd /q /c terser init.js --source-map "url='/init.js.map'" -o ../v3.minified/init.js
+echo.
+echo Minifying JavaScript...
 
-copy dtps.css ..\v3.minified\dtps.css
+call terser init.js --source-map "url='/init.js.map'" -o ../v3.minified/init.js
 
 cd scripts
 
@@ -14,4 +15,17 @@ forfiles /m *.js /c "cmd /q /c for %%I in (@fname) do terser %%~I.js --source-ma
 
 cd ../..
 
-echo done
+echo.
+echo Copying CSS for distribution...
+
+call copy dtps.css ..\v3.minified\dtps.css
+
+echo.
+echo Generating JSDoc Documentation...
+
+call jsdoc -r scripts -d ../v3.minified/docs -c ./docs/jsdoc.conf.json -t %APPDATA%\npm\node_modules\foodoc\template -R docs\README.md
+
+echo.
+echo Done
+
+pause
