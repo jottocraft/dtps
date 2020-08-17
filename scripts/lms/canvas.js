@@ -135,9 +135,6 @@ dtpsLMS.fetchClasses = function () {
                                     return 0;
                                 });
 
-                                //Add course num props
-                                courses.forEach((course, index) => course.num = index);
-
                                 resolve(courses);
                             },
                             error: function (err) {

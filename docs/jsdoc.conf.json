@@ -1,3 +1,13 @@
 {
-    "sourceType": "script"
+    "sourceType": "script",
+    "templates": {
+        "systemName": "Power+ Docs",
+        "systemSummary": "Reference documentation for the latest version of Power+",
+        "systemLogo": "../v3.minified/favicon.png",
+        "systemColor": "#b59032",
+        "copyright": "(c) 2018-2020 jottocraft. All rights reserved.",
+        "favicon": "../v3.minified/favicon.png",
+        "collapseSymbols": false,
+        "footer": "<img style='height: 32px; margin: 10px 0px;' src='https://cdn.jottocraft.com/images/footerImage.png' />"
+    }
 }

@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.0.0
+ * @version v3.0.1
  * 
  * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -33,8 +33,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  */
 var dtps = {
-    ver: 300,
-    readableVer: "v3.0.0",
+    ver: 301,
+    readableVer: "v3.0.1",
     classes: [],
     baseURL: String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2],
     unstable: window.localStorage.dtpsLoaderPref == "canary" || window.localStorage.dtpsLoaderPref == "debugging" || String(document.currentScript.src).includes("http://localhost"),
@@ -167,8 +167,8 @@ dtps.error = function (msg, devNotes, err) {
         if (devNotes) {
             formattedDevNotes = '<div style="font-size: 12px; color: var(--secText, gray); margin-top: 10px;">' + devNotes + '</div>';
         }
-        fluid.alert("Error", msg + formattedDevNotes, "error");
         console.error("[DTPS !!ERROR!!]", devNotes + ": ", err);
+        fluid.alert("Error", msg + formattedDevNotes, "error");
     }
 }
 
@@ -367,9 +367,11 @@ dtps.init = function () {
         return new Promise(resolve => {
             if (dtpsLMS.institutionSpecific && dtpsLMS.updateClasses) {
                 //Using an institution-specific script, make any nessasary changes and return updated classes
-                var updatedClasses = dtpsLMS.updateClasses(rawClasses);
-
-                resolve(updatedClasses);
+                dtpsLMS.updateClasses(rawClasses).then((updatedClasses) => {
+                    resolve(updatedClasses);
+                }).catch((e) => {
+                    reject(e);
+                });
             } else {
                 //No institution-specific script, return classes as-is
                 resolve(rawClasses);
@@ -378,6 +380,9 @@ dtps.init = function () {
     }).then(classData => {
         //Store classData to dtps.classes
         dtps.classes = classData;
+
+        //Add course num props
+        dtps.classes.forEach((course, index) => course.num = index);
 
         //Fetch JavaScript modules
         dtps.JS(() => {
@@ -449,9 +454,11 @@ dtps.init = function () {
                     return new Promise(resolve => {
                         if (dtpsLMS.institutionSpecific && dtpsLMS.updateAssignments) {
                             //Using an institution-specific script, make any nessasary changes and return updated assignments
-                            var updatedAssignments = dtpsLMS.updateAssignments(rawAssignments);
-
-                            resolve(updatedAssignments);
+                            dtpsLMS.updateAssignments(rawAssignments).then(updatedAssignments => {
+                                resolve(updatedAssignments);
+                            }).catch(e => {
+                                reject(e);
+                            });
                         } else {
                             //No institution-specific script, return assignments as-is
                             resolve(rawAssignments);
@@ -929,12 +936,17 @@ dtps.showLMSGradebook = function (classID) {
     }
 
     //Show loading indicator
-    jQuery(".classContent").html(`<div class="spinner"></div>`);
+    if ((dtps.selectedContent == "grades") && (dtps.selectedClass == classNum)) {
+        jQuery(".classContent").html(`<div class="spinner"></div>`);
+    }
 
     //Function to load gradebook HTML
     function renderGradebook() {
         dtpsLMS.gradebook(dtps.classes[classNum]).then(html => {
-            if (html) $(".classContent").html(html);
+            if (html && (dtps.selectedClass == classNum) && (dtps.selectedContent == "grades")) {
+                $(".classContent").html(html);
+                if (dtpsLMS.gradebookDidRender) dtpsLMS.gradebookDidRender(dtps.classes[classNum]);
+            }
         }).catch(function (err) {
             dtps.error("Could not load the gradebook", "Caught promise rejection @ dtps.showLMSGradebook", err);
         });
@@ -1458,7 +1470,7 @@ dtps.init();
 
 /**
  * @namespace dtpsLMS
- * @description Global DTPS LMS integration object. All LMS-related tasks, such as fetching data, are handled by this object. This is always loaded first. Please read the guide docs for instructions on implementing a custom LMS.
+ * @description Global DTPS LMS integration object. All LMS-related tasks, such as fetching data, are handled by this object. This is always loaded first.
  * @global
  * @property {string} name Full LMS name
  * @property {string} [shortName] Short LMS name
@@ -1571,6 +1583,13 @@ dtps.init();
 */
 
 /**
+* @name dtpsLMS.gradebookDidRender
+* @description [OPTIONAL] Called after the HTML returned by dtpsLMS.gradebook has rendered. Runs any initialization needed for the gradebook, such as enabling interactive elements or what-if grades.
+* @kind function
+* @param {Class} course Class the gradebook was rendered for
+*/
+
+/**
 * @name dtpsLMS.calculateGrade
 * @description [OPTIONAL] Calculates class grades with a custom grade calculation formula. Used for unique grading systems.
 * @kind function
@@ -1584,7 +1603,7 @@ dtps.init();
 * @description [OPTIONAL, INSTITUTION ONLY] This function can be implemented by institution-specific scripts to loop through and override assignment data returned by the LMS.
 * @kind function
 * @param {Assignment[]} assignments Original assignments array
-* @return {Assignment[]} Updated assignments array
+* @return {Promise<Assignment[]>} A promise that resolves to the updated assignments array
 */
 
 /**
@@ -1592,7 +1611,7 @@ dtps.init();
 * @description [OPTIONAL, INSTITUTION ONLY] This function can be implemented by institution-specific scripts to loop through and override class data returned by the LMS.
 * @kind function
 * @param {Class[]} classes Original classes array
-* @return {Class[]} Updated classes array
+* @return {Promise<Class[]>} A promise that resolves to the updated classes array
 */
 
 //Type definitions                        -------------------------------------------------------------------------------------
@@ -1638,4 +1657,5 @@ dtps.init();
 * @property {User} [teacher] Class teacher
 * @property {boolean} [hasGradebook] Automatically managed by DTPS. True if the class should show the gradebook tab.
 * @property {object} [gradeCalculation] Automatically managed by DTPS. If custom grade calculation is implemented, this will be the results from custom grade calculation returned by dtpsLMS.calculateGrade.
+* @property {string} [videoMeetingURL] The URL used to join this class' online meeting
 */
