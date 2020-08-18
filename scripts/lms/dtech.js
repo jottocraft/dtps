@@ -463,7 +463,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                         <br />
                         <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
                             style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">${dtps.gradebookExpanded ? "Show less" : "Show more"}</a>
-                        <a style="color: var(--secText, gray);">Using 2020-21 grade calculation</a>
+                        <a href="https://docs.google.com/document/d/1g4-aYZ_BS5_I4Ie64WGCwXeArl1K_pHbBbebDHra_sM/edit" style="color: var(--secText, gray);">Using 2020-21 grade calculation</a>
                     </div>
                 `;
                 } else {
