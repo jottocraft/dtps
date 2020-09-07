@@ -318,14 +318,16 @@ dtpsLMS.fetchModules = function (classID) {
                                         type: "page",
                                         title: item.title,
                                         id: item.page_url,
-                                        indent: item.indent
+                                        indent: item.indent,
+                                        url: item.html_url
                                     })
                                 } else if (item.type.toUpperCase() == "DISCUSSION") {
                                     moduleItems.push({
                                         type: "discussion",
                                         title: item.title,
                                         id: item.content_id,
-                                        indent: item.indent
+                                        indent: item.indent,
+                                        url: item.html_url
                                     })
                                 } else if (item.type.toUpperCase() == "EXTERNALURL") {
                                     moduleItems.push({
