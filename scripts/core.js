@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.0.1
+ * @version v3.0.2
  * 
  * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -17,6 +17,7 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @global
  * @namespace dtps
  * @property {number} ver Comparable version number
+ * @property {string} env DTPS enviornment ("prod" or "dev")
  * @property {string} readableVer Formatted semantic version number
  * @property {Class[]} classes DTPS classes array
  * @property {string} baseURL The base URL that DTPS is being loaded from
@@ -33,8 +34,9 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  */
 var dtps = {
-    ver: 301,
-    readableVer: "v3.0.1",
+    ver: 302,
+    readableVer: "v3.0.2",
+    env: window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2],
     unstable: window.localStorage.dtpsLoaderPref == "canary" || window.localStorage.dtpsLoaderPref == "debugging" || String(document.currentScript.src).includes("http://localhost"),
@@ -150,7 +152,7 @@ dtps.changelog = function (onlyIfNewVersion) {
  * @param {string} msg The debugging message to log
  */
 dtps.log = function (msg) {
-    console.debug("[DTPS] ", msg);
+    if (dtps.env == "dev") console.log("[DTPS]", msg);
 }
 
 
@@ -785,7 +787,7 @@ dtps.showClasses = function (override) {
             }
 
             if ((dtps.selectedContent == "moduleStream") && dtps.classes[dtps.selectedClass]) {
-                fluid.screen("modules", dtps.classes[dtps.selectedClass].id);
+                fluid.screen("moduleStream", dtps.classes[dtps.selectedClass].id);
             }
 
             if ((dtps.selectedContent == "grades") && dtps.classes[dtps.selectedClass]) {
@@ -1236,7 +1238,7 @@ dtps.renderLite = function () {
 	            <img src="https://powerplus.app/icon.svg" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
 	            <div style="vertical-align: middle; display: inline-block;">
                     <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>
-                    <p>${dtps.readableVer}</p>
+                    <p>${dtps.readableVer + (window.localStorage.dtpsLoaderPref ? ` <span style="font-size: 12px;">(${window.localStorage.dtpsLoaderPref})</span>` : "")}</p>
 	            </div>
             </div>
 
@@ -1246,6 +1248,11 @@ dtps.renderLite = function () {
             <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();" class="item">
                 <i class="material-icons">dashboard</i> Dashboard
             </div>
+            ${dtps.env == "dev" ? /*html*/`
+                <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();" class="item">
+                    <i class="material-icons">bug_report</i> Debugging
+                </div>
+            ` : ``}
             <div onclick="$('.abtpage').hide();$('.abtpage.about').show(); if ($('body').hasClass('sudo')) { $('.advancedOptions').show(); $('.advOp').hide(); } else { $('.advancedOptions').hide(); $('.advOp').show(); }" class="item abt">
                 <i class="material-icons">info</i> About
             </div>
@@ -1329,6 +1336,27 @@ dtps.renderLite = function () {
 
             </div>
 
+            ${dtps.env == "dev" ? /*html*/`
+                <div style="display: none;" class="abtpage debugging">
+                   <h5>Debugging</h5>
+                   <p>These settings are for development only and might break Power+. Use at your own risk.</p>
+
+                   <br />
+
+                   <div>
+                       <input id="dtpsDebuggingPort" value="${window.localStorage.dtpsDebuggingPort || ""}" placeholder="Debugging Port" />
+                       <button class="btn small" onclick="window.localStorage.setItem('dtpsDebuggingPort', $('#dtpsDebuggingPort').val())"><i class="material-icons">save</i> Save</button>
+                   </div>
+
+                   <br />
+
+                   <div>
+                       <input id="dtpsLMSOverride" value="${window.localStorage.dtpsLMSOverride || ""}" placeholder="LMS override" />
+                       <button class="btn small" onclick="window.localStorage.setItem('dtpsLMSOverride', $('#dtpsLMSOverride').val())"><i class="material-icons">save</i> Save</button>
+                   </div>
+                </div>
+            ` : ``}
+
             <div style="display: none;" class="abtpage about">
                 <h5>About</h5>
 
@@ -1351,10 +1379,12 @@ dtps.renderLite = function () {
                 </div>
 
                 <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
-                    <img src="${dtps.user.photoURL}" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px; border-radius: 50%;" />
+                    <div style="margin-top: 12px;">
+                        <img src="${dtps.user.photoURL}" style="height: 50px; margin-right: 10px; vertical-align: middle; border-radius: 50%;" />
 
-                    <div style="display: inline-block; vertical-align: middle;">
-                        <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">${dtps.user.name} <span style="font-size: 12px;">${dtps.user.id}</span></h4>
+                        <div style="display: inline-block; vertical-align: middle;">
+                            <h4 style="font-weight: bold; font-size: 32px; margin: 0px;">${dtps.user.name} <span style="font-size: 12px; line-height: 0px;">${dtps.user.id}</span></h4>
+                        </div>
                     </div>
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
@@ -1416,7 +1446,7 @@ dtps.renderLite = function () {
         </div>
 
         <div style="margin-top: 5px; display: inline-block; text-align: right; float: right;">
-            <div onclick="window.location.href = '/';" class="itemButton"><i class="material-icons">exit_to_app</i> Go to ${dtpsLMS.shortName || dtpsLMS.name}</div>
+            <a href="/" class="itemButton"><i class="material-icons">exit_to_app</i> Go to ${dtpsLMS.shortName || dtpsLMS.name}</a>
             ${dtps.unstable ? `<div onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="itemButton"><i class="material-icons">feedback</i> Feedback</div>` : ""}
             <div onclick="dtps.settings();" class="itemButton"><i class="material-icons">settings</i> Settings</div>
         </div>

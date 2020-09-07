@@ -147,19 +147,21 @@ dtps.masterStream = function () {
     dtps.renderUpdates();
 
     //Render upcoming assignments stream
-    dtps.renderUpcoming();
+    dtps.renderUpcoming(doneLoading);
 
     //Render calendar
     dtps.calendar();
 
     //Render due today
-    dtps.renderDueToday();
+    dtps.renderDueToday(doneLoading);
 }
 
 /**
  * Compiles and displays due today / to-do stream
+ * 
+ * @param {boolean} doneLoading True if all classes have finished loading their assignment lists
  */
-dtps.renderDueToday = function () {
+dtps.renderDueToday = function (doneLoading) {
     //Combine class stream arrays
     var combinedStream = [];
     if (dtps.classes) {
@@ -194,7 +196,11 @@ dtps.renderDueToday = function () {
 
     if (combinedStream.length == 0) {
         //Nothing due today
-        combinedHTML = `<p style="text-align: center;margin: 10px 25px 10px 75px; font-size: 18px;"><i class="material-icons">done</i> Nothing due today</p>`;
+        if (doneLoading) {
+            combinedHTML = `<p style="text-align: center;margin: 10px 25px 10px 75px; font-size: 18px;"><i class="material-icons">done</i> Nothing due today</p>`;
+        } else {
+            combinedHTML = ``;
+        }
     } else {
         //Add header
         combinedHTML = /*html*/`
@@ -553,7 +559,7 @@ dtps.assignment = function (id, classNum) {
                 ${assignment.category ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">category</i> Category: ${assignment.category}</p>` : ""}
                 ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">adjust</i> ${rubricItem.title}</p>`; }).join("") : ""}
                 <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">class</i> Class: ${dtps.classes[assignment.class].subject}</p>
-                <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">code</i> Assignment ID: ${assignment.id}</p>
+                ${dtps.env == "dev" ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">code</i> Assignment ID: ${assignment.id}</p>` : ""}
 
                 <br />
                 <div class="row">
@@ -648,8 +654,20 @@ dtps.moduleStream = function (classID) {
                 //Get module action
                 var action = "";
                 if (item.type == "assignment") action = "dtps.assignment('" + item.id + "', " + classNum + ")";
-                if (item.type == "page") action = "fluid.screen('pages', '" + classID + "|" + item.id + "')";
-                if (item.type == "discussion") action = "fluid.screen('discussions', '" + classID + "|" + item.id + "')";
+                if (item.type == "page") {
+                    if (dtps.classes[classNum].pages) {
+                        action = "fluid.screen('pages', '" + classID + "|" + item.id + "')";
+                    } else {
+                        action = "window.open('" + item.url + "')";
+                    }                 
+                }  
+                if (item.type == "discussion") {
+                    if (dtps.classes[classNum].discussions) {
+                        action = "fluid.screen('discussions', '" + classID + "|" + item.id + "')";
+                    } else {
+                        action = "window.open('" + item.url + "')";
+                    }
+                }
                 if (item.type == "url") action = "window.open('" + item.url + "')";
                 if (item.type == "header") action = "";
                 if (item.type == "embed") action = "dtps.showIFrameCard('" + item.url + "')";
@@ -682,6 +700,10 @@ dtps.moduleStream = function (classID) {
                 </div>
             `;
         });
+
+        if (data.length == 0) {
+            modulesHTML += `<div style="cursor: auto;" class="card assignment"><h4>No modules</h4><p>There aren't any modules in this class yet</p></div>`;
+        }
 
         //Render module HTML
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
@@ -800,7 +822,7 @@ dtps.classInfo = function (num) {
         <p style="color: var(--secText)">${dtps.classes[num].description || ""}</p>
 
         <div class="assignmentChip"><i class="material-icons">group</i><span>${dtps.classes[num].numStudents} students</span></div>
-        <div class="assignmentChip"><i class="material-icons">code</i><span>Class ID: ${dtps.classes[num].id}</span></div>
+        ${dtps.env == "dev" ? `<div class="assignmentChip"><i class="material-icons">code</i><span>Class ID: ${dtps.classes[num].id}</span></div>` : ``}
     
         <br />
 
@@ -1056,7 +1078,7 @@ fluid.externalScreens.gradebook = (courseID) => {
  * @property {string} type Either "assignment", "page", "discussion", "url", "embed", or "header".
  * @property {string} [title] Required for URL and header items, and can be used to override the title of assignment, page, and discussion items.
  * @property {string} [id] Required for assignment, page, and discussion items.
- * @property {string} [url] Required for URL and embed items.
+ * @property {string} [url] Required for URL and embed items. Required for discussion and page items if the class does not support the pages or discussions feature.
  * @property {number} [indent] Indent level
  */
 

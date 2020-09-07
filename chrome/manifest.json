@@ -2,15 +2,15 @@
   "manifest_version": 2,
 
   "name": "Power+",
-  "description": "A redesigned UI for Canvas LMS",
-  "version": "3.0.0",
+  "description": "A better UI for Canvas LMS",
+  "version": "3.0.1",
   "background": {
     "scripts": ["background.js"]
   },
   "content_scripts": [
     {
       "run_at": "document_start",
-      "matches": ["https://dtechhs.instructure.com/*", "https://powerplus.app/"],
+      "matches": ["https://*.instructure.com/*", "https://powerplus.app/"],
       "js": ["communicator.js"]
     }
   ],
