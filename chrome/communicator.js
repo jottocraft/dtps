@@ -25,7 +25,7 @@ if (window.location.hostname == "powerplus.app") {
           node.innerHTML = /*html*/`
             <div dtps="true" id="dtpsNativeOverlay" style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
               <img dtps="true" style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/7dDUVh2.png" />
-			  <br dtps="true" />
+			        <br dtps="true" />
               <div dtps="true" class="progress"><div dtps="true" class="indeterminate"></div></div>
               <style dtps="true">body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;background:#262626;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}</style>
             </div>
@@ -72,13 +72,27 @@ if (window.location.hostname == "powerplus.app") {
     //Stop observer
     observer.disconnect();
 
+    //Determine LMS script to load
+    var lmsScript = null;
+    if (window.location.hostname.startsWith("dtechhs")) {
+      lmsScript = "dtech";
+    } else if (window.location.hostname.includes("instructure.com")) {
+      lmsScript = "canvas";
+    } else {
+      console.log("[DTPS CHROME]", "Could not find a valid LMS script for this site. Is Power+ supported on " + window.location.hostname + "?");
+      return;
+    }
+
+    //Check for debugging LMS overrides
+    if (window.localStorage.dtpsLMSOverride) lmsScript = window.localStorage.dtpsLMSOverride;
+
     //load Power+ script
     window.dtpsLoader = 4;
-    var script = "https://powerplus.app/scripts/lms/dtech.js";
+    var script = "https://powerplus.app/scripts/lms/" + lmsScript + ".js";
 
     //Check for debugging/canary scripts
-    var debuggingPath = window.localStorage.dtpsDebuggingPort ? "http://localhost:" + window.localStorage.dtpsDebuggingPort + "/scripts/lms/dtech.js" : null;
-    var canaryPath = window.localStorage.githubCanary ? "https://jottocraft.github.io/" + window.localStorage.githubCanary : null;
+    var debuggingPath = window.localStorage.dtpsDebuggingPort ? "http://localhost:" + window.localStorage.dtpsDebuggingPort + "/scripts/lms/" + lmsScript + ".js" : null;
+    var canaryPath = window.localStorage.githubCanary ? "https://jottocraft.github.io/" + window.localStorage.githubCanary + "/scripts/lms/" + lmsScript + ".js" : null;
 
     //Check for version preference
     if (debuggingPath && (window.localStorage.dtpsLoaderPref == "debugging")) {
@@ -98,7 +112,7 @@ if (window.location.hostname == "powerplus.app") {
       console.log("[DTPS CHROME] Failed to load debugging script. Falling back to production.");
       window.localStorage.dtpsLoaderPref = "prod";
       var ss = document.createElement("script");
-      ss.src = "https://powerplus.app/scripts/lms/dtech.js";
+      ss.src = "https://powerplus.app/scripts/lms/" + lmsScript + ".js";
       ss.async = false;
       ss.setAttribute("dtps", "true");
       document.documentElement.appendChild(ss);
@@ -110,19 +124,25 @@ if (window.location.hostname == "powerplus.app") {
   console.log("[DTPS Chrome] Redirecting after login...")
   window.location.href = "/power+"
 } else {
+  var releaseType = null;
+  if (window.localStorage.dtpsLoaderPref == "debugging") releaseType = "DEBUG";
+  if (window.localStorage.dtpsLoaderPref == "canary") releaseType = "CANARY";
+
   const observer = new MutationObserver(mutations => {
     mutations.forEach(({ addedNodes }) => {
       addedNodes.forEach(node => {
         //Power+ button
         if (node.nodeType === 1 && node.id == "menu") {
-          node.insertAdjacentHTML("beforeend", `<li class="ic-app-header__menu-list-item">
-            <a href="/power+" style="cursor: pointer;" class="ic-app-header__menu-list-link">
-              <div class="menu-item-icon-container" aria-hidden="true">
-                  <img src="https://powerplus.app/whiteOutline.png" class="ic-icon-svg">
-              </div>
-              <div class="menu-item__text" style="font-size: 14px;">Power+</div>
-            </a>
-          </li>`)
+          node.insertAdjacentHTML("beforeend", /*html*/`
+            <li class="menu-item ic-app-header__menu-list-item ">
+              <a id="global_nav_dtps_link" role="button" href="/power+" class="ic-app-header__menu-list-link">
+                <div class="menu-item-icon-container" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--dtps" version="1.1" viewBox="0 0 48 63.999"><path d="m5.333 0c-2.946 0-5.333 2.4-5.333 5.333v48c0 2.933 2.388 5.333 5.333 5.333h5.333v5.333l6.667-5.333 6.667 5.333v-5.333h18.667c2.947 0 5.333-2.4 5.333-5.333v-2.667c0 2.933-2.387 5.333-5.333 5.333h-18.667v-5.333h-13.333v5.333h-4c-2.209 0-4-1.867-4-4 0-2.4 1.791-4 4-4h36c2.947 0 5.333-2.4 5.333-5.333v-37.333c0-2.933-2.387-5.333-5.333-5.333h-37.333z"/></svg>
+                </div>
+                <div class="menu-item__text">${releaseType || "Power+"}</div>
+              </a>
+            </li>
+          `);
         }
       })
     })

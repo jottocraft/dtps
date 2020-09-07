@@ -1008,30 +1008,6 @@ body.dark .tabs.btns .btn:not(.active) {
     border-color: #b7630a;
 }
 
-.badge.dev {
-    color: #0090ff;
-    background-color: transparent !important;
-    margin: 0px !important;
-}
-
-.badge.sudo {
-    color: #d64c0c;
-    background-color: transparent !important;
-    margin: 0px !important;
-}
-
-.badge.marketer {
-    color: var(--secText);
-    background-color: transparent !important;
-    margin: 0px !important;
-}
-
-.badge.contributor {
-    color: #20da61;
-    background-color: transparent !important;
-    margin: 0px !important;
-}
-
 .weight.parent {
     padding: 0px !important;
     overflow: visible;
@@ -1335,6 +1311,7 @@ body.titlebar .items.toolbar {
     margin: 0px 4px;
     border-radius: 12px;
     cursor: pointer;
+    color: var(--text);
 }
 
 .items.toolbar .itemButton i {
