@@ -38,7 +38,7 @@ var dtps = {
     readableVer: "v3.0.3",
     env: window.jottocraftSatEnv || "prod",
     classes: [],
-    baseURL: String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2],
+    baseURL: document.currentScript.src ? (String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2]) : "https://powerplus.app",
     unstable: window.localStorage.dtpsLoaderPref == "canary" || window.localStorage.dtpsLoaderPref == "debugging" || String(document.currentScript.src).includes("http://localhost"),
     gradebookExpanded: false,
     updates: [],
