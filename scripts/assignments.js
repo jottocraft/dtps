@@ -270,7 +270,7 @@ dtps.renderUpdates = function () {
         if (update.type == "announcement") {
             updatesHTML += /*html*/`
                 <div onclick="$(this).toggleClass('open');" style="cursor: pointer; padding: 20px; --classColor: ${dtps.classes[update.class].color};" class="announcement card">
-                    <div class="className">${dtps.classes[update.class].subject}</div>
+                    <div class="className">${update.title}</div>
                     ${update.body}
                 </div>
             `;
@@ -563,7 +563,7 @@ dtps.assignment = function (id, classNum) {
 
                 <br />
                 <div class="row">
-                    <div class="btn small outline" onclick="window.open('${assignment.url}')"><i class="material-icons">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</div>
+                    ${assignment.url ? `<div class="btn small outline" onclick="window.open('${assignment.url}')"><i class="material-icons">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</div>` : ``}
                 </div>
             </div>
 
@@ -821,7 +821,7 @@ dtps.classInfo = function (num) {
         <h4 style="font-weight: bold;">${dtps.classes[num].name}</h4>
         <p style="color: var(--secText)">${dtps.classes[num].description || ""}</p>
 
-        <div class="assignmentChip"><i class="material-icons">group</i><span>${dtps.classes[num].numStudents} students</span></div>
+        ${dtps.classes[num].numStudents ? `<div class="assignmentChip"><i class="material-icons">group</i><span>${dtps.classes[num].numStudents} students</span></div>` : ``}
         ${dtps.env == "dev" ? `<div class="assignmentChip"><i class="material-icons">code</i><span>Class ID: ${dtps.classes[num].id}</span></div>` : ``}
     
         <br />
@@ -1047,7 +1047,7 @@ fluid.externalScreens.gradebook = (courseID) => {
 * @property {string} [body] HTML of the assignment's body
 * @property {string} id Assignment ID
 * @property {Date} [dueAt] Assignment due date
-* @property {string} url Assignment URL
+* @property {string} [url] Assignment URL
 * @property {AssignmentFeedback[]} [feedback] Feedback / private comments for this assignment
 * @property {User} [grader] Assignment grader
 * @property {boolean} [turnedIn] True if the assignment is turned in
@@ -1101,13 +1101,13 @@ fluid.externalScreens.gradebook = (courseID) => {
 * @typedef {Object} RubricItem
 * @description Defines rubric item objects in DTPS
 * @property {string} title Title of the rubric item
-* @property {string} id Rubric item ID (does NOT have to be unique)
+* @property {string} id Rubric item ID (only needs to be unique to this assignment)
 * @property {number} value Total amount of points possible
 * @property {string} [outcome] The ID of the outcome this rubric item is assessing. This is only used for grade calculation.
 * @property {string} [description] Rubric item description
 * @property {number} [score] Rubric assessment score in points
 * @property {string} [scoreName] Rubric assessment score name
-* @property {string} [scoreColor] Score color in CSS color format
+* @property {string} [color] Score color in a CSS color format
 */
 
 /**
