@@ -5,8 +5,9 @@
 <br />
 
 <p align="center">
-  <img src="https://img.shields.io/github/release/jottocraft/dtps.svg" />
-  <img src="https://img.shields.io/website/https/powerplus.app.svg?label=server%20status" />
+  <a href="https://github.com/jottocraft/dtps/releases/latest"><img src="https://img.shields.io/github/release/jottocraft/dtps.svg" /></a>
+  <a href="https://powerplus.app"><img src="https://img.shields.io/website/https/powerplus.app.svg?label=server%20status" /></a>
+  <a href="https://powerplus.app/docs"><img src="http://inch-ci.org/github/jottocraft/dtps.svg?branch=master&style=shields" /></a>
 </p>
 
 <p align="center">
