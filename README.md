@@ -7,7 +7,6 @@
 <p align="center">
   <img src="https://img.shields.io/github/release/jottocraft/dtps.svg" />
   <img src="https://img.shields.io/website/https/powerplus.app.svg?label=server%20status" />
-  <img src="https://img.shields.io/chrome-web-store/stars/pakgdifknldaiglefmpkkgfjndemfapo.svg" />
 </p>
 
 <p align="center">
