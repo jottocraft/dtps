@@ -1,4 +1,3 @@
 node_modules
-docs/build
-output
+build
 chrome/chrome.zip
