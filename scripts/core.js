@@ -19,7 +19,7 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {number} ver Comparable version number
  * @property {string} env DTPS enviornment ("prod" or "dev")
  * @property {string} readableVer Formatted semantic version number
- * @property {Class[]} classes DTPS classes array
+ * @property {Class[]} classes Array of classes the current user is in
  * @property {string} baseURL The base URL that DTPS is being loaded from
  * @property {boolean} unstable This is true if loading an unstable version of DTPS
  * @property {boolean} gradebookExpanded True if gradebook details (Show more...) is open. Used in the generic gradebook and may be used in custom gradebook implementations.
