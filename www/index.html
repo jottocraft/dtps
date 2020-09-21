@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <link rel="shortcut icon" href="/favicon.png" type="image/png">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Extended" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/fluid/v4.min.css"
+        media="screen,projection" />
+
+    <!--OpenGraph -->
+    <meta property="og:url" content="https://powerplus.app" />
+    <meta property="og:title" content="Power+" />
+    <meta property="og:description" content="A better UI for Canvas LMS" />
+    <meta property="og:image" content="https://powerplus.app/logo.png" />
+
+    <title>Power+</title>
+
+    <meta charset="utf-8">
+    <meta name="description" content="A better UI for Canvas LMS">
+    <meta name="author" content="jottocraft">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script async src="https://cdn.jottocraft.com/fluid/assets/tinycolor.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jottocraft.com/fluid/v4.min.js"></script>
+
+    <style>
+        /* Header */
+        #header {
+            color: var(--elementText);
+            padding: 100px;
+            padding-bottom: 120px;
+            margin-bottom: 125px;
+            text-align: center;
+        }
+
+        #header h1 {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .title img {
+            height: 98px;
+            vertical-align: middle;
+            margin-right: 22px;
+        }
+
+        #header .title {
+            margin-bottom: 40px;
+        }
+
+        /* Content Blocks */
+        .block {
+            overflow: hidden;
+            margin-bottom: 200px;
+        }
+
+        .container .block .description>*:nth-child(1) {
+            margin-top: 0px;
+        }
+
+        .container .block .description>*:nth-last-child(1) {
+            margin-bottom: 0px;
+        }
+
+        .container .block .description p {
+            font-size: 20px;
+            color: var(--lightText);
+        }
+
+        /* Large content blocks */
+        .container .block:not(.small)>img {
+            width: 28%;
+            max-width: 250px;
+        }
+
+        .container .block:not(.small)>.description {
+            overflow: hidden;
+        }
+
+        .container .block:not(.small):nth-child(odd)>img,
+        .container .block.left:not(.small):nth-child(even)>img {
+            float: left;
+            margin-right: 48px;
+            margin-left: 0;
+        }
+
+        .container .block:not(.small):nth-child(even)>img,
+        .container .block.right:not(.small):nth-child(odd)>img {
+            float: right;
+            margin-left: 48px;
+            margin-right: 0;
+        }
+
+        .container .block:not(.small) .description h3 {
+            font-size: 2.6rem;
+        }
+
+        /* Small content blocks */
+        .container .block.small .description h3 {
+            font-size: 2.2rem;
+        }
+
+        .container .block.small {
+            text-align: center;
+            display: inline-block;
+        }
+
+        .container .block.small img {
+            height: 150px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+	<script>
+		$(document).ready(() => {
+			if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+				if ($("#dtpsInstallBtn").text().includes("extension")) {
+					$("#dtpsInstallBtn").attr("onclick", "window.location.href = 'https://powerplus.app/firefox.xpi';");
+				}
+			}
+		})
+	</script>
+
+    <div id="header">
+        <div class="content">
+            <div class="title">
+                <img src="/icon.svg" />
+                <h1>Power+</h1>
+            </div>
+            <div class="row">
+                <button id="dtpsInstallBtn"
+                    onclick="window.location.href = 'https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo';"
+                    class="btn"><i class="material-icons">extension</i> Add the extension</button>
+                <button class="btn outline"
+                    onclick="window.location.href = '/demo';"><i
+                        class="material-icons">exit_to_app</i> Demo</button>
+                <button class="btn outline" onclick="window.location.href = 'https://github.com/jottocraft/dtps';"><i
+                        class="material-icons">code</i> Source code</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="block small six columns">
+                <img src="assets/todo.svg" />
+                <div class="description">
+                    <h3>Manage your coursework</h3>
+                    <p>Power+ shows you upcoming assignments, a calendar, and updates at a glance</p>
+                </div>
+            </div>
+
+            <div class="block small six columns">
+                <img src="assets/calculator.svg" />
+                <div class="description">
+                    <h3>Grade Calculation</h3>
+                    <p>Power+ calculates your CBL class grades and lets you test what-if grades</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="block left">
+            <img src="assets/server.svg" />
+            <div class="description">
+                <h3>Privacy</h3>
+                <ul>
+                    <li>Power+ does not collect any personal information</li>
+                    <li>Power+ gets data directly from Canvas to your computer without being processed by a Power+
+                        server or a 3rd party</li>
+                    <li>Grades are calculated on-device</li>
+                    <li>Prefrences and grade history are stored on-device</li>
+                    <li>Power+'s code is open-source and hosted directly from <a
+                            href="https://github.com/jottocraft/dtps">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <br /><br /><br /><br />
+    <div style="text-align: center; padding: 50px 0px;">
+        <img style="height: 45px; margin-right: 20px; vertical-align: middle;"
+            src="https://cdn.jottocraft.com/images/footerImage.png" />
+        <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
+        <p>(c) jottocraft 2018-2020. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source
+                code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a></p>
+    </div>
+
+
+</body>
+
+</html>

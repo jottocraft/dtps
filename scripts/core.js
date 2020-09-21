@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.0.3
+ * @version v3.0.4
  * 
  * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -34,8 +34,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  */
 var dtps = {
-    ver: 303,
-    readableVer: "v3.0.3",
+    ver: 304,
+    readableVer: "v3.0.4",
     env: window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: document.currentScript.src ? (String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2]) : "https://powerplus.app",

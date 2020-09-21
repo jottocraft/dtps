@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   fill="#1a1a1a"
+   version="1.1"
+   viewBox="8 0 49 65.539238"
+   x="0px"
+   y="0px"
+   id="svg6"
+   sodipodi:docname="new power+ prototype.svg"
+   width="49"
+   height="65.539238"
+   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
+  <metadata
+     id="metadata12">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>book-bookmark</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs10">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient841">
+      <stop
+         style="stop-color:#e3ba4b;stop-opacity:1"
+         offset="0"
+         id="stop837" />
+      <stop
+         style="stop-color:#f5c669;stop-opacity:1"
+         offset="1"
+         id="stop839" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient841"
+       id="linearGradient843"
+       x1="7.0668874"
+       y1="-1.5925453"
+       x2="57.066414"
+       y2="65.191643"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0.5,0.5)" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:document-rotation="0"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1368"
+     inkscape:window-height="850"
+     id="namedview8"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="7.501776"
+     inkscape:cx="24.96859"
+     inkscape:cy="35.965696"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg6" />
+  <title
+     id="title2">book-bookmark</title>
+  <path
+     d="M 13.833,0.5 C 10.887,0.5 8.5,2.9 8.5,5.833 v 48 c 0,2.933 2.388,5.333 5.333,5.333 h 5.333 v 5.333 l 6.667,-5.333 6.667,5.333 v -5.333 h 18.667 c 2.947,0 5.333,-2.4 5.333,-5.333 v -2.667 c 0,2.933 -2.387,5.333 -5.333,5.333 H 32.5 V 51.166 H 19.167 v 5.333 h -4 c -2.209,0 -4,-1.867 -4,-4 0,-2.4 1.791,-4 4,-4 h 36 c 2.947,0 5.333,-2.4 5.333,-5.333 V 5.833 C 56.5,2.9 54.113,0.5 51.167,0.5 H 13.834 Z"
+     id="path4"
+     style="fill:url(#linearGradient843);fill-opacity:1;stroke:#daaf3c;stroke-opacity:1" />
+</svg>
