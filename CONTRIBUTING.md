@@ -17,7 +17,7 @@ You can read the Power+ docs at [powerplus.app/docs](https://powerplus.app/docs)
 
 ## Development Environment
 
-To get Power+ up and running locally, you'll need git and node installed on your system. When the server is ready, open Power+ and go to Settings -> About -> Show Advanced Options -> Load from localhost and type in the port the server is running on (the default is 2750).
+To get Power+ up and running locally, you'll need git and node installed on your system.
 
 ```bash
 git clone https://github.com/jottocraft/dtps.git dtps
@@ -26,4 +26,9 @@ npm install
 npm start
 ```
 
+When the server is ready, open Power+ and go to Settings -> About -> Show Advanced Options -> Load from localhost and type in the port the server is running on (the default is 2750). Then, reload Power+ and go to Settings -> Prerelease testing and select "Debugging". This will make Power+ load from the local server instead of the live version the next time you reload.
+
 ## NPM scripts
+- `start` Starts an HTTP server for testing Power+ locally
+- `build` Minifies Power+ and generates docs into the build folder for deployment
+- `deploy` Runs the build script, then deploys Power+ to the gh-pages branch for hosting
