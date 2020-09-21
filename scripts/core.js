@@ -39,7 +39,7 @@ var dtps = {
     readableVer: "v3.0.4",
     env: window.localStorage.dtpsLoaderPref == "debugging" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
-    baseURL: document.currentScript.src ? (String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2]) : "https://powerplus.app",
+    baseURL: document.currentScript.src ? document.currentScript.src.split("/scripts/core.js")[0] : "https://powerplus.app",
     unstable: window.localStorage.dtpsLoaderPref == "canary" || window.localStorage.dtpsLoaderPref == "debugging" || String(document.currentScript.src).includes("http://localhost"),
     gradebookExpanded: false,
     updates: [],
@@ -373,7 +373,20 @@ dtps.init = function () {
     //Fetch remote config
     new Promise((r) => {
         jQuery.getJSON('https://project-dtps.firebaseio.com/config.json', (remoteConfig) => {
-            if (remoteConfig) Object.assign(dtps.remoteConfig, remoteConfig);
+            if (remoteConfig) {
+                Object.keys(remoteConfig).forEach(k => {
+                    var val = remoteConfig[k];
+
+                    if ((dtps.env == "dev") && window.localStorage.getItem("dtpsRemoteConfig-" + k)) {
+                        val = window.localStorage.getItem("dtpsRemoteConfig-" + k);
+
+                        if (val == "true") val = true;
+                        if (val == "false") val = false;
+                    }
+
+                    dtps.remoteConfig[k] = val;
+                });
+            }
             r();
         }).fail(r);
     }).then(() => {
@@ -1200,7 +1213,7 @@ dtps.render = function () {
         <!-- Header with class name and tabs -->
         <div class="header">
             <p id="timeRemaining" style="position: absolute;top:${dtps.unstable ? "2px" : "14px"};margin-left: 20px;"></p>
-            ${dtps.unstable ? `<p style="position: absolute;top: 45px;margin-left: 20px; color: #ff6e6e; background-color: black; font-size: 12px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</p>` : ""}
+            ${dtps.unstable ? `<p style="position: absolute;top: 45px;margin-left: 20px; color: red;font-weight: bold;background-color: black; font-size: 12px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</p>` : ""}
         
             <h2 id="headText">Dashboard</h2>
         
@@ -1305,7 +1318,7 @@ dtps.renderLite = function () {
 
         <div style="min-height: 100%" class="content">
             <div class="abtpage settings">
-                <h5>Settings</h5>
+                <h5><b>Settings</b></h5>
                 
                 <br />
                 <p>Theme</p>
@@ -1370,7 +1383,7 @@ dtps.renderLite = function () {
             </div>
 
             <div style="display: none;" class="abtpage dashboard">
-                <h5>Dashboard</h5>
+                <h5><b>Dashboard</b></h5>
                 <p>You can rearrange the items shown on the dashboard by dragging them below. You might have to reload Power+ for changes to take effect.</p>
 
                 <br />
@@ -1383,7 +1396,7 @@ dtps.renderLite = function () {
 
             ${dtps.env == "dev" ? /*html*/`
                 <div style="display: none;" class="abtpage debugging">
-                   <h5>Debugging</h5>
+                   <h5><b>Debugging</b></h5>
                    <p>These settings are for development only and might break Power+. Use at your own risk.</p>
 
                    <br />
@@ -1393,17 +1406,28 @@ dtps.renderLite = function () {
                        <button class="btn small" onclick="window.localStorage.setItem('dtpsDebuggingPort', $('#dtpsDebuggingPort').val())"><i class="material-icons">save</i> Save</button>
                    </div>
 
-                   <br />
-
                    <div>
                        <input id="dtpsLMSOverride" value="${window.localStorage.dtpsLMSOverride || ""}" placeholder="LMS override" />
                        <button class="btn small" onclick="window.localStorage.setItem('dtpsLMSOverride', $('#dtpsLMSOverride').val())"><i class="material-icons">save</i> Save</button>
                    </div>
+
+                   <br />
+
+                   <h5>Remote config overrides</h5>
+                   <button onclick="Object.keys(dtps.remoteConfig).forEach(k => window.localStorage.removeItem('dtpsRemoteConfig-' + k));" class="btn small"><i class="material-icons">cancel</i> Clear</button>
+                   <br /><br />
+                   ${Object.keys(dtps.remoteConfig).map(k => (`
+                        <div>
+                            <p>${k} ${window.localStorage.getItem("dtpsRemoteConfig-" + k) ? " <b>(overridden)</b>" : ""}</p>
+                            <input value="${dtps.remoteConfig[k]}" placeholder="Value" />
+                            <button class="btn small" onclick="window.localStorage.setItem('dtpsRemoteConfig-${k}', $(this).siblings('input').val())"><i class="material-icons">save</i> Save</button>
+                        </div>
+                    `)).join("")}
                 </div>
             ` : ``}
 
             <div style="display: none;" class="abtpage about">
-                <h5>About</h5>
+                <h5><b>About</b></h5>
 
                 <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
                     <img src="https://powerplus.app/icon.svg" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
@@ -1459,7 +1483,7 @@ dtps.renderLite = function () {
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
                         <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
-                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="window.localStorage.dtpsDebuggingPort = window.prompt('Please enter the port the server is running on'); alert('Reload the page for changes to take effect');"><i class="material-icons" style="vertical-align: middle">bug_report</i> Load from localhost</a>
+                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="window.localStorage.dtpsDebuggingPort = window.prompt('Please enter the port the server is running on'); alert('Reload the page for changes to take effect');"><i class="material-icons" style="vertical-align: middle">bug_report</i> Debug mode</a>
                     </div>
                 </div>
 
