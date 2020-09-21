@@ -9,7 +9,7 @@
  */
 
 //Get baseURL from the URL of this script
-var baseURL = document.currentScript.src.split('/')[0] + '//' + document.currentScript.src.split('/')[2];
+var baseURL = document.currentScript.src.split("/scripts/lms/dtech.js")[0];
 
 //Load Canvas integration
 jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
