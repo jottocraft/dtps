@@ -52,6 +52,12 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     //Update classes
     dtpsLMS.updateClasses = function (classes) {
         return new Promise((resolve, reject) => {
+            //Don't fetch videoMeetingURL if disable by remoteConfig
+            if (!dtps.remoteConfig.showVideoMeetingButton) {
+                resolve(classes);
+                return;
+            }
+
             var promises = [];
 
             //Create a new promise for each class
@@ -92,6 +98,9 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
     //Run d.tech grade calculation algorithm (defined below)
     dtpsLMS.calculateGrade = function (course, assignments) {
+        //If grade calculation is disabled, don't run grade calc
+        if (!dtps.remoteConfig.gradeCalculationEnabled) return;
+
         var formula = null;
 
         //Get d.tech grade calculation formula
@@ -506,7 +515,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                                 return /*html*/`
                                         <p id="outcome${assessment.outcome}assessment${aIndex}" class="${aIndex == outcome.droppedScore ? "dropped" : ""}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
                                             <span aIndex="${aIndex}" outcomeID="${outcomeID}"
-                                                style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: ${assessment.color}" class="editableScore" contenteditable>${assessment.score}</span>
+                                                style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: ${assessment.color}" class="editableScore" ${dtps.remoteConfig.allowWhatIfGrades ? `contenteditable` : ""}>${assessment.score}</span>
                                             <span class="assessmentTitle" style="cursor: pointer;" onclick="dtps.assignment('${assessment.assignmentID}', ${course.num});">${assessment.assignmentTitle}</span>
                                         </p>
                                     `;
@@ -514,10 +523,12 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                         }
                         </div>
 
-                        <p class="addWhatIf" outcomeID="${outcomeID}" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 16px; cursor: pointer;">
-                            <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
-                            Add a What-If grade
-                        </p>
+                        ${dtps.remoteConfig.allowWhatIfGrades ? /*html*/`
+                            <p class="addWhatIf" outcomeID="${outcomeID}" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 16px; cursor: pointer;">
+                                <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
+                                Add a What-If grade
+                            </p>
+                        ` : ""}
                     </div>
                 `);
                 })

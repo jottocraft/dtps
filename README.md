@@ -20,7 +20,6 @@ For users looking to install Power+, visit the Power+ website by clicking <a hre
 
 - [Documentation](https://powerplus.app/docs/)
 - [Contributing](CONTRIBUTING.md)
-- [Contact me](mailto:hello@jottocraft.com)
 
 ## Bookmarklet
 If you cannot use the Power+ [Chrome Extension](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo), you can add a bookmarklet instead to access Power+.

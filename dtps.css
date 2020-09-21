@@ -1262,7 +1262,7 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 }
 
 body.dashboard .background:before {
-    background: linear-gradient(to bottom right, var(--cards), var(--background));
+    background: var(--grad, linear-gradient(to bottom right, var(--cards), var(--background)));
 }
 
 .cover.image {
