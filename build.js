@@ -33,10 +33,13 @@ function minifyJS() {
     //Minify files function
     async function minifyFile(filePath) {
         //Run terser
-        var results = await minify(fs.readFileSync(filePath, "utf8"), {
+        var results = await minify({
+            [filePath]: fs.readFileSync(filePath, "utf8")
+        }, {
             sourceMap: {
                 url: "/" + filePath + ".map",
-                includeSources: true
+                includeSources: true,
+                root: "/"
             }
         });
 
