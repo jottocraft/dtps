@@ -32,11 +32,12 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} dashboardItems Array of items that can be shown on the dashboard
  * @property {DashboardItem[]} leftDashboard Items on the left side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
+ * @property {object} remoteConfig Configuration variables that can be remotely changed
  */
 var dtps = {
     ver: 304,
     readableVer: "v3.0.4",
-    env: window.jottocraftSatEnv || "prod",
+    env: window.localStorage.dtpsLoaderPref == "debugging" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: document.currentScript.src ? (String(document.currentScript.src).split('/')[0] + "//" + String(document.currentScript.src).split('/')[2]) : "https://powerplus.app",
     unstable: window.localStorage.dtpsLoaderPref == "canary" || window.localStorage.dtpsLoaderPref == "debugging" || String(document.currentScript.src).includes("http://localhost"),
@@ -68,7 +69,14 @@ var dtps = {
             size: 250,
             defaultSide: "right"
         }
-    ]
+    ],
+    remoteConfig: {
+        showFeedbackButton: false,
+        gradeCalculationEnabled: true,
+        showDonateButton: true,
+        allowWhatIfGrades: true,
+        showVideoMeetingButton: true
+    }
 };
 
 //Load jQuery ASAP
@@ -342,6 +350,10 @@ dtps.init = function () {
     //Render loading screen
     dtps.renderLoadingScreen();
 
+    //Get URL parameters
+    var urlParams = new URLSearchParams(window.location.search);
+    if (Array.from(urlParams).length) window.history.replaceState(null, null, window.location.pathname);
+
     //Fluid UI settings
     fluidThemes = [["midnight", "tome"], ["rainbow"]];
     fluidAutoLoad = false;
@@ -358,8 +370,16 @@ dtps.init = function () {
     //Begin loading static DTPS HTML
     dtps.render();
 
-    //Fetch user and class data
-    dtpsLMS.fetchUser().then(data => {
+    //Fetch remote config
+    new Promise((r) => {
+        jQuery.getJSON('https://project-dtps.firebaseio.com/config.json', (remoteConfig) => {
+            if (remoteConfig) Object.assign(dtps.remoteConfig, remoteConfig);
+            r();
+        }).fail(r);
+    }).then(() => {
+        //Fetch user and class data
+        return dtpsLMS.fetchUser();
+    }).then(data => {
         //Prevent resetting the user if the user is already set (for parent accounts)
         if (!dtps.user) {
             dtps.user = data;
@@ -597,6 +617,21 @@ dtps.init = function () {
             } else if (dtps.popup == "changelog") {
                 //Changelog will only show if the release notes are on GitHub
                 dtps.changelog(true);
+            }
+
+            //Check URL parameter
+            if ((urlParams.get("prerelease") == "canary") && urlParams.get("repo")) {
+                fluid.alert("Power+ Canary", "<p>Do you want to add this release configuration to Power+?</p>", "build_circle", [
+                    {
+                        name: "Add",
+                        icon: "add",
+                        action: "window.localStorage.githubCanary = '" + urlParams.get("repo") + "'; alert('Please reload the page for changes to take effect');"
+                    },
+                    {
+                        name: "Cancel",
+                        icon: "cancel"
+                    }
+                ]);
             }
         });
     }).catch(function (err) {
@@ -864,7 +899,7 @@ dtps.presentClass = function (classNum) {
     //Set 500ms transition
     dtps.bgTimeout = setTimeout(function () {
         //Set theme to something random to force the theme change listener to update
-        dtps.oldTheme = "squidward theme park";
+        dtps.oldTheme = "nklfsdlflsdajflks";
         document.dispatchEvent(new CustomEvent('fluidTheme'));
 
         //Remove transition
@@ -1382,8 +1417,8 @@ dtps.renderLite = function () {
                     </div>
 
                     <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
-                        <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=***REMOVED***&item_name=Donate+to+Power%2B&currency_code=USD&source=url"><i class="material-icons" style="vertical-align: middle">attach_money</i> Donate</a>
+                        <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px; cursor: pointer;"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
+                        ${dtps.remoteConfig.showDonateButton ? `<a style="color: var(--lightText); margin: 0px 5px;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=***REMOVED***&item_name=Donate+to+Power%2B&currency_code=USD&source=url"><i class="material-icons" style="vertical-align: middle">attach_money</i> Donate</a>` : ""}
                         <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="material-icons" style="vertical-align: middle">email</i> Contact</a>
                     </div>
                 </div>
@@ -1423,8 +1458,8 @@ dtps.renderLite = function () {
                     </div>
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
-                        <a style="color: var(--lightText); margin: 0px 5px;" onclick="dtps.clearData();" href="#"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="https://github.com/jottocraft/dtps/issues/new/choose"><i class="material-icons" style="vertical-align: middle">bug_report</i> Bug Report / Feedback</a>
+                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
+                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="window.localStorage.dtpsDebuggingPort = window.prompt('Please enter the port the server is running on'); alert('Reload the page for changes to take effect');"><i class="material-icons" style="vertical-align: middle">bug_report</i> Load from localhost</a>
                     </div>
                 </div>
 
@@ -1457,7 +1492,7 @@ dtps.renderLite = function () {
 
         <div style="margin-top: 5px; display: inline-block; text-align: right; float: right;">
             <a href="/" class="itemButton"><i class="material-icons">exit_to_app</i> ${dtpsLMS.isDemoLMS ? "Exit demo" : "Go to " + (dtpsLMS.shortName || dtpsLMS.name)}</a>
-            ${dtps.unstable ? `<div onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="itemButton"><i class="material-icons">feedback</i> Feedback</div>` : ""}
+            ${dtps.remoteConfig.showFeedbackButton || dtps.unstable ? `<div onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="itemButton"><i class="material-icons">feedback</i> Feedback</div>` : ""}
             <div onclick="dtps.settings();" class="itemButton"><i class="material-icons">settings</i> Settings</div>
         </div>
     `);
