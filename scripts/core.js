@@ -257,8 +257,8 @@ dtps.renderLoadingScreen = function () {
  */
 dtps.JS = function (cb) {
     //Moment & Fullcalendar are used for the calendar on the dashboard
-    jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js", function () {
-        jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js")
+    jQuery.getScript("https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js", function () {
+        jQuery.getScript("https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js");
     });
 
     //Fuse.js is used for search
@@ -305,7 +305,7 @@ dtps.CSS = function () {
     jQuery("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: "https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css",
+        href: "https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css",
         class: "dtpsHeadItem"
     }).appendTo("head");
 

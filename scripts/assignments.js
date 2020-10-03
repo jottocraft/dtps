@@ -115,7 +115,7 @@ dtps.masterStream = function () {
     //Returns dashboard item container HTML for an item
     function dashboardContainerHTML(dashboardItem) {
         if (dashboardItem.id == "dtps.calendar") {
-            return $.fullCalendar !== undefined ? `<div id="calendar" class="card" style="padding: 20px;"></div>` : "";
+            return window.FullCalendar ? `<div id="calendar" class="card" style="padding: 20px;"></div>` : "";
         } else if (dashboardItem.id == "dtps.updates") {
             return `<div class="updatesStream recentlyGraded announcements"></div>`;
         } else if (dashboardItem.id == "dtps.dueToday") {
@@ -312,9 +312,11 @@ dtps.calendar = function () {
                 course.assignments.forEach(assignment => {
                     calEvents.push({
                         title: assignment.title,
-                        start: moment(new Date(assignment.dueAt)).toISOString(true),
-                        allDay: false,
-                        color: course.color,
+                        start: assignment.dueAt,
+                        id: assignment.id,
+                        allDay: true,
+                        backgroundColor: course.color,
+                        textColor: "white",
                         classNum: courseIndex,
                         assignmentID: assignment.id
                     });
@@ -323,25 +325,26 @@ dtps.calendar = function () {
         });
 
         //Render calendar
-        if ($.fullCalendar !== undefined) {
-            $('#calendar').fullCalendar({
+        if (window.FullCalendar) {
+            var calendarEl = document.getElementById('calendar');
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                locale: "en",
+                initialView: 'dayGridMonth',
                 events: calEvents,
-                header: {
-                    left: 'title',
-                    right: 'prev,next'
+                contentHeight: 0,
+                handleWindowResize: false,
+                headerToolbar: {
+                    start: 'title',
+                    center: '',
+                    end: 'prev,next'
                 },
-                eventClick: function (calEvent, jsEvent, view) {
-                    dtps.assignment(calEvent.assignmentID, calEvent.classNum);
-                },
-                eventAfterAllRender: function () {
-                    $(".fc-prev-button").html(`<i class="material-icons">keyboard_arrow_left</i>`);
-                    $(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
+                eventClick: function (info) {
+                    console.log(info)
+                    dtps.assignment(info.event.extendedProps.assignmentID, info.event.extendedProps.classNum);
                 }
             });
+            calendar.render();
         }
-        $(".fc-prev-button").html(`<i class="material-icons">keyboard_arrow_left</i>`);
-        $(".fc-next-button").html(`<i class="material-icons">keyboard_arrow_right</i>`);
-
     }
 }
 
