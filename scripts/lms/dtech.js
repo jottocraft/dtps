@@ -73,8 +73,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                                     //Button labelled as zoom button
                                     course.videoMeetingURL = link.attr("href");
                                 } else if (link.attr("href") && link.attr("href").includes("zoom.us")) {
-                                    //Button link goes to a zoom meeting
-                                    course.videoMeetingURL = link.attr("href");
+                                    //Button link goes to a zoom meeting, only use this if there is no other zoom link
+                                    //if (!course.videoMeetingURL) course.videoMeetingURL = link.attr("href");
                                 }
                             }
 
