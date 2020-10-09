@@ -69,7 +69,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                             var matches = 0;
                             for (var i = 0; i < $(homepage).find("a").length; i++) {
                                 var link = $($(homepage).find("a")[i]);
-                                if (link.attr("alt") && link.attr("alt").toUpperCase().includes("ZOOM BUTTON") && link.attr("href")) {
+                                if (link.children("img").attr("alt") && link.children("img").attr("alt").toUpperCase().includes("ZOOM BUTTON") && link.attr("href")) {
                                     //Button labelled as zoom button
                                     course.videoMeetingURL = link.attr("href");
                                 } else if (link.attr("href") && link.attr("href").includes("zoom.us")) {
