@@ -658,18 +658,10 @@ dtps.moduleStream = function (classID) {
                 var action = "";
                 if (item.type == "assignment") action = "dtps.assignment('" + item.id + "', " + classNum + ")";
                 if (item.type == "page") {
-                    if (dtps.classes[classNum].pages) {
-                        action = "fluid.screen('pages', '" + classID + "|" + item.id + "')";
-                    } else {
-                        action = "window.open('" + item.url + "')";
-                    }                 
+                    action = "fluid.screen('pages', '" + classID + "|" + item.id + "|true')";                 
                 }  
                 if (item.type == "discussion") {
-                    if (dtps.classes[classNum].discussions) {
-                        action = "fluid.screen('discussions', '" + classID + "|" + item.id + "')";
-                    } else {
-                        action = "window.open('" + item.url + "')";
-                    }
+                    action = "fluid.screen('discussions', '" + classID + "|" + item.id + "|true')";
                 }
                 if (item.type == "url") action = "window.open('" + item.url + "')";
                 if (item.type == "header") action = "";
@@ -681,7 +673,7 @@ dtps.moduleStream = function (classID) {
                 } else {
                     moduleItemHTML += `
                         <div class="moduleItem" onclick="${action}" style="margin-left: ${item.indent * 15}px;">
-                            <i class="material-icons">${icon}</i>
+                            <i ${item.completed ? `style="color: #27ba3c"` : ""} class="material-icons">${item.completed ? "check" : icon}</i>
                             ${item.title}
                         </div>
                     `;
@@ -1083,6 +1075,7 @@ fluid.externalScreens.gradebook = (courseID) => {
  * @property {string} [id] Required for assignment, page, and discussion items.
  * @property {string} [url] Required for URL and embed items. Required for discussion and page items if the class does not support the pages or discussions feature.
  * @property {number} [indent] Indent level
+ * @property {boolean} [completed] True if the module item has been completed
  */
 
 /**

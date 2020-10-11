@@ -311,7 +311,8 @@ dtpsLMS.fetchModules = function (classID) {
                                         type: "assignment",
                                         title: item.title,
                                         id: item.content_id,
-                                        indent: item.indent
+                                        indent: item.indent,
+                                        completed: item.completion_requirement && item.completion_requirement.completed
                                     })
                                 } else if (item.type.toUpperCase() == "PAGE") {
                                     moduleItems.push({
@@ -319,7 +320,8 @@ dtpsLMS.fetchModules = function (classID) {
                                         title: item.title,
                                         id: item.page_url,
                                         indent: item.indent,
-                                        url: item.html_url
+                                        url: item.html_url,
+                                        completed: item.completion_requirement && item.completion_requirement.completed
                                     })
                                 } else if (item.type.toUpperCase() == "DISCUSSION") {
                                     moduleItems.push({
@@ -327,27 +329,31 @@ dtpsLMS.fetchModules = function (classID) {
                                         title: item.title,
                                         id: item.content_id,
                                         indent: item.indent,
-                                        url: item.html_url
+                                        url: item.html_url,
+                                        completed: item.completion_requirement && item.completion_requirement.completed
                                     })
                                 } else if (item.type.toUpperCase() == "EXTERNALURL") {
                                     moduleItems.push({
                                         type: "url",
                                         title: item.title,
                                         url: item.external_url,
-                                        indent: item.indent
+                                        indent: item.indent,
+                                        completed: item.completion_requirement && item.completion_requirement.completed
                                     })
                                 } else if (item.type.toUpperCase() == "EXTERNALTOOL") {
                                     moduleItems.push({
                                         type: "embed",
                                         title: item.title,
                                         url: item.html_url,
-                                        indent: item.indent
+                                        indent: item.indent,
+                                        completed: item.completion_requirement && item.completion_requirement.completed
                                     });
                                 } else if (item.type.toUpperCase() == "SUBHEADER") {
                                     moduleItems.push({
                                         type: "header",
                                         title: item.title,
-                                        indent: item.indent
+                                        indent: item.indent,
+                                        completed: item.completion_requirement && item.completion_requirement.completed
                                     })
                                 }
                             })
@@ -451,8 +457,7 @@ dtpsLMS.fetchDiscussionThreads = function (classID) {
                     return {
                         title: thread.title,
                         id: thread.id,
-                        locked: thread.locked_for_user,
-                        requireInitialPost: thread.require_initial_post
+                        locked: thread.locked_for_user
                     }
                 });
 
@@ -646,7 +651,12 @@ dtpsLMS.fetchDiscussionPosts = function (classID, threadID) {
                         });
                     }
 
-                    resolve(dtpsDiscussionPosts);
+                    resolve({
+                        title: threadData.title,
+                        id: threadData.id,
+                        locked: threadData.locked_for_user,
+                        posts: dtpsDiscussionPosts
+                    });
                 }
             },
             error: function (err) {
@@ -667,18 +677,8 @@ dtpsLMS.fetchPages = function (classID) {
                 var dtpsPages = data.map(function (page) {
                     var dtpsPage = {
                         title: page.title,
-                        id: page.url,
-                        updatedAt: page.updated_at
+                        id: page.url
                     };
-
-                    //Check for page author
-                    if (page.last_edited_by) {
-                        dtpsPage.author = {
-                            name: page.last_edited_by.display_name,
-                            id: page.last_edited_by.id,
-                            photoURL: page.last_edited_by.avatar_image_url
-                        }
-                    }
 
                     return dtpsPage;
                 });
@@ -700,8 +700,24 @@ dtpsLMS.fetchPageContent = function (classID, pageID) {
             type: "GET",
             headers: dtpsLMS.commonHeaders,
             success: function (data) {
-                //Resolve with page content
-                resolve(data.body);
+                //Resolve with full page object
+                var dtpsPage = {
+                    title: data.title,
+                    id: data.url,
+                    updatedAt: data.updated_at,
+                    content: data.body
+                };
+
+                //Check for page author
+                if (data.last_edited_by) {
+                    dtpsPage.author = {
+                        name: data.last_edited_by.display_name,
+                        id: data.last_edited_by.id,
+                        photoURL: data.last_edited_by.avatar_image_url
+                    }
+                }
+
+                resolve(dtpsPage);
             },
             error: function (err) {
                 reject(err);
