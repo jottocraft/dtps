@@ -586,6 +586,9 @@ dtps.init = function () {
                         }
                     }
 
+                    //Render grades tab in settings
+                    if (dtps.remoteConfig.showGradesInSettings) dtps.renderGradesInSettings();
+
                     //Re-render screen if the dashboard or stream is selected
                     if ((dtps.selectedClass == "dash") || (dtps.selectedContent == "stream")) {
                         fluid.screen();
@@ -1108,6 +1111,16 @@ dtps.settings = function (forceRerenderDashboard) {
         $("#leftDashboardColumn").attr("loaded", "true");
     }
 
+    //Render grades tab in settings
+    if (dtps.remoteConfig.showGradesInSettings) dtps.renderGradesInSettings();
+
+    fluid.modal('.settingsCard');
+}
+
+/**
+ * Renders the grades tab in settings
+ */
+dtps.renderGradesInSettings = function() {
     //Render class grade bars
     $("#classGradeBars").html(dtps.classes.map(course => {
         //Percentages below are for visualization purposes only
@@ -1155,8 +1168,6 @@ dtps.settings = function (forceRerenderDashboard) {
     } else {
         $("#dtpsGpaText").text((sum / values).toFixed(1));
     }
-
-    fluid.modal('.settingsCard');
 }
 
 /**
