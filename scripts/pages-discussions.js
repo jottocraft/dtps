@@ -12,16 +12,20 @@
  * 
  * @param {string} courseID The course ID to render discussion threads for
  * @param {string} [defaultThread] The thread to load by default
+ * @param {boolean} fromModules True if this page is being loaded from the moduleStream
  */
-dtps.loadThreadsList = function (courseID, defaultThread) {
+dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(courseID);
     dtps.selectedClass = classNum;
 
     //Set discussions as the selected content
-    dtps.selectedContent = "discuss";
-    $("#dtpsTabBar .btn").removeClass("active");
-    $("#dtpsTabBar .btn.discuss").addClass("active");
+    if (!fromModules) {
+        dtps.selectedContent = "discuss";
+        $("#dtpsTabBar .btn").removeClass("active");
+        $("#dtpsTabBar .btn.discuss").addClass("active");
+        jQuery("body").removeClass("collapsedSidebar");
+    }
 
     if (classNum == -1) {
         //Class does not exist
@@ -30,7 +34,12 @@ dtps.loadThreadsList = function (courseID, defaultThread) {
 
     //Load class color and things
     dtps.presentClass(classNum);
-    jQuery("body").removeClass("collapsedSidebar");
+
+    //Load module thread
+    if (fromModules) {
+        dtps.loadThreadPosts(classNum, defaultThread, fromModules);
+        return;
+    }
 
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
         //Render sidebar
@@ -136,31 +145,16 @@ dtps.loadThreadsList = function (courseID, defaultThread) {
  * 
  * @param {number} classNum The class number to render
  * @param {string} threadID The discussion thread to render
+ * @param {boolean} fromModules True if this page is being loaded from the moduleStream
  */
-dtps.loadThreadPosts = function (classNum, threadID) {
+dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
     //Show loading indicator
-    if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
+    if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "discuss") || fromModules)) {
         jQuery(".classContent").html(`<div class="spinner"></div>`);
     }
 
-    //Get discussion data
-    var thread = null;
-    dtps.classes[classNum].discussions.forEach(discussionThread => {
-        if (discussionThread.id == threadID) {
-            thread = discussionThread;
-        }
-    });
-
-    if (!thread) {
-        dtps.error("Thread does not exist", "thread is null @ dtps.loadThreadPosts");
-        throw null;
-    }
-
     //Fetch discussion posts from the LMS
-    dtpsLMS.fetchDiscussionPosts(dtps.classes[classNum].id, threadID).then(function (postData) {
-        //Store posts in the discussion thread
-        thread.posts = postData;
-
+    dtpsLMS.fetchDiscussionPosts(dtps.classes[classNum].id, threadID).then(function (thread) {
         //Post HTML array
         var postHTML = [];
 
@@ -238,7 +232,9 @@ dtps.loadThreadPosts = function (classNum, threadID) {
                             ` : ''}
                         </div>
          
-                        ${post.body}
+                        ${index == 0 ? /*html*/`
+                            <iframe id="classThreadIframe" onload="dtps.iframeLoad('classThreadIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${discussionPostContentURL}" />
+                        ` : post.body}
 
                         ${replyHTML.join("")}
 
@@ -257,8 +253,12 @@ dtps.loadThreadPosts = function (classNum, threadID) {
         });
 
         //Render HTML
-        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
-            jQuery(".classContent").html(postHTML.join(""));
+        if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "discuss") || fromModules)) {
+            jQuery(".classContent").html((fromModules ? /*html*/`
+                <div class="acrylicMaterial" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
+                    <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div>
+                </div>
+            ` : "") + postHTML.join(""));
         }
     }).catch(function (err) {
         dtps.error("Could not fetch discussion posts", "Caught promise rejection @ dtps.loadThreadPosts", err);
@@ -270,16 +270,20 @@ dtps.loadThreadPosts = function (classNum, threadID) {
  * 
  * @param {string} courseID The course ID to render pages for
  * @param {string} [defaultPage] If provided, load the pageID by default
+ * @param {boolean} fromModules True if this page is being loaded from the moduleStream
  */
-dtps.loadPagesList = function (courseID, defaultPage) {
+dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(courseID);
     dtps.selectedClass = classNum;
 
     //Set pages as the selected content
-    dtps.selectedContent = "pages";
-    $("#dtpsTabBar .btn").removeClass("active");
-    $("#dtpsTabBar .btn.pages").addClass("active");
+    if (!fromModules) {
+        dtps.selectedContent = "pages";
+        $("#dtpsTabBar .btn").removeClass("active");
+        $("#dtpsTabBar .btn.pages").addClass("active");
+        jQuery("body").removeClass("collapsedSidebar");
+    }
 
     if (classNum == -1) {
         //Class does not exist
@@ -288,7 +292,12 @@ dtps.loadPagesList = function (courseID, defaultPage) {
 
     //Load class color and things
     dtps.presentClass(classNum);
-    jQuery("body").removeClass("collapsedSidebar");
+
+    //Load module page
+    if (fromModules) {
+        dtps.loadPage(classNum, defaultPage, fromModules);
+        return;
+    }
 
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
         //Render sidebar
@@ -381,32 +390,17 @@ dtps.loadPagesList = function (courseID, defaultPage) {
  * 
  * @param {string} classNum The class number of the page to render
  * @param {string} pageID The page ID to render
+ * @param {boolean} fromModules True if this page is being loaded from the moduleStream
  */
-dtps.loadPage = function (classNum, pageID) {
+dtps.loadPage = function (classNum, pageID, fromModules) {
     //Show loading indicator
-    if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
+    if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "pages") || fromModules)) {
         jQuery(".classContent").html(`<div class="spinner"></div>`);
     }
 
-    //Get page data
-    var page = null;
-    dtps.classes[classNum].pages.forEach(pageCheck => {
-        if (pageCheck.id == pageID) {
-            page = pageCheck;
-        }
-    });
-
-    if (!page) {
-        dtps.error("Page does not exist", "page is null @ dtps.loadPage");
-        throw null;
-    }
-
     //Fetch page content
-    dtpsLMS.fetchPageContent(dtps.classes[classNum].id, page.id).then(function (pageContentData) {
-        //Store page content in the page object
-        page.content = pageContentData;
-
-        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
+    dtpsLMS.fetchPageContent(dtps.classes[classNum].id, pageID).then(function (page) {
+        if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "pages") || fromModules)) {
             //Get computed background and text color to style the iFrame with
             var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
             var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
@@ -424,6 +418,11 @@ dtps.loadPage = function (classNum, pageID) {
 
             //Render page card in the class content
             jQuery(".classContent").html(/*html*/`
+                ${fromModules ? /*html*/`
+                    <div class="acrylicMaterial" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
+                        <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div>
+                    </div>
+                ` : ""}
                 <div class="card">
                     <!-- Page title -->
                     <h4 style="font-weight: bold;">${page.title}</h4>
@@ -455,26 +454,36 @@ fluid.externalScreens.discussions = (param) => {
     //Split parameter string into variables
     var courseID = param.split("|")[0];
     var threadID = param.split("|")[1];
+    var fromModules = param.split("|")[2] == "true";
 
-    dtps.loadThreadsList(courseID, threadID);
+    dtps.loadThreadsList(courseID, threadID, fromModules);
 }
 
 fluid.externalScreens.pages = (param) => {
     //Split parameter string into variables
     var courseID = param.split("|")[0];
     var pageID = param.split("|")[1];
+    var fromModules = param.split("|")[2] == "true";
 
-    dtps.loadPagesList(courseID, pageID);
+    dtps.loadPagesList(courseID, pageID, fromModules);
 }
 
 //Type definitions
+
+/**
+* @typedef {Object} PartialDiscussionThread
+* @description Defines partial discussion thread objects in DTPS (for threads list)
+* @property {string} title Title of the discussion thread
+* @property {string} id Discussion thread ID
+* @property {boolean} [locked] True if posting to the discussion thread is locked
+*/
 
 /**
 * @typedef {Object} DiscussionThread
 * @description Defines discussion thread objects in DTPS
 * @property {string} title Title of the discussion thread
 * @property {string} id Discussion thread ID
-* @property {DiscussionPost[]} posts Posts in this thread, with the initial one first. Assume that the topic has not been selected and loaded if this is undefined, and that there are no posts if this is an empty array.
+* @property {DiscussionPost[]} posts Posts in this thread, with the initial one first.
 * @property {boolean} [locked] True if posting to the discussion thread is locked
 * @property {boolean} [requireInitialPost] True if the user must post before viewing others' posts
 */
@@ -492,11 +501,18 @@ fluid.externalScreens.pages = (param) => {
 */
 
 /**
+* @typedef {Object} PartialPage
+* @description Defines a partial page object in DTPS (for pages list)
+* @property {string} title Page title
+* @property {string} id Page ID
+*/
+
+/**
 * @typedef {Object} Page
 * @description Defines Page objects in DTPS
 * @property {string} title Page title
 * @property {string} id Page ID
-* @property {string} content Page content. Assume the page hasn't been selected/loaded if this is undefined.
+* @property {string} content Page content HTML
 * @property {Date} [updatedAt] When the page was last updated
 * @property {User} [author] Page author
 */

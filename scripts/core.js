@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.0.4
+ * @version v3.0.5
  * 
  * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -35,8 +35,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  */
 var dtps = {
-    ver: 304,
-    readableVer: "v3.0.4",
+    ver: 305,
+    readableVer: "v3.0.5",
     env: window.localStorage.dtpsLoaderPref == "debugging" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: document.currentScript.src ? document.currentScript.src.split("/scripts/core.js")[0] : "https://powerplus.app",
@@ -75,7 +75,8 @@ var dtps = {
         gradeCalculationEnabled: true,
         showDonateButton: true,
         allowWhatIfGrades: true,
-        showVideoMeetingButton: true
+        showVideoMeetingButton: true,
+        showGradesInSettings: true
     }
 };
 
@@ -1071,10 +1072,12 @@ dtps.logGrades = function (classNum) {
 
 /**
  * Opens the settings page
+ * 
+ * @param {boolean} [forceRerenderDashboard] If this is true, the dashboard settings will be re-rendered
  */
-dtps.settings = function () {
+dtps.settings = function (forceRerenderDashboard) {
     //Render dashboard HTML if not already loaded
-    if ($("#leftDashboardColumn").attr("loaded") !== "true") {
+    if (forceRerenderDashboard || ($("#leftDashboardColumn").attr("loaded") !== "true")) {
         //Returns dashboard item HTML from a dashboard item array
         function dashboardHTML(dashboardArray) {
             return dashboardArray.map(dashboardItem => {
@@ -1105,6 +1108,54 @@ dtps.settings = function () {
         $("#leftDashboardColumn").attr("loaded", "true");
     }
 
+    //Render class grade bars
+    $("#classGradeBars").html(dtps.classes.map(course => {
+        //Percentages below are for visualization purposes only
+        var percentage = 0;
+        if (course.letter == "A") percentage = 100;
+        if (course.letter == "A-") percentage = 91;
+        if (course.letter == "B+") percentage = 88;
+        if (course.letter == "B") percentage = 85;
+        if (course.letter == "B-") percentage = 81;
+        if (course.letter == "C+") percentage = 78;
+        if (course.letter == "C") percentage = 75;
+
+        return (
+            course.letter ? `<div style="cursor: auto; background-color: var(--elements);" class="progressBar big">
+        <div style="color: white;" class="progressLabel">${course.subject} (${course.letter})</div>
+        <div class="progress" style="background-color: ${course.color}; width: calc(${percentage}% - 300px);"></div></div>` : ""
+        )
+    }));
+
+    //Calculate GPA
+    var sum = 0;
+    var values = 0;
+
+    dtps.classes.forEach(course => {
+        if (course.letter == "...") {
+            sum = null;
+        } else if (course.letter && (sum !== null)) {
+            var points = 0;
+            if (course.letter == "A") points = 4;
+            if (course.letter == "A-") points = 3.7;
+            if (course.letter == "B+") points = 3.3;
+            if (course.letter == "B") points = 3;
+            if (course.letter == "B-") points = 2.7;
+            if (course.letter == "C+") points = 2.3;
+            if (course.letter == "C") points = 2.0;
+            if (course.letter == "I") points = 0;
+
+            sum += points;
+            values++;
+        }
+    })
+
+    if (sum == null) {
+        $("#dtpsGpaText").text("...");
+    } else {
+        $("#dtpsGpaText").text((sum / values).toFixed(1));
+    }
+
     fluid.modal('.settingsCard');
 }
 
@@ -1131,6 +1182,20 @@ dtps.saveDashboardPrefs = function () {
 
     //Reload dashboard items
     dtps.loadDashboardPrefs();
+}
+
+/**
+ * Resets dashboard prefrences
+ */
+dtps.resetDashboardPrefs = function () {
+    //Remove dashboard pref from localStorage
+    window.localStorage.removeItem("dtpsDashboardItems");
+
+    //Reload dashboard items
+    dtps.loadDashboardPrefs();
+
+    //Re-render dashboard
+    dtps.settings(true);
 }
 
 /**
@@ -1303,6 +1368,11 @@ dtps.renderLite = function () {
             <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();" class="item active">
                 <i class="material-icons">settings</i> Settings
             </div>
+            ${dtps.remoteConfig.showGradesInSettings ? /*html*/`
+                <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
+                    <i class="material-icons">assessment</i> Grades
+                </div>
+            ` : ``}
             <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();" class="item">
                 <i class="material-icons">dashboard</i> Dashboard
             </div>
@@ -1382,16 +1452,32 @@ dtps.renderLite = function () {
 
             </div>
 
+            <div style="display: none;" class="abtpage grades">
+                <h5><b>Grades</b></h5>
+                
+                <br />
+
+                <div>
+                <h6>Estimated GPA: <b id="dtpsGpaText">...</b></h6>
+                <p style="color: var(--secText);"><i>This GPA calculation is unofficial and does not account for honors credit</i></p>
+                </div>
+                
+                <br />
+
+                <div id="classGradeBars"></div>
+            </div>
+
             <div style="display: none;" class="abtpage dashboard">
                 <h5><b>Dashboard</b></h5>
                 <p>You can rearrange the items shown on the dashboard by dragging them below. You might have to reload Power+ for changes to take effect.</p>
+
+                <button onclick="dtps.resetDashboardPrefs();" class="btn small"><i class="material-icons">refresh</i> Reset dashboard layout</button>
 
                 <br />
                 
                 <div id="leftDashboardColumn" class="dashboardColumn"></div>
 
                 <div id="rightDashboardColumn" class="dashboardColumn"></div>
-
             </div>
 
             ${dtps.env == "dev" ? /*html*/`
@@ -1644,7 +1730,7 @@ dtps.init();
 * @description [OPTIONAL] Fetches discussion threads for a course from the LMS
 * @kind function
 * @param {string} classID The class ID to fetch discussion threads for
-* @return {Promise<DiscussionThread[]>} A promise which resolves to an array of Discussion Thread objects
+* @return {Promise<PartialDiscussionThread[]>} A promise which resolves to an array of partial Discussion Thread objects
 */
 
 /**
@@ -1653,7 +1739,7 @@ dtps.init();
 * @kind function
 * @param {string} classID The class ID to fetch discussion posts for
 * @param {string} threadID The discussion thread ID to fetch discussion posts for
-* @return {Promise<DiscussionPost[]>} A promise which resolves to an array of Discussion Post objects
+* @return {Promise<DiscussionThread>} A promise which resolves to a full discussion thread object
 */
 
 /**
@@ -1661,7 +1747,7 @@ dtps.init();
 * @description [OPTIONAL] Fetches pages for a course from the LMS
 * @kind function
 * @param {string} classID The class ID to fetch pages for
-* @return {Promise<Page[]>} A promise which resolves to an array of Page objects
+* @return {Promise<PartialPage[]>} A promise which resolves to an array of partial page objects
 */
 
 /**
@@ -1670,7 +1756,7 @@ dtps.init();
 * @kind function
 * @param {string} classID The class ID to fetch page content for
 * @param {string} pageID The page ID to fetch page content for
-* @return {Promise<string>} A promise which resolves to the page's content as HTML
+* @return {Promise<Page>} A promise which resolves to a full DTPS page object
 */
 
 /**
