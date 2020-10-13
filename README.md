@@ -23,21 +23,14 @@ For users looking to install Power+, visit the Power+ website by clicking <a hre
 - [Contributing](CONTRIBUTING.md)
 
 ## Bookmarklet
-If you cannot use the Power+ [Chrome Extension](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo), you can add a bookmarklet instead to access Power+.
+If you cannot use the Power+ [Chrome Extension](https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo), you can add the bookmarklet below to access Power+. Once the bookmarklet is added, open Canvas, then click the bookmarklet to load Power+.
 
 <br />
 
 Stable bookmarklet
 
 ```javascript
-javascript:jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;
-```
-
-
-Firefox bookmarklet
-
-```javascript
-javascript:(function(){jQuery.getScript('https://powerplus.app/init.js');dtpsLoader=2;})();
+javascript:!function(){window.dtpsBaseURL="https://powerplus.app",window.dtpsLoader=3;var d=document.createElement("script");d.src=window.dtpsBaseURL+"/init.js",document.head.appendChild(d)}();
 ```
 
 <br /><br /><br /><br /><br /><br />
