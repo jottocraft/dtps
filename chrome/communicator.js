@@ -26,8 +26,11 @@ if (window.location.hostname == "powerplus.app") {
             <div dtps="true" id="dtpsNativeOverlay" style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
               <img dtps="true" style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/7dDUVh2.png" />
 			        <br dtps="true" />
-              <div dtps="true" class="progress"><div dtps="true" class="indeterminate"></div></div>
-              <style dtps="true">body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;background:#262626;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}</style>
+              <div dtps="true" class="progress"><div id="dtpsLoadingScreenBar" dtps="true" class="indeterminate"></div></div>
+              <p id="dtpsLoadingScreenStatus" dtps="true">
+                ${window.localStorage.dtpsLoaderPref == "codespace" ? `[codespace] Click <a onclick="window.localStorage.dtpsLoaderPref = 'prod';window.location.reload();" href="#">here</a> to switch to production` : ``}
+              </p>
+              <style dtps="true">body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;background:#262626;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}p{font-family:BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;color: #c4c4c4;margin-top: 24px;}</style>
             </div>
           `;
         } else if (node.nodeType === 1 && node.tagName === 'HEAD') {
@@ -47,20 +50,34 @@ if (window.location.hostname == "powerplus.app") {
     })
   })
 
-  // Starts the monitoring
+  //Start MutationObserver
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true
-  })
+  });
 
-  //tell Power+ the loader is already shown
+  //Get Power+ base URL
+  var baseURL = "https://powerplus.app";
+  if (window.localStorage.debuggingConfig && (window.localStorage.dtpsLoaderPref == "debugging")) {
+    if (window.localStorage.debuggingConfig == "true") {
+      baseURL = "http://localhost:2750";
+    } else if (window.localStorage.debuggingConfig) {
+      baseURL = window.localStorage.debuggingConfig;
+    }
+  } else if (window.localStorage.githubCanary && (window.localStorage.dtpsLoaderPref == "canary")) {
+    baseURL = "https://jottocraft.github.io/" + window.localStorage.githubCanary;
+  } else if (window.localStorage.codespaceExternalURL && (window.localStorage.dtpsLoaderPref == "codespace")) {
+    baseURL = "https://" + window.localStorage.codespaceExternalURL.replace(/\//g, "") + ".apps.codespaces.githubusercontent.com";
+  }
+
+  //Set DTPS loader parameters
   var s = document.createElement("script");
-  s.textContent = "window.dtpsPreLoader = true;";
+  s.textContent = "window.dtpsPreLoader = true;window.dtpsBaseURL = '" + baseURL + "'";
   s.async = false;
   s.setAttribute("dtps", "true");
   document.documentElement.appendChild(s);
 
-  //add jQuery
+  //Load jQuery
   var s = document.createElement("script");
   s.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js";
   s.async = false;
@@ -78,7 +95,7 @@ if (window.location.hostname == "powerplus.app") {
       lmsScript = "dtech";
     } else if (window.location.hostname.includes("instructure.com")) {
       lmsScript = "canvas";
-    } else {
+    } else if (!window.localStorage.dtpsLMSOverride) {
       console.log("[DTPS CHROME]", "Could not find a valid LMS script for this site. Is Power+ supported on " + window.location.hostname + "?");
       return;
     }
@@ -86,47 +103,34 @@ if (window.location.hostname == "powerplus.app") {
     //Check for debugging LMS overrides
     if (window.localStorage.dtpsLMSOverride) lmsScript = window.localStorage.dtpsLMSOverride;
 
-    //load Power+ script
-    window.dtpsLoader = 4;
-    var script = "https://powerplus.app/scripts/lms/" + lmsScript + ".js";
-
-    //Check for debugging/canary scripts
-    var debuggingPath = window.localStorage.dtpsDebuggingPort ? "http://localhost:" + window.localStorage.dtpsDebuggingPort + "/scripts/lms/" + lmsScript + ".js" : null;
-    var canaryPath = window.localStorage.githubCanary ? "https://jottocraft.github.io/" + window.localStorage.githubCanary + "/scripts/lms/" + lmsScript + ".js" : null;
-
-    //Check for version preference
-    if (debuggingPath && (window.localStorage.dtpsLoaderPref == "debugging")) {
-      script = debuggingPath;
-    } else if (canaryPath && (window.localStorage.dtpsLoaderPref == "canary")) {
-      script = canaryPath;
-    }
-
     //Add script to DOM
     var s = document.createElement("script");
-    s.src = script;
+    s.src = baseURL + "/scripts/lms/" + lmsScript + ".js";
     s.async = false;
     s.setAttribute("dtps", "true");
     document.documentElement.appendChild(s);
     s.onerror = function () {
       //Couldn't load debugging script, fallback to production
-      console.log("[DTPS CHROME] Failed to load debugging script. Falling back to production.");
-      window.localStorage.dtpsLoaderPref = "prod";
-      var ss = document.createElement("script");
-      ss.src = "https://powerplus.app/scripts/lms/" + lmsScript + ".js";
-      ss.async = false;
-      ss.setAttribute("dtps", "true");
-      document.documentElement.appendChild(ss);
+      if (window.localStorage.dtpsLoaderPref && (window.localStorage.dtpsLoaderPref !== "prod")) {
+        console.log("[DTPS CHROME] Failed to load debugging script. Falling back to production.");
+        window.localStorage.dtpsLoaderPref = "prod";
+        window.location.reload();
+      } else {
+        document.getElementById("dtpsLoadingScreenBar").style.animationPlayState = "paused";
+        document.getElementById("dtpsLoadingScreenStatus").innerText = "Could not load Power+. Please try again later.";
+      }
     };
   }
 
 } else if (window.location.search.includes("dtpsLogin=true")) {
   //redirect to Power+ after login
-  console.log("[DTPS Chrome] Redirecting after login...")
-  window.location.href = "/power+"
+  console.log("[DTPS Chrome] Redirecting after login...");
+  window.location.href = "/power+";
 } else {
   var releaseType = null;
-  if (window.localStorage.dtpsLoaderPref == "debugging") releaseType = "DEBUG";
-  if (window.localStorage.dtpsLoaderPref == "canary") releaseType = "CANARY";
+  if (window.localStorage.dtpsLoaderPref == "debugging") releaseType = "Power+ (debug)";
+  if (window.localStorage.dtpsLoaderPref == "canary") releaseType = "Power+ (canary)";
+  if (window.localStorage.dtpsLoaderPref == "codespace") releaseType = "Power+ (codespace)";
 
   const observer = new MutationObserver(mutations => {
     mutations.forEach(({ addedNodes }) => {

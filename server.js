@@ -35,6 +35,6 @@ app.use('/', express.static('www'));
 
 app.listen(port, () => {
     console.log("The Power+ development server is listening on port " + port);
-    console.log("\nGo to Settings -> About -> Advanced Options -> Debug mode in Power+ to enable debug mode");
+    console.log("\nGo to Settings -> About -> Advanced Options -> Enable debug config in Power+ to enable debug mode");
     console.log("Read CONTRIBUTING.md for more information");
 });
