@@ -2,7 +2,7 @@
   "name": "dtps",
   "description": "A better UI for Canvas LMS",
   "scripts": {
-    "start": "node start.js",
+    "start": "node server.js",
     "build": "node build.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build -m \"npm deploy\"",

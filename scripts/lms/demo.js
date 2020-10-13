@@ -200,6 +200,16 @@ dtpsLMS.fetchModules = function (classID) {
                         url: "https://www.google.com"
                     },
                     {
+                        type: "page",
+                        title: "Demo Page",
+                        id: "1"
+                    },
+                    {
+                        type: "discussion",
+                        title: "Demo Discussion",
+                        id: "1"
+                    },
+                    {
                         type: "assignment",
                         title: "Demo Assignment 1",
                         id: "191"
@@ -240,8 +250,7 @@ dtpsLMS.fetchDiscussionThreads = function (classID) {
             {
                 title: "Demo Discussion",
                 id: "1",
-                locked: true,
-                requireInitialPost: false
+                locked: true
             }
         ])
     })
@@ -250,18 +259,24 @@ dtpsLMS.fetchDiscussionThreads = function (classID) {
 //Fetches discussion thread posts from Canvas
 dtpsLMS.fetchDiscussionPosts = function (classID, threadID) {
     return new Promise(function (resolve, reject) {
-        resolve([
-            {
-                id: "1",
-                body: `<p>This discussion is for demonstration purposes only</p>`,
-                postedAt: new Date(),
-                author: {
-                    name: "Demo Teacher",
-                    id: "2",
-                    photoURL: "https://powerplus.app/logo.png"
+        resolve({
+            title: "Demo Discussion",
+            id: "1",
+            locked: true,
+            requireInitialPost: false,
+            posts: [
+                {
+                    id: "1",
+                    body: `<p>This discussion is for demonstration purposes only</p>`,
+                    postedAt: new Date(),
+                    author: {
+                        name: "Demo Teacher",
+                        id: "2",
+                        photoURL: "https://powerplus.app/logo.png"
+                    }
                 }
-            }
-        ])
+            ]
+        })
     })
 }
 
@@ -271,13 +286,7 @@ dtpsLMS.fetchPages = function (classID) {
         resolve([
             {
                 title: "Demo Page",
-                id: "1",
-                updatedAt: new Date(),
-                author: {
-                    name: "Demo Teacher",
-                    id: "2",
-                    photoURL: "https://powerplus.app/logo.png"
-                }
+                id: "1"
             }
         ])
     })
@@ -286,7 +295,17 @@ dtpsLMS.fetchPages = function (classID) {
 //Fetches pages list data from Canvas
 dtpsLMS.fetchPageContent = function (classID, pageID) {
     return new Promise(function (resolve, reject) {
-        resolve(`<p>This page is for demonstration purposes only</p>`);
+        resolve({
+            title: "Demo Page",
+            id: "1",
+            updatedAt: new Date(),
+            content: `<p>This page is for demonstration purposes only</p>`,
+            author: {
+                name: "Demo Teacher",
+                id: "2",
+                photoURL: "https://powerplus.app/logo.png"
+            }
+        });
     })
 }
 
