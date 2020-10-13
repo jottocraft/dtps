@@ -106,7 +106,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         //Get d.tech grade calculation formula
         if (course.term == "20-21") {
             formula = "2020s1";
-        } else if (course.id == "630") {
+        } else if (course.id == "1098") {
             formula = "2020s1";
         }
 
