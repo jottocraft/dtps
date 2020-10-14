@@ -474,20 +474,67 @@ dtps.assignment = function (id, classNum) {
     var assignment = dtps.classes[classNum].assignments[assignmentIDs.indexOf(id)];
 
     //The assignment body is rendered in an iFrame to keep its content and styling isolated from the rest of the page
-    var assignmentBodyURL = null;
+    var assignmentBodyHTML = null;
     if (assignment.body) {
         //Get computed background and text color to style the iFrame with
         var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
         var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
 
-        //Generate a blob with the assignment body and get its data URL
-        var blob = new Blob([`
+        var body = assignment.body;
+        if ($("body").hasClass("dark")) {
+            body = dtps.brightenTextForDarkMode(assignment.body, computedBackgroundColor);
+        }
+
+        var hasKeywords = false;
+        if (body.toLowerCase().includes("deliverable") && body.toLowerCase().includes("instruction") && body.toLowerCase().includes("look for")) hasKeywords = true;
+        if ((window.location.hostname == "dtechhs.instructure.com") && hasKeywords && ($('<div></div>').append(body).children("table").find("tbody tr").length > 1)) {
+            var sections = [];
+            $('<div></div>').append(body).children("table").find("tbody tr").toArray().forEach((element, i) => {
+                var text = $(element).find("h4:first-child").text().toLowerCase();
+                if (!text) return;
+
+                var tmpjQuery = $(element);
+                tmpjQuery.find("h4:first-child").remove();
+                var innerHTML = tmpjQuery.html();
+                if (!innerHTML) return;
+
+                var icon = null;
+                if (text.includes("deliverable")) { icon = "description"; text = "Deliverables"; }
+                if (text.includes("instruction")) { icon = "assignment"; text = "Instructions"; }
+                if (text.includes("look for")) { icon = "find_in_page"; text = "Look Fors"; }
+
+                sections.push({ text, icon, innerHTML });
+            });
+
+            var tmpjQuery = $('<div></div>').append(body);
+            tmpjQuery.children("table").replaceWith(sections.map(s => {
+                return `
+                    <div style="margin: 20px 0px;">
+                        <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="material-icons-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
+                        ${s.innerHTML}
+                    </div>
+                `;
+            }).join(""));
+            var outerHTML = tmpjQuery.html();
+
+            var blob = new Blob([`
+                    <base target="_blank" /> 
+                    <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};} *:not(a) { color: ${computedTextColor} !important; }</style>
+                    ${outerHTML}
+            `], { type: 'text/html' });
+            assignmentBodyHTML = `<iframe id="assignmentParts" onload="dtps.iframeLoad('assignmentParts')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${window.URL.createObjectURL(blob)}" />`;
+        } else {
+            //Generate a blob with the assignment body and get its data URL
+            var blob = new Blob([`
                 <base target="_blank" /> 
                 <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-                <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
-                ${assignment.body}
+                <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};}</style>
+                ${body}
             `], { type: 'text/html' });
-        assignmentBodyURL = window.URL.createObjectURL(blob);
+            assignmentBodyHTML = `<iframe id="assignmentIframe" onload="dtps.iframeLoad('assignmentIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${window.URL.createObjectURL(blob)}" />`;
+        }
     }
 
     //Get assignment rubric HTML
@@ -548,7 +595,7 @@ dtps.assignment = function (id, classNum) {
             </div>
 
             <div style="margin-top: 20px;" class="assignmentBody">
-                ${assignment.body ? `<iframe id="assignmentIframe" onload="dtps.iframeLoad('assignmentIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${assignmentBodyURL}" />` : ""}
+                ${assignment.body ? assignmentBodyHTML : ""}
             </div>
 
             ${assignment.body ? `<div style="margin: 5px 0px; background-color: var(--darker); height: 1px; width: 100%;" class="divider"></div>` : ""}
@@ -658,8 +705,8 @@ dtps.moduleStream = function (classID) {
                 var action = "";
                 if (item.type == "assignment") action = "dtps.assignment('" + item.id + "', " + classNum + ")";
                 if (item.type == "page") {
-                    action = "fluid.screen('pages', '" + classID + "|" + item.id + "|true')";                 
-                }  
+                    action = "fluid.screen('pages', '" + classID + "|" + item.id + "|true')";
+                }
                 if (item.type == "discussion") {
                     action = "fluid.screen('discussions', '" + classID + "|" + item.id + "|true')";
                 }
@@ -853,25 +900,81 @@ dtps.classHome = function (num) {
             var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
             var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
 
-            //Generate a blob with the assignment body and get its data URL
-            var blob = new Blob([`
-                <base target="_blank" /> 
-                <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-                <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
-                ${homepage}
-            `], { type: 'text/html' });
-            var homepageURL = window.URL.createObjectURL(blob);
+            if ($("body").hasClass("dark")) {
+                homepage = dtps.brightenTextForDarkMode(homepage, computedBackgroundColor);
+            }
 
-            $(".card.details").html(/*html*/`
-                <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+            if ($('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().length > 1) {
+                //Use special d.tech LMS optimized homepage
+                var fragments = [];
+                $('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().forEach((fragment) => {
+                    var text = $(fragment).text().toLowerCase();
+                    if (!text) return;
 
-                <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
+                    var id = $(fragment).find("a").attr("href").replace("#", "");
+                    if (!id) return;
 
-                <br />
-                <div style="margin-top: 20px;" class="homepageBody">
-                    <iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${homepageURL}" />
-                </div>
-            `);
+                    var html = $(homepage).find("#" + id).html();
+                    if (!html) return;
+
+                    var icon = null;
+                    if (text.includes("agenda")) { icon = "format_list_numbered"; text = "Agenda"; }
+                    if (text.includes("instructor")) { icon = "person"; text = "Instructor"; }
+                    if (text.includes("course info")) { icon = "info"; text = "Course Info"; }
+                    if (text.includes("resources")) { icon = "article"; text = "Course Resources"; }
+
+                    //Generate a blob with the assignment body and get its data URL
+                    var blob = new Blob([`
+                        <base target="_blank" /> 
+                        <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                        <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
+                        ${html}
+                    `], { type: 'text/html' });
+                    var frameURL = window.URL.createObjectURL(blob);
+
+                    fragments.push({ text, id, icon, frameURL });
+                });
+
+                $(".card.details").html(/*html*/`
+                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+
+                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
+
+                    <br />
+                    ${dtps.classes[num].videoMeetingURL ? `<button onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="btn small"><i class="material-icons">videocam</i> Zoom</button>` : ``}
+                    <div class="btns row small">
+                        ${fragments.map((fragment, i) => {
+                    return `<button onclick="$(this).addClass('active');$(this).siblings().removeClass('active');$('#homepageFragment').attr('src', '${fragment.frameURL}'); dtps.iframeLoad('homepageFragment');" 
+                                style="text-transform: capitalize;" class="btn ${i == 0 ? "active" : ""}">${fragment.icon ? `<i class="material-icons">${fragment.icon}</i> ` : ""}${fragment.text}</button>`;
+                }).join("")}
+                    </div>
+
+                    <br />
+                    <div style="margin-top: 20px;" class="homepageBody">
+                        <iframe id="homepageFragment" onload="dtps.iframeLoad('homepageFragment')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${fragments[0].frameURL}" />
+                    </div>
+                `);
+            } else {
+                //Generate a blob with the assignment body and get its data URL
+                var blob = new Blob([`
+                    <base target="_blank" /> 
+                    <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
+                    ${homepage}
+                `], { type: 'text/html' });
+                var homepageURL = window.URL.createObjectURL(blob);
+
+                $(".card.details").html(/*html*/`
+                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+
+                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
+
+                    <br />
+                    <div style="margin-top: 20px;" class="homepageBody">
+                        <iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${homepageURL}" />
+                    </div>
+                `);
+            }
 
             fluid.modal(".card.details");
         } else {
