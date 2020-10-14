@@ -46,7 +46,7 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
         jQuery(".sidebar").html(/*html*/`
             <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; height: 38px;">
                 <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="material-icons">forum</i>
-                <h4 style="color: var(--text); display: inline-block; font-size: 28px; vertical-align: middle; margin: 0px;">Discussions</h4>
+                <h4 style="color: var(--text); display: inline-block; font-size: 26px; vertical-align: middle; margin: 0px;">Discussions</h4>
             </div>
                         
             <div class="items">
@@ -304,7 +304,7 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
         jQuery(".sidebar").html(/*html*/`
             <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; height: 38px;">
                 <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="material-icons">insert_drive_file</i>
-                <h4 style="color: var(--text); display: inline-block; font-size: 28px; vertical-align: middle; margin: 0px;">Pages</h4>
+                <h4 style="color: var(--text); display: inline-block; font-size: 26px; vertical-align: middle; margin: 0px;">Pages</h4>
             </div>
                         
             <div class="items">
