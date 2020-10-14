@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.0.5
+ * @version v3.0.6
  * 
  * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -35,8 +35,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  */
 var dtps = {
-    ver: 305,
-    readableVer: "v3.0.5",
+    ver: 306,
+    readableVer: "v3.0.6",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -241,11 +241,11 @@ dtps.renderLoadingScreen = function () {
     if (!window.dtpsPreLoader || dtps.user) {
         //Only show the loader if the extension hasn't already shown it
         jQuery("body").append(/*html*/`
-            <div id="dtpsNativeOverlay" style="position: fixed; top: 0px; left: 0px; width: 100vw; height: 100vh; z-index: 999; background: #191919; text-align: center; z-index: 999; transition: opacity 0.2s;">
-                &nbsp;
-                <img style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/eiTE2sW.png" />
-                <div class="spinner" style="margin-top: 300px;"></div>
-                <style>body { overflow: hidden !important; } .spinner { width: 40px; height: 40px; margin: 40px auto; background-color: gray; border-radius: 100%; -webkit-animation: sk-scaleout 1.0s infinite ease-in-out; animation: sk-scaleout 1.0s infinite ease-in-out; } @-webkit-keyframes sk-scaleout { 0% { -webkit-transform: scale(0) } 100% { -webkit-transform: scale(1.0); opacity: 0; } } @keyframes sk-scaleout { 0% { -webkit-transform: scale(0); transform: scale(0); } 100% { -webkit-transform: scale(1.0); transform: scale(1.0); opacity: 0; } }</style>
+            <div id="dtpsNativeOverlay" style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
+                <img style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/7dDUVh2.png" />
+			    <br />
+                <div class="progress"><div class="indeterminate"></div></div>
+                <style>body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;background:#262626;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}</style>
             </div>
         `);
     }
@@ -1043,6 +1043,36 @@ dtps.showIFrameCard = function (url) {
 }
 
 /**
+ * Brightens text in an HTML string for dark mode
+ * 
+ * @param {string} html The HTML to brighten text for
+ * @param {string} [bg] The background color that the HTML will be displayed on
+ * @returns {string} HTML string with brightened colors 
+ */
+dtps.brightenTextForDarkMode = function(html, bg) {
+    //Use dark mode algorithm
+    if (!bg) bg = "black";
+    var fakeRoot = $('<div></div>').append(html);
+    fakeRoot.find("span").filter(function() {
+        return $(this).css("color") && !($(this).css("background-color") || $(this).css("background")) && !$(this).parents().filter(function() {
+            return $(this).css("background-color") || $(this).css("background");
+        }).length;
+    }).toArray().forEach(element => {
+        //Brighten color
+        var brightness = tinycolor($(element).css("color")).getBrightness() / 255 * 100;
+        var targetBrightness = (100 - (tinycolor(bg).getBrightness() / 255 * 100)) - brightness;
+        var brightnessDiff = targetBrightness - brightness;
+
+        if (brightnessDiff > 0) {
+            $(element).css("color", "#" + tinycolor($(element).css("color")).brighten(Math.abs(brightnessDiff)).toHex());
+        } else {
+            $(element).css("color", "#" + tinycolor($(element).css("color")).darken(Math.abs(brightnessDiff)).toHex());
+        }
+    });
+    return fakeRoot.html();
+}
+
+/**
  * Stores grade data locally for the previous grade feature
  * 
  * @param classNum Class number to log grade
@@ -1441,7 +1471,7 @@ dtps.renderLite = function () {
                         <div class="btns row small">
                             <button 
                                 onclick="window.localStorage.setItem('dtpsLoaderPref', 'prod')" 
-                                class="btn ${window.localStorage.dtpsLoaderPref != "canary" && window.localStorage.dtpsLoaderPref != "debugging" ? "active" : ""}">
+                                class="btn ${!["canary", "codespace", "debugging"].includes(window.localStorage.dtpsLoaderPref) ? "active" : ""}">
                                 <i class="material-icons">label</i> Production
                             </button>
                             ${window.localStorage.githubCanary ? /*html*/`
