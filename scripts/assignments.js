@@ -487,7 +487,7 @@ dtps.assignment = function (id, classNum) {
 
         var hasKeywords = false;
         if (body.toLowerCase().includes("deliverable") && body.toLowerCase().includes("instruction") && body.toLowerCase().includes("look for")) hasKeywords = true;
-        if ((window.location.hostname == "dtechhs.instructure.com") && hasKeywords && ($('<div></div>').append(body).children("table").find("tbody tr").length > 1)) {
+        if (dtps.remoteConfig.dtechCleanUpAssignments && (fluid.get('pref-formatAssignmentContent') !== "false") && dtpsLMS.dtech && hasKeywords && ($('<div></div>').append(body).children("table").find("tbody tr").length > 1)) {
             var sections = [];
             $('<div></div>').append(body).children("table").find("tbody tr").toArray().forEach((element, i) => {
                 var text = $(element).find("h4:first-child").text().toLowerCase();
@@ -509,7 +509,7 @@ dtps.assignment = function (id, classNum) {
             var tmpjQuery = $('<div></div>').append(body);
             tmpjQuery.children("table").replaceWith(sections.map(s => {
                 return `
-                    <div style="margin: 20px 0px;">
+                    <div class="dtpsFormattedAssignmentSection" style="margin: 20px 0px;">
                         <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="material-icons-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
                         ${s.innerHTML}
                     </div>
@@ -521,7 +521,7 @@ dtps.assignment = function (id, classNum) {
                     <base target="_blank" /> 
                     <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
                     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};} *:not(a) { color: ${computedTextColor} !important; }</style>
+                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};} .dtpsFormattedAssignmentSection *:not(a) { color: ${computedTextColor} !important; }</style>
                     ${outerHTML}
             `], { type: 'text/html' });
             assignmentBodyHTML = `<iframe id="assignmentParts" onload="dtps.iframeLoad('assignmentParts')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${window.URL.createObjectURL(blob)}" />`;
@@ -904,8 +904,8 @@ dtps.classHome = function (num) {
                 homepage = dtps.brightenTextForDarkMode(homepage, computedBackgroundColor);
             }
 
-            if ($('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().length > 1) {
-                //Use special d.tech LMS optimized homepage
+            if (dtps.remoteConfig.dtechHomepageFluidUITabs && ($('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().length > 1)) {
+                //Use special tab optimized homepage
                 var fragments = [];
                 $('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().forEach((fragment) => {
                     var text = $(fragment).text().toLowerCase();

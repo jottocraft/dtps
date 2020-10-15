@@ -76,7 +76,11 @@ var dtps = {
         showDonateButton: true,
         allowWhatIfGrades: true,
         showVideoMeetingButton: true,
-        showGradesInSettings: true
+        showGradesInSettings: true,
+        dtechHomepageFluidUITabs: true,
+        dtechCleanUpAssignments: true,
+        feedbackButtonUsesEmail: false,
+        topSneaky: false
     }
 };
 
@@ -94,9 +98,6 @@ document.addEventListener("fluidTheme", function (data) {
         if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + (dtps.classes[dtps.selectedClass] && dtps.classes[dtps.selectedClass].color) + ", var(--background))"
         if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
         $(".background").css("background", next);
-
-        //Re-run chroma
-        dtps.chroma();
     }
 });
 
@@ -378,19 +379,26 @@ dtps.init = function () {
                 Object.keys(remoteConfig).forEach(k => {
                     var val = remoteConfig[k];
 
-                    if ((dtps.env == "dev") && window.localStorage.getItem("dtpsRemoteConfig-" + k)) {
-                        val = window.localStorage.getItem("dtpsRemoteConfig-" + k);
-
-                        if (val == "true") val = true;
-                        if (val == "false") val = false;
-                    }
-
                     dtps.remoteConfig[k] = val;
                 });
             }
             r();
         }).fail(r);
     }).then(() => {
+        //dev env remote config overrides
+        if (dtps.env == "dev") {
+            Object.keys(dtps.remoteConfig).forEach(k => {
+                if (window.localStorage.getItem("dtpsRemoteConfig-" + k)) {
+                    val = window.localStorage.getItem("dtpsRemoteConfig-" + k);
+
+                    if (val == "true") val = true;
+                    if (val == "false") val = false;
+
+                    dtps.remoteConfig[k] = val;
+                }
+            });
+        }
+
         //Fetch user and class data
         return dtpsLMS.fetchUser();
     }).then(data => {
@@ -743,39 +751,6 @@ dtps.clearData = function () {
 }
 
 /**
- * Runs Razer Chroma RGB effects for the selected content
- * 
- * @todo Pending v3 rewrite
- */
-dtps.chroma = function () {
-    if (fluid.chroma) {
-        if (fluid.chroma.on) {
-            var classVar = "--light"
-            if ($("body").hasClass("dark")) classVar = "--norm"
-            if ($("body").hasClass("midnight")) classVar = "--dark"
-            if (dtps.selectedClass !== "dash") {
-                var dark = "white";
-                var lighting = JSON.parse(`[
-        [null,null,null,` + (dtps.selectedContent == "stream" ? '"white","white","white","white"' : "null,null,null,null") + `,` + (dtps.selectedContent == "pages" ? '"white","white","white","white"' : "null,null,null,null") + `,` + (dtps.selectedContent == "grades" ? '"white","white","white","white"' : "null,null,null,null") + `,null,null,null,null,null,null,null],
-        [null,null,` + (dtps.classes[dtps.selectedClass].grade >= 10 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 20 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 30 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 40 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 50 ? `"` + dark + `"` : 0) + `,
-        ` + (dtps.classes[dtps.selectedClass].grade >= 60 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 70 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 80 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 90 ? `"` + dark + `"` : 0) + `,` + (dtps.classes[dtps.selectedClass].grade >= 100 ? `"` + dark + `"` : 0) + `,null,null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-        [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]]`)
-                var ele = $(".background")[0];
-                if ($(".class." + dtps.selectedClass)[0] !== undefined) ele = $(".class." + dtps.selectedClass)[0];
-                fluid.chroma.effect(tinycolor(getComputedStyle(ele).getPropertyValue(classVar)).saturate(70).toHexString(), lighting);
-            } else {
-                var ele = $(".background")[0];
-                if ($(".class.dash")[0] !== undefined) ele = $(".class.dash")[0];
-                fluid.chroma.static(getComputedStyle(ele).getPropertyValue(classVar));
-            }
-        }
-    }
-}
-
-/**
  * Renders the class list in the sidebar
  * 
  * @param {boolean} [override] True if the sidebar should be forcefully re-rendered
@@ -889,9 +864,6 @@ dtps.presentClass = function (classNum) {
     } else {
         $('body').removeClass('dashboard');
     }
-
-    //Update RGB keyboard lighting effects
-    dtps.chroma();
 
     //Set the default imageURL to an empty PNG to make the CSS transition work
     var imageURL = "https://i.imgur.com/SpqHCNo.png";
@@ -1456,11 +1428,14 @@ dtps.renderLite = function () {
                     <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
                     <div class="label"><i class="material-icons">image</i> Hide class images</div>
 
-                    <div class="razerChroma" style="display: none;">
-                        <br /><br />
-                        <div onclick="fluid.set('pref-chromaEffects')" class="switch pref-chromaEffects"><span class="head"></span></div>
-                        <div class="label"><img style="width: 26px;vertical-align: middle;margin-right: 2px;" src="https://i.imgur.com/FLwviAM.png" class="material-icons" /> Razer Chroma Effects (beta)</div>
-                    </div>
+                    ${
+                        dtpsLMS.dtech && dtps.remoteConfig.dtechCleanUpAssignments ? `
+                            <br /><br />
+                            <div onclick="fluid.set('pref-formatAssignmentContent')" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
+                            <div class="label"><i class="material-icons">format_paint</i> Reformat assignment content</div>
+                        ` : ""
+                    }
+
                 </div>
 
                 ${window.localStorage.githubCanary || window.localStorage.debuggingConfig || window.localStorage.codespaceExternalURL ? /*html*/`
@@ -1655,33 +1630,11 @@ dtps.renderLite = function () {
         </div>
 
         <div style="margin-top: 5px; display: inline-block; text-align: right; float: right;">
-            <a href="/" class="itemButton"><i class="material-icons">exit_to_app</i> ${dtpsLMS.isDemoLMS ? "Exit demo" : "Go to " + (dtpsLMS.shortName || dtpsLMS.name)}</a>
-            ${dtps.remoteConfig.showFeedbackButton || dtps.unstable ? `<div onclick="window.open('https://github.com/jottocraft/dtps/issues/new/choose')" class="itemButton"><i class="material-icons">feedback</i> Feedback</div>` : ""}
+            <a href="/" target="_blank" class="itemButton"><i class="material-icons">exit_to_app</i> ${dtpsLMS.isDemoLMS ? "Exit demo" : "Go to " + (dtpsLMS.shortName || dtpsLMS.name)}</a>
+            ${dtps.remoteConfig.showFeedbackButton || dtps.unstable ? `<a target="_blank" href="${dtps.remoteConfig.feedbackButtonUsesEmail ? "mailto:hello@jottocraft.com" : "https://github.com/jottocraft/dtps/issues/new/choose"}" class="itemButton"><i class="material-icons">feedback</i> Feedback</a>` : ""}
             <div onclick="dtps.settings();" class="itemButton"><i class="material-icons">settings</i> Settings</div>
         </div>
     `);
-
-    //Begin loading chroma effects
-    if (fluid.chroma) {
-        dtps.chromaProfile = {
-            title: "Power+",
-            description: "Razer Chroma effects for Power+ (beta)",
-            author: "jottocraft",
-            domain: "powerplus.app"
-        }
-        fluid.chroma.supported(function (res) {
-            if (res) {
-                //Razer Synapse installed
-                $(".razerChroma").show();
-
-                //Razer Chroma pref
-                if (fluid.get("pref-chromaEffects") == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } }
-                document.addEventListener("pref-chromaEffects", function (e) {
-                    if (String(e.detail) == "true") { if (!fluid.chroma.on) { fluid.chroma.init(dtps.chromaProfile, () => fluid.chroma.static(getComputedStyle($(".background")[0]).getPropertyValue("--dark"))); } } else { fluid.chroma.disable(); }
-                })
-            }
-        })
-    }
 
     //Load Fluid UI
     fluid.onLoad();
@@ -1718,6 +1671,7 @@ dtps.init();
  * @property {string} logo LMS logo image URL
  * @property {string} url URL to the LMS' website
  * @property {string} source URL to the LMS integration's source code
+ * @property {boolean} [dtech] True if this LMS is d.tech
  * @property {boolean} [institutionSpecific] True if the LMS is designed for a specific institution instead of a broader LMS
  * @property {boolean} [preferRubricGrades] True if DTPS should prefer rubric grades for assignments
  * @property {boolean} [genericGradebook] True if DTPS should show the generic gradebook. Ignored if dtpsLMS.gradebook defined.
