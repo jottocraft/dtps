@@ -111,7 +111,8 @@ dtpsLMS.fetchClasses = function () {
                                         newDiscussionThreadURL: '/courses/' + course.id + '/discussion_topics/new',
                                         pages: course.tabs.map(tab => tab.id).includes("pages"),
                                         modules: course.tabs.map(tab => tab.id).includes("modules"),
-                                        discussions: course.tabs.map(tab => tab.id).includes("discussions")
+                                        discussions: course.tabs.map(tab => tab.id).includes("discussions"),
+                                        endDate: course.end_at
                                     };
 
                                     if (course.teachers[0]) {
@@ -420,6 +421,46 @@ dtpsLMS.fetchAnnouncements = function (classID) {
                 });
 
                 resolve(dtpsAnnouncements);
+            },
+            error: function (err) {
+                reject(err);
+            }
+        });
+    });
+}
+
+//Fetches user data from Canvas
+dtpsLMS.fetchUsers = function (classID) {
+    return new Promise(function (resolve, reject) {
+        jQuery.ajax({
+            url: "/api/v1/courses/" + classID + "/sections?include[]=avatar_url&include[]=students",
+            type: "GET",
+            headers: dtpsLMS.commonHeaders,
+            success: function (data) {
+                var sections = [];
+                data.forEach(section => {
+                    if (!section.students) return;
+
+                    var users = [];
+                    section.students.forEach(student => {
+                        users.push({
+                            name: student.short_name,
+                            id: student.id,
+                            photoURL: student.avatar_url,
+                            url: "/courses/" + classID + "/users/" + student.id
+                        });
+                    });
+                    var dtechMatch = section.name.match(/[0-9](?=\(A)/);
+                    if (dtpsLMS.dtech && dtechMatch) {
+                        section.name = "Period " + dtechMatch[0];
+                    }
+                    sections.push({
+                        title: section.name,
+                        id: section.id,
+                        users
+                    });
+                });
+                resolve(sections);
             },
             error: function (err) {
                 reject(err);

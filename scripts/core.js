@@ -79,6 +79,8 @@ var dtps = {
         showGradesInSettings: true,
         dtechHomepageFluidUITabs: true,
         dtechCleanUpAssignments: true,
+        dtechCurrentTerm: "20-21",
+        debugClassID: "1098",
         feedbackButtonUsesEmail: false,
         topSneaky: false
     }
@@ -491,13 +493,14 @@ dtps.init = function () {
             fluid.screens.dashboard = dtps.baseURL + "/scripts/assignments.js";
             fluid.screens.stream = dtps.baseURL + "/scripts/assignments.js";
             fluid.screens.moduleStream = dtps.baseURL + "/scripts/assignments.js";
+            fluid.screens.people = dtps.baseURL + "/scripts/people.js";
             fluid.screens.pages = dtps.baseURL + "/scripts/pages-discussions.js";
             fluid.screens.discussions = dtps.baseURL + "/scripts/pages-discussions.js";
 
             if (dtpsLMS.gradebook && !((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
                 //Handle LMS gradebook
                 fluid.screens.gradebook = dtps.showLMSGradebook;
-            } else if (dtpsLMS.genericGradebook) {
+            } else if (dtpsLMS.genericGradebook || ((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
                 //Generic gradebook script
                 fluid.screens.gradebook = dtps.baseURL + "/scripts/assignments.js";
             }
@@ -827,6 +830,10 @@ dtps.showClasses = function (override) {
                 fluid.screen("moduleStream", dtps.classes[dtps.selectedClass].id);
             }
 
+            if ((dtps.selectedContent == "people") && dtps.classes[dtps.selectedClass]) {
+                fluid.screen("people", dtps.classes[dtps.selectedClass].id);
+            }
+
             if ((dtps.selectedContent == "grades") && dtps.classes[dtps.selectedClass]) {
                 if (dtps.classes[dtps.selectedClass].hasGradebook) {
                     fluid.screen("gradebook", dtps.classes[dtps.selectedClass].id);
@@ -922,6 +929,13 @@ dtps.presentClass = function (classNum) {
             $(".btns .btn.pages").show();
         } else {
             $(".btns .btn.pages").hide();
+        }
+
+        //Show people tab if the LMS supports it, otherwise, hide it
+        if (dtpsLMS.fetchUsers) {
+            $(".btns .btn.people").show();
+        } else {
+            $(".btns .btn.people").hide();
         }
 
         //Show pages tab if the class supports it, otherwise, hide it
@@ -1021,12 +1035,12 @@ dtps.showIFrameCard = function (url) {
  * @param {string} [bg] The background color that the HTML will be displayed on
  * @returns {string} HTML string with brightened colors 
  */
-dtps.brightenTextForDarkMode = function(html, bg) {
+dtps.brightenTextForDarkMode = function (html, bg) {
     //Use dark mode algorithm
     if (!bg) bg = "black";
     var fakeRoot = $('<div></div>').append(html);
-    fakeRoot.find("span").filter(function() {
-        return $(this).css("color") && !($(this).css("background-color") || $(this).css("background")) && !$(this).parents().filter(function() {
+    fakeRoot.find("span").filter(function () {
+        return $(this).css("color") && !($(this).css("background-color") || $(this).css("background")) && !$(this).parents().filter(function () {
             return $(this).css("background-color") || $(this).css("background");
         }).length;
     }).toArray().forEach(element => {
@@ -1122,7 +1136,7 @@ dtps.settings = function (forceRerenderDashboard) {
 /**
  * Renders the grades tab in settings
  */
-dtps.renderGradesInSettings = function() {
+dtps.renderGradesInSettings = function () {
     //Render class grade bars
     $("#classGradeBars").html(dtps.classes.map(course => {
         //Percentages below are for visualization purposes only
@@ -1301,6 +1315,10 @@ dtps.render = function () {
                     <i class="material-icons">library_books</i>
                     Coursework
                 </button>
+                <button init="true" onclick="fluid.screen('people', dtps.classes[dtps.selectedClass].id);" class="btn people">
+                    <i class="material-icons">group</i>
+                    People
+                </button>
                 <button init="true" onclick="fluid.screen('discussions', dtps.classes[dtps.selectedClass].id);" class="btn discuss">
                     <i class="material-icons">forum</i>
                     Discussions
@@ -1432,12 +1450,12 @@ dtps.renderLite = function () {
                     <div class="label"><i class="material-icons">image</i> Hide class images</div>
 
                     ${
-                        dtpsLMS.dtech && dtps.remoteConfig.dtechCleanUpAssignments ? `
+        dtpsLMS.dtech && dtps.remoteConfig.dtechCleanUpAssignments ? `
                             <br /><br />
                             <div onclick="fluid.set('pref-formatAssignmentContent')" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
                             <div class="label"><i class="material-icons">format_paint</i> Reformat assignment content</div>
                         ` : ""
-                    }
+        }
 
                 </div>
 
@@ -1746,6 +1764,14 @@ dtps.init();
 */
 
 /**
+* @name dtpsLMS.fetchUsers
+* @description [OPTIONAL] Fetches the users for a course from the LMS
+* @kind function
+* @param {string} classID The class ID to fetch users for
+* @return {Promise<ClassSection[]>} A promise which resolves to an array of sections in this class
+*/
+
+/**
 * @name dtpsLMS.fetchDiscussionThreads
 * @description [OPTIONAL] Fetches discussion threads for a course from the LMS
 * @kind function
@@ -1832,6 +1858,7 @@ dtps.init();
  * @property {string} name User name
  * @property {string} id User ID
  * @property {string} photoURL User photo URL
+ * @property {string} url [ONLY FOR DTPSLMS.FETCHUSERS] The URL to this user's profile. Only used when displaying users in the people tab.
  * @property {User[]} [children] [ONLY FOR DTPS.USER] Array of child users. If this is defined, the user is treated as a parent account. Sub-children are not allowed.
  * @property {boolean} parent [ONLY FOR DTPS.USER] Automatically managed by DTPS. True if the user is a parent account.
  * @property {string} lmsID [ONLY FOR DTPS.USER] Automatically managed by DTPS. This is the user ID that all LMS web requests should use. Can change when a parent account changes the selected child.
@@ -1844,6 +1871,7 @@ dtps.init();
 * @property {string} id Class ID
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
+* @property {Date} [endDate] The end date for this course
 * @property {Assignment[]} assignments Class assignments. Assume assignments are still loading if this is undefined. The class has no assignments if this is an empty array. Loaded in dtps.init.
 * @property {Module[]|boolean} [modules] Class modules. Assume this class supports the modules feature, but is not yet loaded, if this is true and that the class has no modules if this is an empty array. For LMSs that do not support modules, either keep it undefined or set it to false.
 * @property {DiscussionThread[]|boolean} [discussions] Class discussion threads. Assume this class supports discussions, but not yet loaded, if this is true and that the class has no threads if this is an empty array. For LMSs that do not support discussions, either keep it undefined or set it to false.
