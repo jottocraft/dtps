@@ -799,7 +799,7 @@ dtps.renderClassTools = function (num, type, searchText) {
         }
 
             <div onclick="dtps.classInfo(${num})" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
-                <i style="line-height: 40px;" class="material-icons">info</i>
+                <i style="line-height: 40px;" class="material-icons">${dtps.classes[num].id == dtps.remoteConfig.debugClassID ? "bug_report" : "info"}</i>
             </div>
 
             ${dtps.classes[num].homepage ? /*html*/`
@@ -865,6 +865,7 @@ dtps.classInfo = function (num) {
 
         ${dtps.classes[num].numStudents ? `<div class="assignmentChip"><i class="material-icons">group</i><span>${dtps.classes[num].numStudents} students</span></div>` : ``}
         ${dtps.env == "dev" ? `<div class="assignmentChip"><i class="material-icons">code</i><span>Class ID: ${dtps.classes[num].id}</span></div>` : ``}
+        ${dtps.classes[num].id == dtps.remoteConfig.debugClassID ? `<div class="assignmentChip"><i class="material-icons">bug_report</i><span>Debug class</span></div>` : ``}
     
         <br />
 

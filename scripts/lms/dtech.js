@@ -53,6 +53,18 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     //Update classes
     dtpsLMS.updateClasses = function (classes) {
         return new Promise((resolve, reject) => {
+            var tmpNewArray = [];
+            classes.forEach((course, i) => {
+                if (course.term == dtps.remoteConfig.dtechCurrentTerm) {
+                    tmpNewArray.push(course);
+                } else if (course.id == dtps.remoteConfig.debugClassID) {
+                    tmpNewArray.push(course);
+                } else if (!course.endDate || (new Date() < new Date(course.endDate))) {
+                    tmpNewArray.push(course);
+                }
+            });
+            classes = tmpNewArray;
+
             //Don't fetch videoMeetingURL if disable by remoteConfig
             if (!dtps.remoteConfig.showVideoMeetingButton) {
                 resolve(classes);
@@ -107,7 +119,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         //Get d.tech grade calculation formula
         if (course.term == "20-21") {
             formula = "2020s1";
-        } else if (course.id == "1098") {
+        } else if (course.id == dtps.remoteConfig.debugClassID) {
             formula = "2020s1";
         }
 
