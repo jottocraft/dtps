@@ -23,6 +23,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     dtpsLMS.useRubricGrades = true;
     dtpsLMS.institutionSpecific = true;
     dtpsLMS.genericGradebook = false;
+    dtpsLMS.dtech = true;
 
     //Update assignments
     //This is for customizing rubric names and colors to match d.tech CBL
