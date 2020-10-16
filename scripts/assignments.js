@@ -521,7 +521,7 @@ dtps.assignment = function (id, classNum) {
                     <base target="_blank" /> 
                     <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
                     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
-                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};} .dtpsFormattedAssignmentSection *:not(a) { color: ${computedTextColor} !important; }</style>
+                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};} .dtpsFormattedAssignmentSection *:not(a) { color: ${computedTextColor} !important; } .dtpsFormattedAssignmentSection * { background: none !important; }</style>
                     ${outerHTML}
             `], { type: 'text/html' });
             assignmentBodyHTML = `<iframe id="assignmentParts" onload="dtps.iframeLoad('assignmentParts')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${window.URL.createObjectURL(blob)}" />`;
