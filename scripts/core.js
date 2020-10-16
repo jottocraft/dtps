@@ -680,31 +680,14 @@ dtps.init = function () {
 }
 
 /**
- * 12 hour time formatter
- * 
- * @param {Date} date The date to format
- * @return {string} Formatted time string in 12hr format
- */
-dtps.ampm = function (date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
-}
-
-/**
  * Formats a date to a readable date string
  * 
  * @param {Date} date The date to format
- * @return {string} Formatted date string in DAY MONTH DATE, HH:MM AMPM format
+ * @return {string} Formatted date and time string
  */
 dtps.formatDate = function (date) {
     if (date) {
-        return new Date(date).toDateString().slice(0, -5) + ", " + dtps.ampm(new Date(date));
+        return new Date(date).toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric', hour: "numeric", minute: "numeric" });
     } else {
         return "";
     }
