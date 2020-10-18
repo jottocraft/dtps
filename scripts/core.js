@@ -788,11 +788,11 @@ dtps.showClasses = function (override) {
     if (!jQuery(".sidebar .class.dash")[0] || override) {
         jQuery(".sidebar").html(/*html*/`
             <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; white-space: nowrap; overflow: hidden;">
-                <img style="width: 28px; margin-right: 7px; vertical-align: middle;" src="https://powerplus.app/icon.svg" />
+                <img style="width: 28px; margin-right: 7px; vertical-align: middle;" src="${dtps.baseURL + "/icon.svg"}" />
                 <h4 style="color: var(--text); display: inline-block; font-size: 28px; vertical-align: middle; margin: 0px;">Power+</h4>
             </div>
             
-            <img class="logo" src="https://powerplus.app/favicon.png" />
+            <img class="logo" src="${dtps.baseURL + "/favicon.png"}" />
 
             <div class="items">
 
@@ -886,7 +886,7 @@ dtps.presentClass = function (classNum) {
     //Run CSS animation for class transition
     $(".background").addClass("trans");
     $(".cover.image").css("background-image", 'url("' + imageURL + '")');
-    $(".background").css("opacity", '0.90');
+    $(".background").css("opacity", '0.6');
     $(".background").css("filter", 'none');
 
     //Clear any existing background animation timeout
@@ -1288,7 +1288,7 @@ dtps.render = function () {
     jQuery("<link/>", {
         rel: "shortcut icon",
         type: "image/png",
-        href: "https://powerplus.app/favicon.png"
+        href: dtps.baseURL + "/favicon.png"
     }).appendTo("head");
 
     //Remove existing LMS HTML (excluding DTPS loading screen HTML)
@@ -1390,7 +1390,7 @@ dtps.renderLite = function () {
 
         <div class="sidenav" style="position: fixed; height: calc(100% - 50px); border-radius: 20px 0px 0px 20px;">
             <div class="title">
-	            <img src="https://powerplus.app/icon.svg" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
+	            <img src="${dtps.baseURL + "/icon.svg"}" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
 	            <div style="vertical-align: middle; display: inline-block;">
                     <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>
                     <p>${dtps.readableVer + (dtps.unstable ? ` <span style="font-size: 12px;">(unstable)</span>` : "")}</p>
@@ -1575,7 +1575,7 @@ dtps.renderLite = function () {
                 <h5><b>About</b></h5>
 
                 <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
-                    <img src="https://powerplus.app/icon.svg" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
+                    <img src="${dtps.baseURL + "/icon.svg"}" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
                     
                     <div style="display: inline-block; vertical-align: middle;">
                         <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">Power+</h4>

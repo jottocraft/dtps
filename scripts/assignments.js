@@ -792,24 +792,24 @@ dtps.renderClassTools = function (num, type, searchText) {
         <div style="position: absolute;display:inline-block;margin: ${modulesSelector ? "82px" : "38px 82px"};">
 
             ${dtps.classes[num].teacher ? /*html*/`
-                <div class="acrylicMaterial" style="border-radius: 20px; display: inline-block; margin-right: 5px;">
+                <div style="background-color: var(--elements); border-radius: 20px; display: inline-block; margin-right: 5px;">
                     <img src="${dtps.classes[num].teacher.photoURL}" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> 
                     <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">${dtps.classes[num].teacher.name}</div>
                 </div>` : ``
         }
 
-            <div onclick="dtps.classInfo(${num})" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
+            <div onclick="dtps.classInfo(${num})" class="classToolChip">
                 <i style="line-height: 40px;" class="material-icons">${dtps.classes[num].id == dtps.remoteConfig.debugClassID ? "bug_report" : "info"}</i>
             </div>
 
             ${dtps.classes[num].homepage ? /*html*/`
-                <div onclick="dtps.classHome(${num})" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
+                <div onclick="dtps.classHome(${num})" class="classToolChip">
                     <i style="line-height: 40px;" class="material-icons">home</i>
                 </div>` : ""
         }
 
         ${dtps.classes[num].videoMeetingURL ? /*html*/`
-                <div onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="acrylicMaterial" style="border-radius: 50%; height: 40px; width: 40px; text-align: center; display: inline-block; vertical-align: middle; cursor: pointer; margin-right: 3px;">
+                <div onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="classToolChip">
                     <i style="line-height: 40px;" class="material-icons">videocam</i>
                 </div>` : ""
         }
