@@ -73,8 +73,8 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
                     </div>
                 </div>
 
-                <p style="text-align: center; font-weight: bold; margin-top: 60px;">No discussions found</p>
-                <p style="text-align: center; font-size: 14px;">This class doesn't have any discussions</p>
+                <p style="text-align: center; font-weight: bold; margin-top: 60px; margin-bottom: 10px;">No discussions found</p>
+                <p style="text-align: center; font-size: 14px; margin: 0px;">This class doesn't have any discussions</p>
             `);
         } else {
             //Loop over discusson threads array to create discussion thread HTML for the sidebar
@@ -330,8 +330,8 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
                     </div>
                 </div>
 
-                <p style="text-align: center; font-weight: bold; margin-top: 60px;">No pages found</p>
-                <p style="text-align: center; font-size: 14px;">This class doesn't have any pages</p>
+                <p style="text-align: center; font-weight: bold; margin-top: 60px; margin-bottom: 10px;">No pages found</p>
+                <p style="text-align: center; font-size: 14px; margin: 0px;">This class doesn't have any pages</p>
             `);
         } else {
             //Loop over discusson threads array to create discussion thread HTML for the sidebar

@@ -1279,7 +1279,7 @@ dtps.render = function () {
 
     //Render HTML
     jQuery("body").append(/*html*/`
-        <div style="line-height: 0;" class="sidebar acrylicMaterial"></div>
+        <div class="sidebar acrylicMaterial"></div>
 
         <!-- Header background elements -->
         <div class="cover image"></div>
@@ -1513,7 +1513,11 @@ dtps.renderLite = function () {
                    <h5><b>Debugging</b></h5>
                    <p>These settings are for development only and might break Power+. Use at your own risk.</p>
 
-                   <br />
+                   <div>
+                    <button onclick="dtps.firstrun()" class="btn small"><i class="material-icons">web_asset</i> Show firstrun screen</button>
+                   </div>
+
+                   <br /><br />
 
                    <h5>Release configuration</h5>
 
