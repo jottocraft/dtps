@@ -22,13 +22,16 @@ dtps.usersList = function (courseID) {
     $("#dtpsTabBar .btn").removeClass("active");
     $("#dtpsTabBar .btn.people").addClass("active");
 
+    //Load class color and things
+    dtps.presentClass(classNum);
+
+    //Ensure classes are shown in the sidebar
+    dtps.showClasses();
+
     if (classNum == -1) {
         //Class does not exist
         dtps.error("The selected class doesn't exist", "classNum check failed @ dtps.usersList");
     }
-
-    //Load class color and things
-    dtps.presentClass(classNum);
 
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "people")) {
         jQuery(".classContent").html(`<div class="spinner"></div>`);
