@@ -73,7 +73,6 @@ var dtps = {
     remoteConfig: {
         showFeedbackButton: false,
         gradeCalculationEnabled: true,
-        showDonateButton: true,
         allowWhatIfGrades: true,
         showVideoMeetingButton: true,
         showGradesInSettings: true,
@@ -1574,7 +1573,6 @@ dtps.renderLite = function () {
 
                     <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
                         <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px; cursor: pointer;"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-                        ${dtps.remoteConfig.showDonateButton ? `<a style="color: var(--lightText); margin: 0px 5px;" href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=GHD8S35VT7H2J&item_name=Donate+to+Power%2B&currency_code=USD&source=url"><i class="material-icons" style="vertical-align: middle">attach_money</i> Donate</a>` : ""}
                         <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="material-icons" style="vertical-align: middle">email</i> Contact</a>
                     </div>
                 </div>
