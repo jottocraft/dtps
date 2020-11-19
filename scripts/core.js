@@ -1388,7 +1388,7 @@ dtps.render = function () {
         </div>
 
         <div class="headerArea classImage">
-          <img src="https://images.unsplash.com/photo-1518277980269-c1eb88ad9693?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjc1NjI5fQ&utm_medium=referral&utm_source=canvas-prod&crop=faces%2Centropy&fit=crop&fm=jpg&cs=tinysrgb&q=80">
+          <img style="display: none;" />
           <div class="content">
             <h1 id="headText">Dashboard</h1>
             <div id="classInfo" style="min-height: 18px;">
