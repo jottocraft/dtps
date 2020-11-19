@@ -128,17 +128,19 @@ dtps.masterStream = function () {
     //Render HTML with loading placeholder
     if (dtps.selectedClass == "dash") {
         jQuery(".classContent").html(/*html*/`
-            <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
-                ${dtps.leftDashboard.map(dashboardItem => {
-            return dashboardContainerHTML(dashboardItem);
-        }).join("")}
-            </div>
+            <div style="--size: 500px;" class="samesize grid">
+                <div class="dash item">
+                    ${dtps.leftDashboard.map(dashboardItem => {
+                return dashboardContainerHTML(dashboardItem);
+            }).join("")}
+                </div>
 
-            <div style="width: 59%; display: inline-block;" class="dash stream">
-                ${!doneLoading ? `<div style="margin: 75px 25px 10px 75px;"><div class="spinner"></div></div>` : ""}
-                ${dtps.rightDashboard.map(dashboardItem => {
-            return dashboardContainerHTML(dashboardItem);
-        }).join("")}
+                <div class="dash item">
+                    ${!doneLoading ? `<div style="margin: 75px 25px 10px 75px;"><div class="spinner"></div></div>` : ""}
+                    ${dtps.rightDashboard.map(dashboardItem => {
+                return dashboardContainerHTML(dashboardItem);
+            }).join("")}
+                </div>
             </div>
         `);
     }
