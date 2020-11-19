@@ -83,7 +83,7 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
                     <div data-threadID="${discussionThread.id}" class="item">
                         <span class="label">${discussionThread.title}</span>
                         <div class="icon">
-                            <i style="font-family: 'Material Icons Extended';" class="material-icons">${discussionThread.locked ? "lock_outline" : "chat_bubble_outline"}</i>
+                            <i class="material-icons">${discussionThread.locked ? "lock_outline" : "chat_bubble_outline"}</i>
                         </div>
                     </div>
                 `;

@@ -44,7 +44,7 @@ dtps.renderAssignment = function (assignment) {
                 ${assignment.turnedIn ? `<i title="Assignment submitted" class="material-icons statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
                 ${assignment.missing ? `<i title="Assignment is missing" class="material-icons statusIcon" style="color: #c44848;">remove_circle_outline</i>` : ``}
                 ${assignment.late ? `<i title="Assignment is late" class="material-icons statusIcon" style="color: #c44848;">assignment_late</i>` : ``}
-                ${assignment.locked ? `<i title="Assignment submissions are locked" class="material-icons statusIcon" style="font-family: 'Material Icons Extended'; color: var(--secText, gray);">lock_outline</i>` : ``}
+                ${assignment.locked ? `<i title="Assignment submissions are locked" class="material-icons statusIcon" style="color: var(--secText, gray);">lock_outline</i>` : ``}
                 ${assignment.pending ? `<i title="Grade is pending review" class="material-icons statusIcon" style="color: #b3b70b;">rate_review</i>` : ``}
             </h5>
         </div>
@@ -383,13 +383,13 @@ dtps.classStream = function (classID, searchResults, searchText) {
     if (!assignments) {
         //Assignments are still loading
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-            jQuery(".classContent").html(dtps.renderClassTools(classNum, "stream", searchText) + `<div class="spinner"></div>`);
+            jQuery(".classContent").html(`<div class="spinner"></div>`);
         }
     } else if (assignments.length == 0) {
         if (searchText) {
             //No search results
             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-                $(".classContent").html(/*html*/ dtps.renderClassTools(classNum, "stream", searchText) + `
+                $(".classContent").html(/*html*/`
                     <div style="cursor: auto;" class="card assignment">
                         <h4>No results</h4>
                         <p>There weren't any search results</p>
@@ -400,7 +400,7 @@ dtps.classStream = function (classID, searchResults, searchText) {
         } else {
             //This class doesn't have any assignments
             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-                $(".classContent").html(dtps.renderClassTools(classNum, "stream", searchText) + `<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
+                $(".classContent").html(`<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
             }
         }
     } else {
@@ -452,9 +452,6 @@ dtps.classStream = function (classID, searchResults, searchText) {
 
             return divider + dtps.renderAssignment(assignment);
         }).join("");
-
-        //Add stream header with class info buttons and search box
-        streamHTML = dtps.renderClassTools(classNum, "stream", searchText) + streamHTML;
 
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
             $(".classContent").html(streamHTML);
@@ -590,7 +587,7 @@ dtps.assignment = function (id, classNum) {
                 ${assignment.turnedIn ? `<div title="Assignment submitted" class="assignmentChip" style="color: #0bb75b"><i class="material-icons">assignment_turned_in</i></div>` : ""}
                 ${assignment.missing ? `<div  title="Assignment is missing" class="assignmentChip" style="color: #c44848"><i class="material-icons">remove_circle_outline</i></div>` : ""}
                 ${assignment.late ? `<div title="Assignment is late" class="assignmentChip" style="color: #c44848"><i class="material-icons">assignment_late</i></div>` : ""}
-                ${assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i style="font-family: 'Material Icons Extended';" class="material-icons">lock_outline</i></div>` : ""}
+                ${assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i class="material-icons">lock_outline</i></div>` : ""}
                 ${scoreHTML}
             </div>
 
@@ -613,7 +610,7 @@ dtps.assignment = function (id, classNum) {
 
                 <br />
                 <div class="row">
-                    ${assignment.url ? `<div class="btn small outline" onclick="window.open('${assignment.url}')"><i class="material-icons">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</div>` : ``}
+                    ${assignment.url ? `<button class="btn small outline" onclick="window.open('${assignment.url}')"><i class="material-icons">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</button>` : ``}
                 </div>
             </div>
 
@@ -626,7 +623,7 @@ dtps.assignment = function (id, classNum) {
 
     //Close other active cards and open the assignment details card
     fluid.cards.close(".card.focus");
-    fluid.modal(".card.details");
+    fluid.cards(".card.details");
 }
 
 /**
@@ -672,7 +669,7 @@ dtps.moduleStream = function (classID) {
 
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
-        jQuery(".classContent").html(dtps.renderClassTools(classNum, "modules") + `<div class="spinner"></div>`);
+        jQuery(".classContent").html(`<div class="spinner"></div>`);
     }
 
     new Promise(resolve => {
@@ -685,7 +682,7 @@ dtps.moduleStream = function (classID) {
         //Save modules data in the class object for future use
         dtps.classes[classNum].modules = data;
 
-        var modulesHTML = dtps.renderClassTools(classNum, "modules");
+        var modulesHTML = "";
 
         data.forEach(module => {
             var moduleItemHTML = "";
@@ -876,7 +873,7 @@ dtps.classInfo = function (num) {
     `)
 
     //Show the class info card
-    fluid.modal(".card.details")
+    fluid.cards(".card.details")
 }
 
 /**
@@ -888,7 +885,7 @@ dtps.classHome = function (num) {
     //Render loading screen
     $(".card.details").html(/*html*/`
         <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
-        <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
+        <h3 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h3>
 
         <br />
         <p>Loading...</p>
@@ -977,7 +974,7 @@ dtps.classHome = function (num) {
                 `);
             }
 
-            fluid.modal(".card.details");
+            fluid.cards(".card.details");
         } else {
             fluid.cards.close('.card.details');
             dtps.error("Homepage unavailable", "homepage is either empty or undefined @ dtps.classHome");

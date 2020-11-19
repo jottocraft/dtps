@@ -190,7 +190,7 @@ Power+ CSS
 }
 
 .discussionReply {
-    border-left: 2px solid var(--darker);
+    border-left: 2px solid var(--elementHover);
     padding: 10px 0px;
     padding-left: 30px;
 }
@@ -264,14 +264,6 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     margin: 0px;
     margin-top: 7px;
     color: var(--secText);
-}
-
-/* Fluid UI theme prefs */
-:root {
-    --icons: "Material Icons Outlined", "Material Icons Extended" !important; }
-
-.blur * {
-    pointer-events: none !important;
 }
 
 .numFont {
@@ -511,13 +503,6 @@ body.isolatedGoogleClass .background {
     background: linear-gradient(to right bottom, rgb(177, 168, 35), rgb(8, 101, 59)) !important;
 }
 
-@media (min-width: 1001px) {
-    .card.focus {
-        max-height: calc(100vh - 50px);
-        top: 25px !important;
-    }
-}
-
 .announcement:not(.open) {
     max-height: 200px;
 }
@@ -594,13 +579,6 @@ body.titlebar .sidebar {
     top: 75;
 }
 
-.sidebar .item .label {
-    max-width: calc(100% - 40px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .sidebar .item:not(.active) {
     filter: none !important;
 }
@@ -617,10 +595,6 @@ body.collapsedSidebar .sidebar .bigLogo {
     box-shadow: 10px 0px 30px rgba(0, 0, 0, 0.03) !important;
 }
 
-body.hasSidebar {
-    padding: 0px !important;
-}
-
 .classDivider {
     display: inline-block;
     width: 250px;
@@ -630,7 +604,15 @@ body.hasSidebar {
     margin: 15px 0;
 }
 
-.hidegrades .class .grade.val {
+.sidebar .item .grade {
+    text-align: center;
+    width: 22px;
+    font-size: 18px;
+    font-family: var(--textFont);
+    font-weight: bold;
+}
+
+.hidegrades .sidebar .item .grade {
     display: none !important;
 }
 
@@ -674,11 +656,6 @@ body.noSidebar .header {
     margin-left: 0px;
 }
 
-body.collapsedSidebar .header {
-    width: calc(100% - 80px);
-    margin-left: 80px;
-}
-
 body.titlebar .background, body.titlebar .cover.image {
     position: fixed;
     height: 75px;
@@ -707,11 +684,6 @@ body.noSidebar .classContent {
     width: 100%;
 }
 
-body.collapsedSidebar .classContent {
-    margin-left: 80px;
-    width: calc(100% - 80px);
-}
-
 body.titlebar .header h1 {
     font-size: 40px;
     line-height: 75px;
@@ -734,17 +706,8 @@ body.titlebar:not(.noSidebar) .header .btns {
 }
 
 .classContent {
-    margin-left: 275px;
-    padding-top: 300px;
     z-index: 100;
     top: 0;
-    width: calc(100% - 275px);
-}
-
-body.titlebar .classContent {
-    position: absolute;
-    top: 0;
-    margin-top: 321px;
 }
 
 .tabs.btns {
@@ -802,7 +765,6 @@ body.titlebar .classContent {
 .header {
     margin-left: 275px;
     text-align: center;
-    color: white;
     padding-top: 132px;
     z-index: 200;
     position: absolute;
@@ -1030,7 +992,7 @@ body.dark {
     --light: var(--flex-light, #949494); --norm: var(--flex-layer1, #444444); --dark: var(--flex-layer3, #292929); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
 
 body:not(.dark) .background, body:not(.dark) .header h1 {
-    --grad: linear-gradient(to bottom right, var(--darker), var(--background)) !important; color: black !important;
+    --grad: linear-gradient(to bottom right, var(--elementHover), var(--background)) !important; color: black !important;
 }
 
 #whatIfResults {
@@ -1508,10 +1470,19 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
 }
 
 .classToolChip:hover {
-    background-color: var(--darker);
+    background-color: var(--elementHover);
     transition: background-color 0.2s;
 }
 
 body {
     --cardShadow: 0 5px 15px rgb(0 0 0 / 0.1) !important;
+}
+
+.headerArea {
+    margin: 10px 20px;
+    width: auto;
+}
+
+body.themeImage .headerArea .content {
+    background: none !important;
 }
