@@ -773,7 +773,15 @@ dtps.showClasses = function (override) {
 
                 <div class="divider"></div>
 
-                ${dtps.classlist.join("")}
+                <div id="2020s1" class="group">
+                  <div class="name item">
+                    <i class="material-icons"></i> <span class="label">Semester 1</span>
+                  </div>
+
+                  <div class="items">
+                    ${dtps.classlist.join("")}
+                  </div>
+                </div>
             </div>
 
             <div class="collapse">
@@ -859,6 +867,15 @@ dtps.presentClass = function (classNum) {
     $(".cover.image").css("background-image", 'url("' + imageURL + '")');
     $(".background").css("opacity", '0.6');
     $(".background").css("filter", 'none');
+
+    if (dtps.classes[classNum] && dtps.classes[classNum].image) {
+        $(".headerArea").addClass("classImage");
+        $(".headerArea img").attr("src", imageURL);
+        $(".headerArea img").show();
+    } else {
+        $(".headerArea").removeClass("classImage");
+        $(".headerArea img").hide();
+    }
 
     //Clear any existing background animation timeout
     clearTimeout(dtps.bgTimeout);
@@ -1327,7 +1344,7 @@ dtps.render = function () {
           </div>
         
           ${dtps.unstable ? `
-            <div style="position: absolute; color: #ff4e4e; cursor: auto;" class="navitem">
+            <div id="dtpsUnstable" class="navitem">
               <i style="font-size: 16px;" class="material-icons">warning</i>
               <span style="font-weight: bold; font-size: 10px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</span>
             </div>
@@ -1370,8 +1387,8 @@ dtps.render = function () {
           </div>
         </div>
 
-        <div class="headerArea">
-          <img style="display: none;" src="https://images.unsplash.com/photo-1518277980269-c1eb88ad9693?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjc1NjI5fQ&utm_medium=referral&utm_source=canvas-prod&crop=faces%2Centropy&fit=crop&fm=jpg&cs=tinysrgb&q=80">
+        <div class="headerArea classImage">
+          <img src="https://images.unsplash.com/photo-1518277980269-c1eb88ad9693?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjc1NjI5fQ&utm_medium=referral&utm_source=canvas-prod&crop=faces%2Centropy&fit=crop&fm=jpg&cs=tinysrgb&q=80">
           <div class="content">
             <h1 id="headText">Dashboard</h1>
             <div id="classInfo" style="min-height: 18px;">
