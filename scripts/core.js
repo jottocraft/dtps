@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.0.6
+ * @version v3.1.0
  * 
  * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -35,8 +35,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  */
 var dtps = {
-    ver: 306,
-    readableVer: "v3.0.6",
+    ver: 310,
+    readableVer: "v3.1.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -226,9 +226,9 @@ dtps.firstrun = function () {
         `}
         
         <br />
-        <div onclick="window.localStorage.setItem('dtpsInstalled', 'true'); fluid.cards.close('.card.changelog');" class="btn">
+        <button onclick="window.localStorage.setItem('dtpsInstalled', 'true'); fluid.cards.close('.card.changelog');" class="btn">
             <i class="material-icons">arrow_forward</i> Continue
-        </div>
+        </button>
     `);
 
     //Show Welcome to DTPS card
@@ -275,7 +275,7 @@ dtps.JS = function (cb) {
         //dtao/nearest-color is used for finding the nearest class color
         jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
             //Fluid UI for core UI elements
-            jQuery.getScript('https://cdn.jottocraft.com/fluid/v4.min.js', cb);
+            jQuery.getScript('https://cdn.jottocraft.com/fluid/v5.min.js', cb);
         })
     });
 }
@@ -287,7 +287,7 @@ dtps.CSS = function () {
     jQuery("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: "https://cdn.jottocraft.com/fluid/v4.min.css",
+        href: "https://cdn.jottocraft.com/fluid/v5.min.css",
         class: "dtpsHeadItem"
     }).appendTo("head");
 
@@ -301,7 +301,7 @@ dtps.CSS = function () {
     jQuery("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: "https://fonts.googleapis.com/css?family=Material+Icons+Outlined",
+        href: "https://fonts.googleapis.com/css?family=Material+Icons+Round",
         class: "dtpsHeadItem"
     }).appendTo("head");
 
@@ -309,13 +309,6 @@ dtps.CSS = function () {
         rel: "stylesheet",
         type: "text/css",
         href: "https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.css",
-        class: "dtpsHeadItem"
-    }).appendTo("head");
-
-    jQuery("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "https://fonts.googleapis.com/icon?family=Material+Icons+Extended",
         class: "dtpsHeadItem"
     }).appendTo("head");
 
@@ -758,10 +751,8 @@ dtps.showClasses = function (override) {
                 class="${'class item ' + i + ' ' + (dtps.selectedClass == i ? " active" : "")}"
                 style="${'--classColor: ' + dtps.classes[i].color}"
             >
-                <span class="label name">${dtps.classes[i].subject}</span>
-                <div ${dtps.classes[i].letter == null ? `style="letter-spacing:2px;"` : ""} class="icon grade val">
-                    ${letterGradeHTML}
-                </div>
+                <i class="material-icons grade">${letterGradeHTML}</i>
+                <span class="label">${dtps.classes[i].subject}</span>
             </div>
         `);
     }
@@ -769,18 +760,15 @@ dtps.showClasses = function (override) {
     //Only render HTML if the sidebar doesn't already have the classes rendered, or if override is true
     if (!jQuery(".sidebar .class.dash")[0] || override) {
         jQuery(".sidebar").html(/*html*/`
-            <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; white-space: nowrap; overflow: hidden;">
-                <img style="width: 28px; margin-right: 7px; vertical-align: middle;" src="${dtps.baseURL + "/icon.svg"}" />
-                <h4 style="color: var(--text); display: inline-block; font-size: 28px; vertical-align: middle; margin: 0px;">Power+</h4>
+            <div class="title">
+                <img src="${dtps.baseURL + "/icon.svg"}" />
+                <h4>Power+</h4>
             </div>
             
-            <img class="logo" src="${dtps.baseURL + "/favicon.png"}" />
-
             <div class="items">
-
                 <div onclick="dtps.selectedClass = 'dash';" class="class item main dash ${dtps.selectedClass == "dash" ? "active" : ""}">
-                    <span class="label name">Dashboard</span>
-                    <div class="icon"><i class="material-icons">dashboard</i></div>
+                    <i class="material-icons">dashboard</i>    
+                    <span class="label">Dashboard</span>
                 </div>
 
                 <div class="divider"></div>
@@ -788,10 +776,11 @@ dtps.showClasses = function (override) {
                 ${dtps.classlist.join("")}
             </div>
 
-            <div onclick="$('body').toggleClass('collapsedSidebar'); if ($('body').hasClass('collapsedSidebar')) { $(this).children('i').html('keyboard_arrow_right'); } else {$(this).children('i').html('keyboard_arrow_left');}" init="true" class="collapse">
-                <i class="material-icons">keyboard_arrow_left</i>
+            <div class="collapse">
+                <i class="material-icons"></i>
             </div>
         `);
+        fluid.init();
 
         //Change view to stream if coming from pages or discussions, since those tabs change the sidebar
         if ((dtps.selectedContent == "pages") || (dtps.selectedContent == "discuss")) {
@@ -896,13 +885,15 @@ dtps.presentClass = function (classNum) {
     //Update title to show class name
     //If the dashboard is selected, this is just "Dashboard". Otherwise, this is Class.subject
     $("#headText").html(classNum == "dash" ? "Dashboard" : dtps.classes[classNum] && dtps.classes[classNum].subject);
+    $("#headText").css("color", classNum == "dash" ? "var(--text)" : dtps.classes[classNum] && dtps.classes[classNum].color);
 
     //If the class doesn't exist, hide the tabs
     //Otherwise, show the tabs
     if (!dtps.classes[classNum]) {
-        $(".header .btns").hide();
+        $("#dtpsTabBar").hide();
+        $("#classInfo p").hide();
     } else {
-        $(".header .btns").show();
+        $("#dtpsTabBar").show();
     }
 
     if (dtps.classes[classNum]) {
@@ -937,6 +928,27 @@ dtps.presentClass = function (classNum) {
         //Hide tabs if only one tab is visible
         if ($("#dtpsTabBar .btn:visible").length < 2) {
             $("#dtpsTabBar").hide();
+        }
+
+        //Show teacher
+        if (dtps.classes[classNum].teacher) {
+            $("#classInfo .teacher span").text(dtps.classes[classNum].teacher.name);
+            $("#classInfo .teacher").show();
+        } else {
+            $("#classInfo .teacher").hide();
+        }
+
+        if (dtps.classes[classNum].homepage) {
+            $("#classInfo .homepage").show();
+        } else {
+            $("#classInfo .homepage").hide();
+        }
+
+        if (dtps.classes[classNum].videoMeetingURL) {
+            $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
+            $("#classInfo .videoMeeting").show();
+        } else {
+            $("#classInfo .videoMeeting").hide();
         }
     }
 }
@@ -1112,7 +1124,7 @@ dtps.settings = function (forceRerenderDashboard) {
     //Render grades tab in settings
     if (dtps.remoteConfig.showGradesInSettings) dtps.renderGradesInSettings();
 
-    fluid.modal('.settingsCard');
+    fluid.cards('.settingsCard');
 }
 
 /**
@@ -1263,7 +1275,7 @@ dtps.render = function () {
     $("head *:not(.dtpsHeadItem)").remove();
 
     //Set default body classes
-    $("body").attr("class", "dark showThemeWindows hasSidebar dashboard");
+    $("body").attr("class", "dark showThemeWindows hasSidebar hasNavbar dashboard");
 
     //Set document title and favicon
     document.title = "Power+";
@@ -1278,20 +1290,13 @@ dtps.render = function () {
 
     //Render HTML
     jQuery("body").append(/*html*/`
-        <div class="sidebar acrylicMaterial"></div>
-
-        <!-- Header background elements -->
-        <div class="cover image"></div>
-        <div class="background"></div>
+        <div class="sidebar acrylicMaterial"></div>        
 
         <!-- Header with class name and tabs -->
-        <div class="header">
-            <p id="timeRemaining" style="position: absolute;top:${dtps.unstable ? "2px" : "14px"};margin-left: 20px;"></p>
-            ${dtps.unstable ? `<p style="position: absolute;top: 45px;margin-left: 20px; color: red;font-weight: bold;background-color: black; font-size: 12px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</p>` : ""}
+        <!--<div class="header">
         
-            <h2 id="headText">Dashboard</h2>
+            <h1 id="headText">Dashboard</h1>
         
-            <!-- Class tabs. Each button has init=true to prevent Fluid UI from automatically managing their states -->
             <div style="display: none;" id="dtpsTabBar" class="btns row tabs">
                 <button init="true" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);" class="btn stream">
                     <i class="material-icons">library_books</i>
@@ -1314,6 +1319,95 @@ dtps.render = function () {
                     ${dtpsLMS.gradebook ? "Grades" : "Gradebook"}
                 </button>
             </div>
+        </div>-->
+        <div class="navbar">
+          <div class="logo">
+            <img src="https://powerplus.app/icon.svg" />
+            <h4>Power+</h4>
+          </div>
+        
+          ${dtps.unstable ? `
+            <div style="position: absolute; color: #ff4e4e; cursor: auto;" class="navitem">
+              <i style="font-size: 16px;" class="material-icons">warning</i>
+              <span style="font-weight: bold; font-size: 10px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</span>
+            </div>
+          ` : ""}
+          
+          <div class="items" style="text-align: center; width: calc(100% - 280px);">
+            <i class="inputIcon material-icons">search</i>
+            <input style="margin: 0px; width: 500px;" type="search" class="inputIcon filled" placeholder="Search" />
+          </div>
+
+          <div class="profile">
+            <div class="profileImage"></div>
+          </div>
+        </div>
+
+        <div class="card close focus profileMenu">
+          <div class="person">
+            <div class="profileImage"></div>
+            <div class="info">
+              <h5 class="name">Logged out</h5>
+            </div>
+          </div>
+
+          <div class="actions">
+            <div class="item">
+              <i class="material-icons">feedback</i>
+              <span class="label">Feedback</span>
+            </div>
+            <div onclick="dtps.settings();" class="item">
+              <i class="material-icons">settings</i>
+              <span class="label">Settings</span>
+            </div>
+            <div class="divider"></div>
+            <a style="color: var(--text);" href="/">
+                <div class="item">
+                  <i class="material-icons">exit_to_app</i>
+                  <span class="label">Go to Canvas</span>
+                </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="headerArea">
+          <img style="display: none;" src="https://images.unsplash.com/photo-1518277980269-c1eb88ad9693?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjc1NjI5fQ&utm_medium=referral&utm_source=canvas-prod&crop=faces%2Centropy&fit=crop&fm=jpg&cs=tinysrgb&q=80">
+          <div class="content">
+            <h1 id="headText">Dashboard</h1>
+            <div id="classInfo" style="min-height: 18px;">
+              <p class="teacher" style="display: none;">
+                <i class="material-icons">person</i> <span></span>
+              </p>
+              <p onclick="dtps.classHome(dtps.selectedClass);" class="homepage" style="cursor: pointer; display: none;">
+                <i class="material-icons">home</i> <span>Homepage</span>
+              </p>
+              <p class="videoMeeting" style="cursor: pointer; display: none;">
+                <i class="material-icons">videocam</i> <span>Meeting</span>
+              </p>
+            </div>
+            <div style="display: none;" id="dtpsTabBar" class="btns">
+                <button init="true" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);" class="btn stream">
+                    <i class="material-icons">library_books</i>
+                    Coursework
+                </button>
+                <button init="true" onclick="fluid.screen('people', dtps.classes[dtps.selectedClass].id);" class="btn people">
+                    <i class="material-icons">group</i>
+                    People
+                </button>
+                <button init="true" onclick="fluid.screen('discussions', dtps.classes[dtps.selectedClass].id);" class="btn discuss">
+                    <i class="material-icons">forum</i>
+                    Discussions
+                </button>
+                <button init="true" onclick="fluid.screen('pages', dtps.classes[dtps.selectedClass].id);" class="btn pages">
+                    <i class="material-icons">insert_drive_file</i>
+                    Pages
+                </button>
+                <button init="true" onclick="fluid.screen('gradebook', dtps.classes[dtps.selectedClass].id);" class="btn grades">
+                    <i class="material-icons">assessment</i>
+                    ${dtpsLMS.gradebook ? "Grades" : "Gradebook"}
+                </button>
+            </div>
+          </div>
         </div>
 
         <!-- Class content area -->
@@ -1322,10 +1416,7 @@ dtps.render = function () {
         </div>
 
         <!-- Settings card (its inner HTML is added later) -->
-        <div style="height: calc(100vh - 50px); overflow: auto !important;" class="card withnav focus close container settingsCard"></div>
-
-        <!-- Toolbar (the thing at the top-right with your name, profile picture, and buttons. its inner HTML is also added later) -->
-        <div class="toolbar items"></div>
+        <div style="height: 100%; overflow: auto !important;" class="card withnav focus close container settingsCard"></div>
 
         <!-- Changelog card -->
         <div style="border-radius: 30px;" class="card focus changelog close container">
@@ -1370,7 +1461,7 @@ dtps.renderLite = function () {
     jQuery(".card.settingsCard").html(/*html*/`
         <i onclick="fluid.cards.close('.card.settingsCard')" class="material-icons close">close</i>
 
-        <div class="sidenav" style="position: fixed; height: calc(100% - 50px); border-radius: 20px 0px 0px 20px;">
+        <div style="position: fixed; height: calc(100% - 100px);" class="sidenav">
             <div class="title">
 	            <img src="${dtps.baseURL + "/icon.svg"}" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
 	            <div style="vertical-align: middle; display: inline-block;">
@@ -1650,6 +1741,9 @@ dtps.renderLite = function () {
             <div onclick="dtps.settings();" class="itemButton"><i class="material-icons">settings</i> Settings</div>
         </div>
     `);
+
+    jQuery(".profileImage").css("background-image", "url('" + dtps.user.photoURL + "')");
+    jQuery(".profileMenu .name").text(dtps.user.name);
 
     //Load Fluid UI
     fluid.onLoad();
