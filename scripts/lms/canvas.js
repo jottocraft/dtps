@@ -31,38 +31,28 @@ dtpsLMS.commonHeaders = { Accept: "application/json+canvas-string-ids, applicati
 dtpsLMS.fetchUser = function () {
     return new Promise(function (resolve, reject) {
         jQuery.ajax({
-            url: "/api/v1/users/self",
+            url: "/api/v1/users/self/observees?include[]=avatar_url",
             type: "GET",
             headers: dtpsLMS.commonHeaders,
-            success: function (userData) {
-                jQuery.ajax({
-                    url: "/api/v1/users/self/observees?include[]=avatar_url",
-                    type: "GET",
-                    headers: dtpsLMS.commonHeaders,
-                    success: function (childrenData) {
-                        var user = {
-                            name: userData.name,
-                            id: userData.id,
-                            photoURL: userData.avatar_url
-                        };
+            success: function (childrenData) {
+                var user = {
+                    name: window.ENV.current_user.display_name,
+                    id: window.ENV.current_user.id,
+                    photoURL: ENV.current_user.avatar_image_url
+                };
 
-                        if (childrenData && childrenData.length) {
-                            //Parent account
-                            user.children = childrenData.map(child => {
-                                return {
-                                    name: child.name,
-                                    id: child.id,
-                                    photoURL: child.avatar_url
-                                }
-                            });
+                if (childrenData && childrenData.length) {
+                    //Parent account
+                    user.children = childrenData.map(child => {
+                        return {
+                            name: child.name,
+                            id: child.id,
+                            photoURL: child.avatar_url
                         }
+                    });
+                }
 
-                        resolve(user);
-                    },
-                    error: function (err) {
-                        reject(err);
-                    }
-                });
+                resolve(user);
             },
             error: function (err) {
                 reject(err);

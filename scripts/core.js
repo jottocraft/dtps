@@ -593,7 +593,7 @@ dtps.init = function () {
                     if (dtps.remoteConfig.showGradesInSettings) dtps.renderGradesInSettings();
 
                     //Re-render screen if the dashboard or stream is selected
-                    if ((dtps.selectedClass == "dash") || (dtps.selectedContent == "stream")) {
+                    if ((dtps.selectedClass == "dash") || ((dtps.selectedContent == "stream") && (dtps.selectedClass == course.num))) {
                         fluid.screen();
                     }
                 });
@@ -742,7 +742,7 @@ dtps.showClasses = function (override) {
         var letterGradeHTML = "";
         if (dtps.classes[i].letter) letterGradeHTML = dtps.classes[i].letter;
         if (dtps.classes[i].letter == null) letterGradeHTML = "--";
-        if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="spinner" style="background-color: var(--norm); margin: -8px -10px;"></div>`; //Show loading indicator for ...
+        if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="shimmer" style="width: 100%;height: 22px;border-radius: 8px;"></div>`; //Show loading indicator for ...
 
         //Add class HTML to array
         dtps.classlist.push(/*html*/`
@@ -773,15 +773,7 @@ dtps.showClasses = function (override) {
 
                 <div class="divider"></div>
 
-                <div id="2020s1" class="group">
-                  <div class="name item">
-                    <i class="material-icons"></i> <span class="label">Semester 1</span>
-                  </div>
-
-                  <div class="items">
-                    ${dtps.classlist.join("")}
-                  </div>
-                </div>
+                ${dtps.classlist.join("")}
             </div>
 
             <div class="collapse">
@@ -1237,6 +1229,24 @@ dtps.resetDashboardPrefs = function () {
 }
 
 /**
+ * Redirects to DTPS classic edition
+ */
+dtps.classicEntry = function () {
+    var classicName = ["P", "r", "o", "j", "e", "c", "t", " ", "D", "T", "P", "S"];
+    var overwrittenHTML = ["P", "o", "w", "e", "r", "+"];
+    if (dtps.classicStep == undefined) dtps.classicStep = -10;
+    dtps.classicStep++;
+
+    if (dtps.classicStep == 12) window.location.href = "/power+?classicEdition=true";
+
+    for (var i = 0; i < dtps.classicStep; i++) {
+        overwrittenHTML[i] = classicName[i];
+    }
+
+    $("#dtpsAboutName").html(overwrittenHTML.join(""));
+}
+
+/**
  * Loads dashboard prefrences
  */
 dtps.loadDashboardPrefs = function () {
@@ -1672,7 +1682,7 @@ dtps.renderLite = function () {
                     <img src="${dtps.baseURL + "/icon.svg"}" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
                     
                     <div style="display: inline-block; vertical-align: middle;">
-                        <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">Power+</h4>
+                        <h4 id="dtpsAboutName" onclick="dtps.classicEntry()" style="font-weight: bold; font-size: 32px; margin-bottom: 0px; user-select: none;">Power+</h4>
                         <div style="font-size: 16px; margin-top: 5px;">
                             ${dtps.readableVer}
                             <div style="display: inline-block;margin: 0px 5px;font-size: 12px;">${baseHost !== "powerplus.app" ? `(from ${baseHost})` : ""}</div>
