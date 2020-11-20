@@ -6,8 +6,8 @@
     "build": "node build.js",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build -m \"npm deploy\"",
-    "predev": "npm run build",
-    "dev": "gh-pages -d build -m \"npm dev\" -r https://github.com/jottocraft/dtps-dev.git",
+    "predev": "npm run build -- --dev",
+    "dev": "gh-pages -d build -m \"npm dev\" -r https://github.com/jottocraft/dtps-dev.git -b master",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
