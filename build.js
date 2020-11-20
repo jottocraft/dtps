@@ -19,12 +19,18 @@ const glob = require("glob");
 const mkdirp = require('mkdirp');
 const rimraf = require("rimraf");
 const ncp = require('ncp').ncp;
+const dev = process.argv.includes("--dev");
 
 //Delete existing build folder
 rimraf.sync("./build/*");
 
 //Run functions
-minifyJS();
+if (dev) {
+    console.log("\n[1/3] Skipping minification (dev)");
+    copyStatic();
+} else {
+    minifyJS();
+}
 
 //[1/3] Minify JavaScript
 function minifyJS() {
@@ -73,8 +79,17 @@ function copyStatic() {
 
     //Copy www
     ncp("www", "build", function () {
-        console.log("[2/3] Done");
-        generateDocs();
+        //If dev, copy JS files without minifying
+        if (dev) {
+            fs.copyFileSync("init.js", "build/init.js");
+            ncp("scripts", "build/scripts", function () {
+                console.log("[2/3] Done");
+                generateDocs();
+            });
+        } else {
+            console.log("[2/3] Done");
+            generateDocs();
+        }
     });
 }
 
