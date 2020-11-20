@@ -128,14 +128,14 @@ dtps.masterStream = function () {
     //Render HTML with loading placeholder
     if (dtps.selectedClass == "dash") {
         jQuery(".classContent").html(/*html*/`
-            <div style="--size: 500px;" class="samesize grid">
-                <div class="dash item">
+            <div style="letter-spacing: 0px;">
+                <div style="float: left; width: 45%; display: inline-block;" class="dash">
                     ${dtps.leftDashboard.map(dashboardItem => {
                 return dashboardContainerHTML(dashboardItem);
             }).join("")}
                 </div>
 
-                <div class="dash item">
+                <div style="float: left; width: 55%; display: inline-block;" class="dash">
                     ${!doneLoading ? `<div style="margin: 75px 25px 10px 75px;"><div class="spinner"></div></div>` : ""}
                     ${dtps.rightDashboard.map(dashboardItem => {
                 return dashboardContainerHTML(dashboardItem);
@@ -385,7 +385,19 @@ dtps.classStream = function (classID, searchResults, searchText) {
     if (!assignments) {
         //Assignments are still loading
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-            jQuery(".classContent").html(`<div class="spinner"></div>`);
+            jQuery(".classContent").html(/*html*/`
+                <div class="card assignment graded">
+                    <h4>
+                        <span style="width: 450px;" class="shimmer">Assignment Title</span>
+                        <div class="points shimmer">0/0</div>
+                    </h4>
+
+                    <h5 style="white-space: nowrap; overflow: hidden;">
+                        <div style="width: 200px;" class="infoChip shimmer"></div>
+                        <i class="material-icons statusIcon shimmer">more_horiz</i>
+                    </h5>
+                </div>
+            `);
         }
     } else if (assignments.length == 0) {
         if (searchText) {

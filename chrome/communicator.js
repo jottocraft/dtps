@@ -17,6 +17,7 @@ if (window.location.hostname == "powerplus.app") {
     subtree: true
   })
 } else if (window.location.pathname == "/power+") {
+  const useClassicDTPS = window.location.search && window.location.search.includes("classicEdition=true");
   const observer = new MutationObserver(mutations => {
     mutations.forEach(({ addedNodes }) => {
       addedNodes.forEach(node => {
@@ -24,7 +25,7 @@ if (window.location.hostname == "powerplus.app") {
         if (node.nodeType === 1 && node.tagName === 'BODY') {
           node.innerHTML = /*html*/`
             <div dtps="true" id="dtpsNativeOverlay" style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
-              <img dtps="true" style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/7dDUVh2.png" />
+              <img dtps="true" style="height: 100px; margin-top: 132px;" src="${useClassicDTPS ? "https://i.imgur.com/fqqPF9i.png" : "https://i.imgur.com/7dDUVh2.png"}" />
 			        <br dtps="true" />
               <div dtps="true" class="progress"><div id="dtpsLoadingScreenBar" dtps="true" class="indeterminate"></div></div>
               <p id="dtpsLoadingScreenStatus" dtps="true">
@@ -42,6 +43,8 @@ if (window.location.hostname == "powerplus.app") {
             <meta dtps="true" name="description" content="A better UI for Canvas LMS">
             <meta dtps="true" name="author" content="jottocraft">
           `;
+        } else if (node.nodeType === 1 && node.tagName === 'SCRIPT' && (node.textContent && node.textContent.includes('"current_user"'))) {
+          //Do nothing for node containing enviornment data for faster load times
         } else if (node.nodeType === 1 && node.getAttribute("dtps") != "true") {
           //Node is not added by dtps
           node.remove();
@@ -58,7 +61,9 @@ if (window.location.hostname == "powerplus.app") {
 
   //Get Power+ base URL
   var baseURL = "https://powerplus.app";
-  if (window.localStorage.debuggingConfig && (window.localStorage.dtpsLoaderPref == "debugging")) {
+  if (useClassicDTPS) {
+    baseURL = "https://classic.dtps.jottocraft.com";
+  } else if (window.localStorage.debuggingConfig && (window.localStorage.dtpsLoaderPref == "debugging")) {
     if (window.localStorage.debuggingConfig == "true") {
       baseURL = "http://localhost:2750";
     } else if (window.localStorage.debuggingConfig) {
@@ -105,7 +110,7 @@ if (window.location.hostname == "powerplus.app") {
 
     //Add script to DOM
     var s = document.createElement("script");
-    s.src = baseURL + "/scripts/lms/" + lmsScript + ".js";
+    s.src = useClassicDTPS ? "https://classic.dtps.jottocraft.com/init.js" : baseURL + "/scripts/lms/" + lmsScript + ".js";
     s.async = false;
     s.setAttribute("dtps", "true");
     document.documentElement.appendChild(s);

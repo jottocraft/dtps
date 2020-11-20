@@ -613,7 +613,8 @@ body.collapsedSidebar .sidebar .bigLogo {
 }
 
 .hidegrades .sidebar .item .grade {
-    display: none !important;
+    visibility: hidden !important;
+    width: 0px;
 }
 
 .class .icon {
