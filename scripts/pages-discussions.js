@@ -44,10 +44,10 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
         //Render sidebar
         jQuery(".sidebar").html(/*html*/`
-            <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; height: 38px;">
+            <div class="title">
                 <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="material-icons">forum</i>
-                <h4 style="color: var(--text); display: inline-block; font-size: 26px; vertical-align: middle; margin: 0px;">Discussions</h4>
-            </div>
+               <h4>Discussions</h4>
+             </div>
                         
             <div class="items">
                 <div class="spinner"></div>
@@ -66,11 +66,8 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
         if (dtps.classes[classNum].discussions.length == 0) {
             //No discussion topics in this class
             jQuery(".sidebar .items").html(/*html*/`
-                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
-                    <span class="label">Classes</span>
-                    <div class="icon">
-                        <i class="material-icons">keyboard_arrow_left</i>
-                    </div>
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="material-icons">keyboard_arrow_left</i> <span class="label">Classes</span>
                 </div>
 
                 <p style="text-align: center; font-weight: bold; margin-top: 60px; margin-bottom: 10px;">No discussions found</p>
@@ -81,10 +78,8 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
             var discussionHTML = dtps.classes[classNum].discussions.map(discussionThread => {
                 return /*html*/`
                     <div data-threadID="${discussionThread.id}" class="item">
+                        <i class="material-icons">${discussionThread.locked ? "lock_outline" : "chat_bubble_outline"}</i>
                         <span class="label">${discussionThread.title}</span>
-                        <div class="icon">
-                            <i class="material-icons">${discussionThread.locked ? "lock_outline" : "chat_bubble_outline"}</i>
-                        </div>
                     </div>
                 `;
             }).join("");
@@ -92,20 +87,15 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
             //Render discussion threads in the sidebar
             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
                 jQuery(".sidebar .items").html(/*html*/`
-                    <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
-                        <span class="label">Classes</span>
-                        <div class="icon">
-                            <i class="material-icons">keyboard_arrow_left</i>
-                        </div>
-                    </div>
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="material-icons">keyboard_arrow_left</i> <span class="label">Classes</span>
+                </div>
 
                     ${
                     dtps.classes[classNum].newDiscussionThreadURL ? (/*html*/`
-                            <div onclick="window.open('${dtps.classes[classNum].newDiscussionThreadURL}')" class="class item back">
+                            <div onclick="window.open('${dtps.classes[classNum].newDiscussionThreadURL}')" class="item back">
+                                <i class="material-icons">add</i>
                                 <span class="label">New discussion</span>
-                                <div class="icon">
-                                    <i class="material-icons">add</i>
-                                </div>
                             </div>
                         `) : ""
                     }
@@ -302,11 +292,11 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
         //Render sidebar
         jQuery(".sidebar").html(/*html*/`
-            <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; height: 38px;">
+            <div class="title">
                 <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="material-icons">insert_drive_file</i>
-                <h4 style="color: var(--text); display: inline-block; font-size: 26px; vertical-align: middle; margin: 0px;">Pages</h4>
-            </div>
-                        
+                <h4>Pages</h4>
+             </div>
+
             <div class="items">
                 <div class="spinner"></div>
             </div>
@@ -323,11 +313,9 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
         if (pagesData.length == 0) {
             //No pages in this class
             jQuery(".sidebar .items").html(/*html*/`
-                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="material-icons">keyboard_arrow_left</i>
                     <span class="label">Classes</span>
-                    <div class="icon">
-                        <i class="material-icons">keyboard_arrow_left</i>
-                    </div>
                 </div>
 
                 <p style="text-align: center; font-weight: bold; margin-top: 60px; margin-bottom: 10px;">No pages found</p>
@@ -338,10 +326,8 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
             var pageHTML = dtps.classes[classNum].pages.map(page => {
                 return /*html*/`
                     <div data-pageID="${page.id}" class="item ${(defaultPage && (page.id == defaultPage)) ? "active" : ""}">
+                        <i class="material-icons">insert_drive_file</i>    
                         <span class="label">${page.title}</span>
-                        <div class="icon">
-                            <i class="material-icons">insert_drive_file</i>
-                        </div>
                     </div>
                 `;
             }).join("");
@@ -349,11 +335,9 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
             //Render discussion threads in the sidebar
             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
                 jQuery(".sidebar .items").html(/*html*/`
-                    <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
+                    <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                        <i class="material-icons">keyboard_arrow_left</i>    
                         <span class="label">Classes</span>
-                        <div class="icon">
-                            <i class="material-icons">keyboard_arrow_left</i>
-                        </div>
                     </div>
 
                     <div class="divider"></div>
