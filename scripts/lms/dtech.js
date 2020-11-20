@@ -417,47 +417,24 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
                 if (course.gradeCalculation.dtech.formula == "2020s1") {
                     var gradeCalcSummary = /*html*/`
-                    <div style="--classColor: ${course.color}" class="card">
+                    <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
+                      <div style="background-color: ${course.color}; color: white;" class="block status card">
+                        <h2 class="main">${course.letter}</h2>
+                        ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
+                        <h5 class="bottom"><i class="material-icons">grade</i> Grade</h5>
+                      </div>
+                      <div class="block status">
+                        <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(2)}</h2>
+                        <h5 class="bottom"><i class="material-icons">functions</i> 75% of outcomes (${course.gradeCalculation.dtech.results.parameters.number75thresh}) ≥</h5>
+                      </div>
+                      <div class="block status">
+                        <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(2)}</h2>
+                        <h5 class="bottom"><i class="material-icons">leaderboard</i> Lowest outcome</h5>
+                      </div>
+                    </div>
 
-                        <h3 class="gradeTitle">
-                            Grades
-
-                            <div class="classGradeCircle">
-                                <div class="letter">${course.letter}</div>
-                            </div>
-
-                        </h3>
-
-                        <h5 class="gradeStat">
-                            75% (rounded down) of outcome scores are ≥
-                            <div class="numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(1)}</div>
-                        </h5>
-
-                        <h5 class="gradeStat">
-                            No outcome scores are lower than
-                            <div class="numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(1)}</div>
-                        </h5>
-
-                        <div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
-                            <br />
-
-                            ${course.previousLetter ? /*html*/`
-                            <h5 class="smallStat">
-                                Previous Grade
-                                <div class="numFont">${course.previousLetter}</div>
-                            </h5>
-                            ` : ``}
-
-                            ${course.gradeCalculation.dtech.results.parameters.number75thresh ? /*html*/`
-                            <h5 class="smallStat">
-                                75% of outcomes (rounded down) is
-                                <div class="numFont">${course.gradeCalculation.dtech.results.parameters.number75thresh}</div>
-                            </h5>
-                            ` : ``}
-                        
-                            <br />
-
-                            <table class="u-full-width dtpsTable">
+                    <div style="--classColor: ${course.color};${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
+                            <table class="table dtpsTable">
                                 <thead>
                                     <tr>
                                     <th>&nbsp;&nbsp;Final Letter</th>
@@ -480,12 +457,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                             </table>
                         </div>
 
-                        <br />
-
-                        <br />
-                        <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
-                            style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">${dtps.gradebookExpanded ? "Show less" : "Show more"}</a>
-                        <a href="https://docs.google.com/document/d/1g4-aYZ_BS5_I4Ie64WGCwXeArl1K_pHbBbebDHra_sM/edit" style="color: var(--secText, gray);">Using 2020-21 grade calculation</a>
+                    <div onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).children('i').text('keyboard_arrow_up'); $(this).children('span').text('Show less'); dtps.gradebookExpanded = true;} else {$(this).children('i').text('keyboard_arrow_down'); $(this).children('span').text('Show more'); dtps.gradebookExpanded = false;}" class="gradeSummaryShowHide">
+                        ${dtps.gradebookExpanded ? `<i class="material-icons">keyboard_arrow_up</i> <span>Show less</span>` : `<i class="material-icons">keyboard_arrow_down</i> <span>Show more</span>`}
                     </div>
                 `;
                 } else {

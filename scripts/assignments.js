@@ -385,19 +385,21 @@ dtps.classStream = function (classID, searchResults, searchText) {
     if (!assignments) {
         //Assignments are still loading
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-            jQuery(".classContent").html(/*html*/`
-                <div class="card assignment graded">
-                    <h4>
-                        <span style="width: 450px;" class="shimmer">Assignment Title</span>
-                        <div class="points shimmer">0/0</div>
-                    </h4>
+            jQuery(".classContent").html([1,2,3,4].map(() => (
+                /*html*/`
+                    <div class="card assignment graded">
+                        <h4>
+                            <span style="width: 450px;" class="shimmer">Assignment Title</span>
+                            <div class="points shimmer">00/00</div>
+                        </h4>
 
-                    <h5 style="white-space: nowrap; overflow: hidden;">
-                        <div style="width: 200px;" class="infoChip shimmer"></div>
-                        <i class="material-icons statusIcon shimmer">more_horiz</i>
-                    </h5>
-                </div>
-            `);
+                        <h5 style="white-space: nowrap; overflow: hidden;">
+                            <div style="width: 200px;" class="infoChip shimmer"></div>
+                            <i class="material-icons statusIcon shimmer">more_horiz</i>
+                        </h5>
+                    </div>
+                `
+            )).join(""));
         }
     } else if (assignments.length == 0) {
         if (searchText) {

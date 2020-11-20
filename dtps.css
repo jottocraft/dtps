@@ -1447,3 +1447,33 @@ body.dark .headerArea img {
 #headText {
     transition: color 0.2s;
 }
+
+.gradeSummaryShowHide {
+    margin: 10px 0px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.gradeSummaryShowHide i, .gradeSummaryShowHide span {
+    vertical-align: middle;
+}
+
+.gradeSummaryShowHide i {
+    margin-right: 5px;
+}
+
+#classGradeMore {
+    margin: 0px 20px;
+    padding: 20px;
+}
+
+.block.status .bottom {
+    font-size: 18px;
+}
+
+.block .previousGrade {
+    font-size: 14px;
+    opacity: 0.5;
+    position: absolute;
+    top: 50px;
+}
