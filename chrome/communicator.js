@@ -60,18 +60,6 @@ if (window.location.hostname == "powerplus.app") {
   var baseURL = "https://powerplus.app";
   if (useClassicDTPS) {
     baseURL = "https://classic.dtps.jottocraft.com";
-<<<<<<< HEAD
-  } else if (window.localStorage.debuggingConfig && (window.localStorage.dtpsLoaderPref == "debugging")) {
-    if (window.localStorage.debuggingConfig == "true") {
-      baseURL = "http://localhost:2750";
-    } else if (window.localStorage.debuggingConfig) {
-      baseURL = window.localStorage.debuggingConfig;
-    }
-  } else if (window.localStorage.githubCanary && (window.localStorage.dtpsLoaderPref == "canary")) {
-    baseURL = "https://jottocraft.github.io/" + window.localStorage.githubCanary;
-  } else if (window.localStorage.codespaceExternalURL && (window.localStorage.dtpsLoaderPref == "codespace")) {
-    baseURL = "https://" + window.localStorage.codespaceExternalURL.replace(/\//g, "") + ".apps.codespaces.githubusercontent.com";
-=======
   } else if (window.localStorage.dtpsLoaderPref == "dev") {
     baseURL = "https://dev.dtps.jottocraft.com";
   } else if (window.localStorage.githubRepo && (window.localStorage.dtpsLoaderPref == "github")) {
@@ -80,7 +68,6 @@ if (window.location.hostname == "powerplus.app") {
     baseURL = window.localStorage.externalReleaseURL;
   } else if (window.localStorage.dtpsLoaderPref == "local") {
     baseURL = "http://localhost:2750";
->>>>>>> e56f8da000ab2e87e2e2448eb4d5e25fcc3f5c90
   }
 
   //Set DTPS loader parameters
