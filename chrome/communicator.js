@@ -17,6 +17,7 @@ if (window.location.hostname == "powerplus.app") {
     subtree: true
   })
 } else if (window.location.pathname == "/power+") {
+  const useClassicDTPS = window.location.search && window.location.search.includes("classicEdition=true");
   const observer = new MutationObserver(mutations => {
     mutations.forEach(({ addedNodes }) => {
       addedNodes.forEach(node => {
@@ -24,12 +25,9 @@ if (window.location.hostname == "powerplus.app") {
         if (node.nodeType === 1 && node.tagName === 'BODY') {
           node.innerHTML = /*html*/`
             <div dtps="true" id="dtpsNativeOverlay" style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
-              <img dtps="true" style="height: 100px; margin-top: 132px;" src="https://i.imgur.com/7dDUVh2.png" />
+              <img dtps="true" style="height: 100px; margin-top: 132px;" src="${useClassicDTPS ? "https://i.imgur.com/fqqPF9i.png" : "https://i.imgur.com/7dDUVh2.png"}" />
 			        <br dtps="true" />
               <div dtps="true" class="progress"><div id="dtpsLoadingScreenBar" dtps="true" class="indeterminate"></div></div>
-              <p id="dtpsLoadingScreenStatus" dtps="true">
-                ${window.localStorage.dtpsLoaderPref == "codespace" ? `[codespace] Click <a onclick="window.localStorage.dtpsLoaderPref = 'prod';window.location.reload();" href="#">here</a> to switch to production` : ``}
-              </p>
               <style dtps="true">body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;background:#262626;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}p{font-family:BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;color: #c4c4c4;margin-top: 24px;}</style>
             </div>
           `;
@@ -42,6 +40,8 @@ if (window.location.hostname == "powerplus.app") {
             <meta dtps="true" name="description" content="A better UI for Canvas LMS">
             <meta dtps="true" name="author" content="jottocraft">
           `;
+        } else if (node.nodeType === 1 && node.tagName === 'SCRIPT' && (node.textContent && node.textContent.includes('"current_user"'))) {
+          //Do nothing for node containing enviornment data for faster load times
         } else if (node.nodeType === 1 && node.getAttribute("dtps") != "true") {
           //Node is not added by dtps
           node.remove();
@@ -58,16 +58,16 @@ if (window.location.hostname == "powerplus.app") {
 
   //Get Power+ base URL
   var baseURL = "https://powerplus.app";
-  if (window.localStorage.debuggingConfig && (window.localStorage.dtpsLoaderPref == "debugging")) {
-    if (window.localStorage.debuggingConfig == "true") {
-      baseURL = "http://localhost:2750";
-    } else if (window.localStorage.debuggingConfig) {
-      baseURL = window.localStorage.debuggingConfig;
-    }
-  } else if (window.localStorage.githubCanary && (window.localStorage.dtpsLoaderPref == "canary")) {
-    baseURL = "https://jottocraft.github.io/" + window.localStorage.githubCanary;
-  } else if (window.localStorage.codespaceExternalURL && (window.localStorage.dtpsLoaderPref == "codespace")) {
-    baseURL = "https://" + window.localStorage.codespaceExternalURL.replace(/\//g, "") + ".apps.codespaces.githubusercontent.com";
+  if (useClassicDTPS) {
+    baseURL = "https://classic.dtps.jottocraft.com";
+  } else if (window.localStorage.dtpsLoaderPref == "dev") {
+    baseURL = "https://dev.dtps.jottocraft.com";
+  } else if (window.localStorage.githubRepo && (window.localStorage.dtpsLoaderPref == "github")) {
+    baseURL = "https://jottocraft.github.io/" + window.localStorage.githubRepo;
+  } else if (window.localStorage.externalReleaseURL && (window.localStorage.dtpsLoaderPref == "external")) {
+    baseURL = window.localStorage.externalReleaseURL;
+  } else if (window.localStorage.dtpsLoaderPref == "local") {
+    baseURL = "http://localhost:2750";
   }
 
   //Set DTPS loader parameters
@@ -105,7 +105,7 @@ if (window.location.hostname == "powerplus.app") {
 
     //Add script to DOM
     var s = document.createElement("script");
-    s.src = baseURL + "/scripts/lms/" + lmsScript + ".js";
+    s.src = useClassicDTPS ? "https://classic.dtps.jottocraft.com/init.js" : baseURL + "/scripts/lms/" + lmsScript + ".js";
     s.async = false;
     s.setAttribute("dtps", "true");
     document.documentElement.appendChild(s);
@@ -128,9 +128,10 @@ if (window.location.hostname == "powerplus.app") {
   window.location.href = "/power+";
 } else {
   var releaseType = null;
-  if (window.localStorage.dtpsLoaderPref == "debugging") releaseType = "Power+ (debug)";
-  if (window.localStorage.dtpsLoaderPref == "canary") releaseType = "Power+ (canary)";
-  if (window.localStorage.dtpsLoaderPref == "codespace") releaseType = "Power+ (codespace)";
+  if (window.localStorage.dtpsLoaderPref == "dev") releaseType = "Power+ (dev)";
+  if (window.localStorage.dtpsLoaderPref == "github") releaseType = "Power+ (branch)";
+  if (window.localStorage.dtpsLoaderPref == "external") releaseType = "Power+ (external)";
+  if (window.localStorage.dtpsLoaderPref == "local") releaseType = "Power+ (local)";
 
   const observer = new MutationObserver(mutations => {
     mutations.forEach(({ addedNodes }) => {
