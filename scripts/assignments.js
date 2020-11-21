@@ -416,7 +416,7 @@ dtps.classStream = function (classID, searchResults, searchText) {
         } else {
             //This class doesn't have any assignments
             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-                $(".classContent").html(`<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
+                $(".classContent").html(`<div style="cursor: auto;" class="card"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
             }
         }
     } else {

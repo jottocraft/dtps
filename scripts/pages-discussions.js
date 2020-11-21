@@ -407,7 +407,7 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
                         <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div>
                     </div>
                 ` : ""}
-                <div class="card">
+                <div style="margin: 20px; padding: 20px;">
                     <!-- Page title -->
                     <h4 style="font-weight: bold;">${page.title}</h4>
 

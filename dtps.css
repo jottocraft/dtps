@@ -200,7 +200,7 @@ Power+ CSS
     color: var(--lightText);
 }
 
-.dash .card .colorBar {
+.dash .colorBar {
     width: 7px;
     height: calc(100% - 40px);
     position: absolute;
@@ -210,15 +210,15 @@ Power+ CSS
     display: block !important;
 }
 
-body.dark .dash .card .colorBar {
+body.dark .dash .colorBar {
     background: var(--classColor);
 }
 
-body.light .dash .card .colorBar {
+body.light .dash .colorBar {
     background: var(--classColor);
 }
 
-.card .colorBar {
+.colorBar {
     display: none;
 }
 
@@ -557,19 +557,6 @@ body {
     color: white;
 }
 
-.card .dot {
-    right: 0;
-    background-color: #e9e8e8;
-    border-radius: 20px;
-    display: inline-block;
-    position: absolute;
-    margin-top: 10px;
-    height: 35px;
-    padding: 0px 10px;
-    line-height: 35px;
-    font-size: 20px;
-}
-
 body.dark .card .dot {
     background-color: #181b1d;
 }
@@ -825,7 +812,7 @@ body.titlebar:not(.noSidebar) .header .btns {
     }
 }
 
-.classContent .card .points {
+.classContent .points {
     float: right;
     display: inline-block;
     white-space: nowrap;
@@ -833,24 +820,24 @@ body.titlebar:not(.noSidebar) .header .btns {
     height: 24px;
 }
 
-.classContent .card .points.spinner {
+.classContent .points.spinner {
     top: 25px;
     margin-top: 0px;
 }
 
-.classContent .card .points .earned {
+.classContent .points .earned {
     font-size: 24px;
     display: inline-block;
     font-weight: bold;
 }
 
-.classContent .card .points .total {
+.classContent .points .total {
     font-size: 14px;
     display: inline-block;
     color: var(--secText);
 }
 
-.classContent .card:not(.color) .points .total, .assignment:not(.color) .weighted {
+.classContent .assignment:not(.color) .points .total, .assignment:not(.color) .weighted {
     color: var(--secText);
 }
 
@@ -936,19 +923,30 @@ body.titlebar:not(.noSidebar) .header .btns {
     display: none;
 }
 
-.card.assignment {
+.assignment {
     cursor: pointer;
-    padding: 18px 25px;
+    padding: 15px 18px;
+    position: relative;
+    border-radius: var(--cardRadius);
+    margin: 10px 20px;
+    border: 2px solid transparent;
+    transition: border 0.2s, background-color 0.2s;
+    user-select: none;
 }
 
-.classContent .card.assignment h5 {
+.assignment:hover {
+    background-color: var(--elements);
+    border-color: var(--highlight);
+}
+
+.classContent .assignment h5 {
     margin: 0px;
     margin-top: 10px;
     font-size: 1rem !important;
     min-height: 20px;
 }
 
-.classContent .card.assignment h4 {
+.classContent .assignment h4 {
     font-size: 1.2rem;
     margin: 0px !important;
     white-space: nowrap;
@@ -957,18 +955,18 @@ body.titlebar:not(.noSidebar) .header .btns {
     overflow: hidden;
 }
 
-.classContent .card.assignment h4 span {
+.classContent .assignment h4 span {
     text-overflow: ellipsis;
     overflow: hidden;
     display: inline-block;
     max-width: 100%;
 }
 
-.classContent .card.assignment.graded h4 span {
+.classContent .assignment.graded h4 span {
     max-width: calc(100% - 50px);
 }
 
-.card.assignment .statusIcon {
+.assignment .statusIcon {
     float: right;
     font-size: 16px;
     vertical-align: middle;
@@ -1176,15 +1174,15 @@ body.dashboard .background:before {
     transition: all 0.5s;
 }
 
-.dash .card.assignment {
+.dash .assignment {
     padding-left: 34px;
 }
 
-.dash .card .weighted {
+.dash .weighted {
     color: var(--classColor) !important;
 }
 
-.dash .card .weighted {
+.dash .weighted {
     opacity: 0.7;
 }
 
