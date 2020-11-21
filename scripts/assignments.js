@@ -199,14 +199,14 @@ dtps.renderDueToday = function (doneLoading) {
     if (combinedStream.length == 0) {
         //Nothing due today
         if (doneLoading) {
-            combinedHTML = `<p style="text-align: center;margin: 10px 25px 10px 75px; font-size: 18px;"><i class="material-icons">done</i> Nothing due today</p>`;
+            combinedHTML = `<p style="text-align: center;margin: 10px 0px; font-size: 18px;"><i class="material-icons">done</i> Nothing due today</p>`;
         } else {
             combinedHTML = ``;
         }
     } else {
         //Add header
         combinedHTML = /*html*/`
-            <h5 style="text-align: center; margin: 10px 25px 10px 75px; font-weight: bold;">Due today</h5>
+            <h5 style="text-align: center; margin: 10px 0px; font-weight: bold;">Due today</h5>
         ` + combinedHTML;
     }
 
@@ -452,13 +452,13 @@ dtps.classStream = function (classID, searchResults, searchText) {
 
             if (!assignment.dueAt) {
                 if (prevAssignment && (prevAssignment !== "undated")) {
-                    divider = `<h5 style="margin: 75px 75px 10px 75px;font-weight: bold;">Undated Assignments</h5>`;
+                    divider = `<h5 style="margin: 75px 20px 10px 20px;font-weight: bold;">Undated Assignments</h5>`;
                 }
 
                 prevAssignment = "undated";
             } else if (new Date(assignment.dueAt) < new Date()) {
                 if (prevAssignment && (prevAssignment !== "old")) {
-                    divider = `<h5 style="margin: 75px 75px 10px 75px;font-weight: bold;">Old Assignments</h5>`;
+                    divider = `<h5 style="margin: 75px 20px 10px 20px;font-weight: bold;">Old Assignments</h5>`;
                 }
 
                 prevAssignment = "old";
