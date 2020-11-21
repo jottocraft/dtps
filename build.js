@@ -77,6 +77,9 @@ function copyStatic() {
     //Copy dtps.css
     fs.copyFileSync("dtps.css", "build/dtps.css");
 
+    //Write CNAME
+    fs.writeFileSync(path.join("build", "CNAME"), dev ? "dev.dtps.jottocraft.com" : "powerplus.app", "utf8");
+
     //Copy www
     ncp("www", "build", function () {
         //If dev, copy JS files without minifying
