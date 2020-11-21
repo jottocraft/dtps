@@ -30,6 +30,7 @@ dtpsLMS.commonHeaders = { Accept: "application/json+canvas-string-ids, applicati
 //Fetch userdata from Canvas
 dtpsLMS.fetchUser = function () {
     return new Promise(function (resolve, reject) {
+        if (!window.ENV || !window.ENV.current_user.id) reject({ action: "login", redirectURL: "/?dtpsLogin=true" });
         jQuery.ajax({
             url: "/api/v1/users/self/observees?include[]=avatar_url",
             type: "GET",
