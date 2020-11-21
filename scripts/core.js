@@ -109,7 +109,7 @@ document.addEventListener("fluidTheme", function (data) {
  * @return {object|undefined} The selected class 
  */
 dtps.class = function () {
-    return dtps.classes[dtps.selectedClass]
+    return dtps.classes[dtps.selectedClass];
 }
 
 /**
