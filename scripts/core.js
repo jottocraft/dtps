@@ -81,7 +81,8 @@ var dtps = {
         dtechCurrentTerm: "20-21",
         debugClassID: "1098",
         feedbackButtonUsesEmail: false,
-        topSneaky: false
+        topSneaky: false,
+        topSneakyUI: false
     }
 };
 
