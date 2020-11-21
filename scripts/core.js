@@ -659,10 +659,10 @@ dtps.init = function () {
         //Web request error
         console.error("[DTPS] Error fetching user and classes at dtps.init", err);
 
-        //404 Error means the user isn't logged in
-        if (err.status == 404) {
+        //Check for login redirect
+        if ((err.action == "login") && err.redirectURL) {
             //Redirect to login page
-            window.location.href = "/?dtpsLogin=true";
+            window.location.href = err.redirectURL;
         } else {
             dtps.error("Failed to get user and/or course data", "Exception in promise @ dtps.init");
         }
@@ -1824,7 +1824,7 @@ dtps.init();
 
 /**
  * @name dtpsLMS.fetchUser
- * @description [REQUIRED] Fetches user data from the LMS
+ * @description [REQUIRED] Fetches data for the current user from the LMS. If the user is not signed in, reject with an object that looks like {action: "login", redirectURL: "..."} to login the user.
  * @kind function
  * @return {Promise<User>} A promise which resolves to a User object
  */
