@@ -89,20 +89,6 @@ var dtps = {
 //Load jQuery ASAP
 jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js");
 
-//Fluid UI theme listener (for changing background color)
-document.addEventListener("fluidTheme", function (data) {
-    if (dtps.oldTheme !== data.detail) {
-        //Theme has changed
-        dtps.oldTheme = data.detail;
-
-        //Update background gradient
-        var next = window.getComputedStyle(document.getElementsByClassName("background")[0]).getPropertyValue("--grad")
-        if (dtps.selectedClass !== "dash") next = "linear-gradient(to bottom right, " + (dtps.classes[dtps.selectedClass] && dtps.classes[dtps.selectedClass].color) + ", var(--background))"
-        if (dtps.selectedClass !== "dash") $('body').removeClass('dashboard');
-        $(".background").css("background", next);
-    }
-});
-
 /**
  * Debugging shortcut for getting the selected class. This should only be used in the web inspector and not in actual code.
  * 
@@ -837,55 +823,14 @@ dtps.presentClass = function (classNum) {
         document.title = "Power+";
     }
 
-    //Set dashboard body class for CSS styles
-    if (classNum == "dash") {
-        $('body').addClass('dashboard');
-    } else {
-        $('body').removeClass('dashboard');
-    }
-
-    //Set the default imageURL to an empty PNG to make the CSS transition work
-    var imageURL = "https://i.imgur.com/SpqHCNo.png";
-
-    if (fluid.get("pref-hideClassImages") !== "true") {
-        //Class images are not disabled
-        if (dtps.classes[classNum] && dtps.classes[classNum].image) {
-            //Class has image
-            imageURL = dtps.classes[classNum].image;
-        }
-    }
-
-    //Run CSS animation for class transition
-    $(".background").addClass("trans");
-    $(".cover.image").css("background-image", 'url("' + imageURL + '")');
-    $(".background").css("opacity", '0.6');
-    $(".background").css("filter", 'none');
-
-    if (dtps.classes[classNum] && dtps.classes[classNum].image) {
+    //Set the class image
+    if ((fluid.get("pref-showClassImages") !== "false") && dtps.classes[classNum] && dtps.classes[classNum].image) {
         $(".headerArea").addClass("classImage");
-        $(".headerArea img").attr("src", imageURL);
+        $(".headerArea img").attr("src", dtps.classes[classNum].image);
         $(".headerArea img").show();
     } else {
         $(".headerArea").removeClass("classImage");
         $(".headerArea img").hide();
-    }
-
-    //Clear any existing background animation timeout
-    clearTimeout(dtps.bgTimeout);
-
-    //Set 500ms transition
-    dtps.bgTimeout = setTimeout(function () {
-        //Set theme to something random to force the theme change listener to update
-        dtps.oldTheme = "nklfsdlflsdajflks";
-        document.dispatchEvent(new CustomEvent('fluidTheme'));
-
-        //Remove transition
-        $(".background").removeClass("trans");
-    }, 500);
-
-    //Set background color
-    if (dtps.classes[classNum]) {
-        $(".background").css("--classColor", dtps.classes[classNum].color);
     }
 
     //Remove active class from other classes in the sidebar, add the active class to the selected class
@@ -1786,9 +1731,6 @@ dtps.renderLite = function () {
 
     //Render sidebar
     dtps.showClasses();
-
-    //Load header background gradient
-    document.dispatchEvent(new CustomEvent('fluidTheme'));
 
     //Remove loading screen styles
     jQuery("#dtpsNativeOverlay style").remove();
