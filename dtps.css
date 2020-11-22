@@ -1457,3 +1457,11 @@ body.dark .headerArea img {
 .classContent.fixedGradeSummary {
     padding-top: 160px;
 }
+
+.block .showActualGrades {
+    font-size: 14px;
+    position: absolute;
+    top: 50px;
+    color: var(--secText);
+    cursor: pointer;
+}
