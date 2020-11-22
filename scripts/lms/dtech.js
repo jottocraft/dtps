@@ -529,11 +529,10 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                             ` :
                             outcome.scores.map((assessment, aIndex) => {
                                 return /*html*/`
-                                        <p id="outcome${assessment.outcome}assessment${aIndex}" class="${aIndex == outcome.droppedScore ? "dropped" : ""}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
-                                            <span aIndex="${aIndex}" outcomeID="${outcomeID}"
-                                                style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: ${assessment.color}" class="editableScore" ${dtps.remoteConfig.allowWhatIfGrades ? `contenteditable` : ""}>${assessment.score}</span>
+                                        <div class="assessmentWrapper ${aIndex == outcome.droppedScore ? "dropped" : ""}" id="outcome${assessment.outcome}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+                                            <div style="color: ${assessment.color};" aIndex="${aIndex}" outcomeID="${outcomeID}" class="editableScore" ${dtps.remoteConfig.allowWhatIfGrades ? `contenteditable` : ""}>${assessment.score}</div>
                                             <span class="assessmentTitle" style="cursor: pointer;" onclick="dtps.assignment('${assessment.assignmentID}', ${course.num});">${assessment.assignmentTitle}</span>
-                                        </p>
+                                        </div>
                                     `;
                             }).join("")
                         }
@@ -609,7 +608,15 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             //Check if score is valid
             if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(typedScore) && (typedScore >= 0) && (typedScore <= 4)) {
                 //Valid outcome score, update color to match
-                $(ele).css("color", dtechRubricColor(typedScore))
+                $(ele).css("color", dtechRubricColor(typedScore));
+
+                //Check if score is modified
+                var isWhatIf = course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].whatIfGrade;
+                if (isWhatIf || (typedScore !== course.gradeCalculation.dtech.outcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score)) {
+                    $(ele).addClass("modified");
+                } else {
+                    $(ele).removeClass("modified");
+                }
 
                 //Update score in the what-if outcomes
                 course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = typedScore;
@@ -619,6 +626,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             } else {
                 //Invalid outcome score, gray out and calculate without this score
                 $(ele).css("color", "var(--secText)");
+                $(ele).addClass("modified");
 
                 //Update score in the what-if outcomes
                 course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = null;
@@ -627,6 +635,19 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 calcWhatIf(course);
             }
 
+        }, false);
+
+        ele.addEventListener("focus", function () {
+            $(ele).addClass("focused");
+        }, false);
+
+        ele.addEventListener("blur", function () {
+            if ($(ele).hasClass("whatIf") && ($(ele).text() == "")) {
+                $(ele).parent().remove();
+                course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = null;
+            } else {
+                $(ele).removeClass("focused");
+            }
         }, false);
     }
 
@@ -710,11 +731,10 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
         //Add a new What-If assessment to the UI
         $(".card.outcomeResults.outcome-" + outcomeID + " .assessments").append(/*html*/`
-            <p id="outcome${outcomeID}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
-                <span aIndex="${aIndex}" outcomeID="${outcomeID}"
-                      style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: var(--secText);" class="editableScore" contenteditable>-</span>
+            <div class="assessmentWrapper" id="outcome${outcomeID}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+                <div style="color: var(--secText);" aIndex="${aIndex}" outcomeID="${outcomeID}" class="editableScore modified whatIf" contenteditable></div>
                 <span class="assessmentTitle">What-If Grade</span>
-            </p>
+            </div>
         `);
 
         //Add an event listener for the new score

@@ -228,12 +228,17 @@ body.light .dash .colorBar {
     font-size: 16px;
 }
 
-.dropped {
-    filter: opacity(0.4);
+
+.assessmentWrapper.dropped span.assessmentTitle, .assessmentWrapper.dropped .editableScore:not(.focused) {
+    opacity: 0.4;
 }
 
-.dropped span.assessmentTitle {
+.assessmentWrapper.dropped span.assessmentTitle {
     text-decoration: line-through;
+}
+
+.assessmentWrapper span.assessmentTitle {
+    transition: opacity 0.2s;
 }
 
 /* POWERPOINTS THEME */
@@ -1481,4 +1486,23 @@ body.dark .headerArea img {
 
 #classGradeMore.whatIf .table tr.active, #classGradeMore.whatIf .table tr.active * {
     color: var(--classColor);
+}
+
+.editableScore {
+    outline: none;
+    font-size: 20px; 
+    vertical-align: middle; 
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 5px;
+    margin-right: 5px; 
+    transition: background-color 0.2s, border-color 0.2s, opacity 0.2s;
+    border: 2px solid transparent;
+    width: 45px;
+    text-align: center;
+}
+
+.editableScore.modified, .editableScore.focused {
+    background-color: var(--inputColor);
+    border-color: var(--elements);
 }
