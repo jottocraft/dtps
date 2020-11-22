@@ -700,10 +700,6 @@ body.titlebar:not(.noSidebar) .header .btns {
     transition: all 0.5s;
 }
 
-.classContent {
-    transition: all 0.5s, color 0s, background-color 0s, background 0s;
-}
-
 .dot {
     display: none;
 }
@@ -1458,6 +1454,6 @@ body.dark .headerArea img {
     backdrop-filter: blur(20px);
 }
 
-.classContent.gradeSummaryShowHide {
-    padding-top: 180px;
+.classContent.fixedGradeSummary {
+    padding-top: 160px;
 }

@@ -586,7 +586,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
         //Keep the grade summary on top
         var navbar = document.getElementById("gradeSummary");
-        var sticky = navbar.offsetTop;
+        var sticky = navbar.offsetTop - 60;
         window.onscroll = function () {
             console.log(sticky, window.pageYOffset);
             if (window.pageYOffset >= sticky) {
