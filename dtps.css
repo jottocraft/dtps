@@ -287,34 +287,6 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     display: none;
 }
 
-table.dtpsTable {
-    border-collapse: collapse;
-}
-
-table.dtpsTable, table.dtpsTable * {
-    border-color: transparent !important;
-}
-
-table.dtpsTable tr, table.dtpsTable td {
-    height: 32px !important;
-    padding: 0px;
-}
-
-table.dtpsTable th {
-    padding-left: 0px;
-    padding-right: 0px;
-}
-
-table.dtpsTable td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-table.dtpsTable td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-
 .classGradeCircle {
     display: inline-block;
     height: 60px; 
@@ -574,12 +546,10 @@ body.dark .sidebar .item:not(.active) {
     filter: brightness(1.2) !important;
 }
 
-body.collapsedSidebar .sidebar .bigLogo {
-    display: none;
-}
-
-.sidebar {
-    box-shadow: 10px 0px 30px rgba(0, 0, 0, 0.03) !important;
+.sidebar .item .label {
+    max-width: calc(100% - 32px);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .classDivider {
@@ -761,7 +731,7 @@ body.titlebar:not(.noSidebar) .header .btns {
 }
 
 .classContent .card {
-    margin: 25px 20px;
+    margin: 15px 20px;
     text-align: left;
     border-radius: 25px;
 }
@@ -928,7 +898,6 @@ body.titlebar:not(.noSidebar) .header .btns {
     padding: 15px 18px;
     position: relative;
     border-radius: var(--cardRadius);
-    margin: 10px 20px;
     border: 2px solid transparent;
     transition: border 0.2s, background-color 0.2s;
     user-select: none;
@@ -1400,7 +1369,7 @@ body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor,
 }
 
 body {
-    --cardShadow: 0 5px 15px rgb(0 0 0 / 0.1) !important;
+    --cardShadow: 0 5px 15px rgb(0 0 0 / 0.08) !important;
 }
 
 .headerArea {
@@ -1474,4 +1443,21 @@ body.dark .headerArea img {
     opacity: 0.5;
     position: absolute;
     top: 50px;
+}
+
+.fixedGradeSummary #gradeSummary {
+    box-shadow: var(--lightShadow);
+    left: 275px;
+    padding: 20px;
+    position: fixed;
+    top: 60px;
+    z-index: 99;
+    width: calc(100% - 275px);
+    margin: 0px !important;
+    background: var(--navbar);
+    backdrop-filter: blur(20px);
+}
+
+.classContent.gradeSummaryShowHide {
+    padding-top: 180px;
 }
