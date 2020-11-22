@@ -36,7 +36,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     assignment.rubric.forEach(rubricItem => {
                         rubricItem.scoreName = shortenDtechRubricScoreName(rubricItem.scoreName);
 
-                        if (rubricItem.score) {
+                        if (rubricItem.score !== undefined) {
                             rubricItem.color = dtechRubricColor(rubricItem.score);
                         }
                     });
@@ -155,11 +155,40 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
     //Get score color from rubric percentage
     var dtechRubricColor = function (score) {
-        if (score >= 4) return "#4f9e59";
-        if (score >= 3) return "#a1b553";
-        if (score >= 2) return "#c26d44";
-        if (score >= 1) return "#c4474e";
-        if (score >= 0) return "#bd3139";
+        if (score > 4.0) return "#20D684";
+        if (score == 4.0) return "#41BA35";
+        if (score >= 3.9) return "#50BC39";
+        if (score >= 3.8) return "#5FBD3D";
+        if (score >= 3.7) return "#6EBF40";
+        if (score >= 3.6) return "#7DC044";
+        if (score >= 3.5) return "#8CC248";
+        if (score >= 3.4) return "#9AC44C";
+        if (score >= 3.3) return "#A9C550";
+        if (score >= 3.2) return "#B8C753";
+        if (score >= 3.1) return "#C7C857";
+        if (score >= 3.0) return "#D6CA5B";
+        if (score >= 2.9) return "#D8C35A";
+        if (score >= 2.8) return "#DABB59";
+        if (score >= 2.7) return "#DCB458";
+        if (score >= 2.6) return "#DEAC57";
+        if (score >= 2.5) return "#E1A556";
+        if (score >= 2.4) return "#E39E55";
+        if (score >= 2.3) return "#E59654";
+        if (score >= 2.2) return "#E78F53";
+        if (score >= 2.1) return "#E98752";
+        if (score >= 2.0) return "#EB8051";
+        if (score >= 1.9) return "#E97A50";
+        if (score >= 1.8) return "#E7744F";
+        if (score >= 1.7) return "#E56F4E";
+        if (score >= 1.6) return "#E3694D";
+        if (score >= 1.5) return "#E1634C";
+        if (score >= 1.4) return "#DE5D4A";
+        if (score >= 1.3) return "#DC5749";
+        if (score >= 1.2) return "#DA5248";
+        if (score >= 1.1) return "#D84C47";
+        if (score >= 1.0) return "#D64646";
+        if (score >= 0.0) return "#D72727";
+        if (score < 0.0) return "#BF0000";
     }
 
     /**
@@ -237,7 +266,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                             //Assignment has a rubric
 
                             assignment.rubric.forEach(rubricItem => {
-                                if (rubricItem.score && rubricItem.outcome) {
+                                if ((rubricItem.score !== undefined) && rubricItem.outcome) {
                                     //Rubric item is assessed and is linked with an outcome
 
                                     if (!outcomes[rubricItem.outcome]) {
@@ -265,8 +294,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
                 //Loop over the values of each item in the outcomes object
                 Object.values(outcomes).forEach(outcome => {
-                    //Get array of scores for the outcome
-                    var outcomeScores = outcome.scores.map(RubricItem => RubricItem.score);
+                    //Get array of scores for the outcome, remove null scores
+                    var outcomeScores = outcome.scores.map(RubricItem => RubricItem.score).filter(score => score !== null);
 
                     //Calculate outcome average with all outcome scores
                     var average = this.average(outcomeScores);
@@ -284,7 +313,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     if (droppedAverage > average) {
                         //The dropped score was higher
                         outcome.scoreType = "dropped";
-                        outcome.droppedScore = outcomeScores.indexOf(lowestScore);
+                        outcome.droppedScore = outcome.scores.map(RubricItem => RubricItem.score).indexOf(lowestScore);
                         outcome.average = droppedAverage;
                     } else {
                         //Calculating with all outcome scores was the same or higher
@@ -417,7 +446,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
                 if (course.gradeCalculation.dtech.formula == "2020s1") {
                     var gradeCalcSummary = /*html*/`
-                    <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
+                    <div id="gradeSummary" style="--size: 250px; margin: 0px 20px;" class="grid flex">
                       <div style="background-color: ${course.color}; color: white;" class="block status card">
                         <h2 class="main">${course.letter}</h2>
                         ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
@@ -434,7 +463,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     </div>
 
                     <div style="--classColor: ${course.color};${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
-                            <table class="table dtpsTable">
+                            <br />
+                            <table class="table">
                                 <thead>
                                     <tr>
                                     <th>&nbsp;&nbsp;Final Letter</th>
@@ -446,7 +476,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                                 <tbody>
                                     ${dtechGradeCalc.letters.map(letter => {
                         return /*html*/`
-                                            <tr ${course.letter == letter ? `style="background-color: var(--classColor); color: white; font-size:20px; font-weight: bold;"` : ``}>
+                                            <tr ${course.letter == letter ? `class="active" style="background-color: var(--classColor); color: white;"` : ``}>
                                                 <td>&nbsp;&nbsp;${letter}</td>
                                                 <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].percentage[letter]}</td>
                                                 <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].lowest[letter]}</td>
@@ -490,7 +520,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                         <h5 style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;">${outcome.title}</h5>
 
                         ${outcome.average !== undefined ? `
-                            <div id="outcomeScore${outcomeID}" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ${dtechRubricColor(outcome.average)}">${outcome.average.toFixed(2)}</div>
+                            <div id="outcomeScore${outcomeID}" class="numFont" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ${dtechRubricColor(outcome.average)}">${outcome.average.toFixed(2)}</div>
                         ` : ``}
                         
                         <div class="assessments">
@@ -552,7 +582,19 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         //Add event listeners for the "Add a What-If grade" buttons
         $("p.addWhatIf").click(function () {
             addWhatIf(course, $(this).attr("outcomeID"));
-        })
+        });
+
+        //Keep the grade summary on top
+        var navbar = document.getElementById("gradeSummary");
+        var sticky = navbar.offsetTop;
+        window.onscroll = function () {
+            console.log(sticky, window.pageYOffset);
+            if (window.pageYOffset >= sticky) {
+                $(".classContent").addClass("fixedGradeSummary");
+            } else {
+                $(".classContent").removeClass("fixedGradeSummary");
+            }
+        };
     }
 
     //Adds a What-If grade listener to the provided element
@@ -565,7 +607,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             var typedScore = Number($(ele).text());
 
             //Check if score is valid
-            if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(typedScore) && (typedScore >= 1) && (typedScore <= 4)) {
+            if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(typedScore) && (typedScore >= 0) && (typedScore <= 4)) {
                 //Valid outcome score, update color to match
                 $(ele).css("color", dtechRubricColor(typedScore))
 
@@ -575,12 +617,14 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //Calculate what-if grade
                 calcWhatIf(course);
             } else {
-                //Invalid outcome score, gray out and reset what-if letter
+                //Invalid outcome score, gray out and calculate without this score
                 $(ele).css("color", "var(--secText)");
-                $("#outcomeScore" + Number($(ele).attr("outcomeID"))).html("--");
-                $("#outcomeScore" + Number($(ele).attr("outcomeID"))).css("color", "var(--secText)");
-                $(".card#whatIfResults .resultLetter").html("--");
-                $(".card#whatIfResults .resultLetter").css("color", "var(--secText)");
+
+                //Update score in the what-if outcomes
+                course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = null;
+
+                //Calculate what-if grade
+                calcWhatIf(course);
             }
 
         }, false);
@@ -628,7 +672,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 var outcome = course.gradeCalculation.dtech.whatIfOutcomes[outcomeID];
 
                 //Update outcome average
-                if (outcome.average) {
+                if (outcome.average !== undefined) {
                     $("#outcomeScore" + outcomeID).html(outcome.average.toFixed(2));
                     $("#outcomeScore" + outcomeID).css("color", dtechRubricColor(outcome.average));
                 }

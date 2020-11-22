@@ -338,8 +338,12 @@ dtps.init = function () {
     if (Array.from(urlParams).length) window.history.replaceState(null, null, window.location.pathname);
 
     //Fluid UI settings
-    fluidThemes = [["midnight", "tome"], ["rainbow"]];
-    fluidAutoLoad = false;
+    window.fluidConfig = {
+        config: {
+            autoLoad: false,
+            allowThemeMenu: false //This is false because Power+ uses its own theme settings UI
+        }
+    };
 
     //Set env discovery
     window.localStorage.setItem("jottocraftEnv", true);

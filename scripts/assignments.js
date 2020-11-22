@@ -67,7 +67,7 @@ dtps.renderAssignmentScore = function (assignment) {
         var rubricHTML = [];
 
         assignment.rubric.forEach(rubricItem => {
-            if (rubricItem.score) {
+            if (rubricItem.score !== undefined) {
                 rubricHTML.push(/*html*/`
                     <div title="${rubricItem.title}" style="color: ${rubricItem.color || "var(--text)"};">
                         ${rubricItem.score}
@@ -559,10 +559,10 @@ dtps.assignment = function (id, classNum) {
                         <h5>${rubricItem.title}</h5>
                         <div class="score">
                             <p style="color: ${rubricItem.color ? rubricItem.color : "var(--secText)"};" class="scoreName">
-                                ${rubricItem.score ? rubricItem.scoreName || "" : "Not assessed"}
+                                ${rubricItem.score !== undefined ? rubricItem.scoreName || "" : "Not assessed"}
 
                                 <div class="points">
-                                    <p class="earned">${rubricItem.score || "-"}</p>
+                                    <p class="earned">${rubricItem.score ?? "-"}</p>
                                     <p class="possible">${"/" + rubricItem.value}</p>
                                 </div>
                             </p>
