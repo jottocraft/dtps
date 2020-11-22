@@ -447,16 +447,16 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 if (course.gradeCalculation.dtech.formula == "2020s1") {
                     var gradeCalcSummary = /*html*/`
                     <div id="gradeSummary" style="--size: 250px; margin: 0px 20px; --classColor: ${course.color};" class="grid flex">
-                      <div style="background-color: var(--classColor); color: white;" class="block status card">
+                      <div style="background-color: var(--classColor); color: white;" class="block status letterGrade card">
                         <h2 class="main">${course.letter}</h2>
                         ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
                         <h5 class="bottom"><i class="material-icons">grade</i> Grade</h5>
                       </div>
-                      <div class="block status">
+                      <div class="block status number75">
                         <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(2)}</h2>
                         <h5 class="bottom"><i class="material-icons">functions</i> 75% of outcomes (${course.gradeCalculation.dtech.results.parameters.number75thresh}) ≥</h5>
                       </div>
-                      <div class="block status">
+                      <div class="block status lowestScore">
                         <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(2)}</h2>
                         <h5 class="bottom"><i class="material-icons">leaderboard</i> Lowest outcome</h5>
                       </div>
@@ -476,7 +476,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                                 <tbody>
                                     ${dtechGradeCalc.letters.map(letter => {
                         return /*html*/`
-                                            <tr ${course.letter == letter ? `class="active" style="background-color: var(--classColor); color: white;"` : ``}>
+                                            <tr class="letter${letter} ${course.letter == letter ? `active` : ``}">
                                                 <td>&nbsp;&nbsp;${letter}</td>
                                                 <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].percentage[letter]}</td>
                                                 <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].lowest[letter]}</td>
@@ -644,9 +644,9 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             $("#gradeSummary .block.card h5.bottom").html(`<i class="material-icons">analytics</i> What-If Grade`);
             $("#gradeSummary .block.card .previousGrade").remove();
             $("#gradeSummary .block.card h2.main").after(`<h5 onclick="fluid.screen();" class="showActualGrades">Show actual grades</h5>`);
-            $("#gradeSummary .block.card h2.main").text("--");
 
             $("#gradeSummary").addClass("whatIf");
+            $("#classGradeMore").addClass("whatIf");
         }
     }
 
@@ -662,13 +662,9 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             course.gradeCalculation.dtech.whatIfOutcomes = results.outcomes;
 
             //Update what-if results card with the grade calculation results
-            $(".card#whatIfResults .resultLetter").html(results.results.letter);
-            if (results.results.percentage) {
-                $(".card#whatIfResults .resultPercentage").html("Percentage: " + Number(results.results.percentage).toFixed(2) + "%");
-            } else {
-                $(".card#whatIfResults .resultPercentage").html("");
-            }
-            $(".card#whatIfResults .resultLetter").css("color", "var(--classColor)");
+            $("#gradeSummary .block.letterGrade h2.main").html(results.results.letter);
+            $("#gradeSummary .block.number75 h2.main").html(results.results.parameters.number75.toFixed(2));
+            $("#gradeSummary .block.lowestScore h2.main").html(results.results.parameters.lowestScore.toFixed(2));
 
             //Remove dropped state
             $(".card.outcomeResults .dropped").removeClass("dropped");
@@ -701,7 +697,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         //Add new assessment to the outcome
         course.gradeCalculation.dtech.whatIfOutcomes[outcomeID].scores.push({ //most of the stuff in this object is optional but I'm adding it anyways
             id: "whatIf" + aIndex, //if changing this, update the id for the rendered what-if grade assessment as well
-            score: "--",
+            score: null,
             value: 4,
             whatIfGrade: true,
             outcome: outcomeID,
@@ -720,10 +716,6 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 <span class="assessmentTitle">What-If Grade</span>
             </p>
         `);
-
-        //Reset what-if results card
-        $(".card#whatIfResults .resultLetter").html("--");
-        $(".card#whatIfResults .resultLetter").css("color", "var(--secText)");
 
         //Add an event listener for the new score
         listenForWhatIf($(`#outcome${outcomeID}assessment${aIndex} .editableScore`)[0], course);

@@ -1465,3 +1465,20 @@ body.dark .headerArea img {
     color: var(--secText);
     cursor: pointer;
 }
+
+#classGradeMore .table tr.active {
+    background-color: var(--classColor); 
+}
+
+#classGradeMore .table tr.active, #classGradeMore .table tr.active * {
+    color: white;
+    font-weight: bold;
+}
+
+#classGradeMore.whatIf .table tr.active {
+    background-color: var(--elements); 
+}
+
+#classGradeMore.whatIf .table tr.active, #classGradeMore.whatIf .table tr.active * {
+    color: var(--classColor);
+}
