@@ -686,6 +686,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             $("#gradeSummary .block.letterGrade h2.main").html(results.results.letter);
             $("#gradeSummary .block.number75 h2.main").html(results.results.parameters.number75.toFixed(2));
             $("#gradeSummary .block.lowestScore h2.main").html(results.results.parameters.lowestScore.toFixed(2));
+            $("#classGradeMore .table tr").removeClass("active");
+            $("#classGradeMore .table tr.letter" + results.results.letter).addClass("active");
 
             //Remove dropped state
             $(".card.outcomeResults .dropped").removeClass("dropped");
