@@ -587,7 +587,6 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         var navbar = document.getElementById("gradeSummary");
         var sticky = navbar.offsetTop - 80;
         window.onscroll = function () {
-            console.log(sticky, window.pageYOffset);
             if (window.pageYOffset >= sticky) {
                 $(".classContent").addClass("fixedGradeSummary");
             } else {
@@ -647,6 +646,40 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = null;
             } else {
                 $(ele).removeClass("focused");
+            }
+        }, false);
+
+        ele.addEventListener("keydown", function (e) {
+            function placeCaretAtEnd(el) {
+                el.focus();
+                if (typeof window.getSelection != "undefined"
+                        && typeof document.createRange != "undefined") {
+                    var range = document.createRange();
+                    range.selectNodeContents(el);
+                    range.collapse(false);
+                    var sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else if (typeof document.body.createTextRange != "undefined") {
+                    var textRange = document.body.createTextRange();
+                    textRange.moveToElementText(el);
+                    textRange.collapse(false);
+                    textRange.select();
+                }
+            }
+
+            if (e.key == "ArrowDown") {
+                e.preventDefault();
+                var scores = $(".editableScore").toArray();
+                if (scores[scores.indexOf(ele) + 1]) {
+                    placeCaretAtEnd(scores[scores.indexOf(ele) + 1]);
+                }
+            } else if (e.key == "ArrowUp") {
+                e.preventDefault();
+                var scores = $(".editableScore").toArray();
+                if (scores[scores.indexOf(ele) - 1]) {
+                    placeCaretAtEnd(scores[scores.indexOf(ele) - 1]);
+                }
             }
         }, false);
     }
