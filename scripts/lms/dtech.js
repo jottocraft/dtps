@@ -446,8 +446,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
                 if (course.gradeCalculation.dtech.formula == "2020s1") {
                     var gradeCalcSummary = /*html*/`
-                    <div id="gradeSummary" style="--size: 250px; margin: 0px 20px;" class="grid flex">
-                      <div style="background-color: ${course.color}; color: white;" class="block status card">
+                    <div id="gradeSummary" style="--size: 250px; margin: 0px 20px; --classColor: ${course.color};" class="grid flex">
+                      <div style="background-color: var(--classColor); color: white;" class="block status card">
                         <h2 class="main">${course.letter}</h2>
                         ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
                         <h5 class="bottom"><i class="material-icons">grade</i> Grade</h5>
@@ -632,16 +632,21 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
     //Copies outcomes for modification, shows what-if UI
     var initWhatIf = function (course) {
-        if (!$(".card#whatIfResults").is(":visible")) {
+        if (!$("#gradeSummary").hasClass("whatIf")) {
             //Initialize what-if grades
 
             //Copy outcomes for modification
             course.gradeCalculation.dtech.whatIfOutcomes = JSON.parse(JSON.stringify(course.gradeCalculation.dtech.outcomes));
 
-            //Show what-if card, reset state
-            $(".card#whatIfResults").show();
-            $(".card#whatIfResults .resultLetter").html("--");
-            $(".card#whatIfResults .resultLetter").css("color", "var(--secText)");
+            //Show what-if mode for grade summary
+            $("#gradeSummary .block.card").css("background-color", "");
+            $("#gradeSummary .block.card").css("color", "var(--classColor)");
+            $("#gradeSummary .block.card h5.bottom").html(`<i class="material-icons">analytics</i> What-If Grade`);
+            $("#gradeSummary .block.card .previousGrade").remove();
+            $("#gradeSummary .block.card h2.main").after(`<h5 onclick="fluid.screen();" class="showActualGrades">Show actual grades</h5>`);
+            $("#gradeSummary .block.card h2.main").text("--");
+
+            $("#gradeSummary").addClass("whatIf");
         }
     }
 
