@@ -50,7 +50,24 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
              </div>
                         
             <div class="items">
-                <div class="spinner"></div>
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="material-icons">keyboard_arrow_left</i> <span class="label">Classes</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="item shimmerParent">
+                    <i class="material-icons">star</i>
+                    <span class="label">Discussion thread Title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="material-icons">star</i>
+                    <span class="label">Discussion thread Title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="material-icons">star</i>
+                    <span class="label">Discussion thread Title</span>
+                </div>
             </div>
         `);
 
@@ -140,7 +157,24 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
 dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "discuss") || fromModules)) {
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        jQuery(".classContent").html(/*html*/`
+            <div class="card" style="margin-top: 20px;margin-bottom: 75px;">
+                <h4><span class="shimmer">[SHIMMER] Thread Title</span></h4>
+
+                <div style="margin-bottom: 32px;" class="discussionHeader">
+                    <h5 ><span class="shimmer">Discussion author name</span></h5>
+
+                    <i class="material-icons shimmer">calendar_today</i>
+                    <span class="shimmer">Discussion date</span>
+                </div>
+
+                <div class="shimmer" style="margin: 10px 0px; width: 100%; height: 400px; border: none; outline: none;"></div>
+
+                <div style="margin-top: 32px;" class="discussionFooter">
+                    <button class="btn small shimmer"><i class="material-icons">post_add</i> Add Post</button>
+                </div> 
+            </div>
+        `);
     }
 
     //Fetch discussion posts from the LMS
@@ -297,8 +331,25 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
                 <h4>Pages</h4>
              </div>
 
-            <div class="items">
-                <div class="spinner"></div>
+             <div class="items">
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="material-icons">keyboard_arrow_left</i> <span class="label">Classes</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="item shimmerParent">
+                    <i class="material-icons">star</i>
+                    <span class="label">Class page title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="material-icons">star</i>
+                    <span class="label">Class page title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="material-icons">star</i>
+                    <span class="label">Class page title</span>
+                </div>
             </div>
         `);
 
@@ -379,7 +430,22 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
 dtps.loadPage = function (classNum, pageID, fromModules) {
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "pages") || fromModules)) {
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        jQuery(".classContent").html(/*html*/`
+             <div style="margin: 20px; padding: 20px;">
+                <h4><span class="shimmer">[SHIMMER] Class page title</span></h4>
+
+                <div style="margin-bottom: 32px;" class="discussionHeader">
+                    <h5 class="shimmer">Page author name</h5>
+
+                    <i class="material-icons shimmer">calendar_today</i>
+                    <span class="shimmer">[SHIMMER] Last updated at</span>
+                </div>
+
+                <!-- Page content -->
+                <br />
+                <div class="shimmer" style="margin: 10px 0px; width: 100%; height: 600px; border: none; outline: none;"></div>
+            </div>
+         `);
     }
 
     //Fetch page content

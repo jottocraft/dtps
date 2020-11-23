@@ -891,7 +891,8 @@ dtps.presentClass = function (classNum) {
 
         //Show teacher
         if (dtps.classes[classNum].teacher) {
-            $("#classInfo .teacher span").text(dtps.classes[classNum].teacher.name);
+            $("#classInfo .teacher .teacherName").text(dtps.classes[classNum].teacher.name);
+            $("#classInfo .teacher .teacherImage").css("background-image", "url('" + dtps.classes[classNum].teacher.photoURL + "')");
             $("#classInfo .teacher").show();
         } else {
             $("#classInfo .teacher").hide();
@@ -1353,7 +1354,7 @@ dtps.render = function () {
             <h1 id="headText">Dashboard</h1>
             <div id="classInfo" style="min-height: 18px;">
               <p class="teacher" style="display: none;">
-                <i class="material-icons">person</i> <span></span>
+                <span class="teacherImage"></span> <span class="teacherName"></span>
               </p>
               <p onclick="dtps.classHome(dtps.selectedClass);" class="homepage" style="cursor: pointer; display: none;">
                 <i class="material-icons">home</i> <span>Homepage</span>

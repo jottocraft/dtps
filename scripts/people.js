@@ -34,7 +34,21 @@ dtps.usersList = function (courseID) {
     }
 
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "people")) {
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        jQuery(".classContent").html(/*html*/`
+            <div class="card">
+                <h5><b style="width: 300px; display: inline-block;" class="shimmer">Title</b></h5>
+                ${[1,2,3,4,5,6].map(() => (
+                    /*html*/`
+                        <div>
+                            <p class="shimmerParent">
+                                <span style="width: 30px; height: 30px; outline: none; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 5px;"></span>
+                                <a style="color: var(--text); vertical-align: middle;">User name</a>
+                            </p>
+                        </div>
+                    `
+                )).join("")}
+            </div>
+        `);
     }
 
     //Fetch users list
