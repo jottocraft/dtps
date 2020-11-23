@@ -1949,7 +1949,7 @@ dtps.init();
 * @property {string} [letter] Current letter grade in the class
 * @property {string} [previousLetter] Automatically managed by DTPS. The previous letter grade in this class, based on local grade history.
 * @property {string} [image] URL to the class background image
-* @property {User} [teacher] Class teacher
+* @property {User} [teacher] Class teacher. If the class has multiple teachers, this is the primary teacher.
 * @property {boolean} [hasGradebook] Automatically managed by DTPS. True if the class should show the gradebook tab.
 * @property {object} [gradeCalculation] Automatically managed by DTPS. If custom grade calculation is implemented, this will be the results from custom grade calculation returned by dtpsLMS.calculateGrade.
 * @property {string} [videoMeetingURL] The URL used to join this class' online meeting
