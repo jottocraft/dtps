@@ -63,7 +63,22 @@ dtps.usersList = function (courseID) {
                     </div>
                 `);
             } else {
-                jQuery(".classContent").html(sections.map(section => (
+                jQuery(".classContent").html(/*html*/`
+                    <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
+                      <div class="block status card">
+                        <h2 class="main">--</h2>
+                        <h5 class="bottom"><i class="material-icons">contact_page</i> Your section</h5>
+                      </div>
+                      <div class="block status">
+                        <h2 class="main numFont">--</h2>
+                        <h5 class="bottom"><i class="material-icons">groups</i> Total Students</h5>
+                      </div>
+                      <div class="block status">
+                        <h2 class="main numFont">--</h2>
+                        <h5 class="bottom"><i class="material-icons">school</i> Teachers</h5>
+                      </div>
+                    </div>
+                ` + sections.map(section => (
                     /*html*/`
                         <div class="card">
                             <h5><b>${section.title}</b></h5>

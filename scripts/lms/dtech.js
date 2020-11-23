@@ -19,7 +19,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     dtpsLMS.legalName = "Canvas LMS, Design Tech High School, and Instructure Inc";
     dtpsLMS.description = "Power+ integration for Canvas LMS, customized for d.tech";
     dtpsLMS.logo = "https://i.imgur.com/efGrLq3.png";
-    dtpsLMS.source = "https://github.com/jottocraft/dtps/blob/master/scripts/lms/dtech.js";
+    dtpsLMS.source = "https://github.com/jottocraft/dtps/blob/main/scripts/lms/dtech.js";
     dtpsLMS.useRubricGrades = true;
     dtpsLMS.institutionSpecific = true;
     dtpsLMS.genericGradebook = false;
