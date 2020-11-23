@@ -280,12 +280,12 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
 }
 
 .classContent .card.collapsed h4 {
-    font-size: 24px !important;
+    font-size: 18px !important;
     font-weight: normal !important;
 }
 
 .classContent .card.collapsed h4 i {
-    margin-top: -6px;
+    margin-top: -3px;
 }
 
 .classContent .card.collapsed .moduleContents {
@@ -1085,8 +1085,8 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 }
 
 .card.module h4 {
-    margin: 5px 2px; 
-    font-size: 32px; 
+    margin: 0px 2px; 
+    font-size: 24px; 
     font-weight: bold;
 }
 
@@ -1098,8 +1098,8 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 
 .moduleItem {
     color: var(--lightText); 
-    padding:10px;
-    font-size:17px;
+    padding:5px;
+    font-size:14px;
     border-radius:15px;
     margin:5px 0; 
     cursor: pointer;
@@ -1107,7 +1107,8 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 
 .moduleItem i {
     vertical-align: middle; 
-    margin-right: 10px;
+    margin-right: 4px;
+    font-size: 20px;
 }
 
 .background, .cover.image {

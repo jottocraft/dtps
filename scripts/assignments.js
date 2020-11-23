@@ -95,7 +95,7 @@ dtps.renderAssignmentScore = function (assignment) {
 /**
  * Renders the DTPS dashboard and calls dtps.renderCalendar, dtps.renderUpdates, and dtps.renderUpcoming
  */
-dtps.masterStream = function () {
+dtps.mainStream = function () {
     //Ensure classes are rendered in the sidebar
     dtps.presentClass("dash");
     dtps.showClasses();
@@ -674,7 +674,29 @@ dtps.moduleStream = function (classID) {
 
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
-        jQuery(".classContent").html(dtps.renderStreamTools(classNum, "modules") + `<div class="spinner"></div>`);
+        jQuery(".classContent").html(dtps.renderStreamTools(classNum, "modules") + /*html*/`
+            <div class="module card collapsed">
+                <h4>
+                    <i class="material-icons collapseIcon shimmer">star</i>
+                    <span class="shimmer">[SHIMMER] Module title (collapsed)</span>
+                </h4>
+                <div class="moduleContents" style="padding-top: 10px;"></div>
+            </div>
+            <div class="module card">
+                <h4>
+                    <i class="material-icons collapseIcon shimmer">star</i>
+                    <span class="shimmer">[SHIMMER] Module title</span>
+                </h4>
+        
+                <div class="moduleContents" style="padding-top: 10px;">
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                </div>
+            </div>
+        `);
     }
 
     new Promise(resolve => {
@@ -718,7 +740,7 @@ dtps.moduleStream = function (classID) {
 
                 //Get module HTML
                 if (item.type == "header") {
-                    moduleItemHTML += `<h5 style="font-size: 22px;padding: 2px 10px;">${item.title}</h5>`;
+                    moduleItemHTML += `<h5 style="font-size: 16px;padding: 0px 10px; text-decoration: underline;">${item.title}</h5>`;
                 } else {
                     moduleItemHTML += `
                         <div class="moduleItem" onclick="${action}" style="margin-left: ${item.indent * 15}px;">
@@ -1092,7 +1114,7 @@ dtps.gradebook = function (classID) {
 
 //Fluid UI screen definitions
 fluid.externalScreens.dashboard = () => {
-    dtps.masterStream();
+    dtps.mainStream();
 }
 
 fluid.externalScreens.stream = (courseID) => {

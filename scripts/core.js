@@ -1313,7 +1313,7 @@ dtps.render = function () {
           
           <div class="items" style="text-align: center; width: calc(100% - 280px);">
             <i class="inputIcon material-icons">search</i>
-            <input style="margin: 0px; width: 500px;" type="search" class="inputIcon filled" placeholder="Search" />
+            <input id="dtpsMainSearchBox" style="margin: 0px; width: 500px;" type="search" class="inputIcon filled" placeholder="Search" />
           </div>
 
           <div class="profile">
@@ -1700,7 +1700,7 @@ dtps.renderLite = function () {
                 <div style="text-align: center; padding: 50px 0px;">
                     <img style="height: 45px; margin-right: 20px; vertical-align: middle;" src="https://cdn.jottocraft.com/images/footerImage.png" />
                     <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
-                    <p>(c) jottocraft 2018-2020. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/master/LICENSE">license</a></p>
+                    <p>(c) jottocraft 2018-2020. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/main/LICENSE">license</a></p>
                 </div>
             </div>
         </div>
