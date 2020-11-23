@@ -355,9 +355,8 @@ dtps.calendar = function () {
  * 
  * @param {string} classID The class ID to show assignments for
  * @param {Assignment[]} [searchResults] An array of assignemnts to render instead of course.assignments. Used for assignment search.
- * @param {string} [searchText] Text to render in the search box. Used for assignment search.
  */
-dtps.classStream = function (classID, searchResults, searchText) {
+dtps.classStream = function (classID, searchResults) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(classID);
     dtps.selectedClass = classNum;
@@ -385,7 +384,7 @@ dtps.classStream = function (classID, searchResults, searchText) {
     if (!assignments) {
         //Assignments are still loading
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-            jQuery(".classContent").html([1,2,3,4].map(() => (
+            jQuery(".classContent").html(dtps.renderStreamTools(classNum, "stream") + [1,2,3,4].map(() => (
                 /*html*/`
                     <div class="card assignment graded">
                         <h4>
@@ -402,22 +401,9 @@ dtps.classStream = function (classID, searchResults, searchText) {
             )).join(""));
         }
     } else if (assignments.length == 0) {
-        if (searchText) {
-            //No search results
-            if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-                $(".classContent").html(/*html*/`
-                    <div style="cursor: auto;" class="card assignment">
-                        <h4>No results</h4>
-                        <p>There weren't any search results</p>
-                        <button onclick="fluid.screen()" class="btn"><i class="material-icons">arrow_back</i> Back</button>
-                    </div>
-                `);
-            }
-        } else {
-            //This class doesn't have any assignments
-            if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-                $(".classContent").html(`<div style="cursor: auto;" class="card"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
-            }
+        //This class doesn't have any assignments
+        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
+            $(".classContent").html(dtps.renderStreamTools(classNum, "stream") + `<div style="cursor: auto;" class="card"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
         }
     } else {
         //Sort assignments
@@ -468,6 +454,9 @@ dtps.classStream = function (classID, searchResults, searchText) {
 
             return divider + dtps.renderAssignment(assignment);
         }).join("");
+
+        //Add stream header with class info buttons and search box
+        streamHTML = dtps.renderStreamTools(classNum, "stream") + streamHTML;
 
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
             $(".classContent").html(streamHTML);
@@ -685,7 +674,7 @@ dtps.moduleStream = function (classID) {
 
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        jQuery(".classContent").html(dtps.renderStreamTools(classNum, "modules") + `<div class="spinner"></div>`);
     }
 
     new Promise(resolve => {
@@ -698,7 +687,7 @@ dtps.moduleStream = function (classID) {
         //Save modules data in the class object for future use
         dtps.classes[classNum].modules = data;
 
-        var modulesHTML = "";
+        var modulesHTML = dtps.renderStreamTools(classNum, "modules");
 
         data.forEach(module => {
             var moduleItemHTML = "";
@@ -796,47 +785,15 @@ dtps.moduleCollapse = function (ele, classID, modID) {
  * 
  * @param {number} num Class number
  * @param {string} type Class content these tools are for (e.g. "stream")
- * @param {string} [searchText] Text to render in the search box for assignment search
  * @return {string} Stream tools HTML
  */
-dtps.renderClassTools = function (num, type, searchText) {
+dtps.renderStreamTools = function (num, type) {
     var modulesSelector = dtps.classes[num].modules;
     return /*html*/`
-        <div style="position: absolute;display:inline-block;margin: ${modulesSelector ? "82px" : "38px 82px"};">
-
-            ${dtps.classes[num].teacher ? /*html*/`
-                <div style="background-color: var(--elements); border-radius: 20px; display: inline-block; margin-right: 5px;">
-                    <img src="${dtps.classes[num].teacher.photoURL}" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> 
-                    <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">${dtps.classes[num].teacher.name}</div>
-                </div>` : ``
-        }
-
-            <div onclick="dtps.classInfo(${num})" class="classToolChip">
-                <i style="line-height: 40px;" class="material-icons">${dtps.classes[num].id == dtps.remoteConfig.debugClassID ? "bug_report" : "info"}</i>
-            </div>
-
-            ${dtps.classes[num].homepage ? /*html*/`
-                <div onclick="dtps.classHome(${num})" class="classToolChip">
-                    <i style="line-height: 40px;" class="material-icons">home</i>
-                </div>` : ""
-        }
-
-        ${dtps.classes[num].videoMeetingURL ? /*html*/`
-                <div onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="classToolChip">
-                    <i style="line-height: 40px;" class="material-icons">videocam</i>
-                </div>` : ""
-        }
-
-        </div>
-        
         ${(type == "modules") || (type == "stream") ? /*html*/`
             <div style="text-align: right;${modulesSelector ? "" : "margin-top: 20px;"}">
-
-                ${type == "stream" ? `<i class="inputIcon material-icons">search</i><input ${searchText ? `value="${searchText}"` : ``} onchange="dtps.search()" class="search inputIcon filled shadow" placeholder="Search assignments" type="search" />` : ""}
-
-                <br />
                 ${modulesSelector ? /*html*/`
-                    <div class="btns row small acrylicMaterial assignmentPicker" style="margin: ${type == "stream" ? `20px 80px 20px 0px !important` : `63px 80px 20px 0px !important`};">
+                    <div class="btns row small acrylicMaterial assignmentPicker" style="margin: 5px 20px 5px 0px !important;">
                         <button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">assignment</i>Assignments</button>
                         <button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">view_module</i>Modules</button>
                     </div>
