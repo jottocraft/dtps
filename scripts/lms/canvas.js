@@ -16,7 +16,7 @@ var dtpsLMS = {
     description: "Power+ integration for Canvas LMS",
     url: "https://www.instructure.com/canvas/",
     logo: "https://i.imgur.com/rGjNVoc.png",
-    source: "https://github.com/jottocraft/dtps/blob/master/scripts/lms/canvas.js",
+    source: "https://github.com/jottocraft/dtps/blob/main/scripts/lms/canvas.js",
     genericGradebook: true
 };
 
