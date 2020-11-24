@@ -17,6 +17,14 @@ if (window.location.hostname == "powerplus.app") {
     subtree: true
   })
 } else if (window.location.pathname == "/power+") {
+  //Check for light or dark theme
+  var light = false;
+  if (window.localStorage.fluidTheme == "light") {
+    light = true;
+  } else if (((window.localStorage.fluidTheme == "system") || (window.localStorage.fluidTheme == "auto")) && !window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    light = true;
+  }
+
   const useClassicDTPS = window.location.search && window.location.search.includes("classicEdition=true");
   const observer = new MutationObserver(mutations => {
     mutations.forEach(({ addedNodes }) => {
@@ -24,11 +32,11 @@ if (window.location.hostname == "powerplus.app") {
         //Power+ preloader
         if (node.nodeType === 1 && node.tagName === 'BODY') {
           node.innerHTML = /*html*/`
-            <div dtps="true" id="dtpsNativeOverlay" style="background-color: #151515; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
-              <img dtps="true" style="height: 100px; margin-top: 132px;" src="${useClassicDTPS ? "https://i.imgur.com/fqqPF9i.png" : "https://i.imgur.com/7dDUVh2.png"}" />
+            <div dtps="true" id="dtpsNativeOverlay" style="background-color: inherit; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
+              <img dtps="true" style="height: 100px; margin-top: 132px;" src="${useClassicDTPS ? "https://i.imgur.com/fqqPF9i.png" : (light ? "https://i.imgur.com/0WzWwb1.png" : "https://i.imgur.com/7dDUVh2.png")}" />
 			        <br dtps="true" />
               <div dtps="true" class="progress"><div id="dtpsLoadingScreenBar" dtps="true" class="indeterminate"></div></div>
-              <style dtps="true">body {background-color: #151515; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;background:#262626;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}p{font-family:BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;color: #c4c4c4;margin-top: 24px;}</style>
+              <style dtps="true">body {background-color: ${light ? "white" : "#151515"}; --crxElements: ${light ? "#ececec" : "#2b2b2b"}; --crxText: ${light ? "#333" : "#efefef"}; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{background:var(--crxElements);position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}p{font-family:BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;color: var(--crxText);margin-top: 24px;}</style>
             </div>
           `;
         } else if (node.nodeType === 1 && node.tagName === 'HEAD') {
