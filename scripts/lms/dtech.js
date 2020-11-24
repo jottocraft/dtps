@@ -572,6 +572,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     }
 
     //Enable What-If grades
+    var scrollListenerAdded = false;
     dtpsLMS.gradebookDidRender = function (course) {
         //Add event listeners for every editable score in the gradebook
         $(".card.outcomeResults .assessments .editableScore").toArray().forEach(ele => {
@@ -584,15 +585,18 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         });
 
         //Keep the grade summary on top
-        var navbar = document.getElementById("gradeSummary");
-        var sticky = navbar.offsetTop - 80;
-        window.onscroll = function () {
-            if (window.pageYOffset >= sticky) {
-                $(".classContent").addClass("fixedGradeSummary");
-            } else {
-                $(".classContent").removeClass("fixedGradeSummary");
-            }
-        };
+        if (!scrollListenerAdded) {
+            scrollListenerAdded = true;
+            var gradeSummary = document.getElementById("gradeSummary");
+            var sticky = gradeSummary.offsetTop - parseFloat($("body").css("padding-top")) - 10;
+            window.onscroll = function () {
+                if (window.pageYOffset >= sticky) {
+                    $(".classContent").addClass("fixedGradeSummary");
+                } else {
+                    $(".classContent").removeClass("fixedGradeSummary");
+                }
+            };
+        }
     }
 
     //Adds a What-If grade listener to the provided element
@@ -653,7 +657,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             function placeCaretAtEnd(el) {
                 el.focus();
                 if (typeof window.getSelection != "undefined"
-                        && typeof document.createRange != "undefined") {
+                    && typeof document.createRange != "undefined") {
                     var range = document.createRange();
                     range.selectNodeContents(el);
                     range.collapse(false);

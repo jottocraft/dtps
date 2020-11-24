@@ -279,9 +279,9 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
         //Render HTML
         if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "discuss") || fromModules)) {
             jQuery(".classContent").html((fromModules ? /*html*/`
-                <div class="acrylicMaterial" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
-                    <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div>
-                </div>
+                <button style="margin: 10px 0px 0px 20px;" class="btn" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')">
+                    <i class="material-icons">keyboard_arrow_left</i> Back
+                </button>
             ` : "") + postHTML.join(""));
         }
     }).catch(function (err) {
@@ -452,7 +452,7 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
     dtpsLMS.fetchPageContent(dtps.classes[classNum].id, pageID).then(function (page) {
         if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "pages") || fromModules)) {
             //Get computed background and text color to style the iFrame with
-            var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
+            var computedBackgroundColor = getComputedStyle($(".classContent")[0]).getPropertyValue("--background");
             var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
 
             //Generate a blob with the page content and get its data URL
@@ -469,9 +469,9 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
             //Render page card in the class content
             jQuery(".classContent").html(/*html*/`
                 ${fromModules ? /*html*/`
-                    <div class="acrylicMaterial" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
-                        <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div>
-                    </div>
+                    <button style="margin: 10px 0px 0px 20px;" class="btn" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')">
+                        <i class="material-icons">keyboard_arrow_left</i> Back
+                    </button>
                 ` : ""}
                 <div style="margin: 20px; padding: 20px;">
                     <!-- Page title -->
