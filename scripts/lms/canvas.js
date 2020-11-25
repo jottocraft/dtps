@@ -390,7 +390,7 @@ dtpsLMS.collapseModule = function (classID, modID, collapsed) {
                 "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                 "X-CSRF-Token": decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0]
             },
-            body: "_method=POST&collapse=" + (collapsed ? 1 : 0) + "&authenticity_token=" + decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0],
+            data: "_method=POST&collapse=" + (collapsed ? 1 : 0) + "&authenticity_token=" + decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0],
             success: function (data) {
                 resolve();
             },

@@ -1524,3 +1524,27 @@ body.dark .headerArea img {
     background-color: var(--elements);
     vertical-align: middle;
 }
+
+#dtpsSearchResults {
+    position: fixed;
+    z-index: 100;
+    width: 500px;
+    top: 70px;
+    left: calc(50% - 250px);
+    box-shadow: 0px 0px 20px rgb(0 0 0 / 0.5);
+    border: 2px solid var(--elements);
+}
+
+#dtpsSearchResults h5 {
+    margin-top: 0px;
+}
+
+#dtpsSearchResults h5 i {
+    vertical-align: middle;
+}
+
+#dtpsSearchResults h5 span {
+    font-size: 18px;
+    font-weight: bold;
+    vertical-align: middle;
+}
