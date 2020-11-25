@@ -1270,34 +1270,6 @@ dtps.render = function () {
     jQuery("body").append(/*html*/`
         <div class="sidebar acrylicMaterial"></div>        
 
-        <!-- Header with class name and tabs -->
-        <!--<div class="header">
-        
-            <h1 id="headText">Dashboard</h1>
-        
-            <div style="display: none;" id="dtpsTabBar" class="btns row tabs">
-                <button init="true" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);" class="btn stream">
-                    <i class="material-icons">library_books</i>
-                    Coursework
-                </button>
-                <button init="true" onclick="fluid.screen('people', dtps.classes[dtps.selectedClass].id);" class="btn people">
-                    <i class="material-icons">group</i>
-                    People
-                </button>
-                <button init="true" onclick="fluid.screen('discussions', dtps.classes[dtps.selectedClass].id);" class="btn discuss">
-                    <i class="material-icons">forum</i>
-                    Discussions
-                </button>
-                <button init="true" onclick="fluid.screen('pages', dtps.classes[dtps.selectedClass].id);" class="btn pages">
-                    <i class="material-icons">insert_drive_file</i>
-                    Pages
-                </button>
-                <button init="true" onclick="fluid.screen('gradebook', dtps.classes[dtps.selectedClass].id);" class="btn grades">
-                    <i class="material-icons">assessment</i>
-                    ${dtpsLMS.gradebook ? "Grades" : "Gradebook"}
-                </button>
-            </div>
-        </div>-->
         <div class="navbar">
           <div class="logo">
             <img src="https://powerplus.app/icon.svg" />
@@ -1311,7 +1283,7 @@ dtps.render = function () {
             </div>
           ` : ""}
           
-          <div class="items" style="text-align: center; width: calc(100% - 280px);">
+          <div class="items" style="position: fixed; left: calc(50% - 250px); margin: 0px;">
             <i class="inputIcon material-icons">search</i>
             <input id="dtpsMainSearchBox" style="margin: 0px; width: 500px;" type="search" class="inputIcon filled" placeholder="Search" />
           </div>
@@ -1346,6 +1318,22 @@ dtps.render = function () {
                 </div>
             </a>
           </div>
+        </div>
+
+        <div id="dtpsSearchResults" class="card acrylicMaterial" style="display: none;">
+            <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search</span></h5>
+            <div id="dtpsSearchData" style="display: none;"></div>
+            <div id="dtpsSearchInfo">
+                <p>Power+ will search across all of your classes to find what you're looking for (NYI). 
+                You can search for:</p>
+                <p><i class="material-icons">assignment</i> Assignments</p>
+                <p><i class="material-icons">assessment</i> Grades</p>
+                <p><i class="material-icons">home</i> Homepage content</p>
+                <p><i class="material-icons">view_module</i> Modules</p>
+                <p><i class="material-icons">insert_drive_file</i> Pages</p>
+                <p><i class="material-icons">forum</i> Discussions</p>
+                <p><i class="material-icons">group</i> People</p>
+            </div>
         </div>
 
         <div class="headerArea classImage">
@@ -1416,6 +1404,24 @@ dtps.render = function () {
             <iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="CardIFrame"></iframe>
         </div>
     `);
+
+    $("#dtpsMainSearchBox").on("focus", function () {
+        $("#dtpsSearchResults").show();
+    });
+
+    $("#dtpsMainSearchBox").on("blur", function () {
+        $("#dtpsSearchResults").hide();
+    });
+
+    $("#dtpsMainSearchBox").on("input", function () {
+        if ($("#dtpsMainSearchBox").val()) {
+            $("#dtpsSearchStatus i").text("keyboard_return");
+            $("#dtpsSearchStatus span").text("Press enter to search");
+        } else {
+            $("#dtpsSearchStatus i").text("search");
+            $("#dtpsSearchStatus span").text("Search");
+        }
+    });
 }
 
 /**
@@ -1500,8 +1506,7 @@ dtps.renderLite = function () {
                     <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
                     <div class="label"><i class="material-icons">image</i> Hide class images</div>
 
-                    ${
-        dtpsLMS.dtech && dtps.remoteConfig.dtechCleanUpAssignments ? `
+                    ${dtpsLMS.dtech && dtps.remoteConfig.dtechCleanUpAssignments ? `
                             <br /><br />
                             <div onclick="fluid.set('pref-formatAssignmentContent')" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
                             <div class="label"><i class="material-icons">format_paint</i> Reformat assignment content</div>
@@ -1706,28 +1711,7 @@ dtps.renderLite = function () {
         </div>
     `);
 
-    //Render toolbar (the thing with the name and settings button at the top-right)
-    jQuery(".toolbar.items").html(/*html*/`
-        <div style="text-align: right;">
-            ${dtps.user.parent ? /*html*/`
-                <select onchange="dtps.obsSwitch(this)">
-                    ${dtps.user.children.map(child => {
-        return `<option ${dtps.user.lmsID == child.id ? "selected" : ""} value = "${child.id}">${child.name}</option>`;
-    }).join("")}
-                </select>
-            ` : /*html*/`
-                <h4 style="font-size: 22px;">${dtps.user.name}</h4>
-            `}
-            <img src="${dtps.user.photoURL}" style="height: 34px; margin: 0px; margin-right: 10px; border-radius: 50%; vertical-align: middle;" />
-        </div>
-
-        <div style="margin-top: 5px; display: inline-block; text-align: right; float: right;">
-            <a href="/" target="_blank" class="itemButton"><i class="material-icons">exit_to_app</i> ${dtpsLMS.isDemoLMS ? "Exit demo" : "Go to " + (dtpsLMS.shortName || dtpsLMS.name)}</a>
-            ${dtps.remoteConfig.showFeedbackButton || dtps.unstable ? `<a target="_blank" href="${dtps.remoteConfig.feedbackButtonUsesEmail ? "mailto:hello@jottocraft.com" : "https://github.com/jottocraft/dtps/issues/new/choose"}" class="itemButton"><i class="material-icons">feedback</i> Feedback</a>` : ""}
-            <div onclick="dtps.settings();" class="itemButton"><i class="material-icons">settings</i> Settings</div>
-        </div>
-    `);
-
+    //Set profile image
     jQuery(".profileImage").css("background-image", "url('" + dtps.user.photoURL + "')");
     jQuery(".profileMenu .name").text(dtps.user.name);
 

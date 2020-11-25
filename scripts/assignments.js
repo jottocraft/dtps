@@ -795,9 +795,11 @@ dtps.moduleCollapse = function (ele, classID, modID) {
     if ($(ele).parents('.card').hasClass('collapsed')) {
         if (dtpsLMS.collapseModule) dtpsLMS.collapseModule(classID, modID, true);
         $(ele).html('keyboard_arrow_right');
+        dtps.classes[dtps.selectedClass].modules.find(m => m.id == modID).collapsed = true;
     } else {
         if (dtpsLMS.collapseModule) dtpsLMS.collapseModule(classID, modID, false);
         $(ele).html('keyboard_arrow_down');
+        dtps.classes[dtps.selectedClass].modules.find(m => m.id == modID).collapsed = false;
     }
 
 }
