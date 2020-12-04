@@ -316,9 +316,11 @@ dtps.calendar = function () {
                         id: assignment.id,
                         allDay: true,
                         backgroundColor: course.color,
+                        borderColor: (assignment.missing === true) ? 'red' : 'initial',
                         textColor: "white",
                         classNum: courseIndex,
-                        assignmentID: assignment.id
+                        assignmentID: assignment.id,
+                        missing: assignment.missing
                     });
                 });
             }
@@ -331,12 +333,29 @@ dtps.calendar = function () {
                 locale: "en",
                 initialView: 'dayGridMonth',
                 events: calEvents,
+                eventContent: ( info, createElement ) => {
+                    console.log(info);
+                    const { missing } = info.event.extendedProps;
+                    const html = `
+                        <div class='fc-event-main-frame'>
+                            <div class='fc-event-title-container'>
+                                <div class='fc-event-title fc-sticky'>
+                                    ${missing ? `<i title="Assignment is missing" class="material-icons statusIcon" style="color: #c44848; font-size: 12px;">remove_circle_outline</i>` : ``}${ info.event.title }
+                                </div>
+                            </div>
+                        </div>`;
+                    return { html };
+                },
                 contentHeight: 0,
                 handleWindowResize: false,
                 headerToolbar: {
                     start: 'title',
                     center: '',
                     end: 'prev,next'
+                },
+                dateClick: function (info) {
+                    console.log('Clicked date', info);
+                    // Set the current day and update the upcoming assignments based on that
                 },
                 eventClick: function (info) {
                     console.log(info)
