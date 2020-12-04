@@ -316,7 +316,7 @@ dtps.calendar = function () {
                         id: assignment.id,
                         allDay: true,
                         backgroundColor: course.color,
-                        borderColor: (assignment.missing === true) ? 'red' : 'initial',
+                        borderColor: (assignment.missing === true) ? '#c44848' : 'transparent',
                         textColor: "white",
                         classNum: courseIndex,
                         assignmentID: assignment.id,
@@ -336,14 +336,16 @@ dtps.calendar = function () {
                 eventContent: ( info, createElement ) => {
                     console.log(info);
                     const { missing } = info.event.extendedProps;
-                    const html = `
+                    const html = /*html*/`
                         <div class='fc-event-main-frame'>
                             <div class='fc-event-title-container'>
                                 <div class='fc-event-title fc-sticky'>
-                                    ${missing ? `<i title="Assignment is missing" class="material-icons statusIcon" style="color: #c44848; font-size: 12px;">remove_circle_outline</i>` : ``}${ info.event.title }
+                                    ${missing ? `<i title="Assignment is missing" class="material-icons statusIcon">remove_circle_outline</i>` : ``}
+                                    <span style="vertical-align: middle;">${info.event.title}</span>
                                 </div>
                             </div>
-                        </div>`;
+                        </div>
+                    `;
                     return { html };
                 },
                 contentHeight: 0,
