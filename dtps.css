@@ -1466,8 +1466,18 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
 }
 
 #calendar .fc-h-event {
-    border: none;
+    border: 1px solid transparent;
     cursor: pointer;
+}
+
+#calendar .fc-event-title i {
+    color: #c44848; 
+    font-size: 12px; 
+    vertical-align: middle; 
+}
+
+#calendar .fc-event-title span {
+    vertical-align: middle; 
 }
 
 #calendar .fc-daygrid-day.fc-day-today {
