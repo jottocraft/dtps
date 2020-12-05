@@ -26,7 +26,7 @@ npm install
 npm start
 ```
 
-When the server is ready, open Power+ and go to Settings -> About -> Show Advanced Options -> Enable debug config. Then, reload Power+ and go to Settings -> Prerelease testing and select "Debugging". This will make Power+ load from the local server instead of the live version the next time you reload.
+When the server is ready, open Power+ and go to Settings -> About -> Show Advanced Options -> Test prerelease versions. Then, reload Power+ and go to Settings -> Prerelease testing and select "Local". This will make Power+ load from the local server instead of the live version the next time you reload.
 
 ## NPM scripts
 - `start` Starts an HTTP server for testing Power+ locally
