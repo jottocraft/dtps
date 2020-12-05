@@ -1332,7 +1332,7 @@ dtps.render = function () {
                 <p><i class="material-icons">view_module</i> Modules</p>
                 <p><i class="material-icons">insert_drive_file</i> Pages</p>
                 <p><i class="material-icons">forum</i> Discussions</p>
-                <p><i class="material-icons">group</i> People</p>
+                <p><i class="material-icons">people</i> People</p>
             </div>
         </div>
 
@@ -1357,7 +1357,7 @@ dtps.render = function () {
                     Coursework
                 </button>
                 <button init="true" onclick="fluid.screen('people', dtps.classes[dtps.selectedClass].id);" class="btn people">
-                    <i class="material-icons">group</i>
+                    <i class="material-icons">people</i>
                     People
                 </button>
                 <button init="true" onclick="fluid.screen('discussions', dtps.classes[dtps.selectedClass].id);" class="btn discuss">

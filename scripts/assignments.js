@@ -857,7 +857,7 @@ dtps.classInfo = function (num) {
         <h4 style="font-weight: bold;">${dtps.classes[num].name}</h4>
         <p style="color: var(--secText)">${dtps.classes[num].description || ""}</p>
 
-        ${dtps.classes[num].numStudents ? `<div class="assignmentChip"><i class="material-icons">group</i><span>${dtps.classes[num].numStudents} students</span></div>` : ``}
+        ${dtps.classes[num].numStudents ? `<div class="assignmentChip"><i class="material-icons">people</i><span>${dtps.classes[num].numStudents} students</span></div>` : ``}
         ${dtps.env == "dev" ? `<div class="assignmentChip"><i class="material-icons">code</i><span>Class ID: ${dtps.classes[num].id}</span></div>` : ``}
         ${dtps.classes[num].id == dtps.remoteConfig.debugClassID ? `<div class="assignmentChip"><i class="material-icons">bug_report</i><span>Debug class</span></div>` : ``}
     
