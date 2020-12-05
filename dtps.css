@@ -1334,13 +1334,22 @@ body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor,
     vertical-align: middle; 
 }
 
+#calendar .fc-daygrid-day {
+    border-radius: 5px;
+    transition: background-color 0.4s;
+    cursor: pointer;
+}
+
+#calendar .fc-daygrid-day:hover {
+    background-color: var(--elements);
+}
+
 #calendar .fc-event-title span {
     vertical-align: middle; 
 }
 
 #calendar .fc-daygrid-day.fc-day-today {
     background-color: var(--theme);
-    border-radius: 5px;
 }
 
 #calendar .fc-daygrid-day.fc-day-today a {
