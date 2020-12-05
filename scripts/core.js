@@ -1324,8 +1324,7 @@ dtps.render = function () {
             <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search</span></h5>
             <div id="dtpsSearchData" style="display: none;"></div>
             <div id="dtpsSearchInfo">
-                <p>Power+ will search across all of your classes to find what you're looking for (NYI). 
-                You can search for:</p>
+                <p>Power+ will search across all of your classes. You can search for:</p>
                 <p><i class="material-icons">assignment</i> Assignments</p>
                 <p><i class="material-icons">assessment</i> Grades</p>
                 <p><i class="material-icons">home</i> Homepage content</p>
