@@ -247,7 +247,8 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
 
 .recentGrade h5 {
     color: var(--classColor);
-    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
     margin: 0px;
     font-size: 18px;
 }
@@ -256,8 +257,8 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     font-weight: bold;
     display: inline-block;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: calc(100% - 50px);
 }
 
 .recentGrade p {
@@ -871,11 +872,11 @@ body.titlebar .classContent {
 }
 
 .classContent .card .points {
-    float: right;
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     height: 24px;
+    flex-shrink: 0;
 }
 
 .classContent .card .points.spinner {
@@ -994,23 +995,18 @@ body.titlebar .classContent {
 }
 
 .classContent .card.assignment h4 {
-    font-size: 1.2rem;
+    font-size: 18px;
     margin: 0px !important;
     white-space: nowrap;
     height: 24px;
     line-height: 24px;
-    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
 }
 
-.classContent .card.assignment h4 span {
+.classContent .card.assignment span {
+    overflow: hidden;
     text-overflow: ellipsis;
-    overflow: hidden;
-    display: inline-block;
-    max-width: 100%;
-}
-
-.classContent .card.assignment.graded h4 span {
-    max-width: calc(100% - 50px);
 }
 
 .card.assignment .statusIcon {

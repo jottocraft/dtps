@@ -81,8 +81,8 @@ dtps.renderAssignmentScore = function (assignment) {
     } else if (!dtpsLMS.useRubricGrades && (assignment.grade || (assignment.grade == 0))) {
         scoreHTML = /*html*/`
             <div class="assignmentGrade">
-                <div class="grade">${assignment.grade}</div>
-                <div class="value">/${assignment.value}</div>
+                <div class="grade">${Number(assignment.grade.toFixed(2))}</div>
+                <div class="value">/${Number(assignment.value.toFixed(2))}</div>
                 ${assignment.letter ? `<div class="letter">${assignment.letter.replace("incomplete", `<i class="material-icons">cancel</i>`).replace("complete", `<i class="material-icons">done</i>`)}</div>` : ""}
                 <div class="percentage">${Math.round((assignment.grade / assignment.value) * 100)}%</div>
             </div>
@@ -333,8 +333,7 @@ dtps.calendar = function () {
                 locale: "en",
                 initialView: 'dayGridMonth',
                 events: calEvents,
-                eventContent: ( info, createElement ) => {
-                    console.log(info);
+                eventContent: info => {
                     const { missing } = info.event.extendedProps;
                     const html = /*html*/`
                         <div class='fc-event-main-frame'>
@@ -356,11 +355,9 @@ dtps.calendar = function () {
                     end: 'prev,next'
                 },
                 dateClick: function (info) {
-                    console.log('Clicked date', info);
                     // Set the current day and update the upcoming assignments based on that
                 },
                 eventClick: function (info) {
-                    console.log(info)
                     dtps.assignment(info.event.extendedProps.assignmentID, info.event.extendedProps.classNum);
                 }
             });
