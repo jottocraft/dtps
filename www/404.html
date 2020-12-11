@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/fluid/v5.min.css"
+        media="screen,projection" />
+    <script>
+        var info = {
+            title: "404",
+            description: "The requested URL was not found",
+            status: "fail",
+            brand: {
+                name: "Power+",
+                image: "https://cdn.jottocraft.com/images/dtpsBitmap.png",
+                favicon: "/favicon.png",
+                color: "#e3ba4b"
+            }
+        }
+        document.title = info.title + ((info.brand && (" | " + info.brand.name)) || "");
+        if (info.brand && info.brand.image) document.documentElement.style.setProperty('--brandImage', "url('" + info.brand.image + "')");
+        if (info.brand && info.brand.color) document.documentElement.style.setProperty('--brandColor', info.brand.color);
+    </script>
+    <script>document.write(`<link rel="shortcut icon" href="${info.brand && info.brand.favicon}" type="image/png">`)</script>
+    <style>
+        h1 {
+            margin-top: 0px;
+            font-size: 68px;
+            text-shadow: 0px 0px 4px var(--secText);
+        }
+
+        h1 span {
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        div.status {
+            vertical-align: middle;
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        div.status.fail {
+            border: 3px solid #792020;
+            background: #e83434ba;
+            box-shadow: 0 0px 20px rgb(255 60 60 / 32%);
+        }
+
+        div.status.success {
+            border: 3px solid #185f27;
+            background: #23b542ad;
+            box-shadow: 0 0px 20px #3cff5952;
+        }
+
+        div.status.game {
+            border: 3px solid #211467;
+            background: #391ece8f;
+            box-shadow: 0 0px 20px rgb(74 48 191 / 32%);
+        }
+
+        i.fail::before {
+            content: "lens";
+            color: #c44848;
+            font-size: 32px;
+        }
+
+        i.success::before {
+            content: "lens";
+            color: #48c45d;
+            font-size: 32px;
+        }
+
+        #background {
+            background-image: var(--brandImage, url('https://cdn.jottocraft.com/images/bitmap.png'));
+            opacity: 0.5;
+            bottom: 80px;
+            position: fixed;
+            z-index: -1;
+            width: 100%;
+            height: 50%;
+            background-position: bottom;
+            background-size: auto min(50%, 600px);
+            background-repeat-y: no-repeat;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container center">
+        <h1>
+            <script>document.write(`<div id="pageStatus" class="status ${info.status}"></div>`)</script> 
+            <span id="pageTitle"><script>document.write(info.title)</script></span>
+            <h5 id="pageDescription">
+                <script>document.write(info.description)</script>
+            </h5>
+        </h1>
+
+        <canvas style="margin-top: 40px; display: none;" width="788" height="500" id="game"></canvas>
+    </div>
+    <div id="background"></div>
+
+    <script>
+        const canvas = document.getElementById('game');
+        const context = canvas.getContext('2d');
+
+        const level1 = [
+            [],
+            [],
+            [],
+            [],
+            ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
+            ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
+            ['O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O'],
+            ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+            ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+            ['G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+            ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
+            ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'],
+            ['Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y']
+        ];
+
+        // create a mapping between color short code (R, O, G, Y) and color name
+        const colorMap = {
+            //'R': '#27d69c',
+            'O': getComputedStyle(document.body).getPropertyValue('--brandColor') || '#505ae0',
+            'G': getComputedStyle(document.body).getPropertyValue('--brandColor') || '#4487cd',
+            'Y': getComputedStyle(document.body).getPropertyValue('--brandColor') || '#56acbe'
+        };
+
+        // use a 2px gap between each brick
+        const brickGap = 2;
+        const brickWidth = 44;
+        const brickHeight = 12;
+
+        // the wall width takes up the remaining space of the canvas width. with 14 bricks
+        // and 13 2px gaps between them, thats: 400 - (14 * 25 + 2 * 13) = 24px. so each
+        // wall will be 12px
+        const wallSize = 4;
+        const bricks = [];
+        var score = 0;
+
+        // create the level by looping over each row and column in the level1 array
+        // and creating an object with the bricks position (x, y) and color
+        for (let row = 0; row < level1.length; row++) {
+            for (let col = 0; col < level1[row].length; col++) {
+                const colorCode = level1[row][col];
+
+                bricks.push({
+                    x: wallSize + (brickWidth + brickGap) * col,
+                    y: wallSize + (brickHeight + brickGap) * row,
+                    color: colorMap[colorCode],
+                    width: brickWidth,
+                    height: brickHeight
+                });
+            }
+        }
+
+        const paddle = {
+            // place the paddle horizontally in the middle of the screen
+            x: canvas.width / 2 - brickWidth / 2,
+            y: 440,
+            width: brickWidth * 3,
+            height: brickHeight,
+
+            // paddle x velocity
+            dx: 0
+        };
+
+        const ball = {
+            x: 130,
+            y: 260,
+            width: 8,
+            height: 8,
+
+            // how fast the ball should go in either the x or y direction
+            speed: 2,
+
+            // ball velocity
+            dx: 0,
+            dy: 0
+        };
+
+        // check for collision between two objects using axis-aligned bounding box (AABB)
+        // @see https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+        function collides(obj1, obj2) {
+            return obj1.x < obj2.x + obj2.width &&
+                obj1.x + obj1.width > obj2.x &&
+                obj1.y < obj2.y + obj2.height &&
+                obj1.y + obj1.height > obj2.y;
+        }
+
+        // game loop
+        function loop() {
+            requestAnimationFrame(loop);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            // move paddle by it's velocity
+            paddle.x += paddle.dx;
+
+            // prevent paddle from going through walls
+            if (paddle.x < wallSize) {
+                paddle.x = wallSize
+            }
+            else if (paddle.x + (brickWidth * 3) > canvas.width - wallSize) {
+                paddle.x = canvas.width - wallSize - (brickWidth * 3);
+            }
+
+            // move ball by it's velocity
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // prevent ball from going through walls by changing its velocity
+            // left & right walls
+            if (ball.x < wallSize) {
+                ball.x = wallSize;
+                ball.dx *= -1;
+            }
+            else if (ball.x + ball.width > canvas.width - wallSize) {
+                ball.x = canvas.width - wallSize - ball.width;
+                ball.dx *= -1;
+            }
+            // top wall
+            if (ball.y < wallSize) {
+                ball.y = wallSize;
+                ball.dy *= -1;
+            }
+
+            // reset ball if it goes below the screen
+            if (ball.y > canvas.height) {
+                ball.x = 130;
+                ball.y = 260;
+                ball.dx = 0;
+                ball.dy = 0;
+            }
+
+            // check to see if ball collides with paddle. if they do change y velocity
+            if (collides(ball, paddle)) {
+                ball.dy *= -1;
+
+                // move ball above the paddle otherwise the collision will happen again
+                // in the next frame
+                ball.y = paddle.y - ball.height;
+            }
+
+            // check to see if ball collides with a brick. if it does, remove the brick
+            // and change the ball velocity based on the side the brick was hit on
+            for (let i = 0; i < bricks.length; i++) {
+                const brick = bricks[i];
+
+                if (collides(ball, brick)) {
+                    // remove brick from the bricks array
+                    bricks.splice(i, 1);
+                    score++;
+                    document.getElementById("pageDescription").innerText = "Score: " + score;
+
+                    // ball is above or below the brick, change y velocity
+                    // account for the balls speed since it will be inside the brick when it
+                    // collides
+                    if (ball.y + ball.height - ball.speed <= brick.y ||
+                        ball.y >= brick.y + brick.height - ball.speed) {
+                        ball.dy *= -1;
+                    }
+                    // ball is on either side of the brick, change x velocity
+                    else {
+                        ball.dx *= -1;
+                    }
+
+                    break;
+                }
+            }
+
+            // draw walls
+            context.fillStyle = getComputedStyle(document.body).getPropertyValue('--elements');
+            context.fillRect(0, 0, canvas.width, wallSize);
+            context.fillRect(0, 0, wallSize, canvas.height);
+            context.fillRect(canvas.width - wallSize, 0, wallSize, canvas.height);
+
+            // draw ball if it's moving
+            context.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
+            if (ball.dx || ball.dy) {
+                context.fillRect(ball.x, ball.y, ball.width, ball.height);
+            }
+
+            // draw bricks
+            bricks.forEach(function (brick) {
+                context.fillStyle = brick.color;
+                context.fillRect(brick.x, brick.y, brick.width, brick.height);
+            });
+
+            // draw paddle
+            context.fillStyle = getComputedStyle(document.body).getPropertyValue('--theme');
+            context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+        }
+
+        // listen to keyboard events to move the paddle
+        document.addEventListener('keydown', function (e) {
+            // left arrow key
+            if (e.which === 37) {
+                paddle.dx = -3;
+            }
+            // right arrow key
+            else if (e.which === 39) {
+                paddle.dx = 3;
+            }
+
+            // space key
+            // if they ball is not moving, we can launch the ball using the space key. ball
+            // will move towards the bottom right to start
+            if (ball.dx === 0 && ball.dy === 0 && e.which === 32) {
+                ball.dx = ball.speed;
+                ball.dy = ball.speed;
+            }
+
+            if (e.which === 32) {
+                document.getElementById("game").style.display = "";
+                document.getElementById("background").style.display = "none";
+                document.getElementById("pageStatus").classList.add("game");
+                document.getElementById("pageTitle").innerText = "302";
+                document.getElementById("pageDescription").innerText = "Score: " + score;
+            }
+        });
+
+        // listen to keyboard events to stop the paddle if key is released
+        document.addEventListener('keyup', function (e) {
+            if (((e.which === 37) && (paddle.dx == -3)) || ((e.which === 39) && (paddle.dx == 3))) {
+                paddle.dx = 0;
+            }
+        });
+
+        // start the game
+        requestAnimationFrame(loop);
+    </script>
+</body>
+
+</html>
