@@ -3,6 +3,16 @@ Power+ CSS
 (c) jottocraft 2018-2020
 */
 
+[data-theme-type=light] {
+    --theme: #ccac56 !important;
+    --themeText: #ffffff !important;
+}
+
+[data-theme-type=dark] {
+    --theme: #8c793e !important;
+    --themeText: #ffffff !important;
+}
+
 .dashboardItem {
     text-align: center;
     padding: 20px;
