@@ -590,7 +590,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             var gradeSummary = document.getElementById("gradeSummary");
             var sticky = gradeSummary.offsetTop - parseFloat($("body").css("padding-top")) - 10;
             window.onscroll = function () {
-                if (window.pageYOffset >= sticky) {
+                if ((window.pageYOffset >= sticky) && ((dtps.classes[dtps.selectedClass]) && (dtps.selectedContent == "grades"))) {
                     $(".classContent").addClass("fixedGradeSummary");
                 } else {
                     $(".classContent").removeClass("fixedGradeSummary");

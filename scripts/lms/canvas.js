@@ -44,7 +44,7 @@ dtpsLMS.fetchUser = function () {
                 type: "GET",
                 headers: dtpsLMS.commonHeaders,
                 success: function (childrenData) {
-                    
+
                     if (childrenData && childrenData.length) {
                         //Parent account
                         user.children = childrenData.map(child => {
@@ -55,7 +55,7 @@ dtpsLMS.fetchUser = function () {
                             }
                         });
                     }
-    
+
                     resolve(user);
                 },
                 error: function (err) {
@@ -430,34 +430,57 @@ dtpsLMS.fetchAnnouncements = function (classID) {
 dtpsLMS.fetchUsers = function (classID) {
     return new Promise(function (resolve, reject) {
         jQuery.ajax({
-            url: "/api/v1/courses/" + classID + "/sections?include[]=avatar_url&include[]=students",
+            url: "/api/v1/courses/" + classID + "/sections?include[]=avatar_url&include[]=students&per_page=99",
             type: "GET",
             headers: dtpsLMS.commonHeaders,
             success: function (data) {
-                var sections = [];
-                data.forEach(section => {
-                    if (!section.students) return;
+                jQuery.ajax({
+                    url: "/api/v1/courses/" + classID + "/users?per_page=99&enrollment_type[]=teacher&include[]=avatar_url",
+                    type: "GET",
+                    headers: dtpsLMS.commonHeaders,
+                    success: function (teachers) {
+                        var sections = [{
+                            title: "Teachers",
+                            id: "lms.dtps.canvas-teachers",
+                            users: []
+                        }];
 
-                    var users = [];
-                    section.students.forEach(student => {
-                        users.push({
-                            name: student.short_name,
-                            id: student.id,
-                            photoURL: student.avatar_url,
-                            url: "/courses/" + classID + "/users/" + student.id
+                        teachers.forEach(teacher => {
+                            sections[0].users.push({
+                                name: teacher.name,
+                                id: teacher.id,
+                                photoURL: teacher.avatar_url,
+                                url: "/courses/" + classID + "/users/" + teacher.id
+                            });
                         });
-                    });
-                    var dtechMatch = section.name.match(/[0-9](?=\(A)/);
-                    if (dtpsLMS.dtech && dtechMatch) {
-                        section.name = "Period " + dtechMatch[0];
+
+                        data.forEach(section => {
+                            if (!section.students) return;
+                            var users = [];
+                            section.students.forEach(student => {
+                                users.push({
+                                    name: student.short_name,
+                                    id: student.id,
+                                    photoURL: student.avatar_url,
+                                    url: "/courses/" + classID + "/users/" + student.id
+                                });
+                            });
+                            var dtechMatch = section.name.match(/[0-9](?=\(A)/);
+                            if (dtpsLMS.dtech && dtechMatch) {
+                                section.name = dtechMatch[0] == 7 ? "@d.tech" : "Period " + dtechMatch[0];
+                            }
+                            sections.push({
+                                title: section.name,
+                                id: section.id,
+                                users
+                            });
+                        });
+                        resolve(sections);
+                    },
+                    error: function (err) {
+                        reject(err);
                     }
-                    sections.push({
-                        title: section.name,
-                        id: section.id,
-                        users
-                    });
                 });
-                resolve(sections);
             },
             error: function (err) {
                 reject(err);
