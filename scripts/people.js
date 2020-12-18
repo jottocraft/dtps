@@ -35,9 +35,23 @@ dtps.usersList = function (courseID) {
 
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "people")) {
         jQuery(".classContent").html(/*html*/`
+            <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
+              <div class="block status card">
+                <h2 class="main"><span class="shimmer">--</span></h2>
+                <h5 class="bottom"><i class="material-icons">contact_page</i> Your section</h5>
+              </div>
+              <div class="block status">
+                <h2 class="main numFont"><span class="shimmer">--</span></h2>
+                <h5 class="bottom"><i class="material-icons">groups</i> Total Students</h5>
+              </div>
+              <div class="block status">
+                <h2 class="main numFont"><span class="shimmer">--</span></h2>
+                <h5 class="bottom"><i class="material-icons">school</i> Teachers</h5>
+              </div>
+            </div>
             <div class="card">
                 <h5><b style="width: 300px; display: inline-block;" class="shimmer">Title</b></h5>
-                ${[1,2,3,4,5,6].map(() => (
+                ${[1, 2, 3, 4, 5, 6].map(() => (
                     /*html*/`
                         <div>
                             <p class="shimmerParent">
@@ -46,13 +60,31 @@ dtps.usersList = function (courseID) {
                             </p>
                         </div>
                     `
-                )).join("")}
+        )).join("")}
             </div>
         `);
     }
 
     //Fetch users list
     dtpsLMS.fetchUsers(dtps.classes[classNum].id).then(function (sections) {
+        //Count students and teachers by user ID
+        var allStudents = [];
+        var allTeachers = [];
+        var currentSection = null;
+        sections.forEach(section => {
+            section.users.forEach(user => {
+                if ((section.title == "Teachers") && !allTeachers.includes(user.id)) {
+                    allTeachers.push(user.id);
+                } else if (!allStudents.includes(user.id)) {
+                    allStudents.push(user.id);
+                }
+
+                if (!currentSection && (user.id == dtps.user.id)) {
+                    currentSection = section.title;
+                }
+            });
+        });
+
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "people")) {
             if (!sections || (sections.length == 0)) {
                 //No people in this class? (this shouldn't be possible)
@@ -66,16 +98,16 @@ dtps.usersList = function (courseID) {
                 jQuery(".classContent").html(/*html*/`
                     <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
                       <div class="block status card">
-                        <h2 class="main">--</h2>
+                        <h2 class="main">${currentSection || "--"}</h2>
                         <h5 class="bottom"><i class="material-icons">contact_page</i> Your section</h5>
                       </div>
                       <div class="block status">
-                        <h2 class="main numFont">--</h2>
+                        <h2 class="main numFont">${allStudents.length}</h2>
                         <h5 class="bottom"><i class="material-icons">groups</i> Total Students</h5>
                       </div>
                       <div class="block status">
-                        <h2 class="main numFont">--</h2>
-                        <h5 class="bottom"><i class="material-icons">school</i> Teachers</h5>
+                        <h2 class="main numFont">${allTeachers.length}</h2>
+                        <h5 class="bottom"><i class="material-icons">school</i> ${allTeachers.length == 1 ? "Teacher" : "Teachers"}</h5>
                       </div>
                     </div>
                 ` + sections.map(section => (
@@ -91,7 +123,7 @@ dtps.usersList = function (courseID) {
                                         </p>
                                     </div>
                                 `
-                            )).join("")}
+                )).join("")}
                         </div>
                     `
                 )).join(""));
