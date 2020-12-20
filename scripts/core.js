@@ -385,7 +385,7 @@ dtps.init = function () {
                 var promises = [];
 
                 dtps.user.children.forEach(child => {
-                    promises.push(new Promise(function(resolve, reject) {
+                    promises.push(new Promise(function (resolve, reject) {
                         dtpsLMS.fetchClasses(child.id).then((data) => {
                             //Prepend child ID to class ID
                             data.forEach(course => {
@@ -608,16 +608,16 @@ dtps.init = function () {
                                 ...announcement
                             });
                         });
-    
+
                         //Sort updates array from newest -> oldest
                         dtps.updates.sort(function (a, b) {
                             //Sort by postedAt (announcements) or gradedAt (assignments)
                             return new Date(b.gradedAt || b.postedAt).getTime() - new Date(a.gradedAt || a.postedAt).getTime()
                         });
-    
+
                         //Keep only the 15 most recent updates
                         if (dtps.updates.length > 15) dtps.updates.length = 15;
-    
+
                         if (dtps.selectedClass == "dash") {
                             fluid.screen();
                         }
@@ -797,7 +797,11 @@ dtps.showClasses = function (override) {
             }
 
             if ((dtps.selectedContent == "moduleStream") && dtps.classes[dtps.selectedClass]) {
-                fluid.screen("moduleStream", dtps.classes[dtps.selectedClass].id);
+                if (dtps.classes[dtps.selectedClass].modules) {
+                    fluid.screen("moduleStream", dtps.classes[dtps.selectedClass].id);
+                } else {
+                    fluid.screen("stream", dtps.classes[dtps.selectedClass].id);
+                }
             }
 
             if ((dtps.selectedContent == "people") && dtps.classes[dtps.selectedClass]) {
@@ -851,7 +855,14 @@ dtps.presentClass = function (classNum) {
 
     //Update title to show class name
     //If the dashboard is selected, this is just "Dashboard". Otherwise, this is Class.subject
-    $("#headText").html(classNum == "dash" ? "Dashboard" : dtps.classes[classNum] && dtps.classes[classNum].subject);
+    $("#headText span").text(classNum == "dash" ? "Dashboard" : dtps.classes[classNum] && dtps.classes[classNum].subject);
+    var icon = classNum == "dash" ? "dashboard" : dtps.classes[classNum] && dtps.classes[classNum].icon
+    if (icon) {
+        $("#headText i").text(icon);
+        $("#headText i").show();
+    } else {
+        $("#headText i").hide();
+    }
     $("#headText").css("color", classNum == "dash" ? "var(--text)" : dtps.classes[classNum] && dtps.classes[classNum].color);
 
     //If the class doesn't exist, hide the tabs
@@ -917,10 +928,29 @@ dtps.presentClass = function (classNum) {
 
         if (dtps.classes[classNum].videoMeetingURL) {
             $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
+            $("#classInfo .videoMeeting").removeClass("shimmerParent");
+            $("#classInfo .videoMeeting").show();
+        } else if ((dtps.classes[classNum].videoMeetingURL !== null) && dtpsLMS.fetchMeetingURL) {
+            $("#classInfo .videoMeeting").attr("onclick", "");
+            $("#classInfo .videoMeeting").addClass("shimmerParent");
             $("#classInfo .videoMeeting").show();
         } else {
             $("#classInfo .videoMeeting").hide();
         }
+
+        dtpsLMS.fetchMeetingURL(dtps.classes[classNum].lmsID).then(url => {
+            dtps.classes[classNum].videoMeetingURL = url;
+
+            if (dtps.selectedClass == classNum) {
+                if (url) {
+                    $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
+                    $("#classInfo .videoMeeting").removeClass("shimmerParent");
+                    $("#classInfo .videoMeeting").show();
+                } else {
+                    $("#classInfo .videoMeeting").hide();
+                }
+            }
+        });
     }
 }
 
@@ -1360,7 +1390,7 @@ dtps.render = function () {
         <div class="headerArea classImage">
           <img style="display: none;" />
           <div class="content">
-            <h1 id="headText">Dashboard</h1>
+            <h1 id="headText"><i class="material-icons">dashboard</i> <span>Dashboard</span></h1>
             <div id="classInfo" style="min-height: 18px;">
               <p class="teacher" style="display: none;">
                 <span class="teacherImage"></span> <span class="teacherName"></span>
@@ -1539,7 +1569,7 @@ dtps.renderLite = function () {
                             <div onclick="fluid.set('pref-formatAssignmentContent');" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
                             <div class="label"><i class="material-icons">format_paint</i> Reformat assignment content</div>
                         ` : ""
-                    }
+        }
 
                 </div>
 
@@ -1833,6 +1863,14 @@ dtps.init();
 */
 
 /**
+* @name dtpsLMS.fetchMeetingURL
+* @description [OPTIONAL] Fetches the videoMeetingURL for a class
+* @kind function
+* @param {string} classID The class ID to get the videoMeetingURL for
+* @return {Promise<string>} A promise which resolves to the videoMeetingURL for the class, or null if the class does not have a videoMeetingURL
+*/
+
+/**
 * @name dtpsLMS.fetchHomepage
 * @description [OPTIONAL] Fetches homepage HTML for a course from the LMS
 * @kind function
@@ -1957,6 +1995,7 @@ dtps.init();
 * @property {string} userID The ID of the user this class is associated with (from the parameter of dtpsLMS.fetchClasses)
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
+* @property {string} [icon] The icon to show with this class
 * @property {string} [group] The name of the group that this class is in
 * @property {number|string} [period] The period or section the user has this class at
 * @property {Date} [endDate] The end date for this course
@@ -1965,10 +2004,7 @@ dtps.init();
 * @property {DiscussionThread[]|boolean} [discussions] Class discussion threads. Assume this class supports discussions, but not yet loaded, if this is true and that the class has no threads if this is an empty array. For LMSs that do not support discussions, either keep it undefined or set it to false.
 * @property {Page[]|boolean} [pages] Class pages. Assume this class supports the pages feature, but not yet loaded, if true and that the class has no pages if this is an empty array. For LMSs that do not support pages, either keep it undefined or set it to false.
 * @property {string} [newDiscussionThreadURL] A URL the user can visit to create a new discussion thread in this class
-* @property {string} [syllabus] Class syllabus HTML
 * @property {boolean} [homepage] True if the class has a homepage. If a class has a homepage, dtpsLMS.fetchHomepage must be implemented.
-* @property {string} [description] Class description HTML
-* @property {number} [numStudents] Number of students in the class
 * @property {string} [term] Class term
 * @property {string} [color] Class color
 * @property {number} [grade] Current percentage grade in the class
@@ -1978,5 +2014,5 @@ dtps.init();
 * @property {User} [teacher] Class teacher. If the class has multiple teachers, this is the primary teacher.
 * @property {boolean} [hasGradebook] Automatically managed by DTPS. True if the class should show the gradebook tab.
 * @property {object} [gradeCalculation] Automatically managed by DTPS. If custom grade calculation is implemented, this will be the results from custom grade calculation returned by dtpsLMS.calculateGrade.
-* @property {string} [videoMeetingURL] The URL used to join this class' online meeting
+* @property {string} [videoMeetingURL] The URL used to join this class' online meeting. If dtpsLMS.fetchMeetingURL is implemented, DTPS will use it to get the meeting URL if this property is undefined. If this property is null, DTPS will not call dtpsLMS.fetchMeeting URL for the class.
 */

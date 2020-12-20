@@ -26,7 +26,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     dtpsLMS.dtech = true;
 
     //Check if due date is usual
-    dtpsLMS.isUsualDueDate = function(date) {
+    dtpsLMS.isUsualDueDate = function (date) {
         var date = new Date(date);
 
         if (date.getHours() >= 22) {
@@ -78,11 +78,16 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     tmpNewArray.push(course);
                 }
 
+                //Check if course is ineligible for videoMeetingURL
+                if (!dtps.remoteConfig.showVideoMeetingButton || !course.homepage || (course.term !== dtps.remoteConfig.dtechCurrentTerm)) {
+                    course.videoMeetingURL = null;
+                }
+
                 //Get course period
                 var matches = course.period.match(/[0-9](?=\(A)/);
                 if (matches && matches[0]) {
                     course.period = matches[0] == "7" ? 0 : Number(matches[0]);
-                } else if (/((d|design).?lab)/gi.test(course.subject)) {
+                } else if (/(d|design)(\.| |-)?lab/gi.test(course.subject)) {
                     course.period = 11;
                 } else if (/exploration/gi.test(course.subject)) {
                     course.period = 12;
@@ -100,6 +105,47 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                         course.group = "Intersession";
                     }
                 }
+
+                //Add course icon
+                if (course.id == dtps.remoteConfig.debugClassID) {
+                    course.icon = "bug_report";
+                } else if (/Game/gi.test(course.subject)) {
+                    course.icon = "games";
+                } else if (/Architecture/gi.test(course.subject)) {
+                    course.icon = "architecture";
+                } else if (/History/gi.test(course.subject)) {
+                    course.icon = "history_edu";
+                } else if (/Biology/gi.test(course.subject)) {
+                    course.icon = "biotech";
+                } else if (/Physics|Science|Chemistry/gi.test(course.subject)) {
+                    course.icon = "science";
+                } else if (/Math|Algebra|Geometry|Calculus|Statistics/gi.test(course.subject)) {
+                    course.icon = "calculate";
+                } else if (/Engineering|DRG/gi.test(course.subject)) {
+                    course.icon = "engineering";
+                } else if (/((d|design)(\.| |-)?lab)|Prototyping/gi.test(course.subject)) {
+                    course.icon = "design_services";
+                } else if (/Exploration/gi.test(course.subject)) {
+                    course.icon = "explore";
+                } else if (/@d.?tech/gi.test(course.subject)) {
+                    course.icon = "school";
+                } else if (/English/gi.test(course.subject)) {
+                    course.icon = "description";
+                } else if (/Model( |-|)(United Nations|UN)/gi.test(course.subject)) {
+                    course.icon = "public";
+                } else if (/Spanish|Language/gi.test(course.subject)) {
+                    course.icon = "translate";
+                } else if (/Government/gi.test(course.subject)) {
+                    course.icon = "gavel";
+                } else if (/(Koi|Live)( |-|)Stream/gi.test(course.subject)) {
+                    course.icon = "live_tv";
+                } else if (/Film/gi.test(course.subject)) {
+                    course.icon = "camera_roll";
+                } else if (/Leadership/gi.test(course.subject)) {
+                    course.icon = "stars";
+                } else if (/Athletics/gi.test(course.subject)) {
+                    course.icon = "sports_handball";
+                }
             });
             classes = tmpNewArray;
 
@@ -109,49 +155,41 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     return a.period - b.period;
                 });
             }
-            
-            //Don't fetch videoMeetingURL if disable by remoteConfig
-            if (!dtps.remoteConfig.showVideoMeetingButton) {
-                resolve(classes);
-                return;
-            }
 
-            var promises = [];
-
-            //Create a new promise for each class
-            classes.forEach(course => {
-                if (course.homepage && (course.term == dtps.remoteConfig.dtechCurrentTerm)) {
-                    promises.push(new Promise((resolve, reject) => {
-                        dtpsLMS.fetchHomepage(course.lmsID).then(homepage => {
-                            //get zoom link
-                            var matches = 0;
-                            for (var i = 0; i < $(homepage).find("a").length; i++) {
-                                var link = $($(homepage).find("a")[i]);
-                                if (link.children("img").attr("alt") && link.children("img").attr("alt").toUpperCase().includes("ZOOM BUTTON") && link.attr("href")) {
-                                    //Button labelled as zoom button
-                                    course.videoMeetingURL = link.attr("href");
-                                } else if (link.attr("href") && link.attr("href").includes("zoom.us")) {
-                                    //Button link goes to a zoom meeting, only use this if there is no other zoom link
-                                    //if (!course.videoMeetingURL) course.videoMeetingURL = link.attr("href");
-                                }
-                            }
-
-                            if (matches > 1) {
-                                //Multiple zoom links found
-                                course.videoMeetingURL = null;
-                            }
-
-                            resolve();
-                        })
-                    }))
-                }
-            })
-
-            //Run all promises
-            Promise.all(promises).then(() => {
-                resolve(classes);
-            })
+            resolve(classes);
         });
+    }
+
+    //Fetch videoMeetingURL for a class
+    dtpsLMS.fetchMeetingURL = function (classID) {
+        return new Promise((resolve, reject) => {
+            var course = dtps.classes.find(course => course.id == classID);
+
+            if (course.homepage && (course.term == dtps.remoteConfig.dtechCurrentTerm)) {
+                dtpsLMS.fetchHomepage(classID).then(homepage => {
+                    //get zoom link
+                    var meetingURL = null;
+                    var matches = 0;
+                    for (var i = 0; i < $(homepage).find("a").length; i++) {
+                        var link = $($(homepage).find("a")[i]);
+                        if (link.children("img").attr("alt") && link.children("img").attr("alt").toUpperCase().includes("ZOOM BUTTON") && link.attr("href")) {
+                            //Button labelled as zoom button
+                            meetingURL = link.attr("href");
+                        } else if (link.attr("href") && link.attr("href").includes("zoom.us")) {
+                            //Button link goes to a zoom meeting, only use this if there is no other zoom link
+                            //if (!meetingURL) meetingURL = link.attr("href");
+                        }
+                    }
+
+                    if (matches > 1) {
+                        //Multiple zoom links found
+                        meetingURL = null;
+                    }
+
+                    resolve(meetingURL);
+                });
+            }
+        })
     }
 
     //Run d.tech grade calculation algorithm (defined below)
