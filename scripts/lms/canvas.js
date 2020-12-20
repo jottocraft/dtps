@@ -27,6 +27,12 @@ var dtpsLMS = {
  */
 dtpsLMS.commonHeaders = { Accept: "application/json+canvas-string-ids, application/json" };
 
+/**
+ * List of teachers from dtpsLMS.fetchClasses for use in other methods
+ * This variable is specific to Canvas LMS integration in DTPS and is not required for other LMS integrations.
+ */
+dtpsLMS.teacherCache = {};
+
 //Fetch userdata from Canvas
 dtpsLMS.fetchUser = function () {
     return new Promise(function (resolve, reject) {
@@ -49,7 +55,7 @@ dtpsLMS.fetchUser = function () {
                         //Parent account
                         user.children = childrenData.map(child => {
                             return {
-                                name: child.name,
+                                name: child.name.split(" ")[0],
                                 id: child.id,
                                 photoURL: child.avatar_url
                             }
@@ -69,20 +75,20 @@ dtpsLMS.fetchUser = function () {
 }
 
 //Fetch class data from Canvas
-dtpsLMS.fetchClasses = function () {
+dtpsLMS.fetchClasses = function (userID) {
     return new Promise(function (resolve, reject) {
         jQuery.ajax({
-            url: "/api/v1/users/self/colors",
+            url: "/api/v1/users/" + dtps.user.id + "/colors",
             type: "GET",
             headers: dtpsLMS.commonHeaders,
             success: function (colorData) {
                 jQuery.ajax({
-                    url: "/api/v1/users/self/dashboard_positions",
+                    url: "/api/v1/users/" + userID + "/dashboard_positions",
                     type: "GET",
                     headers: dtpsLMS.commonHeaders,
                     success: function (dashboardData) {
                         jQuery.ajax({
-                            url: "/api/v1/users/" + dtps.user.lmsID + "/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=public_description&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs",
+                            url: "/api/v1/users/" + userID + "/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=public_description&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs",
                             type: "GET",
                             headers: dtpsLMS.commonHeaders,
                             success: function (courseData) {
@@ -95,6 +101,8 @@ dtpsLMS.fetchClasses = function () {
                                     var dtpsCourse = {
                                         name: course.course_code,
                                         id: course.id,
+                                        lmsID: course.id,
+                                        userID: userID,
                                         subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : course.course_code.split(" - ")[0],
                                         syllabus: course.syllabus_body,
                                         homepage: course.default_view == "wiki",
@@ -111,6 +119,9 @@ dtpsLMS.fetchClasses = function () {
                                         discussions: course.tabs.map(tab => tab.id).includes("discussions"),
                                         endDate: course.end_at
                                     };
+
+                                    //Save teachers in cache
+                                    dtpsLMS.teacherCache[course.id] = course.teachers;
 
                                     if (course.teachers[0]) {
                                         dtpsCourse.teacher = {
@@ -153,15 +164,15 @@ dtpsLMS.fetchClasses = function () {
 }
 
 //Fetches assignment data from Canvas
-dtpsLMS.fetchAssignments = function (classID) {
+dtpsLMS.fetchAssignments = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         jQuery.ajax({
-            url: "/api/v1/courses/" + classID + "/students/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=100&student_ids[]=" + dtps.user.lmsID,
+            url: "/api/v1/courses/" + classID + "/students/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=100&student_ids[]=" + userID,
             type: "GET",
             headers: dtpsLMS.commonHeaders,
             success: function (submissionData) {
                 jQuery.ajax({
-                    url: "/api/v1/users/" + dtps.user.lmsID + "/courses/" + classID + "/assignments?per_page=100&include[]=submission",
+                    url: "/api/v1/users/" + userID + "/courses/" + classID + "/assignments?per_page=100&include[]=submission",
                     type: "GET",
                     headers: dtpsLMS.commonHeaders,
                     success: function (assignmentData) {
@@ -276,7 +287,7 @@ dtpsLMS.fetchAssignments = function (classID) {
 }
 
 //Fetches modules data from Canvas
-dtpsLMS.fetchModules = function (classID) {
+dtpsLMS.fetchModules = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         jQuery.ajax({
             url: "/api/v1/courses/" + classID + "/modules?include[]=items&include[]=content_details",
@@ -434,53 +445,45 @@ dtpsLMS.fetchUsers = function (classID) {
             type: "GET",
             headers: dtpsLMS.commonHeaders,
             success: function (data) {
-                jQuery.ajax({
-                    url: "/api/v1/courses/" + classID + "/users?per_page=99&enrollment_type[]=teacher&include[]=avatar_url",
-                    type: "GET",
-                    headers: dtpsLMS.commonHeaders,
-                    success: function (teachers) {
-                        var sections = [{
-                            title: "Teachers",
-                            id: "lms.dtps.canvas-teachers",
-                            users: []
-                        }];
+                var teachers = dtpsLMS.teacherCache[classID];
+                console.log(teachers);
+                var sections = [{
+                    title: "Teachers",
+                    id: "lms.dtps.canvas-teachers",
+                    users: []
+                }];
 
-                        teachers.forEach(teacher => {
-                            sections[0].users.push({
-                                name: teacher.name,
-                                id: teacher.id,
-                                photoURL: teacher.avatar_url,
-                                url: "/courses/" + classID + "/users/" + teacher.id
-                            });
-                        });
-
-                        data.forEach(section => {
-                            if (!section.students) return;
-                            var users = [];
-                            section.students.forEach(student => {
-                                users.push({
-                                    name: student.short_name,
-                                    id: student.id,
-                                    photoURL: student.avatar_url,
-                                    url: "/courses/" + classID + "/users/" + student.id
-                                });
-                            });
-                            var dtechMatch = section.name.match(/[0-9](?=\(A)/);
-                            if (dtpsLMS.dtech && dtechMatch) {
-                                section.name = dtechMatch[0] == 7 ? "@d.tech" : "Period " + dtechMatch[0];
-                            }
-                            sections.push({
-                                title: section.name,
-                                id: section.id,
-                                users
-                            });
-                        });
-                        resolve(sections);
-                    },
-                    error: function (err) {
-                        reject(err);
-                    }
+                teachers.forEach(teacher => {
+                    sections[0].users.push({
+                        name: teacher.display_name,
+                        id: teacher.id,
+                        photoURL: teacher.avatar_image_url,
+                        url: "/courses/" + classID + "/users/" + teacher.id
+                    });
                 });
+
+                data.forEach(section => {
+                    if (!section.students) return;
+                    var users = [];
+                    section.students.forEach(student => {
+                        users.push({
+                            name: student.short_name,
+                            id: student.id,
+                            photoURL: student.avatar_url,
+                            url: "/courses/" + classID + "/users/" + student.id
+                        });
+                    });
+                    var dtechMatch = section.name.match(/[0-9](?=\(A)/);
+                    if (dtpsLMS.dtech && dtechMatch) {
+                        section.name = dtechMatch[0] == 7 ? "@d.tech" : "Period " + dtechMatch[0];
+                    }
+                    sections.push({
+                        title: section.name,
+                        id: section.id,
+                        users
+                    });
+                });
+                resolve(sections);
             },
             error: function (err) {
                 reject(err);

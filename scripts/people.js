@@ -66,7 +66,7 @@ dtps.usersList = function (courseID) {
     }
 
     //Fetch users list
-    dtpsLMS.fetchUsers(dtps.classes[classNum].id).then(function (sections) {
+    dtpsLMS.fetchUsers(dtps.classes[classNum].lmsID).then(function (sections) {
         //Count students and teachers by user ID
         var allStudents = [];
         var allTeachers = [];

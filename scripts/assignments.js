@@ -10,15 +10,16 @@
  * Renders HTML for an assignment item in a list
  * 
  * @param {Assignment} assignment The assignment object to render
+ * @param {string} [childDisplay] Text to display for specifying the child or children this assignment is for
  * @return {string} Assignment HTML for use in a list
  */
-dtps.renderAssignment = function (assignment) {
+dtps.renderAssignment = function (assignment, childDisplay) {
     //Render points/letter score
     var scoreHTML = dtps.renderAssignmentScore(assignment);
 
     var HTML = /*html*/`
         <div 
-            onclick="${`dtps.assignment('` + assignment.id + `', ` + assignment.class + `)`}" 
+            onclick="${`dtps.assignment('` + assignment.id + `', ` + assignment.class + `, ` + (!isNaN(childDisplay) ? true : false) + `)`}" 
             class="card ${scoreHTML ? "graded assignment" : "assignment"}"
             style="${'--classColor: ' + dtps.classes[assignment.class].color}"
         >
@@ -39,6 +40,7 @@ dtps.renderAssignment = function (assignment) {
                 ${assignment.dueAt ? `<div class="infoChip"><i style="margin-top: -2px;" class="material-icons">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
                 ${assignment.outcomes ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
                 ${assignment.category ? `<div class="infoChip weighted"><i class="material-icons">category</i> ` + assignment.category + `</div>` : ""}
+                ${childDisplay ? `<div class="infoChip weighted"><i class="material-icons">person</i> ` + childDisplay + `</div>` : ""}
 
                 <!-- Status icons -->
                 ${assignment.turnedIn ? `<i title="Assignment submitted" class="material-icons statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
@@ -93,6 +95,43 @@ dtps.renderAssignmentScore = function (assignment) {
 }
 
 /**
+* Merges and renders assignments for children in the same class
+* 
+* @param {Assignment[]} assignments An array of assignment objects to merge
+* @return {string} HTML with the assignments merged and labelled
+*/
+dtps.mergeAndRenderChildAssignments = function(assignments) {
+    var assignmentGroups = [];
+
+    assignments.forEach(assignment => {
+        var matchedGroup = false;
+        assignmentGroups.forEach(group => {
+            var groupAssignment = group[0];
+
+            //Check if assignment matches group assignment
+            var matchKeys = ["id", "dueAt", "locked", "category", "turnedIn", "late", "missing", "grade", "value", "letter"];
+            var matches = 0;
+            matchKeys.forEach(k => {
+                if (assignment[k] == groupAssignment[k]) matches++;
+            });
+
+            if (matches == matchKeys.length) {
+                matchedGroup = true;
+                group.push(assignment);
+            }
+        });
+
+        if (!matchedGroup) {
+            assignmentGroups.push( [ assignment ] );
+        } 
+    });
+
+    return assignmentGroups.map(g => {
+        return dtps.renderAssignment(g[0], g.length == 1 ? dtps.user.children.find(c => c.id == dtps.classes[g[0].class].userID).name : g.length);
+    }).join("");
+}
+
+/**
  * Renders the DTPS dashboard and calls dtps.renderCalendar, dtps.renderUpdates, and dtps.renderUpcoming
  */
 dtps.mainStream = function () {
@@ -131,15 +170,15 @@ dtps.mainStream = function () {
             <div style="letter-spacing: 0px;">
                 <div style="float: left; width: 45%; display: inline-block;" class="dash">
                     ${dtps.leftDashboard.map(dashboardItem => {
-                return dashboardContainerHTML(dashboardItem);
-            }).join("")}
+            return dashboardContainerHTML(dashboardItem);
+        }).join("")}
                 </div>
 
                 <div style="float: left; width: 55%; display: inline-block;" class="dash">
                     ${!doneLoading ? `<div style="margin: 75px 25px 10px 75px;"><div class="spinner"></div></div>` : ""}
                     ${dtps.rightDashboard.map(dashboardItem => {
-                return dashboardContainerHTML(dashboardItem);
-            }).join("")}
+            return dashboardContainerHTML(dashboardItem);
+        }).join("")}
                 </div>
             </div>
         `);
@@ -149,21 +188,46 @@ dtps.mainStream = function () {
     dtps.renderUpdates();
 
     //Render upcoming assignments stream
-    dtps.renderUpcoming(doneLoading);
+    dtps.renderUpcoming();
 
     //Render calendar
-    dtps.calendar();
+    dtps.calendar(doneLoading);
 
     //Render due today
     dtps.renderDueToday(doneLoading);
 }
 
 /**
+ * Checks if a due date is on a date
+ * 
+ * @param {Date} date Date to check 
+ * @param {Date} [onDate] Date checked against (defaults to today)
+ */
+dtps.isDueOnDate = function (date, onDate) {
+    var today = onDate ? new Date(onDate) : new Date();
+    var tomorrow = new Date(today.getTime() + 86400000);
+    var d1 = new Date(date);
+
+    var isActuallyTodayAfter9 = d1.getFullYear() === today.getFullYear() &&
+        d1.getMonth() === today.getMonth() &&
+        d1.getDate() === today.getDate() &&
+        d1.getHours() >= 9;
+
+    var isTomorrowBefore9 = d1.getFullYear() === tomorrow.getFullYear() &&
+        d1.getMonth() === tomorrow.getMonth() &&
+        d1.getDate() === tomorrow.getDate() &&
+        d1.getHours() < 9;
+
+    return isActuallyTodayAfter9 || isTomorrowBefore9;
+}
+
+/**
  * Compiles and displays due today / to-do stream
  * 
  * @param {boolean} doneLoading True if all classes have finished loading their assignment lists
+ * @param {Date} [fromDate] The date to display assignments from. Defaults to the current date.
  */
-dtps.renderDueToday = function (doneLoading) {
+dtps.renderDueToday = function (doneLoading, fromDate) {
     //Combine class stream arrays
     var combinedStream = [];
     if (dtps.classes) {
@@ -172,7 +236,7 @@ dtps.renderDueToday = function (doneLoading) {
                 //If course has assignments, add them to the combined stream array
                 course.assignments.forEach(assignment => {
                     //Only assignments that are due today
-                    if (dtps.isToday(assignment.dueAt)) {
+                    if (dtps.isDueOnDate(assignment.dueAt, fromDate)) {
                         combinedStream.push(assignment);
                     }
                 })
@@ -192,21 +256,25 @@ dtps.renderDueToday = function (doneLoading) {
     });
 
     //Get due today stream HTML
-    var combinedHTML = combinedStream.map(assignment => {
-        return dtps.renderAssignment(assignment);
-    }).join("");
+    if (dtps.user.parent) {
+        var combinedHTML = dtps.mergeAndRenderChildAssignments(combinedStream);
+    } else {
+        var combinedHTML = combinedStream.map(assignment => {
+            return dtps.renderAssignment(assignment);
+        }).join("");
+    }
 
     if (combinedStream.length == 0) {
         //Nothing due today
         if (doneLoading) {
-            combinedHTML = `<p style="text-align: center;margin: 10px 0px; font-size: 18px;"><i class="material-icons">done</i> Nothing due today</p>`;
+            combinedHTML = `<p style="text-align: center;margin: 10px 0px; font-size: 18px;"><i class="material-icons">done</i> ${fromDate ? "Nothing is due on " + fromDate.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }) : "Nothing is due today"}</p>`;
         } else {
             combinedHTML = ``;
         }
     } else {
         //Add header
         combinedHTML = /*html*/`
-            <h5 style="text-align: center; margin: 10px 0px; font-weight: bold;">Due today</h5>
+            <h5 style="text-align: center; margin: 10px 0px; font-weight: bold;">${fromDate ? "Due on " + fromDate.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }) : "Due Today"}</h5>
         ` + combinedHTML;
     }
 
@@ -217,9 +285,12 @@ dtps.renderDueToday = function (doneLoading) {
 
 /**
  * Compiles and displays upcoming assignments stream
+ * 
+ * @param {Date} [fromDate] The date to display assignments from. Defaults to the current date.
  */
-dtps.renderUpcoming = function () {
+dtps.renderUpcoming = function (fromDate) {
     //Combine class stream arrays
+    var today = fromDate ? new Date(fromDate) : new Date();
     var combinedStream = [];
     if (dtps.classes) {
         dtps.classes.forEach(course => {
@@ -227,7 +298,7 @@ dtps.renderUpcoming = function () {
                 //If course has assignments, add them to the combined stream array
                 course.assignments.forEach(assignment => {
                     //Only include upcoming assignments that aren't due today
-                    if ((new Date(assignment.dueAt) > new Date()) && !dtps.isToday(assignment.dueAt)) {
+                    if ((new Date(assignment.dueAt).getTime() > today.getTime()) && !dtps.isDueOnDate(assignment.dueAt, today)) {
                         combinedStream.push(assignment);
                     }
                 })
@@ -246,10 +317,19 @@ dtps.renderUpcoming = function () {
         return 0;
     });
 
+    //Limit stream length to 30 assignments
+    if (combinedStream.length > 30) {
+        combinedStream.length = 30;
+    }
+
     //Render upcoming assignments stream
-    var combinedHTML = combinedStream.map(assignment => {
-        return dtps.renderAssignment(assignment);
-    }).join("");
+    if (dtps.user.parent) {
+        var combinedHTML = dtps.mergeAndRenderChildAssignments(combinedStream);
+    } else {
+        var combinedHTML = combinedStream.map(assignment => {
+            return dtps.renderAssignment(assignment);
+        }).join("");
+    }
 
     //No upcoming assignments
     if (combinedStream.length == 0) {
@@ -263,10 +343,21 @@ dtps.renderUpcoming = function () {
 
 /**
  * Renders updates stream (recently graded & announcements)
+ * 
+ * @param {boolean} [dateSelected] True if a date is selected in the dashboard
  */
-dtps.renderUpdates = function () {
+dtps.renderUpdates = function (dateSelected) {
     //Get updates HTML
     var updatesHTML = "";
+
+    if (dateSelected && (dtps.selectedClass == "dash")) {
+        return jQuery(".classContent .dash .updatesStream").html(/*html*/`
+            <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
+                <div class="className">Date Selected</div>
+                <p>Updates are not shown while a date is selected</p>
+            </div>
+        `);
+    }
 
     dtps.updates.forEach(update => {
         if (update.type == "announcement") {
@@ -287,7 +378,7 @@ dtps.renderUpdates = function () {
                         ${scoreHTML ? `<div class="points">${scoreHTML}</div>` : ``}
                     </h5>
 
-                    <p>Graded at ${dtps.formatDate(update.gradedAt)}</p>
+                    <p>${dtps.user.parent ? "Graded for " + dtps.user.children.find(c => c.id == dtps.classes[update.class].userID).name : "Graded"} at ${dtps.formatDate(update.gradedAt)}</p>
                 </div>
             `;
         }
@@ -301,8 +392,10 @@ dtps.renderUpdates = function () {
 
 /**
  * Compiles and displays the assignment calendar
+ * 
+ * @param {boolean} doneLoading True if all classes have finished loading their assignment lists
  */
-dtps.calendar = function () {
+dtps.calendar = function (doneLoading) {
     if (dtps.selectedClass == "dash") {
         //Calendar events array
         var calEvents = [];
@@ -312,18 +405,36 @@ dtps.calendar = function () {
             if (course.assignments) {
                 //Class has assignments
                 course.assignments.forEach(assignment => {
-                    calEvents.push({
-                        title: assignment.title,
-                        start: assignment.dueAt,
-                        id: assignment.id,
-                        allDay: true,
-                        backgroundColor: course.color,
-                        borderColor: (assignment.missing === true) ? '#c44848' : 'transparent',
-                        textColor: "white",
-                        classNum: courseIndex,
-                        assignmentID: assignment.id,
-                        missing: assignment.missing
-                    });
+                    //Show assignments due before 9AM on the previous day
+                    var date = new Date(assignment.dueAt);
+                    if (date.getHours() < 9) {
+                        //Set the date to 23:59 the previous day for calendar display
+                        date.setTime(date.getTime() - 86400000);
+                        date.setHours(23);
+                        date.setMinutes(59);
+                    }
+
+                    var existingEvent = calEvents.find(e => e.id == assignment.id);
+                    if (existingEvent && assignment.missing) {
+                        //Mark existing event as missing and link to missing assignment
+                        existingEvent.missing = true;
+                        existingEvent.borderColor = "#c44848";
+                        existingEvent.assignmentID = assignment.id;
+                        existingEvent.classNum = courseIndex;
+                    } else if (!existingEvent) {
+                        calEvents.push({
+                            title: assignment.title,
+                            start: date,
+                            id: assignment.id,
+                            allDay: true,
+                            backgroundColor: course.color,
+                            borderColor: (assignment.missing === true) ? '#c44848' : 'transparent',
+                            textColor: "white",
+                            classNum: courseIndex,
+                            assignmentID: assignment.id,
+                            missing: assignment.missing
+                        });
+                    }
                 });
             }
         });
@@ -357,7 +468,21 @@ dtps.calendar = function () {
                     end: 'prev,next'
                 },
                 dateClick: function (info) {
-                    // Set the current day and update the upcoming assignments based on that
+                    if ($(info.dayEl).hasClass("fc-day-today")) return fluid.screen();
+
+                    //Update calendar
+                    $("#calendar .fc-daygrid-day").removeClass("active");
+                    $(info.dayEl).addClass("active");
+                    $("#calendar").addClass("dateSelected");
+
+                    //Display selected date
+                    $(".headerArea .dashboardStartDate span").text("Showing assignments from " + info.date.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }));
+                    $(".headerArea .dashboardStartDate").show();
+
+                    //Re-render dashboard from the selected date
+                    dtps.renderDueToday(doneLoading, info.date);
+                    dtps.renderUpcoming(info.date);
+                    dtps.renderUpdates(true);
                 },
                 eventClick: function (info) {
                     dtps.assignment(info.event.extendedProps.assignmentID, info.event.extendedProps.classNum);
@@ -402,7 +527,7 @@ dtps.classStream = function (classID, searchResults) {
     if (!assignments) {
         //Assignments are still loading
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-            jQuery(".classContent").html(dtps.renderStreamTools(classNum, "stream") + [1,2,3,4].map(() => (
+            jQuery(".classContent").html(dtps.renderStreamTools(classNum, "stream") + [1, 2, 3, 4].map(() => (
                 /*html*/`
                     <div class="card assignment graded">
                         <h4>
@@ -487,8 +612,9 @@ dtps.classStream = function (classID, searchResults) {
  * 
  * @param {string} id Assignment ID
  * @param {number} classNum Assignment class number
+ * @param {boolean} [generic] True if user-specific details, such as grades, should not be displayed
  */
-dtps.assignment = function (id, classNum) {
+dtps.assignment = function (id, classNum, generic) {
     //Get assignment from the id prop
     var assignmentIDs = dtps.classes[classNum].assignments.map(assignment => assignment.id);
     var assignment = dtps.classes[classNum].assignments[assignmentIDs.indexOf(id)];
@@ -565,11 +691,11 @@ dtps.assignment = function (id, classNum) {
                     <div class="dtpsAssignmentRubricItem">
                         <h5>${rubricItem.title}</h5>
                         <div class="score">
-                            <p style="color: ${rubricItem.color ? rubricItem.color : "var(--secText)"};" class="scoreName">
-                                ${rubricItem.score !== undefined ? rubricItem.scoreName || "" : "Not assessed"}
+                            <p style="color: ${(!generic && rubricItem.color) ? rubricItem.color : "var(--secText)"};" class="scoreName">
+                                ${generic ? "" : (rubricItem.score !== undefined ? rubricItem.scoreName || "" : "Not assessed")}
 
                                 <div class="points">
-                                    <p class="earned">${rubricItem.score ?? "-"}</p>
+                                    <p class="earned">${generic ? "" : rubricItem.score ?? "-"}</p>
                                     <p class="possible">${"/" + rubricItem.value}</p>
                                 </div>
                             </p>
@@ -607,11 +733,12 @@ dtps.assignment = function (id, classNum) {
 
             <div>
                 ${assignment.dueAt ? `<div class="assignmentChip"><i class="material-icons">alarm</i><span>Due ${dtps.formatDate(assignment.dueAt)}</span></div>` : ""}
-                ${assignment.turnedIn ? `<div title="Assignment submitted" class="assignmentChip" style="color: #0bb75b"><i class="material-icons">assignment_turned_in</i></div>` : ""}
-                ${assignment.missing ? `<div  title="Assignment is missing" class="assignmentChip" style="color: #c44848"><i class="material-icons">remove_circle_outline</i></div>` : ""}
-                ${assignment.late ? `<div title="Assignment is late" class="assignmentChip" style="color: #c44848"><i class="material-icons">assignment_late</i></div>` : ""}
-                ${assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i class="material-icons">lock_outline</i></div>` : ""}
-                ${scoreHTML}
+                ${assignment.turnedIn && !generic ? `<div title="Assignment submitted" class="assignmentChip" style="color: #0bb75b"><i class="material-icons">assignment_turned_in</i></div>` : ""}
+                ${assignment.missing && !generic ? `<div  title="Assignment is missing" class="assignmentChip" style="color: #c44848"><i class="material-icons">remove_circle_outline</i></div>` : ""}
+                ${assignment.late && !generic ? `<div title="Assignment is late" class="assignmentChip" style="color: #c44848"><i class="material-icons">assignment_late</i></div>` : ""}
+                ${assignment.locked && !generic ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i class="material-icons">lock_outline</i></div>` : ""}
+                ${(dtps.user.parent && !generic) ? `<div class="assignmentChip"><i class="material-icons">person</i><span>${dtps.user.children.find(c => c.id == dtps.classes[assignment.class].userID).name}</span></div>` : ""}
+                ${generic ? "" : scoreHTML}
             </div>
 
             <div style="margin-top: 20px;" class="assignmentBody">
@@ -624,8 +751,8 @@ dtps.assignment = function (id, classNum) {
                 ${assignment.publishedAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">add_box</i> Published: ${dtps.formatDate(assignment.publishedAt)}</p>` : ""}
                 ${assignment.dueAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">alarm</i> Due: ${dtps.formatDate(assignment.dueAt)}</p>` : ""}
                 ${assignment.value ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">bar_chart</i> Point value: ${assignment.value}</p>` : ""}
-                ${(assignment.grade || (assignment.grade == 0)) ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assessment</i> Points earned: ${assignment.grade}</p>` : ""}
-                ${assignment.letter ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">font_download</i> Letter grade: ${assignment.letter}</p>` : ""}
+                ${(assignment.grade || (assignment.grade == 0)) && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assessment</i> Points earned: ${assignment.grade}</p>` : ""}
+                ${assignment.letter && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">font_download</i> Letter grade: ${assignment.letter}</p>` : ""}
                 ${assignment.category ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">category</i> Category: ${assignment.category}</p>` : ""}
                 ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">adjust</i> ${rubricItem.title}</p>`; }).join("") : ""}
                 <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">class</i> Class: ${dtps.classes[assignment.class].subject}</p>
@@ -638,7 +765,7 @@ dtps.assignment = function (id, classNum) {
             </div>
 
             <div style="width: calc(60% - 7px); margin-top: 20px; margin-left: 5px; display: inline-block; overflow: hidden; vertical-align: middle;">
-                ${assignmentFeedbackHTML}
+                ${!generic ? assignmentFeedbackHTML : ""}
 
                 ${assignmentRubricHTML}
             </div>
@@ -721,7 +848,7 @@ dtps.moduleStream = function (classID) {
         if (dtps.classes[classNum].modules && (dtps.classes[classNum].modules !== true)) {
             resolve(dtps.classes[classNum].modules);
         } else {
-            dtpsLMS.fetchModules(dtps.classes[classNum].id).then(data => resolve(data));
+            dtpsLMS.fetchModules(dtps.user.id, dtps.classes[classNum].lmsID).then(data => resolve(data));
         }
     }).then(data => {
         //Save modules data in the class object for future use
@@ -907,7 +1034,7 @@ dtps.classHome = function (num) {
     `);
 
     //Fetch homepage from the LMS
-    dtpsLMS.fetchHomepage(dtps.classes[num].id).then(homepage => {
+    dtpsLMS.fetchHomepage(dtps.classes[num].lmsID).then(homepage => {
         if (homepage) {
             //Get computed background and text color to style the iFrame with
             var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");

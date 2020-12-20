@@ -80,9 +80,9 @@ var dtps = {
         dtechCleanUpAssignments: true,
         dtechCurrentTerm: "20-21",
         debugClassID: "1098",
-        feedbackButtonUsesEmail: false,
         topSneaky: false,
-        topSneakyUI: false
+        topSneakyUI: false,
+        remoteUpdate: null
     }
 };
 
@@ -96,20 +96,6 @@ jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.
  */
 dtps.class = function () {
     return dtps.classes[dtps.selectedClass];
-}
-
-/**
- * Checks if a Date is today
- * 
- * @param {Date} date Date string to check 
- */
-dtps.isToday = function (date) {
-    var today = new Date();
-    var d1 = new Date(date);
-
-    return d1.getFullYear() === today.getFullYear() &&
-        d1.getMonth() === today.getMonth() &&
-        d1.getDate() === today.getDate();
 }
 
 /**
@@ -388,20 +374,38 @@ dtps.init = function () {
         return dtpsLMS.fetchUser();
     }).then(data => {
         //Prevent resetting the user if the user is already set (for parent accounts)
-        if (!dtps.user) {
-            dtps.user = data;
+        dtps.user = data;
 
-            //Set lmsID as current user ID by default
-            dtps.user.lmsID = dtps.user.id;
+        //If this is a parent account, show the parent UI
+        if (dtps.user.children && dtps.user.children.length) {
+            dtps.user.parent = true;
 
-            //If this is a parent account, show the parent UI
-            if (dtps.user.children && dtps.user.children.length) {
-                dtps.user.lmsID = dtps.user.children[0].id;
-                dtps.user.parent = true;
-            }
+            //Fetch classes for all students
+            return new Promise((resolve, reject) => {
+                var allClasses = [];
+                var promises = [];
+
+                dtps.user.children.forEach(child => {
+                    promises.push(new Promise(function(resolve, reject) {
+                        dtpsLMS.fetchClasses(child.id).then((data) => {
+                            //Prepend child ID to class ID
+                            data.forEach(course => {
+                                course.id = child.id + "-" + course.id;
+                            });
+
+                            allClasses = allClasses.concat(data);
+                            resolve();
+                        }).catch(reject);
+                    }));
+                });
+
+                Promise.all(promises).then(() => {
+                    resolve(allClasses);
+                });
+            });
+        } else {
+            return dtpsLMS.fetchClasses(dtps.user.id);
         }
-
-        return dtpsLMS.fetchClasses();
     }).then((rawClasses) => {
         return new Promise(resolve => {
             if (dtpsLMS.institutionSpecific && dtpsLMS.updateClasses) {
@@ -489,8 +493,9 @@ dtps.init = function () {
             }
 
             //Begin fetching class assignments
+            var fetchedAnnouncements = [];
             dtps.classes.forEach((course, courseIndex) => {
-                dtpsLMS.fetchAssignments(course.id).then((rawAssignments) => {
+                dtpsLMS.fetchAssignments(course.userID, course.lmsID).then((rawAssignments) => {
                     return new Promise(resolve => {
                         if (dtpsLMS.institutionSpecific && dtpsLMS.updateAssignments) {
                             //Using an institution-specific script, make any nessasary changes and return updated assignments
@@ -589,31 +594,35 @@ dtps.init = function () {
                     }
                 });
 
-                dtpsLMS.fetchAnnouncements(course.id).then(announcements => {
-                    //Add announcements to updates array
-                    announcements.forEach(announcement => {
-                        //Add class number and type to object
-                        dtps.updates.push({
-                            class: course.num,
-                            type: "announcement",
-                            ...announcement
-                        })
+                if (!fetchedAnnouncements.includes(course.lmsID)) {
+                    //Add lmsID to list of fetched announcements to prevent duplicates
+                    fetchedAnnouncements.push(course.lmsID);
+
+                    dtpsLMS.fetchAnnouncements(course.lmsID).then(announcements => {
+                        //Add announcements to updates array
+                        announcements.forEach(announcement => {
+                            //Add class number and type to object
+                            dtps.updates.push({
+                                class: course.num,
+                                type: "announcement",
+                                ...announcement
+                            });
+                        });
+    
+                        //Sort updates array from newest -> oldest
+                        dtps.updates.sort(function (a, b) {
+                            //Sort by postedAt (announcements) or gradedAt (assignments)
+                            return new Date(b.gradedAt || b.postedAt).getTime() - new Date(a.gradedAt || a.postedAt).getTime()
+                        });
+    
+                        //Keep only the 15 most recent updates
+                        if (dtps.updates.length > 15) dtps.updates.length = 15;
+    
+                        if (dtps.selectedClass == "dash") {
+                            fluid.screen();
+                        }
                     });
-
-                    //Sort updates array from newest -> oldest
-                    dtps.updates.sort(function (a, b) {
-                        //Sort by postedAt (announcements) or gradedAt (assignments)
-                        return new Date(b.gradedAt || b.postedAt).getTime() - new Date(a.gradedAt || a.postedAt).getTime()
-                    });
-
-                    //Keep only the 15 most recent updates
-                    if (dtps.updates.length > 15) dtps.updates.length = 15;
-
-                    if (dtps.selectedClass == "dash") {
-                        fluid.screen();
-                    }
-
-                });
+                }
             });
 
             //Render remaining HTML
@@ -677,26 +686,6 @@ dtps.formatDate = function (date) {
 }
 
 /**
- * Switches the current child account being observed
- * 
- * @param {Element} ele The dropdown element used to switch accounts
- */
-dtps.obsSwitch = function (ele) {
-    //Reset URL state
-    history.replaceState(null, null, ' ');
-
-    //Change user LMS id based on dropdown value
-    dtps.user.lmsID = $(ele).val();
-
-    //Clear data
-    dtps.classes = [];
-    dtps.updates = [];
-
-    //Reload Power+
-    dtps.init();
-}
-
-/**
  * Adjusts the height of an iFrame to match its content
  * 
  * @param {string} iframeID The ID of the iFrame element to adjust
@@ -728,12 +717,25 @@ dtps.showClasses = function (override) {
     //Array of class HTML for the sidebar
     dtps.classlist = [];
 
+    var previousClassUser = null;
     for (var i = 0; i < dtps.classes.length; i++) {
         //Determine letter grade HTML
         var letterGradeHTML = "";
         if (dtps.classes[i].letter) letterGradeHTML = dtps.classes[i].letter;
         if (dtps.classes[i].letter == null) letterGradeHTML = "--";
         if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="shimmer" style="width: 100%;height: 22px;border-radius: 8px;"></div>`; //Show loading indicator for ...
+
+        if (dtps.user.parent && (dtps.classes[i].userID !== previousClassUser)) {
+            if (previousClassUser) dtps.classlist.push(`</div></div>`);
+            dtps.classlist.push(/*html*/`
+                <div id="dtpsClassListGroup-${dtps.classes[i].userID}" class="group">
+                  <div class="name item">
+                    <i class="material-icons"></i> <span class="label">${dtps.user.children.find(c => c.id == dtps.classes[i].userID).name}</span>
+                  </div>
+
+                  <div class="items">
+            `);
+        }
 
         //Add class HTML to array
         dtps.classlist.push(/*html*/`
@@ -746,7 +748,11 @@ dtps.showClasses = function (override) {
                 <span class="label">${dtps.classes[i].subject}</span>
             </div>
         `);
+
+        previousClassUser = dtps.classes[i].userID;
     }
+
+    if (dtps.user.parent) dtps.classlist.push(`</div></div>`);
 
     //Only render HTML if the sidebar doesn't already have the classes rendered, or if override is true
     if (!jQuery(".sidebar .class.dash")[0] || override) {
@@ -855,6 +861,9 @@ dtps.presentClass = function (classNum) {
         $("#dtpsTabBar").show();
     }
 
+    //Hide dashboard start date
+    $(".headerArea .dashboardStartDate").hide();
+
     if (dtps.classes[classNum]) {
         //Show pages tab if the class supports it, otherwise, hide it
         if (dtps.classes[classNum].pages) {
@@ -864,7 +873,7 @@ dtps.presentClass = function (classNum) {
         }
 
         //Show people tab if the LMS supports it, otherwise, hide it
-        if (dtpsLMS.fetchUsers) {
+        if (dtpsLMS.fetchUsers && !dtps.user.parent) {
             $(".btns .btn.people").show();
         } else {
             $(".btns .btn.people").hide();
@@ -1273,7 +1282,7 @@ dtps.render = function () {
         <div class="navbar">
           <div class="logo">
             <img src="https://powerplus.app/icon.svg" />
-            <h4>Power+</h4>
+            <h4>${dtps.baseURL == "https://dev.dtps.jottocraft.com" ? "Power+ (dev)" : "Power+"}</h4>
           </div>
         
           ${dtps.unstable ? `
@@ -1306,6 +1315,10 @@ dtps.render = function () {
               <i class="material-icons">feedback</i>
               <span class="label">Feedback</span>
             </div>
+            <div class="item">
+              <i class="material-icons">bug_report</i>
+              <span class="label">Bug Report</span>
+            </div>
             <div onclick="dtps.settings();" class="item">
               <i class="material-icons">settings</i>
               <span class="label">Settings</span>
@@ -1321,7 +1334,7 @@ dtps.render = function () {
         </div>
 
         <div id="dtpsSearchResults" class="card acrylicMaterial" style="display: none;">
-            <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search</span></h5>
+            <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search (Not yet implemented)</span></h5>
             <div id="dtpsSearchData" style="display: none;"></div>
             <div id="dtpsSearchInfo">
                 <p>Power+ will search across all of your classes. You can search for:</p>
@@ -1348,6 +1361,9 @@ dtps.render = function () {
               </p>
               <p class="videoMeeting" style="cursor: pointer; display: none;">
                 <i class="material-icons">videocam</i> <span>Meeting</span>
+              </p>
+              <p onclick="fluid.screen();" class="dashboardStartDate" style="cursor: pointer; display: none;">
+                <i class="material-icons">event</i> <span>Viewing from Fri, Dec 11</span>
               </p>
             </div>
             <div style="display: none;" id="dtpsTabBar" class="btns">
@@ -1449,7 +1465,7 @@ dtps.renderLite = function () {
 	            <img src="${dtps.baseURL + "/icon.svg"}" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
 	            <div style="vertical-align: middle; display: inline-block;">
                     <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>
-                    <p>${dtps.readableVer + (dtps.unstable ? ` <span style="font-size: 12px;">(unstable)</span>` : "")}</p>
+                    <p>${dtps.readableVer + (dtps.unstable ? ` <span style="font-size: 12px; color: red;">(unstable)</span>` : "")}</p>
 	            </div>
             </div>
 
@@ -1763,6 +1779,7 @@ dtps.init();
 * @name dtpsLMS.fetchClasses
 * @description [REQUIRED] Fetches class data from the LMS
 * @kind function
+* @param {string} userID The user ID to fetch classes for
 * @return {Promise<Class[]>} A promise which resolves to an array of Class objects
 */
 
@@ -1770,6 +1787,7 @@ dtps.init();
 * @name dtpsLMS.fetchAssignments
 * @description [REQUIRED] Fetches assignment data for a course from the LMS
 * @kind function
+* @param {string} userID The user ID to fetch assignments for
 * @param {string} classID The class ID to fetch assignments for
 * @return {Promise<Assignment[]>} A promise which resolves to an array of Assignment objects
 */
@@ -1778,6 +1796,7 @@ dtps.init();
 * @name dtpsLMS.fetchModules
 * @description [OPTIONAL] Fetches module data for a course from the LMS
 * @kind function
+* @param {string} userID The user ID to fetch modules for
 * @param {string} classID The class ID to fetch modules for
 * @return {Promise<Module[]>} A promise which resolves to an array of Module objects
 */
@@ -1893,8 +1912,8 @@ dtps.init();
 //Type definitions                        -------------------------------------------------------------------------------------
 
 /**
- * @typedef {string} Date
- * @description A date string recognized by {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse|Date.parse}
+ * @typedef {string|Date} Date
+ * @description A date string recognized by {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse|Date.parse} or an actual {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date|Date} object
  */
 
 /**
@@ -1906,14 +1925,15 @@ dtps.init();
  * @property {string} url [ONLY FOR DTPSLMS.FETCHUSERS] The URL to this user's profile. Only used when displaying users in the people tab.
  * @property {User[]} [children] [ONLY FOR DTPS.USER] Array of child users. If this is defined, the user is treated as a parent account. Sub-children are not allowed.
  * @property {boolean} parent [ONLY FOR DTPS.USER] Automatically managed by DTPS. True if the user is a parent account.
- * @property {string} lmsID [ONLY FOR DTPS.USER] Automatically managed by DTPS. This is the user ID that all LMS web requests should use. Can change when a parent account changes the selected child.
  */
 
 /**
 * @typedef {Object} Class
 * @description Defines class objects in DTPS
 * @property {string} name Name of the class
-* @property {string} id Class ID
+* @property {string} id Class ID used by Power+
+* @property {string} lmsID Class ID used for LMS API calls
+* @property {string} userID The ID of the user this class is associated with (from the parameter of dtpsLMS.fetchClasses)
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
 * @property {Date} [endDate] The end date for this course

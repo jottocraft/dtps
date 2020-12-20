@@ -1350,12 +1350,25 @@ body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor,
     background-color: var(--elements);
 }
 
+#calendar .fc-daygrid-day.active {
+    background-color: var(--elementHover);
+}
+
 #calendar .fc-event-title span {
     vertical-align: middle; 
 }
 
 #calendar .fc-daygrid-day.fc-day-today {
     background-color: var(--theme);
+}
+
+#calendar.dateSelected .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    border-radius: 50%;
+    background-color: var(--theme);
+}
+
+#calendar.dateSelected .fc-daygrid-day.fc-day-today {
+    background-color: transparent;
 }
 
 #calendar .fc-daygrid-day.fc-day-today a {
