@@ -76,7 +76,7 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
     }
 
     //Fetch discussion thread data
-    dtpsLMS.fetchDiscussionThreads(dtps.classes[classNum].id).then(function (threadData) {
+    dtpsLMS.fetchDiscussionThreads(dtps.classes[classNum].lmsID).then(function (threadData) {
         //Store fetched data to the selected class
         dtps.classes[classNum].discussions = threadData;
 
@@ -178,7 +178,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
     }
 
     //Fetch discussion posts from the LMS
-    dtpsLMS.fetchDiscussionPosts(dtps.classes[classNum].id, threadID).then(function (thread) {
+    dtpsLMS.fetchDiscussionPosts(dtps.classes[classNum].lmsID, threadID).then(function (thread) {
         //Post HTML array
         var postHTML = [];
 
@@ -357,7 +357,7 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
         jQuery(".classContent").html("");
     }
 
-    dtpsLMS.fetchPages(dtps.classes[classNum].id).then(function (pagesData) {
+    dtpsLMS.fetchPages(dtps.classes[classNum].lmsID).then(function (pagesData) {
         //Store fetched pages data to the class
         dtps.classes[classNum].pages = pagesData;
 
@@ -449,7 +449,7 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
     }
 
     //Fetch page content
-    dtpsLMS.fetchPageContent(dtps.classes[classNum].id, pageID).then(function (page) {
+    dtpsLMS.fetchPageContent(dtps.classes[classNum].lmsID, pageID).then(function (page) {
         if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "pages") || fromModules)) {
             //Get computed background and text color to style the iFrame with
             var computedBackgroundColor = getComputedStyle($(".classContent")[0]).getPropertyValue("--background");

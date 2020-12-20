@@ -77,7 +77,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             classes.forEach(course => {
                 if (course.homepage) {
                     promises.push(new Promise((resolve, reject) => {
-                        dtpsLMS.fetchHomepage(course.id).then(homepage => {
+                        dtpsLMS.fetchHomepage(course.lmsID).then(homepage => {
                             //get zoom link
                             var matches = 0;
                             for (var i = 0; i < $(homepage).find("a").length; i++) {
@@ -119,7 +119,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         //Get d.tech grade calculation formula
         if (course.term == "20-21") {
             formula = "2020s1";
-        } else if (course.id == dtps.remoteConfig.debugClassID) {
+        } else if (String(course.id).includes(dtps.remoteConfig.debugClassID)) {
             formula = "2020s1";
         }
 

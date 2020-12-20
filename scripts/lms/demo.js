@@ -33,7 +33,7 @@ dtpsLMS.fetchUser = function () {
 }
 
 //Fetch class data from Canvas
-dtpsLMS.fetchClasses = function () {
+dtpsLMS.fetchClasses = function (userID) {
     return new Promise(function (resolve, reject) {
         resolve([{
             name: "Demo Class",
@@ -60,7 +60,7 @@ dtpsLMS.fetchClasses = function () {
 }
 
 //Fetches assignment data from Canvas
-dtpsLMS.fetchAssignments = function (classID) {
+dtpsLMS.fetchAssignments = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         if (classID == "1") {
             resolve([
@@ -187,7 +187,7 @@ dtpsLMS.fetchAssignments = function (classID) {
 }
 
 //Fetches modules data from Canvas
-dtpsLMS.fetchModules = function (classID) {
+dtpsLMS.fetchModules = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         resolve([
             {

@@ -118,15 +118,18 @@
 
 <body>
 
-	<script>
-		$(document).ready(() => {
-			if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-				if ($("#dtpsInstallBtn").text().includes("extension")) {
-					$("#dtpsInstallBtn").attr("onclick", "window.location.href = 'https://powerplus.app/firefox.xpi';");
-				}
-			}
-		})
-	</script>
+    <script>
+        $(document).ready(() => {
+            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+                if ($("#dtpsInstallBtn").text().includes("extension")) {
+                    $("#dtpsInstallBtn").attr("onclick", "window.location.href = 'https://powerplus.app/firefox.xpi';");
+                }
+            }
+            if (window.location.host == "dev.dtps.jottocraft.com") {
+                $("#devContainer").show();
+            }
+        })
+    </script>
 
     <div id="header">
         <div class="content">
@@ -138,8 +141,7 @@
                 <button id="dtpsInstallBtn"
                     onclick="window.location.href = 'https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo';"
                     class="btn"><i class="material-icons">extension</i> Add the extension</button>
-                <button class="btn outline"
-                    onclick="window.location.href = '/demo';"><i
+                <button class="btn outline" onclick="window.location.href = '/demo';"><i
                         class="material-icons">exit_to_app</i> Demo</button>
                 <button class="btn outline" onclick="window.location.href = 'https://github.com/jottocraft/dtps';"><i
                         class="material-icons">code</i> Source code</button>
@@ -148,6 +150,33 @@
     </div>
 
     <div class="container">
+        <div id="devContainer" style="display: none;">
+            <div style="background: var(--elements); padding: 40px; border-radius: var(--cardRadius);" class="block left">
+                <img src="assets/dev.svg" />
+                <div class="description">
+                    <h3>Power+ (dev)</h3>
+                    <p>This website contains the latest development version of Power+ before it is released. The dev
+                        version
+                        of Power+ is often untested and can contain major bugs. Follow the steps below to get started
+                        with
+                        Power+ (dev).</p>
+                    <ol>
+                        <li>Open Power+ and navigate to Settings -> About -> Advanced Options, then click on "Test
+                            prerelease versions"</li>
+                        <li>Once prerelease versions have been enabled, go to Settings -> Prerelease testing and select
+                            "Dev"</li>
+                        <li>Reload Power+ to load the dev version. You'll see a banner near the top of the screen
+                            warning
+                            you about using an unstable version of Power+.
+                            <br /><br />
+                            You can switch back to the stable version of Power+ at any time by going to Settings ->
+                            Prerelease testing and selecting "Production".
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
             <div class="block small six columns">
                 <img src="assets/todo.svg" />
