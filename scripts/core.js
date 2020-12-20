@@ -77,7 +77,6 @@ var dtps = {
         showVideoMeetingButton: true,
         showGradesInSettings: true,
         dtechHomepageFluidUITabs: true,
-        dtechCleanUpAssignments: true,
         dtechCurrentTerm: "20-21",
         debugClassID: "1098",
         topSneaky: false,
@@ -391,6 +390,7 @@ dtps.init = function () {
                             //Prepend child ID to class ID
                             data.forEach(course => {
                                 course.id = child.id + "-" + course.id;
+                                course.group = child.name;
                             });
 
                             allClasses = allClasses.concat(data);
@@ -407,7 +407,7 @@ dtps.init = function () {
             return dtpsLMS.fetchClasses(dtps.user.id);
         }
     }).then((rawClasses) => {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             if (dtpsLMS.institutionSpecific && dtpsLMS.updateClasses) {
                 //Using an institution-specific script, make any nessasary changes and return updated classes
                 dtpsLMS.updateClasses(rawClasses).then((updatedClasses) => {
@@ -717,7 +717,7 @@ dtps.showClasses = function (override) {
     //Array of class HTML for the sidebar
     dtps.classlist = [];
 
-    var previousClassUser = null;
+    var previousClassGroup = null;
     for (var i = 0; i < dtps.classes.length; i++) {
         //Determine letter grade HTML
         var letterGradeHTML = "";
@@ -725,16 +725,18 @@ dtps.showClasses = function (override) {
         if (dtps.classes[i].letter == null) letterGradeHTML = "--";
         if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="shimmer" style="width: 100%;height: 22px;border-radius: 8px;"></div>`; //Show loading indicator for ...
 
-        if (dtps.user.parent && (dtps.classes[i].userID !== previousClassUser)) {
-            if (previousClassUser) dtps.classlist.push(`</div></div>`);
+        if (dtps.classes[i].group && (dtps.classes[i].group !== previousClassGroup)) {
+            if (previousClassGroup) dtps.classlist.push(`</div></div>`);
             dtps.classlist.push(/*html*/`
-                <div id="dtpsClassListGroup-${dtps.classes[i].userID}" class="group">
+                <div id="dtpsClassListGroup-${dtps.classes[i].group}" class="group open">
                   <div class="name item">
-                    <i class="material-icons"></i> <span class="label">${dtps.user.children.find(c => c.id == dtps.classes[i].userID).name}</span>
+                    <i class="material-icons"></i> <span class="label">${dtps.classes[i].group}</span>
                   </div>
 
                   <div class="items">
             `);
+        } else if (!dtps.classes[i].group && previousClassGroup) {
+            dtps.classlist.push(`</div></div>`);
         }
 
         //Add class HTML to array
@@ -749,10 +751,10 @@ dtps.showClasses = function (override) {
             </div>
         `);
 
-        previousClassUser = dtps.classes[i].userID;
+        previousClassGroup = dtps.classes[i].group;
     }
 
-    if (dtps.user.parent) dtps.classlist.push(`</div></div>`);
+    if (previousClassGroup) dtps.classlist.push(`</div></div>`);
 
     //Only render HTML if the sidebar doesn't already have the classes rendered, or if override is true
     if (!jQuery(".sidebar .class.dash")[0] || override) {
@@ -1094,6 +1096,13 @@ dtps.settings = function (forceRerenderDashboard) {
     if (dtps.remoteConfig.showGradesInSettings) dtps.renderGradesInSettings();
 
     fluid.cards('.settingsCard');
+}
+
+/**
+ * Shows a warning telling the user that they must reload for setting changes to take effect
+ */
+dtps.settingsReloadWarning = function () {
+    $("#settingsReloadWarning").show();
 }
 
 /**
@@ -1506,27 +1515,31 @@ dtps.renderLite = function () {
                     <br /><br />
                     <p>Grades</p>
 
-                    <div onclick="fluid.set('pref-hideGrades')" class="switch pref-hideGrades"><span class="head"></span></div>
+                    <div onclick="fluid.set('pref-hideGrades');" class="switch pref-hideGrades"><span class="head"></span></div>
                     <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
                 </div>
 
                 <br /><br />
                 <p>Classes</p>
+                <p style="display: none;" id="settingsReloadWarning">You must reload for the changes you've made to take effect</p>
 
                 <div>
-                    <div onclick="fluid.set('pref-fullNames')" class="switch pref-fullNames"><span class="head"></span></div>
-                    <div class="label"><i class="material-icons">title</i> Show full class names (requires reload)</div>
+                    <div onclick="fluid.set('pref-fullNames'); dtps.settingsReloadWarning();" class="switch pref-fullNames"><span class="head"></span></div>
+                    <div class="label"><i class="material-icons">title</i> Show full class names</div>
                     
                     <br /><br />
                     <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
                     <div class="label"><i class="material-icons">image</i> Hide class images</div>
 
-                    ${dtpsLMS.dtech && dtps.remoteConfig.dtechCleanUpAssignments ? `
+                    ${dtpsLMS.dtech ? /*html*/`
                             <br /><br />
-                            <div onclick="fluid.set('pref-formatAssignmentContent')" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
+                            <div onclick="fluid.set('pref-autoGroupClasses'); dtps.settingsReloadWarning();" class="switch pref-autoGroupClasses active"><span class="head"></span></div>
+                            <div class="label"><i class="material-icons">sort</i> Automatically group and sort classes</div>
+                            <br /><br />
+                            <div onclick="fluid.set('pref-formatAssignmentContent');" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
                             <div class="label"><i class="material-icons">format_paint</i> Reformat assignment content</div>
                         ` : ""
-        }
+                    }
 
                 </div>
 
@@ -1710,7 +1723,7 @@ dtps.renderLite = function () {
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
                         <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
-                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="window.localStorage.prereleaseEnabled = 'true'; $('#dtpsPrereleaseTesting').show(); alert('Prerelease versions can be enabled by going to Settings -> Prerelease testing');"><i class="material-icons" style="vertical-align: middle">feedback</i> Test prerelease versions</a>
+                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="if (confirm('Prerelease versions of Power+ are often untested and can break or display incorrect information. Are you sure you want to continue?')) {window.localStorage.prereleaseEnabled = 'true'; $('#dtpsPrereleaseTesting').show(); alert('Prerelease versions can be enabled by going to Settings -> Prerelease testing');}"><i class="material-icons" style="vertical-align: middle">feedback</i> Test prerelease versions</a>
                     </div>
                 </div>
 
@@ -1894,6 +1907,14 @@ dtps.init();
 */
 
 /**
+* @name dtpsLMS.isUsualDueDate
+* @description [OPTIONAL, INSTITUTION ONLY] This function returns true if the due date provided is usual/expected and false if the due date is unusual/expected. If the due date is unusual, it is shown in bold in the UI. For institutions where there is a pattern/standard for due dates between classes.
+* @kind function
+* @param {Date} date The due date to check
+* @return {boolean} True if the due date is usual, false if the due date is unusual/unexpected.
+*/
+
+/**
 * @name dtpsLMS.updateAssignments
 * @description [OPTIONAL, INSTITUTION ONLY] This function can be implemented by institution-specific scripts to loop through and override assignment data returned by the LMS.
 * @kind function
@@ -1936,6 +1957,8 @@ dtps.init();
 * @property {string} userID The ID of the user this class is associated with (from the parameter of dtpsLMS.fetchClasses)
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
+* @property {string} [group] The name of the group that this class is in
+* @property {number|string} [period] The period or section the user has this class at
 * @property {Date} [endDate] The end date for this course
 * @property {Assignment[]} assignments Class assignments. Assume assignments are still loading if this is undefined. The class has no assignments if this is an empty array. Loaded in dtps.init.
 * @property {Module[]|boolean} [modules] Class modules. Assume this class supports the modules feature, but is not yet loaded, if this is true and that the class has no modules if this is an empty array. For LMSs that do not support modules, either keep it undefined or set it to false.
