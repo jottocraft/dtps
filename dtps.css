@@ -1453,6 +1453,22 @@ body.dark .headerArea img {
 
 #headText {
     transition: color 0.2s;
+    white-space: nowrap;
+    max-width: 95%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#headText span {
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+#headText i {
+    margin-right: 5px;
+    vertical-align: middle;
+    font-size: 36px;
 }
 
 .gradeSummaryShowHide {

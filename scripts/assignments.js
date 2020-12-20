@@ -546,7 +546,14 @@ dtps.classStream = function (classID, searchResults) {
     } else if (assignments.length == 0) {
         //This class doesn't have any assignments
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-            $(".classContent").html(dtps.renderStreamTools(classNum, "stream") + `<div style="cursor: auto;" class="card"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
+            $(".classContent").html(dtps.renderStreamTools(classNum, "stream") + /*html*/`
+                <div style="text-align: center;">
+                    <div style="margin: 60px; padding: 20px 40px; display: inline-block; border: 2px solid var(--elements); border-radius: var(--elementRadius);">
+                        <h5>No Assignments</h5>
+                        <p>There aren't any assignments in this class yet.</p>
+                    </div>
+                </div>
+            `);
         }
     } else {
         //Sort assignments
@@ -913,7 +920,14 @@ dtps.moduleStream = function (classID) {
         });
 
         if (data.length == 0) {
-            modulesHTML += `<div style="cursor: auto;" class="card assignment"><h4>No modules</h4><p>There aren't any modules in this class yet</p></div>`;
+            modulesHTML += /*html*/`
+                <div style="text-align: center;">
+                    <div style="margin: 60px; padding: 20px 40px; display: inline-block; border: 2px solid var(--elements); border-radius: var(--elementRadius);">
+                        <h5>No Modules</h5>
+                        <p>There aren't any modules in this class yet.</p>
+                    </div>
+                </div>
+            `;
         }
 
         //Render module HTML

@@ -98,7 +98,7 @@ dtps.usersList = function (courseID) {
                 jQuery(".classContent").html(/*html*/`
                     <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
                       <div class="block status card">
-                        <h2 class="main">${currentSection || "--"}</h2>
+                        <h2 style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" class="main">${currentSection || "--"}</h2>
                         <h5 class="bottom"><i class="material-icons">contact_page</i> Your section</h5>
                       </div>
                       <div class="block status">
