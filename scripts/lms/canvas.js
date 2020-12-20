@@ -88,7 +88,7 @@ dtpsLMS.fetchClasses = function (userID) {
                     headers: dtpsLMS.commonHeaders,
                     success: function (dashboardData) {
                         jQuery.ajax({
-                            url: "/api/v1/users/" + userID + "/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=public_description&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs",
+                            url: "/api/v1/users/" + userID + "/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=public_description&include[]=total_students&include[]=account&include[]=teachers&include[]=course_image&include[]=syllabus_body&include[]=tabs&include[]=sections",
                             type: "GET",
                             headers: dtpsLMS.commonHeaders,
                             success: function (courseData) {
@@ -103,6 +103,7 @@ dtpsLMS.fetchClasses = function (userID) {
                                         id: course.id,
                                         lmsID: course.id,
                                         userID: userID,
+                                        period: course.sections && course.sections[0] && course.sections[0].name,
                                         subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : course.course_code.split(" - ")[0],
                                         syllabus: course.syllabus_body,
                                         homepage: course.default_view == "wiki",

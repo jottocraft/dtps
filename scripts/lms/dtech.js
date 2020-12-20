@@ -25,6 +25,21 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     dtpsLMS.genericGradebook = false;
     dtpsLMS.dtech = true;
 
+    //Check if due date is usual
+    dtpsLMS.isUsualDueDate = function(date) {
+        var date = new Date(date);
+
+        if (date.getHours() >= 22) {
+            return true;
+        } else if ((date.getHours() == 21) && (date.getMinutes() > 50)) {
+            return true;
+        } else if (date.getHours() < 8) {
+            return true;
+        }
+
+        return false;
+    };
+
     //Update assignments
     //This is for customizing rubric names and colors to match d.tech CBL
     dtpsLMS.updateAssignments = function (rawAssignments) {
@@ -62,9 +77,39 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 } else if (!course.endDate || (new Date() < new Date(course.endDate))) {
                     tmpNewArray.push(course);
                 }
+
+                //Get course period
+                var matches = course.period.match(/[0-9](?=\(A)/);
+                if (matches && matches[0]) {
+                    course.period = matches[0] == "7" ? 0 : Number(matches[0]);
+                } else if (/((d|design).?lab)/gi.test(course.subject)) {
+                    course.period = 11;
+                } else if (/exploration/gi.test(course.subject)) {
+                    course.period = 12;
+                } else {
+                    course.period = Infinity;
+                }
+
+                //Get course cycle
+                if (window.localStorage.getItem("pref-autoGroupClasses") !== "false") {
+                    if ((course.period >= 1) && (course.period <= 3)) {
+                        course.group = "Cycle 1";
+                    } else if ((course.period >= 4) && (course.period <= 6)) {
+                        course.group = "Cycle 2";
+                    } else if ((course.period == 11) || (course.period == 12)) {
+                        course.group = "Intersession";
+                    }
+                }
             });
             classes = tmpNewArray;
 
+            //Automatically sort and group classes if enabled
+            if (window.localStorage.getItem("pref-autoGroupClasses") !== "false") {
+                classes.sort((a, b) => {
+                    return a.period - b.period;
+                });
+            }
+            
             //Don't fetch videoMeetingURL if disable by remoteConfig
             if (!dtps.remoteConfig.showVideoMeetingButton) {
                 resolve(classes);
@@ -75,7 +120,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
             //Create a new promise for each class
             classes.forEach(course => {
-                if (course.homepage) {
+                if (course.homepage && (course.term == dtps.remoteConfig.dtechCurrentTerm)) {
                     promises.push(new Promise((resolve, reject) => {
                         dtpsLMS.fetchHomepage(course.lmsID).then(homepage => {
                             //get zoom link

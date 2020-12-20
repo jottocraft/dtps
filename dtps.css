@@ -1586,3 +1586,11 @@ body.dark .headerArea img {
     font-weight: bold;
     vertical-align: middle;
 }
+
+#settingsReloadWarning {
+    background: var(--elements);
+    border-radius: var(--elementRadius);
+    padding: 15px 18px;
+    box-shadow: var(--elementShadow);
+    margin: 24px 0px;
+}

@@ -37,7 +37,7 @@ dtps.renderAssignment = function (assignment, childDisplay) {
 
             <h5 style="white-space: nowrap; overflow: hidden;">
                 <!-- Assignment info -->
-                ${assignment.dueAt ? `<div class="infoChip"><i style="margin-top: -2px;" class="material-icons">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
+                ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="material-icons">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
                 ${assignment.outcomes ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
                 ${assignment.category ? `<div class="infoChip weighted"><i class="material-icons">category</i> ` + assignment.category + `</div>` : ""}
                 ${childDisplay ? `<div class="infoChip weighted"><i class="material-icons">person</i> ` + childDisplay + `</div>` : ""}
@@ -633,7 +633,7 @@ dtps.assignment = function (id, classNum, generic) {
 
         var hasKeywords = false;
         if (body.toLowerCase().includes("deliverable") && body.toLowerCase().includes("instruction") && body.toLowerCase().includes("look for")) hasKeywords = true;
-        if (dtps.remoteConfig.dtechCleanUpAssignments && (fluid.get('pref-formatAssignmentContent') !== "false") && dtpsLMS.dtech && hasKeywords && ($('<div></div>').append(body).children("table").find("tbody tr").length > 1)) {
+        if ((fluid.get('pref-formatAssignmentContent') !== "false") && dtpsLMS.dtech && hasKeywords && ($('<div></div>').append(body).children("table").find("tbody tr").length > 1)) {
             var sections = [];
             $('<div></div>').append(body).children("table").find("tbody tr").toArray().forEach((element, i) => {
                 var text = $(element).find("h4:first-child").text().toLowerCase();
@@ -1284,6 +1284,7 @@ fluid.externalScreens.gradebook = (courseID) => {
 * @property {string} title Title of the assignment
 * @property {string} [body] HTML of the assignment's body
 * @property {string} id Assignment ID
+* @property {number} class Automatically managed by DTPS. The class number that this assignment belongs to.
 * @property {Date} [dueAt] Assignment due date
 * @property {string} [url] Assignment URL
 * @property {AssignmentFeedback[]} [feedback] Feedback / private comments for this assignment
