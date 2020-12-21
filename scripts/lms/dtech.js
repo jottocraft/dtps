@@ -13,7 +13,6 @@ var baseURL = document.currentScript.src.split("/scripts/lms/dtech.js")[0];
 
 //Load Canvas integration
 jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
-
     //Add d.tech-specific items to dtpsLMS
     dtpsLMS.name = "d.tech";
     dtpsLMS.legalName = "Canvas LMS, Design Tech High School, and Instructure Inc";
@@ -194,9 +193,6 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
     //Run d.tech grade calculation algorithm (defined below)
     dtpsLMS.calculateGrade = function (course, assignments) {
-        //If grade calculation is disabled, don't run grade calc
-        if (!dtps.remoteConfig.gradeCalculationEnabled) return;
-
         var formula = null;
 
         //Get d.tech grade calculation formula

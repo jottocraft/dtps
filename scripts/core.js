@@ -71,17 +71,20 @@ var dtps = {
         }
     ],
     remoteConfig: {
-        showFeedbackButton: false,
+        showBugReportButton: false,
         gradeCalculationEnabled: true,
         allowWhatIfGrades: true,
         showVideoMeetingButton: true,
-        showGradesInSettings: true,
         dtechHomepageFluidUITabs: true,
         dtechCurrentTerm: "20-21",
         debugClassID: "1098",
         topSneaky: false,
         topSneakyUI: false,
-        remoteUpdate: null
+        remoteUpdate: {
+            title: null,
+            md: null,
+            active: false
+        }
     }
 };
 
@@ -353,7 +356,7 @@ dtps.init = function () {
                 });
             }
             r();
-        }).fail(r);
+        }).fail(() => r());
     }).then(() => {
         //dev env remote config overrides
         if (dtps.env == "dev") {
@@ -466,7 +469,7 @@ dtps.init = function () {
             dtps.classes.forEach(course => {
                 course.color = course.color ? nearestCourseColor(course.color).value : "gray";
 
-                if (dtpsLMS.calculateGrade) {
+                if (dtpsLMS.calculateGrade && dtps.remoteConfig.gradeCalculationEnabled) {
                     //This LMS/Institution supports grade calculation, show loading indicator for grade
                     //Grade will be calculated once assignments are fetched
 
@@ -496,14 +499,12 @@ dtps.init = function () {
             var fetchedAnnouncements = [];
             dtps.classes.forEach((course, courseIndex) => {
                 dtpsLMS.fetchAssignments(course.userID, course.lmsID).then((rawAssignments) => {
-                    return new Promise(resolve => {
+                    return new Promise((resolve, reject) => {
                         if (dtpsLMS.institutionSpecific && dtpsLMS.updateAssignments) {
                             //Using an institution-specific script, make any nessasary changes and return updated assignments
                             dtpsLMS.updateAssignments(rawAssignments).then(updatedAssignments => {
                                 resolve(updatedAssignments);
-                            }).catch(e => {
-                                reject(e);
-                            });
+                            }).catch(reject);
                         } else {
                             //No institution-specific script, return assignments as-is
                             resolve(rawAssignments);
@@ -537,7 +538,7 @@ dtps.init = function () {
                     if (dtps.updates.length > 15) dtps.updates.length = 15;
 
                     //Calculate class grade if supported
-                    if (dtpsLMS.calculateGrade) {
+                    if (dtpsLMS.calculateGrade && dtps.remoteConfig.gradeCalculationEnabled) {
                         let gradeCalcResults = dtpsLMS.calculateGrade(course, assignments);
 
                         if (gradeCalcResults) {
@@ -934,23 +935,23 @@ dtps.presentClass = function (classNum) {
             $("#classInfo .videoMeeting").attr("onclick", "");
             $("#classInfo .videoMeeting").addClass("shimmerParent");
             $("#classInfo .videoMeeting").show();
+
+            dtpsLMS.fetchMeetingURL(dtps.classes[classNum].lmsID).then(url => {
+                dtps.classes[classNum].videoMeetingURL = url;
+    
+                if (dtps.selectedClass == classNum) {
+                    if (url) {
+                        $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
+                        $("#classInfo .videoMeeting").removeClass("shimmerParent");
+                        $("#classInfo .videoMeeting").show();
+                    } else {
+                        $("#classInfo .videoMeeting").hide();
+                    }
+                }
+            });
         } else {
             $("#classInfo .videoMeeting").hide();
         }
-
-        dtpsLMS.fetchMeetingURL(dtps.classes[classNum].lmsID).then(url => {
-            dtps.classes[classNum].videoMeetingURL = url;
-
-            if (dtps.selectedClass == classNum) {
-                if (url) {
-                    $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
-                    $("#classInfo .videoMeeting").removeClass("shimmerParent");
-                    $("#classInfo .videoMeeting").show();
-                } else {
-                    $("#classInfo .videoMeeting").hide();
-                }
-            }
-        });
     }
 }
 
@@ -1354,10 +1355,12 @@ dtps.render = function () {
               <i class="material-icons">feedback</i>
               <span class="label">Feedback</span>
             </div>
-            <div class="item">
-              <i class="material-icons">bug_report</i>
-              <span class="label">Bug Report</span>
-            </div>
+            ${dtps.remoteConfig.showBugReportButton || dtps.unstable || (dtps.env == "dev") ? /*html*/`
+                <div class="item">
+                    <i class="material-icons">bug_report</i>
+                    <span class="label">Bug Report</span>
+                </div>
+            ` : ""}
             <div onclick="dtps.settings();" class="item">
               <i class="material-icons">settings</i>
               <span class="label">Settings</span>

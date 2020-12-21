@@ -354,6 +354,19 @@ dtps.renderUpdates = function (dateSelected) {
     //Get updates HTML
     var updatesHTML = "";
 
+    if (dtps.remoteConfig.remoteUpdate.active) {
+        markdown = new showdown.Converter();
+        updatesHTML += /*html*/`
+            <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
+                <div class="className">
+                    <img src="${dtps.baseURL + "/icon.svg"}" style="vertical-align: middle;width: 22px;margin-right: 5px;" />
+                    <span style="font-weight: bold; vertical-align: middle; color: var(--text); font-size: 18px;">${dtps.remoteConfig.remoteUpdate.title}</span>
+                </div>
+                ${markdown.makeHtml(dtps.remoteConfig.remoteUpdate.md)}
+            </div>
+        `;
+    }
+
     if (dateSelected && (dtps.selectedClass == "dash")) {
         return jQuery(".classContent .dash .updatesStream").html(/*html*/`
             <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
@@ -1238,7 +1251,7 @@ dtps.gradebook = function (classID) {
                 </h5>
             ` : ``}
 
-            <div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
+            <div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="genericClassGradeMore">
                 <br />
 
                 ${dtps.classes[classNum].previousLetter ? /*html*/`
@@ -1263,7 +1276,7 @@ dtps.gradebook = function (classID) {
             </div>
 
             <br />
-            <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
+            <a onclick="$('#genericClassGradeMore').toggle(); if ($('#genericClassGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
                 style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">${dtps.gradebookExpanded ? "Show less" : "Show more"}</a>
         </div>
 
