@@ -12,7 +12,7 @@
 var dtpsLMS = {
     name: "Canvas LMS",
     shortName: "Canvas",
-    legalName: "Canvas LMS and Instructure Inc.",
+    legalName: "Canvas LMS or Instructure Inc.",
     description: "Power+ integration for Canvas LMS",
     url: "https://www.instructure.com/canvas/",
     logo: "https://i.imgur.com/rGjNVoc.png",
