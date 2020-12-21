@@ -841,6 +841,9 @@ dtps.presentClass = function (classNum) {
         document.title = "Power+";
     }
 
+    //Set search box content
+    if (classNum !== "search") dtps.setSearchBox();
+
     //Set the class image
     if ((fluid.get("pref-showClassImages") !== "false") && dtps.classes[classNum] && dtps.classes[classNum].image) {
         $(".headerArea").addClass("classImage");
@@ -1385,14 +1388,23 @@ dtps.render = function () {
             <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search</span></h5>
             <div id="dtpsSearchData" style="display: none;"></div>
             <div id="dtpsSearchInfo">
-                <p>Power+ will search across all of your classes. You can search for:</p>
-                <p><i class="material-icons">assignment</i> Assignments</p>
-                <p><i class="material-icons">assessment</i> Grades</p>
-                <p><i class="material-icons">view_module</i> Modules</p>
-                <p><i class="material-icons">home</i> Homepages</p>
-                <p><i class="material-icons">insert_drive_file</i> Pages</p>
-                <p><i class="material-icons">forum</i> Discussions</p>
-                <p><i class="material-icons">people</i> People</p>
+                <p>By defualt, Power+ will search based on the page you're on. You can use the keywords below for more advanced searches:</p>
+                <div class="grid samesize">
+                    <div class="item">
+                        <p><i class="material-icons">assignment</i> type:assignment</p>
+                        <p><i class="material-icons">remove_circle_outline</i> type:missing</p>
+                        <p><i class="material-icons">assignment_turned_in</i> type:turnedin</p>
+                        <p><i class="material-icons">view_module</i> type:module</p>
+                        <p><i class="material-icons">home</i> type:homepage</p>
+                    </div>
+                    <div class="item">
+                        <p><i class="material-icons">insert_drive_file</i> type:page</p>
+                        <p><i class="material-icons">forum</i> type:discussion</p>
+                        <p><i class="material-icons">people</i> type:person</p>
+                        <div class="divider"></div>
+                        <p><i class="material-icons">class</i> class:English</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1477,13 +1489,7 @@ dtps.render = function () {
     });
 
     $("#dtpsMainSearchBox").on("input", function () {
-        if ($("#dtpsMainSearchBox").val()) {
-            $("#dtpsSearchStatus i").text("keyboard_return");
-            $("#dtpsSearchStatus span").text("Press enter to search");
-        } else {
-            $("#dtpsSearchStatus i").text("search");
-            $("#dtpsSearchStatus span").text("Search");
-        }
+        dtps.setSearchBox();
     });
 
     $(document).on("keydown", "#dtpsMainSearchBox", function (e) {
@@ -1492,6 +1498,72 @@ dtps.render = function () {
             $("#dtpsMainSearchBox").blur();
         }
     });
+}
+
+/**
+ * Sets the search box text based on the current page or keywords
+ */
+dtps.setSearchBox = function () {
+    var value = $("#dtpsMainSearchBox").val() || "";
+    var type = null;
+    var course = dtps.selectedClass == "dash" ? "dash" : dtps.classes[dtps.selectedClass];
+    var icon = null;
+
+    //Get automatic type from selected content
+    if ((dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
+    if (dtps.selectedContent == "people") type = "people"; 
+    if (dtps.selectedContent == "discuss") type = "discussions"; 
+    if (dtps.selectedContent == "pages") type = "pages"; 
+    if (dtps.selectedContent == "grades") type = "grades";
+    if (dtps.selectedClass == "dash") type = "assignments";
+
+    //Check for type override from search box
+    if (value.split(" ").includes("type:assignment")) type = "assignments";
+    if (value.split(" ").includes("type:missing")) type = "missing assignments"; 
+    if (value.split(" ").includes("type:turnedin")) type = "turned in assignments"; 
+    if (value.split(" ").includes("type:module")) type = "modules"; 
+    if (value.split(" ").includes("type:homepage")) type = "homepages";
+    if (value.split(" ").includes("type:page")) type = "pages"; 
+    if (value.split(" ").includes("type:discussion")) type = "discussions";
+    if (value.split(" ").includes("type:person")) type = "people"; 
+    if (value.split(" ").includes("type:all")) type = "everything"; 
+
+    //Get icon from final type
+    if (type == "coursework") icon = "library_books";
+    if (type == "people") icon = "people";
+    if (type == "discussions") icon = "forum";
+    if (type == "pages") icon = "insert_drive_file";
+    if (type == "grades") icon = "assessment";
+    if (type == "assignments") icon = "assignment";
+    if (type == "missing assignments") icon = "remove_circle_outline";
+    if (type == "turned in assignments") icon = "assignment_turned_in";
+    if (type == "modules") icon = "view_module";
+    if (type == "homepages") icon = "home";
+    if (type == "everything") icon = "warning";
+
+    //Check for course override from search box
+    if (value.includes("class:")) {
+        var partialSubject = value.split("class:")[1].split(" ")[0].toLowerCase();
+        if (partialSubject == "all") {
+            course = "all";
+        } else if (partialSubject) {
+            dtps.classes.forEach(c => {
+                if (c.subject.toLowerCase().includes(partialSubject)) {
+                    course = c;
+                }
+            });
+        }
+    }
+
+    if ((course == "dash") || (course == "all")) {
+        $("#dtpsSearchStatus i").text(icon);
+        $("#dtpsSearchStatus span").text("Search " + (type == "everything" ? type : "all " + type));
+        $("#dtpsMainSearchBox").attr("placeholder", "Search " + (type == "everything" ? type : "all " + type));
+    } else {
+        $("#dtpsSearchStatus i").text(icon);
+        $("#dtpsSearchStatus span").html(`Search ${type} in <b style="color: ${course.color};">${course.subject}</b>`);
+        $("#dtpsMainSearchBox").attr("placeholder", "Search " + type + " in " + course.subject);
+    }
 }
 
 /**
