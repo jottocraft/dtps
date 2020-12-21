@@ -1571,7 +1571,7 @@ body.dark .headerArea img {
     text-align: center;
 }
 
-.editableScore.modified, .editableScore.focused {
+.editableScore.modified, .editableScore.focused, .editableScore:hover {
     background-color: var(--inputColor);
     border-color: var(--elements);
 }
