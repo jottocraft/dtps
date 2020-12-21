@@ -484,6 +484,7 @@ dtps.init = function () {
             fluid.screens.stream = dtps.baseURL + "/scripts/assignments.js";
             fluid.screens.moduleStream = dtps.baseURL + "/scripts/assignments.js";
             fluid.screens.people = dtps.baseURL + "/scripts/people.js";
+            fluid.screens.search = dtps.baseURL + "/scripts/search.js";
             fluid.screens.pages = dtps.baseURL + "/scripts/pages-discussions.js";
             fluid.screens.discussions = dtps.baseURL + "/scripts/pages-discussions.js";
 
@@ -851,20 +852,20 @@ dtps.presentClass = function (classNum) {
     }
 
     //Remove active class from other classes in the sidebar, add the active class to the selected class
-    $(".class." + classNum).siblings().removeClass("active");
+    $(".sidebar .class").removeClass("active");
     $(".class." + classNum).addClass("active");
 
     //Update title to show class name
     //If the dashboard is selected, this is just "Dashboard". Otherwise, this is Class.subject
-    $("#headText span").text(classNum == "dash" ? "Dashboard" : dtps.classes[classNum] && dtps.classes[classNum].subject);
-    var icon = classNum == "dash" ? "dashboard" : dtps.classes[classNum] && dtps.classes[classNum].icon
+    $("#headText span").text(classNum == "dash" ? "Dashboard" : classNum == "search" ? "Search Results" : dtps.classes[classNum] && dtps.classes[classNum].subject);
+    var icon = classNum == "dash" ? "dashboard" : classNum == "search" ? "search" : dtps.classes[classNum] && dtps.classes[classNum].icon
     if (icon) {
         $("#headText i").text(icon);
         $("#headText i").show();
     } else {
         $("#headText i").hide();
     }
-    $("#headText").css("color", classNum == "dash" ? "var(--text)" : dtps.classes[classNum] && dtps.classes[classNum].color);
+    $("#headText").css("color", (classNum == "dash") || (classNum == "search") ? "var(--text)" : dtps.classes[classNum] && dtps.classes[classNum].color);
 
     //If the class doesn't exist, hide the tabs
     //Otherwise, show the tabs
@@ -877,6 +878,11 @@ dtps.presentClass = function (classNum) {
 
     //Hide dashboard start date
     $(".headerArea .dashboardStartDate").hide();
+
+    //Clear search box if not on the search tab
+    if (classNum !== "search") {
+        $("#dtpsMainSearchBox").val("");
+    }
 
     if (dtps.classes[classNum]) {
         //Show pages tab if the class supports it, otherwise, hide it
@@ -938,7 +944,7 @@ dtps.presentClass = function (classNum) {
 
             dtpsLMS.fetchMeetingURL(dtps.classes[classNum].lmsID).then(url => {
                 dtps.classes[classNum].videoMeetingURL = url;
-    
+
                 if (dtps.selectedClass == classNum) {
                     if (url) {
                         $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
@@ -1376,14 +1382,14 @@ dtps.render = function () {
         </div>
 
         <div id="dtpsSearchResults" class="card acrylicMaterial" style="display: none;">
-            <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search (Not yet implemented)</span></h5>
+            <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search</span></h5>
             <div id="dtpsSearchData" style="display: none;"></div>
             <div id="dtpsSearchInfo">
                 <p>Power+ will search across all of your classes. You can search for:</p>
                 <p><i class="material-icons">assignment</i> Assignments</p>
                 <p><i class="material-icons">assessment</i> Grades</p>
-                <p><i class="material-icons">home</i> Homepage content</p>
                 <p><i class="material-icons">view_module</i> Modules</p>
+                <p><i class="material-icons">home</i> Homepages</p>
                 <p><i class="material-icons">insert_drive_file</i> Pages</p>
                 <p><i class="material-icons">forum</i> Discussions</p>
                 <p><i class="material-icons">people</i> People</p>
@@ -1477,6 +1483,13 @@ dtps.render = function () {
         } else {
             $("#dtpsSearchStatus i").text("search");
             $("#dtpsSearchStatus span").text("Search");
+        }
+    });
+
+    $(document).on("keydown", "#dtpsMainSearchBox", function (e) {
+        if (e.key == "Enter") {
+            fluid.screen("search", $("#dtpsMainSearchBox").val());
+            $("#dtpsMainSearchBox").blur();
         }
     });
 }
