@@ -15,7 +15,7 @@ var baseURL = document.currentScript.src.split("/scripts/lms/dtech.js")[0];
 jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     //Add d.tech-specific items to dtpsLMS
     dtpsLMS.name = "d.tech";
-    dtpsLMS.legalName = "Canvas LMS, Design Tech High School, and Instructure Inc";
+    dtpsLMS.legalName = "Canvas LMS, Design Tech High School, or Instructure Inc";
     dtpsLMS.description = "Power+ integration for Canvas LMS, customized for d.tech";
     dtpsLMS.logo = "https://i.imgur.com/efGrLq3.png";
     dtpsLMS.source = "https://github.com/jottocraft/dtps/blob/main/scripts/lms/dtech.js";
