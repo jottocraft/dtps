@@ -925,6 +925,20 @@ body.titlebar:not(.noSidebar) .header .btns {
     margin-top: 6px;
     font-size: 1rem !important;
     min-height: 20px;
+    white-space: nowrap; 
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+}
+
+.classContent .assignment h5 div {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.classContent .assignment h5 .status {
+    flex-shrink: 0;
 }
 
 .classContent .card.assignment h4 {
