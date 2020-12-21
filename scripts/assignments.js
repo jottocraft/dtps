@@ -35,19 +35,23 @@ dtps.renderAssignment = function (assignment, childDisplay) {
                 ${scoreHTML ? `<div class="points">${scoreHTML}</div>` : ``}
             </h4>
 
-            <h5 style="white-space: nowrap; overflow: hidden;">
+            <h5>
                 <!-- Assignment info -->
-                ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="material-icons">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
-                ${assignment.outcomes ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
-                ${assignment.category ? `<div class="infoChip weighted"><i class="material-icons">category</i> ` + assignment.category + `</div>` : ""}
-                ${childDisplay ? `<div class="infoChip weighted"><i class="material-icons">person</i> ` + childDisplay + `</div>` : ""}
-
+                <div class="info">
+                    ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="material-icons">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
+                    ${assignment.outcomes ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
+                    ${assignment.category ? `<div class="infoChip weighted"><i class="material-icons">category</i> ` + assignment.category + `</div>` : ""}
+                    ${childDisplay ? `<div class="infoChip weighted"><i class="material-icons">person</i> ` + childDisplay + `</div>` : ""}
+                </div>
+                
                 <!-- Status icons -->
-                ${assignment.turnedIn ? `<i title="Assignment submitted" class="material-icons statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
-                ${assignment.missing ? `<i title="Assignment is missing" class="material-icons statusIcon" style="color: #c44848;">remove_circle_outline</i>` : ``}
-                ${assignment.late ? `<i title="Assignment is late" class="material-icons statusIcon" style="color: #c44848;">assignment_late</i>` : ``}
-                ${assignment.locked ? `<i title="Assignment submissions are locked" class="material-icons statusIcon" style="color: var(--secText, gray);">lock_outline</i>` : ``}
-                ${assignment.pending ? `<i title="Grade is pending review" class="material-icons statusIcon" style="color: #b3b70b;">rate_review</i>` : ``}
+                <div class="status">
+                    ${assignment.turnedIn ? `<i title="Assignment submitted" class="material-icons statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
+                    ${assignment.missing ? `<i title="Assignment is missing" class="material-icons statusIcon" style="color: #c44848;">remove_circle_outline</i>` : ``}
+                    ${assignment.late ? `<i title="Assignment is late" class="material-icons statusIcon" style="color: #c44848;">assignment_late</i>` : ``}
+                    ${assignment.locked ? `<i title="Assignment submissions are locked" class="material-icons statusIcon" style="color: var(--secText, gray);">lock_outline</i>` : ``}
+                    ${assignment.pending ? `<i title="Grade is pending review" class="material-icons statusIcon" style="color: #b3b70b;">rate_review</i>` : ``}
+                </div>
             </h5>
         </div>
     `;
