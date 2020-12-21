@@ -43,7 +43,7 @@ dtps.renderAssignment = function (assignment, childDisplay) {
                     ${assignment.category ? `<div class="infoChip weighted"><i class="material-icons">category</i> ` + assignment.category + `</div>` : ""}
                     ${childDisplay ? `<div class="infoChip weighted"><i class="material-icons">person</i> ` + childDisplay + `</div>` : ""}
                 </div>
-                
+
                 <!-- Status icons -->
                 <div class="status">
                     ${assignment.turnedIn ? `<i title="Assignment submitted" class="material-icons statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
