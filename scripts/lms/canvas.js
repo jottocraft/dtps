@@ -87,7 +87,7 @@ dtpsLMS.fetchClasses = function (userID) {
                     id: course.id,
                     lmsID: course.id,
                     userID: userID,
-                    period: course.sections && course.sections[0] && course.sections[0].name,
+                    period: course.sections && course.sections[0] && (course.sections.find(section => /[0-9](?=\(A)/.test(section.name)) || course.sections[0]).name,
                     subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : course.course_code.split(" - ")[0],
                     homepage: course.default_view == "wiki",
                     term: course.course_code.split(" - ")[1],
@@ -371,7 +371,6 @@ dtpsLMS.fetchUsers = function (classID) {
     return new Promise(function (resolve, reject) {
         fetch("/api/v1/courses/" + classID + "/sections?include[]=avatar_url&include[]=students&per_page=99", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
             var teachers = dtpsLMS.teacherCache[classID];
-            console.log(teachers);
             var sections = [{
                 title: "Teachers",
                 id: "lms.dtps.canvas-teachers",
