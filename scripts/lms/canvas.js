@@ -86,6 +86,7 @@ dtpsLMS.fetchClasses = function (userID) {
                     name: course.course_code,
                     id: course.id,
                     lmsID: course.id,
+                    people: !dtps.user.parent,
                     userID: userID,
                     period: course.sections && course.sections[0] && (course.sections.find(section => /[0-9](?=\(A)/.test(section.name)) || course.sections[0]).name,
                     subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : course.course_code.split(" - ")[0],
@@ -98,7 +99,7 @@ dtpsLMS.fetchClasses = function (userID) {
                     newDiscussionThreadURL: '/courses/' + course.id + '/discussion_topics/new',
                     pages: course.tabs.map(tab => tab.id).includes("pages"),
                     modules: course.tabs.map(tab => tab.id).includes("modules"),
-                    discussions: course.tabs.map(tab => tab.id).includes("discussions"),
+                    discussions: true || course.tabs.map(tab => tab.id).includes("discussions"),
                     endDate: course.end_at
                 };
 
