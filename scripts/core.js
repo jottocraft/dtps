@@ -240,7 +240,7 @@ dtps.JS = function (cb) {
     });
 
     //Fuse.js is used for search
-    jQuery.getScript('https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.3.0/fuse.min.js');
+    jQuery.getScript('https://cdn.jsdelivr.net/npm/fuse.js@6.4.3');
 
     //jQuery UI for dashboard settings page
     jQuery.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js');
@@ -786,13 +786,11 @@ dtps.showClasses = function (override) {
         //Change view to stream if coming from pages or discussions, since those tabs change the sidebar
         if ((dtps.selectedContent == "pages") || (dtps.selectedContent == "discuss")) {
             //Show stream
-            fluid.screen('stream', dtps.classes[dtps.selectedClass].id);
+            if (dtps.classes[dtps.selectedClass]) fluid.screen('stream', dtps.classes[dtps.selectedClass].id);
         }
 
         //Class onclick listener
         $(".class:not(.overrideClass)").click(function (event) {
-            dtps.presentClass(dtps.selectedClass);
-
             //Load class content based on what's selected
             if ((dtps.selectedContent == "stream") && dtps.classes[dtps.selectedClass]) {
                 fluid.screen("stream", dtps.classes[dtps.selectedClass].id);
@@ -841,9 +839,6 @@ dtps.presentClass = function (classNum) {
         document.title = "Power+";
     }
 
-    //Set search box content
-    if (classNum !== "search") dtps.setSearchBox();
-
     //Set the class image
     if ((fluid.get("pref-showClassImages") !== "false") && dtps.classes[classNum] && dtps.classes[classNum].image) {
         $(".headerArea").addClass("classImage");
@@ -887,6 +882,9 @@ dtps.presentClass = function (classNum) {
         $("#dtpsMainSearchBox").val("");
     }
 
+    //Set search box content
+    if (classNum !== "search") dtps.setSearchBox();
+
     if (dtps.classes[classNum]) {
         //Show pages tab if the class supports it, otherwise, hide it
         if (dtps.classes[classNum].pages) {
@@ -896,7 +894,7 @@ dtps.presentClass = function (classNum) {
         }
 
         //Show people tab if the LMS supports it, otherwise, hide it
-        if (dtpsLMS.fetchUsers && !dtps.user.parent) {
+        if (dtps.classes[classNum].people) {
             $(".btns .btn.people").show();
         } else {
             $(".btns .btn.people").hide();
@@ -1391,13 +1389,14 @@ dtps.render = function () {
                 <p>By defualt, Power+ will search based on the page you're on. You can use the keywords below for more advanced searches:</p>
                 <div class="grid samesize">
                     <div class="item">
+                        <p><i class="material-icons">view_module</i> type:module</p>
                         <p><i class="material-icons">assignment</i> type:assignment</p>
                         <p><i class="material-icons">remove_circle_outline</i> type:missing</p>
                         <p><i class="material-icons">assignment_turned_in</i> type:turnedin</p>
-                        <p><i class="material-icons">view_module</i> type:module</p>
-                        <p><i class="material-icons">home</i> type:homepage</p>
+                        <p><i class="material-icons">assessment</i> type:grade</p>
                     </div>
                     <div class="item">
+                        <p><i class="material-icons">home</i> type:homepage</p>
                         <p><i class="material-icons">insert_drive_file</i> type:page</p>
                         <p><i class="material-icons">forum</i> type:discussion</p>
                         <p><i class="material-icons">people</i> type:person</p>
@@ -1494,8 +1493,12 @@ dtps.render = function () {
 
     $(document).on("keydown", "#dtpsMainSearchBox", function (e) {
         if (e.key == "Enter") {
-            fluid.screen("search", $("#dtpsMainSearchBox").val());
-            $("#dtpsMainSearchBox").blur();
+            //Validate input and tags
+            var term = $("#dtpsMainSearchBox").val().replace(/(type|class):[a-z]*/gi, "").trim();
+            if ($("#dtpsMainSearchBox").attr("data-search-type") && $("#dtpsMainSearchBox").attr("data-dtps-course")) {
+                fluid.screen("search", term);
+                $("#dtpsMainSearchBox").blur();
+            }
         }
     });
 }
@@ -1505,28 +1508,41 @@ dtps.render = function () {
  */
 dtps.setSearchBox = function () {
     var value = $("#dtpsMainSearchBox").val() || "";
+
     var type = null;
     var course = dtps.selectedClass == "dash" ? "dash" : dtps.classes[dtps.selectedClass];
     var icon = null;
+    var error = false;
 
     //Get automatic type from selected content
     if ((dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
-    if (dtps.selectedContent == "people") type = "people"; 
-    if (dtps.selectedContent == "discuss") type = "discussions"; 
-    if (dtps.selectedContent == "pages") type = "pages"; 
+    if (dtps.selectedContent == "people") type = "people";
+    if (dtps.selectedContent == "discuss") type = "discussions";
+    if (dtps.selectedContent == "pages") type = "pages";
     if (dtps.selectedContent == "grades") type = "grades";
     if (dtps.selectedClass == "dash") type = "assignments";
 
+    //If search is open, reuse existing context
+    if (dtps.selectedClass == "search") {
+        type = $("#dtpsMainSearchBox").attr("data-search-type");
+        course = $("#dtpsMainSearchBox").attr("data-dtps-course");
+
+        if (!isNaN(Number(course))) {
+            course = dtps.classes[Number(course)];
+        }
+    }
+
     //Check for type override from search box
     if (value.split(" ").includes("type:assignment")) type = "assignments";
-    if (value.split(" ").includes("type:missing")) type = "missing assignments"; 
-    if (value.split(" ").includes("type:turnedin")) type = "turned in assignments"; 
-    if (value.split(" ").includes("type:module")) type = "modules"; 
+    if (value.split(" ").includes("type:missing")) type = "missing assignments";
+    if (value.split(" ").includes("type:turnedin")) type = "turned in assignments";
+    if (value.split(" ").includes("type:module")) type = "modules";
     if (value.split(" ").includes("type:homepage")) type = "homepages";
-    if (value.split(" ").includes("type:page")) type = "pages"; 
+    if (value.split(" ").includes("type:page")) type = "pages";
     if (value.split(" ").includes("type:discussion")) type = "discussions";
-    if (value.split(" ").includes("type:person")) type = "people"; 
-    if (value.split(" ").includes("type:all")) type = "everything"; 
+    if (value.split(" ").includes("type:grade")) type = "grades";
+    if (value.split(" ").includes("type:person")) type = "people";
+    if (value.split(" ").includes("type:all")) type = "everything";
 
     //Get icon from final type
     if (type == "coursework") icon = "library_books";
@@ -1555,14 +1571,33 @@ dtps.setSearchBox = function () {
         }
     }
 
+    //Check if the course supports the type
+    if ((course !== "dash") && (course !== "all")) {
+        if ((type == "pages") && !course.pages) error = true;
+        if ((type == "discussions") && !course.discussions) error = true;
+        if ((type == "modules") && !course.modules) error = true;
+        if ((type == "homepages") && !course.homepage) error = true;
+        if ((type == "people") && !course.people) error = true;
+    }
+
     if ((course == "dash") || (course == "all")) {
         $("#dtpsSearchStatus i").text(icon);
         $("#dtpsSearchStatus span").text("Search " + (type == "everything" ? type : "all " + type));
         $("#dtpsMainSearchBox").attr("placeholder", "Search " + (type == "everything" ? type : "all " + type));
-    } else {
+        $("#dtpsMainSearchBox").attr("data-dtps-course", "all");
+        $("#dtpsMainSearchBox").attr("data-search-type", type);
+    } else if (error) {
+        $("#dtpsSearchStatus i").text("error");
+        $("#dtpsSearchStatus span").html(`Cannot search for ${type} in <b style="color: ${course.color};">${course.subject}</b>`);
+        $("#dtpsMainSearchBox").attr("placeholder", "Cannot search for " + type + " in " + course.subject);
+        $("#dtpsMainSearchBox").attr("data-dtps-course", "");
+        $("#dtpsMainSearchBox").attr("data-search-type", "");
+    } else if (course || true) {
         $("#dtpsSearchStatus i").text(icon);
         $("#dtpsSearchStatus span").html(`Search ${type} in <b style="color: ${course.color};">${course.subject}</b>`);
         $("#dtpsMainSearchBox").attr("placeholder", "Search " + type + " in " + course.subject);
+        $("#dtpsMainSearchBox").attr("data-dtps-course", course.num);
+        $("#dtpsMainSearchBox").attr("data-search-type", type);
     }
 }
 
@@ -1649,7 +1684,7 @@ dtps.renderLite = function () {
                     <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
                     <div class="label"><i class="material-icons">image</i> Hide class images</div>
 
-                    ${dtpsLMS.dtech ? /*html*/`
+                    ${dtpsLMS.dtech && !dtps.user.parent ? /*html*/`
                             <br /><br />
                             <div onclick="fluid.set('pref-autoGroupClasses'); dtps.settingsReloadWarning();" class="switch pref-autoGroupClasses active"><span class="head"></span></div>
                             <div class="label"><i class="material-icons">sort</i> Automatically group and sort classes</div>
@@ -1657,7 +1692,7 @@ dtps.renderLite = function () {
                             <div onclick="fluid.set('pref-formatAssignmentContent');" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
                             <div class="label"><i class="material-icons">format_paint</i> Reformat assignment content</div>
                         ` : ""
-        }
+                    }
 
                 </div>
 
@@ -2083,6 +2118,7 @@ dtps.init();
 * @property {string} userID The ID of the user this class is associated with (from the parameter of dtpsLMS.fetchClasses)
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
+* @property {boolean} [people] True if the class supports the "People" tab. If this is true dtpsLMS.fetchUsers must be implemented.
 * @property {string} [icon] The icon to show with this class
 * @property {string} [group] The name of the group that this class is in
 * @property {number|string} [period] The period or section the user has this class at

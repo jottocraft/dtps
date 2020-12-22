@@ -78,7 +78,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 }
 
                 //Check if course is ineligible for videoMeetingURL
-                if (!dtps.remoteConfig.showVideoMeetingButton || !course.homepage || (course.term !== dtps.remoteConfig.dtechCurrentTerm)) {
+                if (!dtps.remoteConfig.showVideoMeetingButton || dtps.user.parent || !course.homepage || (course.term !== dtps.remoteConfig.dtechCurrentTerm)) {
                     course.videoMeetingURL = null;
                 }
 
@@ -95,7 +95,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 }
 
                 //Get course cycle
-                if (window.localStorage.getItem("pref-autoGroupClasses") !== "false") {
+                if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
                     if ((course.period >= 1) && (course.period <= 3)) {
                         course.group = "Cycle 1";
                     } else if ((course.period >= 4) && (course.period <= 6)) {
@@ -149,7 +149,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             classes = tmpNewArray;
 
             //Automatically sort and group classes if enabled
-            if (window.localStorage.getItem("pref-autoGroupClasses") !== "false") {
+            if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
                 classes.sort((a, b) => {
                     return a.period - b.period;
                 });

@@ -220,11 +220,7 @@ Power+ CSS
     display: block !important;
 }
 
-body.dark .dash .colorBar {
-    background: var(--classColor);
-}
-
-body.light .dash .colorBar {
+.dash .colorBar {
     background: var(--classColor);
 }
 
@@ -1623,4 +1619,53 @@ body.dark .headerArea img {
     padding: 15px 18px;
     box-shadow: var(--elementShadow);
     margin: 24px 0px;
+}
+
+.card.searchResult {
+    padding: 15px 18px;
+    position: relative;
+    border-radius: var(--cardRadius);
+}
+
+.card.searchResult h4 {
+    font-size: 20px;
+    margin: 0px !important;
+    white-space: nowrap;
+    height: 24px;
+    line-height: 24px;
+    font-weight: bold;
+}
+
+.card.searchResult .highlight {
+    font-weight: bold;
+    background-color: var(--theme);
+    color: var(--themeText);
+}
+
+.card.searchResult .highlight i {
+    color: var(--themeText) !important;
+    font-weight: bold !important;
+}
+
+.card.searchResult .statusIcon {
+    font-size: 18px;
+    color: var(--secText);
+}
+
+.searchResult.mixedClasses .colorBar {
+    width: 7px;
+    height: calc(100% - 32px);
+    position: absolute;
+    top: 16px;
+    left: 14px;
+    border-radius: 10px;
+    display: block !important;
+}
+
+.searchResult.mixedClasses .colorBar {
+    background: var(--classColor);
+}
+
+.searchResult.mixedClasses {
+    padding-left: 34px;
 }
