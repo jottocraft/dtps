@@ -1197,6 +1197,7 @@ fluid.externalScreens.gradebook = (courseID) => {
 * @property {string} title Title of the announcement
 * @property {Date} postedAt Date when the announcement was posted
 * @property {string} body Announcement content
+* @property {string} url Announcement URL
 */
 
 /**

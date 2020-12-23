@@ -12,9 +12,10 @@
  * 
  * @param {string} courseID The course ID to render discussion threads for
  * @param {string} [defaultThread] The thread to load by default
- * @param {boolean} fromModules True if this page is being loaded from the moduleStream
+ * @param {boolean} [fromModules] True if this page is being loaded from the moduleStream
+ * @param {string} [defaultPost] The post to load by default
  */
-dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
+dtps.loadThreadsList = function (courseID, defaultThread, fromModules, defaultPost) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(courseID);
     dtps.selectedClass = classNum;
@@ -37,7 +38,7 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
 
     //Load module thread
     if (fromModules) {
-        dtps.loadThreadPosts(classNum, defaultThread, fromModules);
+        dtps.loadThreadPosts(classNum, defaultThread, fromModules, defaultPost);
         return;
     }
 
@@ -124,7 +125,7 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
 
                 //Load default thread if provided
                 if (defaultThread) {
-                    dtps.loadThreadPosts(classNum, defaultThread);
+                    dtps.loadThreadPosts(classNum, defaultThread, fromModules, defaultPost);
                 }
 
                 //Add click event listeners for discussion threads
@@ -152,9 +153,10 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
  * 
  * @param {number} classNum The class number to render
  * @param {string} threadID The discussion thread to render
- * @param {boolean} fromModules True if this page is being loaded from the moduleStream
+ * @param {boolean} [fromModules] True if this page is being loaded from the moduleStream
+ * @param {string} [defaultPost] The post ID to jump to
  */
-dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
+dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "discuss") || fromModules)) {
         jQuery(".classContent").html(/*html*/`
@@ -205,7 +207,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
                 //Get HTML for each reply and add to array
                 post.replies.forEach(reply => {
                     replyHTML.push(/*html*/`
-                        <div style="margin-left: ${(reply.depth || 0) * 50}px;" class="discussionReply">
+                        <div data-post-id="${reply.id}" style="margin-left: ${(reply.depth || 0) * 50}px;" class="discussionReply">
                             <div class="discussionHeader">
                                 ${post.author ? /*html*/`
                                     <img src="${reply.author.photoURL}" />
@@ -230,7 +232,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
             //Create HTML for this post
             //Note that index == 0 is the initial post
             postHTML.push(/*html*/`
-                    <div class="card" style="margin-top: 20px;${index == 0 ? "margin-bottom: 75px;" : "padding: 20px 30px;"}">
+                    <div class="card" data-post-id="${post.id}" style="margin-top: 20px;${index == 0 ? "margin-bottom: 75px;" : "padding: 20px 30px;"}">
                         <!-- Thread title (Initial post) -->
                         ${index == 0 ? /*html*/`
                             <h4 style="font-weight: bold">${thread.title}</h4>
@@ -283,6 +285,11 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
                     <i class="material-icons">keyboard_arrow_left</i> Back
                 </button>
             ` : "") + postHTML.join(""));
+
+            //Jump to post if specified
+            if (defaultPost) {
+                $("[data-post-id=" + defaultPost + "]").get(0).scrollIntoView();
+            }
         }
     }).catch(function (err) {
         dtps.error("Could not fetch discussion posts", "Caught promise rejection @ dtps.loadThreadPosts", err);
@@ -505,8 +512,9 @@ fluid.externalScreens.discussions = (param) => {
     var courseID = param.split("|")[0];
     var threadID = param.split("|")[1];
     var fromModules = param.split("|")[2] == "true";
+    var postID = param.split("|")[3];
 
-    dtps.loadThreadsList(courseID, threadID, fromModules);
+    dtps.loadThreadsList(courseID, threadID, fromModules, postID);
 }
 
 fluid.externalScreens.pages = (param) => {

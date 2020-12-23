@@ -1625,6 +1625,10 @@ body.dark .headerArea img {
     padding: 15px 18px;
     position: relative;
     border-radius: var(--cardRadius);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border 0.2s, background-color 0.2s;
+    user-select: none;
 }
 
 .card.searchResult h4 {
@@ -1674,4 +1678,9 @@ body.dark .headerArea img {
 
 .searchResult.mixedClasses {
     padding-left: 34px;
+}
+
+.searchResult:hover {
+    background-color: var(--elements);
+    border-color: var(--highlight);
 }

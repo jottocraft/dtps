@@ -280,6 +280,7 @@ dtpsLMS.fetchModules = function (userID, classID) {
                             title: item.title,
                             id: item.content_id,
                             indent: item.indent,
+                            url: item.html_url,
                             completed: item.completion_requirement && item.completion_requirement.completed
                         })
                     } else if (item.type.toUpperCase() == "PAGE") {
@@ -361,7 +362,8 @@ dtpsLMS.fetchAnnouncements = function (classID) {
                 return {
                     title: announcement.title,
                     postedAt: announcement.created_at,
-                    body: announcement.message
+                    body: announcement.message,
+                    url: announcement.html_url
                 }
             });
 

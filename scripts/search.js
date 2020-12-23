@@ -57,7 +57,7 @@ dtps.globalSearch = function (term) {
                     title: assignment.title,
                     class: course.num,
                     body: $('<div>' + assignment.body + '</div>').text(),
-                    url: assignment.url,
+                    onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
                     locatedIn: assignment.category ? assignment.category : "Assignment",
                     icon: "assignment",
                     infoIcons: [
@@ -140,6 +140,7 @@ dtps.globalSearch = function (term) {
                     resolve([{
                         title: course.subject + " Homepage",
                         class: course.num,
+                        onclick: "dtps.classHome(" + course.num + ");",
                         locatedIn: course.subject,
                         icon: "home",
                         body: $('<div>' + data + '</div>').text(),
@@ -159,6 +160,7 @@ dtps.globalSearch = function (term) {
                         resolve(pages.map(page => ({
                             title: page.title,
                             class: course.num,
+                            onclick: "fluid.screen('pages', '" + course.id + "|" + page.id + "');",
                             body: $('<div>' + page.content + '</div>').text(),
                             locatedIn: "Page",
                             icon: "insert_drive_file",
@@ -186,11 +188,13 @@ dtps.globalSearch = function (term) {
                         discussions.forEach(discussion => {
                             discussion.posts.forEach(post => {
                                 post.locatedIn = discussion.title;
+                                post.threadID = discussion.id;
                                 res.push(post);
 
                                 if (post.replies) {
                                     post.replies.forEach(reply => {
                                         reply.locatedIn = discussion.title;
+                                        reply.threadID = discussion.id;
                                         res.push(reply);
                                     });
                                 }
@@ -199,7 +203,7 @@ dtps.globalSearch = function (term) {
                         resolve(res.map(post => ({
                             body: $('<div>' + post.body + '</div>').text(),
                             class: course.num,
-                            url: post.replyURL,
+                            onclick: "fluid.screen('discussions', '" + course.id + "|" + post.threadID + "|false|" + post.id + "');",
                             locatedIn: post.locatedIn,
                             icon: "forum",
                             infoIcons: [
@@ -258,7 +262,7 @@ dtps.globalSearch = function (term) {
                                 res.push({
                                     title: assignment.title,
                                     class: course.num,
-                                    url: assignment.url,
+                                    onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
                                     locatedIn: rubric.title,
                                     icon: "assessment",
                                     infoIcons: [
@@ -275,7 +279,7 @@ dtps.globalSearch = function (term) {
                         res.push({
                             title: assignment.title,
                             class: course.num,
-                            url: assignment.url,
+                            onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
                             locatedIn: "Grade",
                             icon: "assessment",
                             infoIcons: [
@@ -298,6 +302,7 @@ dtps.globalSearch = function (term) {
                 dtpsLMS.fetchAnnouncements(course.lmsID).then(announcements => {
                     resolve(announcements.map((announcement) => ({
                         title: announcement.title,
+                        url: announcement.url,
                         class: course.num,
                         locatedIn: course.subject,
                         icon: "announcement",
@@ -432,6 +437,7 @@ dtps.renderSearchResult = function (result, matchData, mixedClasses) {
         <div 
             class="card searchResult ${mixedClasses ? "mixedClasses" : ""}"
             style="${'--classColor: ' + dtps.classes[result.class].color}"
+            onclick="${result.onclick || (result.url && "window.open('" + result.url + "')")}"
         >
 
             <!-- Color bar for the dashboard -->
