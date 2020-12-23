@@ -526,6 +526,9 @@ dtps.classStream = function (classID, searchResults) {
     $("#dtpsTabBar .btn").removeClass("active");
     $("#dtpsTabBar .btn.stream").addClass("active");
 
+    //Save coursework stream preference
+    window.localStorage.setItem("courseworkPref-" + classID, "stream");
+
     //Load class color, name, etc.
     dtps.presentClass(classNum);
 
@@ -829,6 +832,9 @@ dtps.moduleStream = function (classID) {
     dtps.selectedContent = "moduleStream";
     $("#dtpsTabBar .btn").removeClass("active");
     $("#dtpsTabBar .btn.stream").addClass("active");
+
+    //Save coursework stream preference
+    window.localStorage.setItem("courseworkPref-" + classID, "moduleStream");
 
     //Load class color, name, etc.
     dtps.presentClass(classNum);

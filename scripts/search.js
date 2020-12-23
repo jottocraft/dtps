@@ -50,19 +50,10 @@ dtps.globalSearch = function (term) {
     var datasetPromises = [];
 
     (courseNum == "all" ? dtps.classes : [dtps.classes[Number(courseNum)]]).forEach(course => {
-        if (type.includes("assignments") || (type == "coursework") || (type == "everything")) {
+        if ((type == "assignments") || (type == "coursework") || (type == "everything")) {
             datasetPromises.push(new Promise((resolve, reject) => {
                 if (!course.assignments) return resolve([]);
-                var res = [];
-                if (type == "missing assignments") {
-                    res = course.assignments.filter(assignment => assignment.missing);
-                } else if (type == "turned in assignments") {
-                    res = course.assignments.filter(assignment => assignment.turnedIn);
-                } else {
-                    res = course.assignments;
-                }
-
-                resolve(res.map(assignment => ({
+                resolve(course.assignments.map(assignment => ({
                     title: assignment.title,
                     class: course.num,
                     body: $('<div>' + assignment.body + '</div>').text(),
@@ -148,7 +139,9 @@ dtps.globalSearch = function (term) {
                         class: course.num,
                         locatedIn: course.subject,
                         icon: "home",
-                        body: $('<div>' + data + '</div>').text()
+                        body: $('<div>' + data + '</div>').text(),
+                        info: [],
+                        icons: []
                     }]);
                 }).catch(() => resolve([]));
             }));
@@ -250,42 +243,28 @@ dtps.globalSearch = function (term) {
             dataset = dataset.concat(result);
         });
 
-        var search = new Fuse(dataset, {
-            keys: [{
-                name: "title",
-                weight: 1
-            },
-            {
-                name: "body",
-                weight: 0.8
-            },
-            {
-                name: "locatedIn",
-                weight: 0.7
-            },
-            {
-                name: "info.info",
-                weight: 0.6
-            },
-            {
-                name: "icons.keywords",
-                weight: 0.4
-            }],
-            includeMatches: true,
-            ignoreLocation: true,
-            //threshold: 0
+        var idx = lunr(function () {
+            this.ref('id');
+            this.field('title');
+            this.field('body');
+            this.field('locatedIn');
+            this.field('info.info');
+            this.field('icons.keywords');
+            this.metadataWhitelist = ['position'];
+
+            dataset.forEach(function (doc, i) {
+                this.add({
+                    id: i,
+                    ...doc
+                });
+            }, this)
         });
 
-        if (term) {
-            var result = search.search(term);
-            if (result.length > 10) result.length = 10;
-        } else {
-            var result = dataset.map(item => ({ item: item, matches: [] }));
-        }
+        var result = idx.search(term);
 
         console.log(dataset, term, result);
 
-        $(".classContent").html(result.map(res => dtps.renderSearchResult(res.item, res.matches, courseNum == "all")));
+        $(".classContent").html(result.map(res => dtps.renderSearchResult(dataset[Number(res.ref)], res.matchData.metadata, courseNum == "all")));
     });
 }
 
@@ -293,22 +272,35 @@ dtps.globalSearch = function (term) {
  * Renders a Search data object into HTML for display in the search results list
  * 
  * @param {SearchData} result The search result to render
- * @param {Object[]} matches The list of matches from Fuse.js
+ * @param {Object[]} matchData The list of matches from Lunr
  * @param {boolean} [mixedClasses] True if there are results from multiple classes
  * @return {string} The HTML for this result in the results list
  */
-dtps.renderSearchResult = function (result, matches, mixedClasses) {
-    //A function that highlights a string between the specified indicies
-    function highlightString(string, indicies) {
+dtps.renderSearchResult = function (result, matchData, mixedClasses) {
+    var matches = {};
+    var matchTerms = Object.values(matchData);
+    matchTerms.forEach(term => {
+        Object.keys(term).forEach(k => {
+            if (matches[k]) {
+                matches[k] = matches[k].concat(term[k].position);
+            } else {
+                matches[k] = term[k].position;
+            }
+        });
+    });
+    matches = Object.keys(matches).map(k => ({ key: k, position: matches[k] }));
+
+    //A function that highlights a string
+    function highlightString(string, position) {
         var parts = string.split("");
-        indicies.forEach(ind => {
+        position.forEach(pos => {
             //highlight part
             parts.forEach((part, i) => {
-                if (i == ind[0]) {
+                if (i == pos[0]) {
                     parts[i] = '<span class="highlight">' + parts[i];
                 }
 
-                if (i == ind[1]) {
+                if (i == (pos[0] + pos[1] - 1)) {
                     parts[i] = parts[i] + '</span>';
                 }
             });
@@ -323,30 +315,32 @@ dtps.renderSearchResult = function (result, matches, mixedClasses) {
     var highlightedIcons = [];
     matches.forEach(match => {
         if (match.key == "title") {
-            result.title = highlightString(result.title, match.indices);
+            result.title = highlightString(result.title, match.position);
         } else if (match.key == "locatedIn") {
-            result.locatedIn = highlightString(result.locatedIn, match.indices);
+            result.locatedIn = highlightString(result.locatedIn, match.position);
         } else if (match.key == "body") {
             //Get longest 2 matches
-            var sections = match.indices.sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
+            var sections = match.position.sort((a, b) => b[1] - a[1]);
             var matchesToDisplay = 2;
             if (sections.length < matchesToDisplay) matchesToDisplay = sections.length;
             bodyOverflow = sections.length - matchesToDisplay;
 
             for (var i = 0; i < matchesToDisplay; i++) {
-                var startIndex = sections[i][0] - 10;
-                var endIndex = sections[i][1] + 10;
+                var matchStartIndex = sections[i][0];
+                var matchEndIndex = sections[i][0] + sections[i][1] - 1;
+
+                var startIndex = matchStartIndex - 10;
+                var endIndex = matchEndIndex + 10;
 
                 if (startIndex < 0) startIndex = 0;
                 if (endIndex > (result.body.length - 1)) endIndex = result.body.length - 1;
 
-                var res = result.body.slice(startIndex, sections[i][0]) + '<span class="highlight">' + result.body.slice(sections[i][0], sections[i][1] + 1) + '</span>' + result.body.slice(sections[i][1] + 1, endIndex + 1);
+                var res = result.body.slice(startIndex, matchStartIndex) + '<span class="highlight">' + result.body.slice(matchStartIndex, matchEndIndex + 1) + '</span>' + result.body.slice(matchEndIndex + 1, endIndex + 1);
                 bodyParts.push(res);
             }
         } else if (match.key == "info.info") {
-            result.info[match.refIndex].info = highlightString(result.info[match.refIndex].info, match.indices);
-        } else if (match.key == "icons.keywords") {
-            highlightedIcons.push(match.refIndex);
+            return;
+            result.info[match.refIndex].info = highlightString(result.info[match.refIndex].info, match.position[0], match.position[1]);
         }
     });
 
@@ -375,11 +369,7 @@ dtps.renderSearchResult = function (result, matches, mixedClasses) {
             ${bodyOverflow ? `<p style="color: var(--secText);">+${bodyOverflow} more matches</p>` : ""}
 
             <h5>
-                ${result.icons.map((icon, i) => (
-                    highlightedIcons.includes(i) ? 
-                    `<span class="highlight"><i class="material-icons statusIcon">${icon.icon}</i></span>`
-                    : `<i class="material-icons statusIcon">${icon.icon}</i>`
-    )).join("")}
+                ${result.icons.map((icon, i) => (`<i class="material-icons statusIcon">${icon.icon}</i>`)).join("")}
             </h5>
         </div>
     `;

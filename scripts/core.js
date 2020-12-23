@@ -239,19 +239,19 @@ dtps.JS = function (cb) {
         jQuery.getScript("https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js");
     });
 
-    //Fuse.js is used for search
-    jQuery.getScript('https://cdn.jsdelivr.net/npm/fuse.js@6.4.3');
+    //Lunr is used for search
+    jQuery.getScript('https://unpkg.com/lunr/lunr.js');
 
     //jQuery UI for dashboard settings page
     jQuery.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js');
 
-    //Tinycolor used for Fluid UI acrylic & color manipulation
-    jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js", () => {
-        //dtao/nearest-color is used for finding the nearest class color
-        jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
-            //Fluid UI for core UI elements
-            jQuery.getScript('https://cdn.jottocraft.com/fluid/v5.min.js', cb);
-        })
+    //Tinycolor used for better dark mode support
+    jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js");
+
+    //dtao/nearest-color is used for finding the nearest class color
+    jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
+        //Fluid UI for core UI elements
+        jQuery.getScript('https://cdn.jottocraft.com/fluid/v5.min.js', cb);
     });
 }
 
@@ -792,12 +792,8 @@ dtps.showClasses = function (override) {
         //Class onclick listener
         $(".class:not(.overrideClass)").click(function (event) {
             //Load class content based on what's selected
-            if ((dtps.selectedContent == "stream") && dtps.classes[dtps.selectedClass]) {
-                fluid.screen("stream", dtps.classes[dtps.selectedClass].id);
-            }
-
-            if ((dtps.selectedContent == "moduleStream") && dtps.classes[dtps.selectedClass]) {
-                if (dtps.classes[dtps.selectedClass].modules) {
+            if (((dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) && dtps.classes[dtps.selectedClass]) {
+                if (dtps.classes[dtps.selectedClass].modules && (window.localStorage.getItem("courseworkPref-" + dtps.classes[dtps.selectedClass].id) == "moduleStream")) {
                     fluid.screen("moduleStream", dtps.classes[dtps.selectedClass].id);
                 } else {
                     fluid.screen("stream", dtps.classes[dtps.selectedClass].id);
@@ -878,7 +874,7 @@ dtps.presentClass = function (classNum) {
     $(".headerArea .dashboardStartDate").hide();
 
     //Clear search box if not on the search tab
-    if (classNum !== "search") {
+    if ((classNum !== "search") && !$("#dtpsMainSearchBox").is(":focus")) {
         $("#dtpsMainSearchBox").val("");
     }
 
@@ -1389,11 +1385,11 @@ dtps.render = function () {
                 <p>By defualt, Power+ will search based on the page you're on. You can use the keywords below for more advanced searches:</p>
                 <div class="grid samesize">
                     <div class="item">
+                        <p><i class="material-icons">library_books</i> type:coursework</p>
                         <p><i class="material-icons">view_module</i> type:module</p>
                         <p><i class="material-icons">assignment</i> type:assignment</p>
-                        <p><i class="material-icons">remove_circle_outline</i> type:missing</p>
-                        <p><i class="material-icons">assignment_turned_in</i> type:turnedin</p>
                         <p><i class="material-icons">assessment</i> type:grade</p>
+                        <p><i class="material-icons">announcement</i> type:announcement</p>
                     </div>
                     <div class="item">
                         <p><i class="material-icons">home</i> type:homepage</p>
@@ -1515,12 +1511,11 @@ dtps.setSearchBox = function () {
     var error = false;
 
     //Get automatic type from selected content
-    if ((dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
+    if ((dtps.selectedClass == "dash") || (dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
     if (dtps.selectedContent == "people") type = "people";
     if (dtps.selectedContent == "discuss") type = "discussions";
     if (dtps.selectedContent == "pages") type = "pages";
     if (dtps.selectedContent == "grades") type = "grades";
-    if (dtps.selectedClass == "dash") type = "assignments";
 
     //If search is open, reuse existing context
     if (dtps.selectedClass == "search") {
@@ -1533,15 +1528,15 @@ dtps.setSearchBox = function () {
     }
 
     //Check for type override from search box
-    if (value.split(" ").includes("type:assignment")) type = "assignments";
-    if (value.split(" ").includes("type:missing")) type = "missing assignments";
-    if (value.split(" ").includes("type:turnedin")) type = "turned in assignments";
-    if (value.split(" ").includes("type:module")) type = "modules";
+    if (value.split(" ").includes("type:coursework")) type = "coursework";
     if (value.split(" ").includes("type:homepage")) type = "homepages";
     if (value.split(" ").includes("type:page")) type = "pages";
     if (value.split(" ").includes("type:discussion")) type = "discussions";
     if (value.split(" ").includes("type:grade")) type = "grades";
     if (value.split(" ").includes("type:person")) type = "people";
+    if (value.split(" ").includes("type:assignment")) type = "assignments";
+    if (value.split(" ").includes("type:module")) type = "modules";
+    if (value.split(" ").includes("type:announcement")) type = "announcements";
     if (value.split(" ").includes("type:all")) type = "everything";
 
     //Get icon from final type
@@ -1551,10 +1546,9 @@ dtps.setSearchBox = function () {
     if (type == "pages") icon = "insert_drive_file";
     if (type == "grades") icon = "assessment";
     if (type == "assignments") icon = "assignment";
-    if (type == "missing assignments") icon = "remove_circle_outline";
-    if (type == "turned in assignments") icon = "assignment_turned_in";
     if (type == "modules") icon = "view_module";
     if (type == "homepages") icon = "home";
+    if (type == "announcements") icon = "announcement";
     if (type == "everything") icon = "warning";
 
     //Check for course override from search box
