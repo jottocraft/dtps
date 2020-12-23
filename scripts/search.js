@@ -58,20 +58,14 @@ dtps.globalSearch = function (term) {
                     class: course.num,
                     body: $('<div>' + assignment.body + '</div>').text(),
                     url: assignment.url,
-                    locatedIn: "Assignments",
+                    locatedIn: assignment.category ? assignment.category : "Assignment",
                     icon: "assignment",
+                    infoIcons: [
+                        assignment.dueAt ? "alarm" : null
+                    ].filter(i => i),
                     info: [
-                        {
-                            icon: "alarm",
-                            label: "Due",
-                            info: assignment.dueAt ? dtps.formatDate(assignment.dueAt) : null
-                        },
-                        {
-                            icon: "category",
-                            label: "Category",
-                            info: assignment.category || null
-                        }
-                    ].filter(i => i.info),
+                        assignment.dueAt ? "Due: " + dtps.formatDate(assignment.dueAt) : null
+                    ].filter(i => i).join("$|$"),
                     icons: [
                         {
                             icon: assignment.missing ? "remove_circle_outline" : null,
@@ -97,10 +91,20 @@ dtps.globalSearch = function (term) {
         if ((type == "modules") || (type == "coursework") || (type == "everything")) {
             datasetPromises.push(new Promise((resolve, reject) => {
                 if (!course.modules) return resolve([]);
-                dtpsLMS.fetchModules(dtps.user.id, course.lmsID).then(data => {
+                new Promise(resolve => {
+                    if (course.modules && (course.modules !== true)) {
+                        resolve(course.modules);
+                    } else {
+                        dtpsLMS.fetchModules(dtps.user.id, course.lmsID).then(data => resolve(data));
+                    }
+                }).then(data => {
                     var res = [];
                     data.forEach(module => {
                         module.items.forEach(item => {
+                            //Prevent assignments from showing twice in coursework search results
+                            //(since assignments can appear in both assignments and modules tab)
+                            if ((item.type == "assignment") && (type == "coursework")) return;
+
                             item.locatedIn = module.title;
                             res.push(item);
                         });
@@ -112,13 +116,12 @@ dtps.globalSearch = function (term) {
                         url: item.url,
                         locatedIn: item.locatedIn,
                         icon: "view_module",
+                        infoIcons: [
+                            "category"
+                        ].filter(i => i),
                         info: [
-                            {
-                                icon: "category",
-                                label: "Type",
-                                info: item.type
-                            }
-                        ].filter(i => i.info),
+                            "Type: " + item.type
+                        ].filter(i => i).join("$|$"),
                         icons: [
                             {
                                 icon: item.completed ? "check" : null,
@@ -140,7 +143,6 @@ dtps.globalSearch = function (term) {
                         locatedIn: course.subject,
                         icon: "home",
                         body: $('<div>' + data + '</div>').text(),
-                        info: [],
                         icons: []
                     }]);
                 }).catch(() => resolve([]));
@@ -158,15 +160,14 @@ dtps.globalSearch = function (term) {
                             title: page.title,
                             class: course.num,
                             body: $('<div>' + page.content + '</div>').text(),
-                            locatedIn: "Pages",
+                            locatedIn: "Page",
                             icon: "insert_drive_file",
+                            infoIcons: [
+                                page.author && page.author.name ? "person" : null
+                            ].filter(i => i),
                             info: [
-                                {
-                                    icon: "person",
-                                    label: "Author",
-                                    info: page.author && page.author.name || null
-                                }
-                            ].filter(i => i.info),
+                                page.author && page.author.name ? "Author: " + page.author && page.author.name : null
+                            ].filter(i => i).join("$|$"),
                             icons: []
                         })));
                     })
@@ -186,6 +187,13 @@ dtps.globalSearch = function (term) {
                             discussion.posts.forEach(post => {
                                 post.locatedIn = discussion.title;
                                 res.push(post);
+
+                                if (post.replies) {
+                                    post.replies.forEach(reply => {
+                                        reply.locatedIn = discussion.title;
+                                        res.push(reply);
+                                    });
+                                }
                             })
                         });
                         resolve(res.map(post => ({
@@ -194,18 +202,14 @@ dtps.globalSearch = function (term) {
                             url: post.replyURL,
                             locatedIn: post.locatedIn,
                             icon: "forum",
+                            infoIcons: [
+                                post.author && post.author.name ? "person" : null,
+                                post.postedAt ? "calendar_today" : null
+                            ].filter(i => i),
                             info: [
-                                {
-                                    icon: "person",
-                                    label: "Author",
-                                    info: post.author && post.author.name || null
-                                },
-                                {
-                                    icon: "calendar_today",
-                                    label: "Posted At",
-                                    info: post.postedAt ? dtps.formatDate(post.postedAt) : null
-                                }
-                            ].filter(i => i.info),
+                                post.author && post.author.name ? "Author: " + post.author && post.author.name : null,
+                                post.postedAt ? "Posted At: " + dtps.formatDate(post.postedAt) : null
+                            ].filter(i => i).join("$|$"),
                             icons: []
                         })));
                     })
@@ -216,7 +220,13 @@ dtps.globalSearch = function (term) {
         if ((type == "people") || (type == "everything")) {
             datasetPromises.push(new Promise((resolve, reject) => {
                 if (!course.people) return resolve([]);
-                dtpsLMS.fetchUsers(course.lmsID).then(data => {
+                new Promise(resolve => {
+                    if (course.people && (course.people !== true)) {
+                        resolve(course.people);
+                    } else {
+                        dtpsLMS.fetchUsers(course.lmsID).then(data => resolve(data));
+                    }
+                }).then(data => {
                     var res = [];
                     data.forEach(section => {
                         section.users.forEach(user => {
@@ -230,7 +240,74 @@ dtps.globalSearch = function (term) {
                         url: person.url,
                         locatedIn: person.locatedIn,
                         icon: "people",
-                        info: [],
+                        icons: []
+                    })));
+                }).catch(() => resolve([]));
+            }));
+        }
+
+        if ((type == "grades") || (type == "everything")) {
+            datasetPromises.push(new Promise((resolve, reject) => {
+                if (!course.assignments) return resolve([]);
+                var res = [];
+
+                course.assignments.forEach(assignment => {
+                    if (dtpsLMS.useRubricGrades && assignment.rubric) {
+                        assignment.rubric.forEach(rubric => {
+                            if (rubric.score) {
+                                res.push({
+                                    title: assignment.title,
+                                    class: course.num,
+                                    url: assignment.url,
+                                    locatedIn: rubric.title,
+                                    icon: "assessment",
+                                    infoIcons: [
+                                        "bar_chart"
+                                    ].filter(i => i),
+                                    info: [
+                                        "Score: " + rubric.score + "/" + rubric.value + (rubric.scoreName ? " " + rubric.scoreName : "")
+                                    ].filter(i => i).join("$|$"),
+                                    icons: []
+                                });
+                            }
+                        });
+                    } else if (assignment.grade) {
+                        res.push({
+                            title: assignment.title,
+                            class: course.num,
+                            url: assignment.url,
+                            locatedIn: "Grade",
+                            icon: "assessment",
+                            infoIcons: [
+                                "bar_chart"
+                            ].filter(i => i),
+                            info: [
+                                "Score: " + assignment.grade + "/" + assignment.value + " (" + Math.round((assignment.grade / assignment.value) * 100) + "%" + (assignment.letter ? ", " + assignment.letter : "") + ")"
+                            ].filter(i => i).join("$|$"),
+                            icons: []
+                        });
+                    }
+                });
+
+                resolve(res);
+            }));
+        }
+
+        if ((type == "announcements") || (type == "everything")) {
+            datasetPromises.push(new Promise((resolve, reject) => {
+                dtpsLMS.fetchAnnouncements(course.lmsID).then(announcements => {
+                    resolve(announcements.map((announcement) => ({
+                        title: announcement.title,
+                        class: course.num,
+                        locatedIn: course.subject,
+                        icon: "announcement",
+                        body: $('<div>' + announcement.body + '</div>').text(),
+                        infoIcons: [
+                            "calendar_today"
+                        ].filter(i => i),
+                        info: [
+                            "Posted at: " + dtps.formatDate(announcement.postedAt)
+                        ].filter(i => i).join("$|$"),
                         icons: []
                     })));
                 }).catch(() => resolve([]));
@@ -248,8 +325,7 @@ dtps.globalSearch = function (term) {
             this.field('title');
             this.field('body');
             this.field('locatedIn');
-            this.field('info.info');
-            this.field('icons.keywords');
+            this.field('info');
             this.metadataWhitelist = ['position'];
 
             dataset.forEach(function (doc, i) {
@@ -312,7 +388,6 @@ dtps.renderSearchResult = function (result, matchData, mixedClasses) {
     //Highlight matches
     var bodyParts = [];
     var bodyOverflow = 0;
-    var highlightedIcons = [];
     matches.forEach(match => {
         if (match.key == "title") {
             result.title = highlightString(result.title, match.position);
@@ -338,11 +413,20 @@ dtps.renderSearchResult = function (result, matchData, mixedClasses) {
                 var res = result.body.slice(startIndex, matchStartIndex) + '<span class="highlight">' + result.body.slice(matchStartIndex, matchEndIndex + 1) + '</span>' + result.body.slice(matchEndIndex + 1, endIndex + 1);
                 bodyParts.push(res);
             }
-        } else if (match.key == "info.info") {
-            return;
-            result.info[match.refIndex].info = highlightString(result.info[match.refIndex].info, match.position[0], match.position[1]);
+        } else if (match.key == "info") {
+            result.info = highlightString(result.info, match.position);
         }
     });
+
+    //Map result info back into an array
+    if (result.info) {
+        result.info = result.info.split("$|$").map((info, i) => {
+            return {
+                icon: result.infoIcons[i],
+                info: info,
+            }
+        });
+    }
 
     return /*html*/`
         <div 
@@ -358,9 +442,9 @@ dtps.renderSearchResult = function (result, matchData, mixedClasses) {
 
             <h5>
                 <div class="infoChip"><i style="margin-top: -2px;" class="material-icons">${result.icon}</i> ${result.locatedIn}</div>
-                ${result.info.map(info => (
-        `<div class="infoChip"><i style="margin-top: -2px;" class="material-icons">${info.icon}</i> ${info.label}: ${info.info}</div>`
-    )).join("")}
+                ${result.info ? result.info.map(info => (
+        `<div class="infoChip"><i style="margin-top: -2px;" class="material-icons">${info.icon}</i> ${info.info}</div>`
+    )).join("") : ""}
             </h5>
 
             ${bodyParts.map(part => (
@@ -388,7 +472,7 @@ fluid.externalScreens.search = (term) => {
  * @property {string} [url] A URL for opening this result in the LMS
  * @property {string} locatedIn Describes where this result was found (as specific as possible)
  * @property {string} icon The icon to use for this result. Should match (and is displayed with) the locatedIn property.
- * @property {Object[]} info Contains any info (e.g. due dates) for this result. Has an icon property, label property, and info property.
+ * @property {Object[]} [info] Contains any info (e.g. due dates) for this result. Has an icon property, label property, and info property.
  * @property {Object[]} icons Status icons for this result. Has an "icon" property, for the icon, and a "keywords" property for a string with all of the search keywords for the icon.
  * @property {number} class The number of the class that this result is from
  */

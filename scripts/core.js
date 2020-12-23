@@ -240,7 +240,7 @@ dtps.JS = function (cb) {
     });
 
     //Lunr is used for search
-    jQuery.getScript('https://unpkg.com/lunr/lunr.js');
+    jQuery.getScript('https://unpkg.com/lunr@2.3.9/lunr.min.js');
 
     //jQuery UI for dashboard settings page
     jQuery.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js');
@@ -959,6 +959,114 @@ dtps.presentClass = function (classNum) {
 }
 
 /**
+ * Displays the class homepage
+ * 
+ * @param {number} num Class number to show the homepage for
+ */
+dtps.classHome = function (num) {
+    //Render loading screen
+    $(".card.details").html(/*html*/`
+        <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+        <h3 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h3>
+
+        <br />
+        <p>Loading...</p>
+    `);
+
+    //Fetch homepage from the LMS
+    dtpsLMS.fetchHomepage(dtps.classes[num].lmsID).then(homepage => {
+        if (homepage) {
+            //Get computed background and text color to style the iFrame with
+            var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
+            var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
+
+            if ($("body").hasClass("dark")) {
+                homepage = dtps.brightenTextForDarkMode(homepage, computedBackgroundColor);
+            }
+
+            if (dtpsLMS.dtech && dtps.remoteConfig.dtechHomepageFluidUITabs && ($('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().length > 1)) {
+                //Use special tab optimized homepage
+                var fragments = [];
+                $('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().forEach((fragment) => {
+                    var text = $(fragment).text().toLowerCase();
+                    if (!text) return;
+
+                    var id = $(fragment).find("a").attr("href").replace("#", "");
+                    if (!id) return;
+
+                    var html = $(homepage).find("#" + id).html();
+                    if (!html) return;
+
+                    var icon = null;
+                    if (text.includes("agenda")) { icon = "format_list_numbered"; text = "Agenda"; }
+                    if (text.includes("instructor")) { icon = "person"; text = "Instructor"; }
+                    if (text.includes("course info")) { icon = "info"; text = "Course Info"; }
+                    if (text.includes("resources")) { icon = "article"; text = "Course Resources"; }
+
+                    //Generate a blob with the assignment body and get its data URL
+                    var blob = new Blob([`
+                        <base target="_blank" /> 
+                        <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                        <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
+                        ${html}
+                    `], { type: 'text/html' });
+                    var frameURL = window.URL.createObjectURL(blob);
+
+                    fragments.push({ text, id, icon, frameURL });
+                });
+
+                $(".card.details").html(/*html*/`
+                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+
+                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
+
+                    <br />
+                    ${dtps.classes[num].videoMeetingURL ? `<button onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="btn small"><i class="material-icons">videocam</i> Zoom</button>` : ``}
+                    <div class="btns row small">
+                        ${fragments.map((fragment, i) => {
+                    return `<button onclick="$(this).addClass('active');$(this).siblings().removeClass('active');$('#homepageFragment').attr('src', '${fragment.frameURL}'); dtps.iframeLoad('homepageFragment');" 
+                                style="text-transform: capitalize;" class="btn ${i == 0 ? "active" : ""}">${fragment.icon ? `<i class="material-icons">${fragment.icon}</i> ` : ""}${fragment.text}</button>`;
+                }).join("")}
+                    </div>
+
+                    <br />
+                    <div style="margin-top: 20px;" class="homepageBody">
+                        <iframe id="homepageFragment" onload="dtps.iframeLoad('homepageFragment')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${fragments[0].frameURL}" />
+                    </div>
+                `);
+            } else {
+                //Generate a blob with the assignment body and get its data URL
+                var blob = new Blob([`
+                    <base target="_blank" /> 
+                    <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
+                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
+                    ${homepage}
+                `], { type: 'text/html' });
+                var homepageURL = window.URL.createObjectURL(blob);
+
+                $(".card.details").html(/*html*/`
+                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+
+                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
+
+                    <br />
+                    <div style="margin-top: 20px;" class="homepageBody">
+                        <iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${homepageURL}" />
+                    </div>
+                `);
+            }
+
+            fluid.cards(".card.details");
+        } else {
+            fluid.cards.close('.card.details');
+            dtps.error("Homepage unavailable", "homepage is either empty or undefined @ dtps.classHome");
+        }
+    }).catch(e => {
+        dtps.error("Couldn't load homepage", "Caught a promise rejection @ dtps.classHome", e);
+    })
+}
+
+/**
  * Shows the gradebook using HTML from dtpsLMS.gradebook
  * 
  * @param {string} classID Class ID
@@ -1422,7 +1530,7 @@ dtps.render = function () {
               </p>
             </div>
             <div style="display: none;" id="dtpsTabBar" class="btns">
-                <button init="true" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);" class="btn stream">
+                <button init="true" onclick="if (dtps.classes[dtps.selectedClass].modules && (window.localStorage.getItem('courseworkPref-' + dtps.classes[dtps.selectedClass].id) == 'moduleStream')) { fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id); } else { fluid.screen('stream', dtps.classes[dtps.selectedClass].id); }" class="btn stream">
                     <i class="material-icons">library_books</i>
                     Coursework
                 </button>
@@ -1511,11 +1619,11 @@ dtps.setSearchBox = function () {
     var error = false;
 
     //Get automatic type from selected content
-    if ((dtps.selectedClass == "dash") || (dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
     if (dtps.selectedContent == "people") type = "people";
     if (dtps.selectedContent == "discuss") type = "discussions";
     if (dtps.selectedContent == "pages") type = "pages";
     if (dtps.selectedContent == "grades") type = "grades";
+    if ((dtps.selectedClass == "dash") || (dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
 
     //If search is open, reuse existing context
     if (dtps.selectedClass == "search") {
@@ -2112,7 +2220,7 @@ dtps.init();
 * @property {string} userID The ID of the user this class is associated with (from the parameter of dtpsLMS.fetchClasses)
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
-* @property {boolean} [people] True if the class supports the "People" tab. If this is true dtpsLMS.fetchUsers must be implemented.
+* @property {ClassSection[]|boolean} [people] Users in this class. True if the class supports the "People" tab, but not yet loaded. If this is true dtpsLMS.fetchUsers must be implemented.
 * @property {string} [icon] The icon to show with this class
 * @property {string} [group] The name of the group that this class is in
 * @property {number|string} [period] The period or section the user has this class at

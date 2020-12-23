@@ -66,7 +66,15 @@ dtps.usersList = function (courseID) {
     }
 
     //Fetch users list
-    dtpsLMS.fetchUsers(dtps.classes[classNum].lmsID).then(function (sections) {
+    new Promise(resolve => {
+        if (dtps.classes[classNum].people && (dtps.classes[classNum].people !== true)) {
+            resolve(dtps.classes[classNum].people);
+        } else {
+            dtpsLMS.fetchUsers(dtps.classes[classNum].lmsID).then(data => resolve(data));
+        }
+    }).then(function (sections) {
+        dtps.classes[classNum].people = sections;
+
         //Count students and teachers by user ID
         var allStudents = [];
         var allTeachers = [];
