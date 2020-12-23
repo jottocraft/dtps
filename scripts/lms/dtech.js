@@ -97,9 +97,9 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //Get course cycle
                 if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
                     if ((course.period >= 1) && (course.period <= 3)) {
-                        course.group = "Cycle 1";
+                        course.group = "Cycle 1/3";
                     } else if ((course.period >= 4) && (course.period <= 6)) {
-                        course.group = "Cycle 2";
+                        course.group = "Cycle 2/4";
                     } else if ((course.period == 11) || (course.period == 12)) {
                         course.group = "Intersession";
                     }

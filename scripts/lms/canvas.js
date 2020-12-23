@@ -207,7 +207,10 @@ dtpsLMS.fetchAssignments = function (userID, classID) {
                         dtpsAssignment.missing = submission.missing;
                         dtpsAssignment.gradedAt = submission.graded_at;
                         dtpsAssignment.grade = submission.score;
-                        if (isNaN(submission.grade)) dtpsAssignment.letter = submission.grade; //letter cannot be a number
+                        var letter = submission.grade;
+                        if (letter == "complete") letter = "✔️";
+                        if (letter == "incomplete") letter = "❌";
+                        if (isNaN(letter)) dtpsAssignment.letter = letter; //letter cannot be a number
 
                         //Check for submission comments
                         if (submission.submission_comments) {
