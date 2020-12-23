@@ -1432,7 +1432,7 @@ dtps.render = function () {
 
         <div class="navbar">
           <div class="logo">
-            <img src="https://powerplus.app/icon.svg" />
+            <img src="${dtps.baseURL + "/icon.svg"}" />
             <h4>${dtps.baseURL == "https://dev.dtps.jottocraft.com" ? "Power+ (dev)" : "Power+"}</h4>
           </div>
         
@@ -1935,7 +1935,7 @@ dtps.renderLite = function () {
                     <img src="${dtps.baseURL + "/icon.svg"}" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px;" />
                     
                     <div style="display: inline-block; vertical-align: middle;">
-                        <h4 id="dtpsAboutName" onclick="dtps.classicEntry()" style="font-weight: bold; font-size: 32px; margin-bottom: 0px; user-select: none;">Power+</h4>
+                        <h4 id="dtpsAboutName" onclick="dtps.classicEntry()" style="font-weight: bold; font-size: 32px; margin-bottom: 0px; user-select: none;">${dtps.baseURL == "https://dev.dtps.jottocraft.com" ? "Power+ (dev)" : "Power+"}</h4>
                         <div style="font-size: 16px; margin-top: 5px;">
                             ${dtps.readableVer}
                             <div style="display: inline-block;margin: 0px 5px;font-size: 12px;">${baseHost !== "powerplus.app" ? `(from ${baseHost})` : ""}</div>
