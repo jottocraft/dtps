@@ -1617,6 +1617,8 @@ dtps.setSearchBox = function () {
     var course = dtps.selectedClass == "dash" ? "dash" : dtps.classes[dtps.selectedClass];
     var icon = null;
     var error = false;
+    var autoType = null;
+    var autoCourse = dtps.selectedClass == "dash" ? "dash" : dtps.classes[dtps.selectedClass];
 
     //Get automatic type from selected content
     if (dtps.selectedContent == "people") type = "people";
@@ -1624,15 +1626,13 @@ dtps.setSearchBox = function () {
     if (dtps.selectedContent == "pages") type = "pages";
     if (dtps.selectedContent == "grades") type = "grades";
     if ((dtps.selectedClass == "dash") || (dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
-
-    //If search is open, reuse existing context
+    autoType = type;   
+    
+    //Reuse auto type if on search
     if (dtps.selectedClass == "search") {
-        type = $("#dtpsMainSearchBox").attr("data-search-type");
-        course = $("#dtpsMainSearchBox").attr("data-dtps-course");
-
-        if (!isNaN(Number(course))) {
-            course = dtps.classes[Number(course)];
-        }
+        type = $("#dtpsMainSearchBox").attr("data-ctx-type");
+        course = $("#dtpsMainSearchBox").attr("data-ctx-course");
+        if (!isNaN(Number(course))) course = dtps.classes[course];
     }
 
     //Check for type override from search box
@@ -1700,6 +1700,12 @@ dtps.setSearchBox = function () {
         $("#dtpsMainSearchBox").attr("placeholder", "Search " + type + " in " + course.subject);
         $("#dtpsMainSearchBox").attr("data-dtps-course", course.num);
         $("#dtpsMainSearchBox").attr("data-search-type", type);
+    }
+
+    //Set auto type
+    if (dtps.selectedClass !== "search") {
+        $("#dtpsMainSearchBox").attr("data-ctx-type", autoType);
+        $("#dtpsMainSearchBox").attr("data-ctx-course", autoCourse.num);
     }
 }
 

@@ -82,14 +82,20 @@ function copyStatic() {
 
     //Copy www
     ncp("www", "build", function () {
-        //If dev, copy JS files without minifying
         if (dev) {
-            fs.copyFileSync("init.js", "build/init.js");
-            ncp("scripts", "build/scripts", function () {
-                console.log("[2/3] Done");
-                generateDocs();
+            //Copy dev assets
+            ncp("www/dev", "build", function () {
+                //Copy JS without minification
+                fs.copyFileSync("init.js", "build/init.js");
+                ncp("scripts", "build/scripts", function () {
+                    console.log("[2/3] Done");
+                    generateDocs();
+                });
             });
         } else {
+            //Remove dev assets for stable build
+            rimraf.sync("./build/dev/*");
+
             console.log("[2/3] Done");
             generateDocs();
         }
@@ -104,7 +110,10 @@ function generateDocs() {
     mkdirp.sync("./build/docs");
 
     //Generate docs
-    var cp = exec("node ./node_modules/jsdoc/jsdoc.js -r scripts -d ./build/docs -c ./docs/jsdoc.conf.json -t ./node_modules/foodoc/template -R ./docs/README.md", function (e, o) {
+    var docConf = "./docs/jsdoc.conf.json";
+    if (dev) docConf = "./docs/jsdoc.dev.conf.json";
+
+    var cp = exec("node ./node_modules/jsdoc/jsdoc.js -r scripts -d ./build/docs -c " + docConf + " -t ./node_modules/foodoc/template -R ./docs/README.md", function (e, o) {
         if (e) console.error(e);
         if (o) console.log(o);
     });
