@@ -33,6 +33,7 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} leftDashboard Items on the left side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {object} remoteConfig Configuration variables that can be remotely changed
+ * @property {boolean} searchScrollListener True if the search scroll listener has been added
  */
 var dtps = {
     ver: 310,
@@ -871,7 +872,7 @@ dtps.presentClass = function (classNum) {
     }
 
     //Hide dashboard start date
-    $(".headerArea .dashboardStartDate").hide();
+    if (classNum !== "search") $(".headerArea .contentLabel").hide();
 
     //Clear search box if not on the search tab
     if ((classNum !== "search") && !$("#dtpsMainSearchBox").is(":focus")) {
@@ -956,6 +957,9 @@ dtps.presentClass = function (classNum) {
             $("#classInfo .videoMeeting").hide();
         }
     }
+
+    console.log(dtps.selectedContent);
+    if (dtps.selectedContent !== "grades") $(".classContent").removeClass("fixedGradeSummary");
 }
 
 /**
@@ -1525,8 +1529,8 @@ dtps.render = function () {
               <p class="videoMeeting" style="cursor: pointer; display: none;">
                 <i class="material-icons">videocam</i> <span>Meeting</span>
               </p>
-              <p onclick="fluid.screen();" class="dashboardStartDate" style="cursor: pointer; display: none;">
-                <i class="material-icons">event</i> <span>Viewing from Fri, Dec 11</span>
+              <p class="contentLabel" style="display: none;">
+                <i class="material-icons"></i> <span></span>
               </p>
             </div>
             <div style="display: none;" id="dtpsTabBar" class="btns">
@@ -1705,7 +1709,7 @@ dtps.setSearchBox = function () {
     //Set auto type
     if (dtps.selectedClass !== "search") {
         $("#dtpsMainSearchBox").attr("data-ctx-type", autoType);
-        $("#dtpsMainSearchBox").attr("data-ctx-course", autoCourse.num);
+        $("#dtpsMainSearchBox").attr("data-ctx-course", autoCourse == "dash" ? "dash" : autoCourse.num);
     }
 }
 
@@ -2082,6 +2086,15 @@ dtps.init();
 * @param {string} classID The ID of the class
 * @param {string} moduleID The ID of the module to collapse
 * @param {boolean} collapsed True if the module is collapsed, false otherwise
+* @return {Promise} A promise which resolves when the operation is completed
+*/
+
+/**
+* @name dtpsLMS.collapseAllModules
+* @description [OPTIONAL] Collapses all modules in the LMS
+* @kind function
+* @param {string} classID The ID of the class
+* @param {boolean} collapsed True if all modules should be collapsed, false otherwise
 * @return {Promise} A promise which resolves when the operation is completed
 */
 

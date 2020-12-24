@@ -1524,6 +1524,11 @@ body.dark .headerArea img {
     backdrop-filter: blur(20px);
 }
 
+body.collapsedSidebar #gradeSummary {
+    left: 72px;
+    width: calc(100% - 72px);
+}
+
 .classContent.fixedGradeSummary {
     padding-top: 160px;
 }
@@ -1683,4 +1688,49 @@ body.dark .headerArea img {
 .searchResult:hover {
     background-color: var(--elements);
     border-color: var(--highlight);
+}
+
+#searchFilterContainer {
+    width: 400px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#searchFilterContainer .card {
+    margin-right: 10px;
+}
+
+#searchResultsContainer.withFilters {
+    margin-left: 0px;
+    width: calc(100% - 410px);
+    display: inline-block;
+}
+
+#searchResultsContainer.withFilters .card {
+    margin-left: 10px;
+}
+
+#searchFilterContainer .card h5 {
+    margin-top: 0px;
+    font-weight: bold;
+}
+
+#searchFilterContainer .card h5 span {
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#searchFilterContainer .card h5 i {
+    vertical-align: middle;
+    margin-right: 3px;
+}
+
+#searchFilterContainer .card .checkContainer {
+    margin: 10px 0px;
+}
+
+.fixedSearchFilters #searchFilterContainer .card {
+    top: 60px;
+    position: fixed;
+    width: 370px;
 }

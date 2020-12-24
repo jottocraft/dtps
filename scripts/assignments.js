@@ -104,7 +104,7 @@ dtps.renderAssignmentScore = function (assignment) {
 * @param {Assignment[]} assignments An array of assignment objects to merge
 * @return {string} HTML with the assignments merged and labelled
 */
-dtps.mergeAndRenderChildAssignments = function(assignments) {
+dtps.mergeAndRenderChildAssignments = function (assignments) {
     var assignmentGroups = [];
 
     assignments.forEach(assignment => {
@@ -126,8 +126,8 @@ dtps.mergeAndRenderChildAssignments = function(assignments) {
         });
 
         if (!matchedGroup) {
-            assignmentGroups.push( [ assignment ] );
-        } 
+            assignmentGroups.push([assignment]);
+        }
     });
 
     return assignmentGroups.map(g => {
@@ -493,8 +493,9 @@ dtps.calendar = function (doneLoading) {
                     $("#calendar").addClass("dateSelected");
 
                     //Display selected date
-                    $(".headerArea .dashboardStartDate span").text("Showing assignments from " + info.date.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }));
-                    $(".headerArea .dashboardStartDate").show();
+                    $(".headerArea .contentLabel i").text("event");
+                    $(".headerArea .contentLabel span").text("Showing assignments from " + info.date.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }));
+                    $(".headerArea .contentLabel").show();
 
                     //Re-render dashboard from the selected date
                     dtps.renderDueToday(doneLoading, info.date);
@@ -870,9 +871,11 @@ dtps.moduleStream = function (classID) {
         dtps.classes[classNum].modules = data;
 
         var modulesHTML = dtps.renderStreamTools(classNum, "modules");
+        var allCollapsed = true;
 
         data.forEach(module => {
             var moduleItemHTML = "";
+            if (!module.collapsed) allCollapsed = false;
 
             //Get HTML for each module item
             module.items.forEach(item => {
@@ -940,7 +943,12 @@ dtps.moduleStream = function (classID) {
 
         //Render module HTML
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
-            jQuery(".classContent").html(modulesHTML);
+            $(".classContent").html(modulesHTML);
+            if (dtpsLMS.collapseAllModules) {
+                $("#moduleExpandCollapse").html(allCollapsed ? `<i class="material-icons">unfold_more</i> Expand all` : `<i class="material-icons">unfold_less</i> Collapse all`);
+                $("#moduleExpandCollapse").attr("onclick", allCollapsed ? `dtps.moduleCollapseAll(false)` : `dtps.moduleCollapseAll(true)`);
+                $("#moduleExpandCollapse").show();
+            }
         }
     }).catch(err => {
         dtps.error("Could not load modules", "Caught promise rejection @ dtps.moduleStream", err);
@@ -971,6 +979,30 @@ dtps.moduleCollapse = function (ele, classID, modID) {
 
 }
 
+
+/**
+ * Collapses all module
+ * 
+ * @param {boolean} collapse If true, modules will be collapsed, otherwise, they will all be expanded
+ */
+dtps.moduleCollapseAll = function (collapse) {
+    if (collapse && dtpsLMS.collapseAllModules) {
+        dtpsLMS.collapseAllModules(dtps.classes[dtps.selectedClass].lmsID, true);
+        $(".classContent .card.module h4 i").text("keyboard_arrow_right");
+        $(".classContent .module.card").addClass("collapsed");
+        dtps.classes[dtps.selectedClass].modules.forEach(m => m.collapsed = true);
+        $("#moduleExpandCollapse").html(`<i class="material-icons">unfold_more</i> Expand all`);
+        $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(false)`);
+    } else if (dtpsLMS.collapseAllModules) {
+        dtpsLMS.collapseAllModules(dtps.classes[dtps.selectedClass].lmsID, false);
+        $(".classContent .card.module h4 i").text("keyboard_arrow_down");
+        $(".classContent .module.card").removeClass("collapsed");
+        dtps.classes[dtps.selectedClass].modules.forEach(m => m.collapsed = false);
+        $("#moduleExpandCollapse").html(`<i class="material-icons">unfold_less</i> Collapse all`);
+        $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(true)`);
+    }
+}
+
 /**
  * Gets stream tools HTML (search box, class info, and modules/assignment switcher)
  * 
@@ -984,6 +1016,7 @@ dtps.renderStreamTools = function (num, type) {
         ${(type == "modules") || (type == "stream") ? /*html*/`
             <div style="text-align: right;${modulesSelector ? "" : "margin-top: 20px;"}">
                 ${modulesSelector ? /*html*/`
+                    ${(type == "modules") && dtpsLMS.collapseAllModules ? `<button id="moduleExpandCollapse" onclick="dtps.moduleCollapseAll()" style="margin-right:20px;display:none;" class="btn"></button>` : ""}
                     <div class="btns row small acrylicMaterial assignmentPicker" style="margin: 5px 20px 5px 0px !important;">
                         <button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">assignment</i>Assignments</button>
                         <button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">view_module</i>Modules</button>

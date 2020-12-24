@@ -60,6 +60,7 @@ dtps.globalSearch = function (term) {
                     onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
                     locatedIn: assignment.category ? assignment.category : "Assignment",
                     icon: "assignment",
+                    type: "assignment",
                     infoIcons: [
                         assignment.dueAt ? "alarm" : null
                     ].filter(i => i),
@@ -69,19 +70,19 @@ dtps.globalSearch = function (term) {
                     icons: [
                         {
                             icon: assignment.missing ? "remove_circle_outline" : null,
-                            keywords: "missing"
+                            state: "missing"
                         },
                         {
                             icon: assignment.turnedIn ? "assignment_turned_in" : null,
-                            keywords: "turned in submitted"
+                            state: "turnedIn"
                         },
                         {
                             icon: assignment.locked ? "lock_outline" : null,
-                            keywords: "locked"
+                            state: "locked"
                         },
                         {
                             icon: assignment.late ? "assignment_late" : null,
-                            keywords: "late"
+                            state: "late"
                         }
                     ].filter(i => i.icon)
                 })));
@@ -342,10 +343,95 @@ dtps.globalSearch = function (term) {
         });
 
         var result = idx.search(term);
+        var resHTML = result.map(res => dtps.renderSearchResult(dataset[Number(res.ref)], res.matchData.metadata, courseNum == "all")).join("");
 
-        console.log(dataset, term, result);
+        if (dtps.selectedClass == "search") {
+            $(".headerArea .contentLabel i").text("find_in_page");
+            $(".headerArea .contentLabel span").text(result.length + " results");
+            $(".headerArea .contentLabel").show();
 
-        $(".classContent").html(result.map(res => dtps.renderSearchResult(dataset[Number(res.ref)], res.matchData.metadata, courseNum == "all")));
+            $(".classContent").html(/*html*/`
+                <div ${!["assignments", "coursework"].includes(type) ? `style="display: none;"` : ``} id="searchFilterContainer">
+                    <div id="searchFilterCard" class="card">
+                        <h5><i class="material-icons">filter_alt</i><span>Filters</span></h5>
+                        <div class="checkContainer">
+                            <div id="missingSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
+                            <div class="label"><i class="material-icons">remove_circle_outline</i> Missing</div> 
+                        </div>
+                        <div class="checkContainer">
+                            <div id="turnedInSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
+                            <div class="label"><i class="material-icons">assignment_turned_in</i> Turned in</div> 
+                        </div>
+                        <div class="checkContainer">
+                            <div id="lateSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
+                            <div class="label"><i class="material-icons">assignment_late</i> Late</div> 
+                        </div>
+                        <div class="checkContainer">
+                            <div id="lockedSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
+                            <div class="label"><i class="material-icons">lock_outline</i> Locked</div> 
+                        </div>
+                    </div>
+                </div>
+                <div ${["assignments", "coursework"].includes(type) ? `class="withFilters"` : ``} id="searchResultsContainer">
+                    ${resHTML}
+                </div>
+            `);
+
+            if (!dtps.searchScrollListener) {
+                dtps.searchScrollListener = true;
+                var searchFilters = document.getElementById("searchFilterCard");
+                var sticky = searchFilters.offsetTop - parseFloat($("body").css("padding-top"));
+                window.onscroll = function () {
+                    if ((window.pageYOffset >= sticky) && (dtps.selectedClass == "search")) {
+                        $(".classContent").addClass("fixedSearchFilters");
+                    } else {
+                        $(".classContent").removeClass("fixedSearchFilters");
+                    }
+                };
+            }
+        }
+
+        /**
+        * Filters search results
+        * 
+        * @param {Element|string} [toggleItem] The selector for the element to toggle
+        */
+        dtps.filterSearch = function (toggleItem) {
+            if (toggleItem) $(toggleItem).toggleClass("active");
+
+            //Check for enabled filters
+            var missingFilter = $("#missingSearchFilter").hasClass("active");
+            var turnedInFilter = $("#turnedInSearchFilter").hasClass("active");
+            var lateFilter = $("#lateSearchFilter").hasClass("active");
+            var lockedFilter = $("#lockedSearchFilter").hasClass("active");
+
+            var filtersActive = missingFilter || turnedInFilter || lateFilter || lockedFilter;
+
+            var filterRes = result.filter(function (res) {
+                var item = dataset[Number(res.ref)];
+
+                if (!filtersActive) return true;
+
+                if (item.type == "assignment") {
+                    if (missingFilter && item.icons.map(i => i.state).includes("missing")) return true;
+                    if (turnedInFilter && item.icons.map(i => i.state).includes("turnedIn")) return true;
+                    if (lateFilter && item.icons.map(i => i.state).includes("late")) return true;
+                    if (lockedFilter && item.icons.map(i => i.state).includes("locked")) return true;
+                }
+
+                return false;
+            });
+
+            var filterHTML = filterRes.map(res => dtps.renderSearchResult(dataset[Number(res.ref)], res.matchData.metadata, courseNum == "all")).join("");
+
+            if (dtps.selectedClass == "search") {
+                $(".headerArea .contentLabel i").text(filtersActive ? "filter_alt" : "find_in_page");
+                $(".headerArea .contentLabel span").text(filterRes.length + " results");
+                $(".headerArea .contentLabel").show();
+
+                $("#searchResultsContainer").html(filterHTML);
+            }
+        }
     });
 }
 
@@ -358,79 +444,85 @@ dtps.globalSearch = function (term) {
  * @return {string} The HTML for this result in the results list
  */
 dtps.renderSearchResult = function (result, matchData, mixedClasses) {
-    var matches = {};
-    var matchTerms = Object.values(matchData);
-    matchTerms.forEach(term => {
-        Object.keys(term).forEach(k => {
-            if (matches[k]) {
-                matches[k] = matches[k].concat(term[k].position);
-            } else {
-                matches[k] = term[k].position;
-            }
-        });
-    });
-    matches = Object.keys(matches).map(k => ({ key: k, position: matches[k] }));
 
-    //A function that highlights a string
-    function highlightString(string, position) {
-        var parts = string.split("");
-        position.forEach(pos => {
-            //highlight part
-            parts.forEach((part, i) => {
-                if (i == pos[0]) {
-                    parts[i] = '<span class="highlight">' + parts[i];
-                }
-
-                if (i == (pos[0] + pos[1] - 1)) {
-                    parts[i] = parts[i] + '</span>';
+    if (!result.processed) {
+        var matches = {};
+        var matchTerms = Object.values(matchData);
+        matchTerms.forEach(term => {
+            Object.keys(term).forEach(k => {
+                if (matches[k]) {
+                    matches[k] = matches[k].concat(term[k].position);
+                } else {
+                    matches[k] = term[k].position;
                 }
             });
         });
+        matches = Object.keys(matches).map(k => ({ key: k, position: matches[k] }));
 
-        return parts.join("");
-    }
+        //A function that highlights a string
+        function highlightString(string, position) {
+            var parts = string.split("");
+            position.forEach(pos => {
+                //highlight part
+                parts.forEach((part, i) => {
+                    if (i == pos[0]) {
+                        parts[i] = '<span class="highlight">' + parts[i];
+                    }
 
-    //Highlight matches
-    var bodyParts = [];
-    var bodyOverflow = 0;
-    matches.forEach(match => {
-        if (match.key == "title") {
-            result.title = highlightString(result.title, match.position);
-        } else if (match.key == "locatedIn") {
-            result.locatedIn = highlightString(result.locatedIn, match.position);
-        } else if (match.key == "body") {
-            //Get longest 2 matches
-            var sections = match.position.sort((a, b) => b[1] - a[1]);
-            var matchesToDisplay = 2;
-            if (sections.length < matchesToDisplay) matchesToDisplay = sections.length;
-            bodyOverflow = sections.length - matchesToDisplay;
+                    if (i == (pos[0] + pos[1] - 1)) {
+                        parts[i] = parts[i] + '</span>';
+                    }
+                });
+            });
 
-            for (var i = 0; i < matchesToDisplay; i++) {
-                var matchStartIndex = sections[i][0];
-                var matchEndIndex = sections[i][0] + sections[i][1] - 1;
-
-                var startIndex = matchStartIndex - 10;
-                var endIndex = matchEndIndex + 10;
-
-                if (startIndex < 0) startIndex = 0;
-                if (endIndex > (result.body.length - 1)) endIndex = result.body.length - 1;
-
-                var res = result.body.slice(startIndex, matchStartIndex) + '<span class="highlight">' + result.body.slice(matchStartIndex, matchEndIndex + 1) + '</span>' + result.body.slice(matchEndIndex + 1, endIndex + 1);
-                bodyParts.push(res);
-            }
-        } else if (match.key == "info") {
-            result.info = highlightString(result.info, match.position);
+            return parts.join("");
         }
-    });
 
-    //Map result info back into an array
-    if (result.info) {
-        result.info = result.info.split("$|$").map((info, i) => {
-            return {
-                icon: result.infoIcons[i],
-                info: info,
+        //Highlight matches
+        result.bodyParts = [];
+        result.bodyOverflow = 0;
+        matches.forEach(match => {
+            if (match.key == "title") {
+                result.title = highlightString(result.title, match.position);
+            } else if (match.key == "locatedIn") {
+                result.locatedIn = highlightString(result.locatedIn, match.position);
+            } else if (match.key == "body") {
+                //Get longest 2 matches
+                var sections = match.position.sort((a, b) => b[1] - a[1]);
+                var matchesToDisplay = 2;
+                if (sections.length < matchesToDisplay) matchesToDisplay = sections.length;
+                result.bodyOverflow = sections.length - matchesToDisplay;
+
+                for (var i = 0; i < matchesToDisplay; i++) {
+                    var matchStartIndex = sections[i][0];
+                    var matchEndIndex = sections[i][0] + sections[i][1] - 1;
+
+                    var startIndex = matchStartIndex - 10;
+                    var endIndex = matchEndIndex + 10;
+
+                    if (startIndex < 0) startIndex = 0;
+                    if (endIndex > (result.body.length - 1)) endIndex = result.body.length - 1;
+
+                    var res = result.body.slice(startIndex, matchStartIndex) + '<span class="highlight">' + result.body.slice(matchStartIndex, matchEndIndex + 1) + '</span>' + result.body.slice(matchEndIndex + 1, endIndex + 1);
+                    result.bodyParts.push(res);
+                }
+            } else if (match.key == "info") {
+                result.info = highlightString(result.info, match.position);
             }
         });
+
+        //Map result info back into an array
+        if (result.info) {
+            result.info = result.info.split("$|$").map((info, i) => {
+                return {
+                    icon: result.infoIcons[i],
+                    info: info,
+                }
+            });
+        }
+
+        //Mark this result as processed so it doesn't have to be re-highlighted if a filter is used
+        result.processed = true;
     }
 
     return /*html*/`
@@ -453,10 +545,10 @@ dtps.renderSearchResult = function (result, matchData, mixedClasses) {
     )).join("") : ""}
             </h5>
 
-            ${bodyParts.map(part => (
+            ${result.bodyParts.map(part => (
         `<p><span style="color: var(--secText);">...</span>${part}<span style="color: var(--secText);">...</span></p>`
     )).join("")}
-            ${bodyOverflow ? `<p style="color: var(--secText);">+${bodyOverflow} more matches</p>` : ""}
+            ${result.bodyOverflow ? `<p style="color: var(--secText);">+${result.bodyOverflow} more matches</p>` : ""}
 
             <h5>
                 ${result.icons.map((icon, i) => (`<i class="material-icons statusIcon">${icon.icon}</i>`)).join("")}
