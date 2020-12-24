@@ -354,6 +354,19 @@ dtpsLMS.collapseModule = function (classID, modID, collapsed) {
     });
 }
 
+//Collapses all modules in Canvas
+dtpsLMS.collapseAllModules = function (classID, collapsed) {
+    return fetch("/courses/" + classID + "/collapse_all_modules", {
+        method: "POST",
+        headers: {
+            "Accept": "application/json, text/javascript, application/json+canvas-string-ids, */*; q=0.01",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-CSRF-Token": decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0]
+        },
+        body: "_method=POST&collapse=" + (collapsed ? 1 : 0) + "&authenticity_token=" + decodeURIComponent(document.cookie).split("_csrf_token=")[1].split(";")[0]
+    });
+}
+
 //Fetches announcement data from Canvas
 dtpsLMS.fetchAnnouncements = function (classID) {
     return new Promise(function (resolve, reject) {
