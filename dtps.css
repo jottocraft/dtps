@@ -247,10 +247,6 @@ Power+ CSS
     transition: opacity 0.2s;
 }
 
-/* POWERPOINTS THEME */
-body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
-    --flex-light: #b39a46; --flex-bg: #a78e3a; --flex-text: #ffffff; --flex-sectext: #e4d8ae; --flex-layer1: #867027; --flex-layer2: #726021; --flex-layer3: #5f4f1c; --theme-color: #6d6d6d; --theme-text-color: #b39a46; --links: #686868; --acrylic: black; }
-
 .recentGrade.card {
     padding: 20px;
     cursor: pointer;
@@ -472,9 +468,6 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     display: none !important;
 }
 
-body.darkDtech {
-    --flex-light: #bb4a2d; --flex-bg: #a73a21; --flex-text: white; --flex-sectext: #ffb6a3; --flex-layer1: #da5332; --flex-layer2: #923923; --flex-layer3: #6f2715; --theme-color: #f2896f; --theme-color-outline: rgb(242, 137, 111, 0.75); --theme-text-color: #af4125; }
-
 .dash.cal .announcement {
     margin-right: 0px;
 }
@@ -541,7 +534,7 @@ body {
     color: white;
 }
 
-body.dark .card .dot {
+[data-theme-type=dark] .card .dot {
     background-color: #181b1d;
 }
 
@@ -554,7 +547,7 @@ body.titlebar .sidebar {
     filter: none !important;
 }
 
-body.dark .sidebar .item:not(.active) {
+[data-theme-type=dark] .sidebar .item:not(.active) {
     filter: brightness(1.2) !important;
 }
 
@@ -598,7 +591,7 @@ body.dark .sidebar .item:not(.active) {
     border-color: var(--secText) !important;
 }
 
-body.dark .class.main:not(.active), body.dark .class.overrideClass:not(.active) {
+[data-theme-type=dark] .class.main:not(.active), [data-theme-type=dark] .class.overrideClass:not(.active) {
     color: #ffffffbf !important;
     border-color: #ffffff36 !important;
 }
@@ -962,16 +955,6 @@ body.titlebar:not(.noSidebar) .header .btns {
     font-weight: bold;
 }
 
-body:not(.dark) {
-    --light: var(--flex-light, #efefef); --norm: var(--flex-layer1, #929292); --dark: var(--flex-layer3, #5f5f5f); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
-
-body.dark {
-    --light: var(--flex-light, #949494); --norm: var(--flex-layer1, #444444); --dark: var(--flex-layer3, #292929); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
-
-body:not(.dark) .background, body:not(.dark) .header h1 {
-    --grad: linear-gradient(to bottom right, var(--elementHover), var(--background)) !important; color: black !important;
-}
-
 #whatIfResults {
     display: none; 
     border: 2px solid var(--cards);
@@ -1171,10 +1154,6 @@ body.dashboard .background:before {
 
 .dash .weighted {
     opacity: 0.7;
-}
-
-body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor, body:not(.prerelease) .prerelease, body:not(.marketer) .marketer {
-    display: none !important;
 }
 
 .item.link {
@@ -1453,14 +1432,6 @@ body.themeImage .headerArea img {
     display: none !important;
 }
 
-.headerArea img {
-    opacity: 0.3;
-}
-
-body.dark .headerArea img {
-    opacity: 0.2;
-}
-
 #headText {
     transition: color 0.2s;
     white-space: nowrap;
@@ -1592,6 +1563,12 @@ body.collapsedSidebar #gradeSummary {
     background-size: cover;
     background-color: var(--elements);
     vertical-align: middle;
+}
+
+#dtpsFixedSearch {
+    position: fixed; 
+    left: calc(50% - 250px);
+    margin: 0px;
 }
 
 #dtpsSearchResults {

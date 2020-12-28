@@ -38,15 +38,15 @@ dtps.usersList = function (courseID) {
             <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
               <div class="block status card">
                 <h2 class="main"><span class="shimmer">--</span></h2>
-                <h5 class="bottom"><i class="material-icons">contact_page</i> Your section</h5>
+                <h5 class="bottom"><i class="fluid-icon">contact_page</i> Your section</h5>
               </div>
               <div class="block status">
                 <h2 class="main numFont"><span class="shimmer">--</span></h2>
-                <h5 class="bottom"><i class="material-icons">groups</i> Total Students</h5>
+                <h5 class="bottom"><i class="fluid-icon">groups</i> Total Students</h5>
               </div>
               <div class="block status">
                 <h2 class="main numFont"><span class="shimmer">--</span></h2>
-                <h5 class="bottom"><i class="material-icons">school</i> Teachers</h5>
+                <h5 class="bottom"><i class="fluid-icon">school</i> Teachers</h5>
               </div>
             </div>
             <div class="card">
@@ -107,15 +107,15 @@ dtps.usersList = function (courseID) {
                     <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
                       <div class="block status card">
                         <h2 style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" class="main">${currentSection || "--"}</h2>
-                        <h5 class="bottom"><i class="material-icons">contact_page</i> Your section</h5>
+                        <h5 class="bottom"><i class="fluid-icon">contact_page</i> Your section</h5>
                       </div>
                       <div class="block status">
                         <h2 class="main numFont">${allStudents.length}</h2>
-                        <h5 class="bottom"><i class="material-icons">groups</i> Total Students</h5>
+                        <h5 class="bottom"><i class="fluid-icon">groups</i> Total Students</h5>
                       </div>
                       <div class="block status">
                         <h2 class="main numFont">${allTeachers.length}</h2>
-                        <h5 class="bottom"><i class="material-icons">school</i> ${allTeachers.length == 1 ? "Teacher" : "Teachers"}</h5>
+                        <h5 class="bottom"><i class="fluid-icon">school</i> ${allTeachers.length == 1 ? "Teacher" : "Teachers"}</h5>
                       </div>
                     </div>
                 ` + sections.map(section => (
