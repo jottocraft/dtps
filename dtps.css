@@ -525,8 +525,8 @@ body {
 }
 
 .classContent .assignmentPicker .btn.active {
-    background: #7b7b7b45 !important;
-    color: inherit !important;
+    background: var(--elementHover) !important;
+    color: var(--elementText) !important;
 }
 
 .class.active .dot {
