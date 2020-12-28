@@ -38,19 +38,19 @@ dtps.renderAssignment = function (assignment, childDisplay) {
             <h5>
                 <!-- Assignment info -->
                 <div class="info">
-                    ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="material-icons">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
-                    ${assignment.outcomes ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
-                    ${assignment.category ? `<div class="infoChip weighted"><i class="material-icons">category</i> ` + assignment.category + `</div>` : ""}
-                    ${childDisplay ? `<div class="infoChip weighted"><i class="material-icons">person</i> ` + childDisplay + `</div>` : ""}
+                    ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
+                    ${assignment.outcomes ? `<div class="infoChip weighted"><i class="fluid-icon">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
+                    ${assignment.category ? `<div class="infoChip weighted"><i class="fluid-icon">category</i> ` + assignment.category + `</div>` : ""}
+                    ${childDisplay ? `<div class="infoChip weighted"><i class="fluid-icon">person</i> ` + childDisplay + `</div>` : ""}
                 </div>
 
                 <!-- Status icons -->
                 <div class="status">
-                    ${assignment.turnedIn ? `<i title="Assignment submitted" class="material-icons statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
-                    ${assignment.missing ? `<i title="Assignment is missing" class="material-icons statusIcon" style="color: #c44848;">remove_circle_outline</i>` : ``}
-                    ${assignment.late ? `<i title="Assignment is late" class="material-icons statusIcon" style="color: #c44848;">assignment_late</i>` : ``}
-                    ${assignment.locked ? `<i title="Assignment submissions are locked" class="material-icons statusIcon" style="color: var(--secText, gray);">lock_outline</i>` : ``}
-                    ${assignment.pending ? `<i title="Grade is pending review" class="material-icons statusIcon" style="color: #b3b70b;">rate_review</i>` : ``}
+                    ${assignment.turnedIn ? `<i title="Assignment submitted" class="fluid-icon statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
+                    ${assignment.missing ? `<i title="Assignment is missing" class="fluid-icon statusIcon" style="color: #c44848;">remove_circle_outline</i>` : ``}
+                    ${assignment.late ? `<i title="Assignment is late" class="fluid-icon statusIcon" style="color: #c44848;">assignment_late</i>` : ``}
+                    ${assignment.locked ? `<i title="Assignment submissions are locked" class="fluid-icon statusIcon" style="color: var(--secText, gray);">lock_outline</i>` : ``}
+                    ${assignment.pending ? `<i title="Grade is pending review" class="fluid-icon statusIcon" style="color: #b3b70b;">rate_review</i>` : ``}
                 </div>
             </h5>
         </div>
@@ -89,7 +89,7 @@ dtps.renderAssignmentScore = function (assignment) {
             <div class="assignmentGrade">
                 <div class="grade">${Number(assignment.grade.toFixed(2))}</div>
                 <div class="value">/${Number(assignment.value.toFixed(2))}</div>
-                ${assignment.letter ? `<div class="letter">${assignment.letter.replace("incomplete", `<i class="material-icons">cancel</i>`).replace("complete", `<i class="material-icons">done</i>`)}</div>` : ""}
+                ${assignment.letter ? `<div class="letter">${assignment.letter.replace("incomplete", `<i class="fluid-icon">cancel</i>`).replace("complete", `<i class="fluid-icon">done</i>`)}</div>` : ""}
                 <div class="percentage">${Math.round((assignment.grade / assignment.value) * 100)}%</div>
             </div>
         `;
@@ -271,7 +271,7 @@ dtps.renderDueToday = function (doneLoading, fromDate) {
     if (combinedStream.length == 0) {
         //Nothing due today
         if (doneLoading) {
-            combinedHTML = `<p style="text-align: center;margin: 10px 0px; font-size: 18px;"><i class="material-icons">done</i> ${fromDate ? "Nothing is due on " + fromDate.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }) : "Nothing is due today"}</p>`;
+            combinedHTML = `<p style="text-align: center;margin: 10px 0px; font-size: 18px;"><i class="fluid-icon">done</i> ${fromDate ? "Nothing is due on " + fromDate.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }) : "Nothing is due today"}</p>`;
         } else {
             combinedHTML = ``;
         }
@@ -469,7 +469,7 @@ dtps.calendar = function (doneLoading) {
                         <div class='fc-event-main-frame'>
                             <div class='fc-event-title-container'>
                                 <div class='fc-event-title fc-sticky'>
-                                    ${missing ? `<i title="Assignment is missing" class="material-icons statusIcon">remove_circle_outline</i>` : ``}
+                                    ${missing ? `<i title="Assignment is missing" class="fluid-icon statusIcon">remove_circle_outline</i>` : ``}
                                     <span style="vertical-align: middle;">${info.event.title}</span>
                                 </div>
                             </div>
@@ -558,7 +558,7 @@ dtps.classStream = function (classID, searchResults) {
 
                         <h5 style="white-space: nowrap; overflow: hidden;">
                             <div style="width: 200px;" class="infoChip shimmer"></div>
-                            <i class="material-icons statusIcon shimmer">more_horiz</i>
+                            <i class="fluid-icon statusIcon shimmer">more_horiz</i>
                         </h5>
                     </div>
                 `
@@ -684,7 +684,7 @@ dtps.assignment = function (id, classNum, generic) {
             tmpjQuery.children("table").replaceWith(sections.map(s => {
                 return `
                     <div class="dtpsFormattedAssignmentSection" style="margin: 20px 0px;">
-                        <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="material-icons-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
+                        <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="fluid-icon-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
                         ${s.innerHTML}
                     </div>
                 `;
@@ -755,17 +755,17 @@ dtps.assignment = function (id, classNum, generic) {
 
     //Render assignment details
     $(".card.details").html(/*html*/`
-            <i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close</i>
+            <i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="fluid-icon close">close</i>
 
             <h4 style="font-weight: bold;">${assignment.title}</h4>
 
             <div>
-                ${assignment.dueAt ? `<div class="assignmentChip"><i class="material-icons">alarm</i><span>Due ${dtps.formatDate(assignment.dueAt)}</span></div>` : ""}
-                ${assignment.turnedIn && !generic ? `<div title="Assignment submitted" class="assignmentChip" style="color: #0bb75b"><i class="material-icons">assignment_turned_in</i></div>` : ""}
-                ${assignment.missing && !generic ? `<div  title="Assignment is missing" class="assignmentChip" style="color: #c44848"><i class="material-icons">remove_circle_outline</i></div>` : ""}
-                ${assignment.late && !generic ? `<div title="Assignment is late" class="assignmentChip" style="color: #c44848"><i class="material-icons">assignment_late</i></div>` : ""}
-                ${assignment.locked && !generic ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i class="material-icons">lock_outline</i></div>` : ""}
-                ${(dtps.user.parent && !generic) ? `<div class="assignmentChip"><i class="material-icons">person</i><span>${dtps.user.children.find(c => c.id == dtps.classes[assignment.class].userID).name}</span></div>` : ""}
+                ${assignment.dueAt ? `<div class="assignmentChip"><i class="fluid-icon">alarm</i><span>Due ${dtps.formatDate(assignment.dueAt)}</span></div>` : ""}
+                ${assignment.turnedIn && !generic ? `<div title="Assignment submitted" class="assignmentChip" style="color: #0bb75b"><i class="fluid-icon">assignment_turned_in</i></div>` : ""}
+                ${assignment.missing && !generic ? `<div  title="Assignment is missing" class="assignmentChip" style="color: #c44848"><i class="fluid-icon">remove_circle_outline</i></div>` : ""}
+                ${assignment.late && !generic ? `<div title="Assignment is late" class="assignmentChip" style="color: #c44848"><i class="fluid-icon">assignment_late</i></div>` : ""}
+                ${assignment.locked && !generic ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i class="fluid-icon">lock_outline</i></div>` : ""}
+                ${(dtps.user.parent && !generic) ? `<div class="assignmentChip"><i class="fluid-icon">person</i><span>${dtps.user.children.find(c => c.id == dtps.classes[assignment.class].userID).name}</span></div>` : ""}
                 ${generic ? "" : scoreHTML}
             </div>
 
@@ -776,19 +776,19 @@ dtps.assignment = function (id, classNum, generic) {
             ${assignment.body ? `<div style="margin: 5px 0px; background-color: var(--darker); height: 1px; width: 100%;" class="divider"></div>` : ""}
 
             <div style="width: calc(40% - 2px); margin-top: 20px; display: inline-block; overflow: hidden; vertical-align: top;">
-                ${assignment.publishedAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">add_box</i> Published: ${dtps.formatDate(assignment.publishedAt)}</p>` : ""}
-                ${assignment.dueAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">alarm</i> Due: ${dtps.formatDate(assignment.dueAt)}</p>` : ""}
-                ${assignment.value ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">bar_chart</i> Point value: ${assignment.value}</p>` : ""}
-                ${(assignment.grade || (assignment.grade == 0)) && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assessment</i> Points earned: ${assignment.grade}</p>` : ""}
-                ${assignment.letter && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">font_download</i> Letter grade: ${assignment.letter}</p>` : ""}
-                ${assignment.category ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">category</i> Category: ${assignment.category}</p>` : ""}
-                ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">adjust</i> ${rubricItem.title}</p>`; }).join("") : ""}
-                <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">class</i> Class: ${dtps.classes[assignment.class].subject}</p>
-                ${dtps.env == "dev" ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">code</i> Assignment ID: ${assignment.id}</p>` : ""}
+                ${assignment.publishedAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">add_box</i> Published: ${dtps.formatDate(assignment.publishedAt)}</p>` : ""}
+                ${assignment.dueAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">alarm</i> Due: ${dtps.formatDate(assignment.dueAt)}</p>` : ""}
+                ${assignment.value ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">bar_chart</i> Point value: ${assignment.value}</p>` : ""}
+                ${(assignment.grade || (assignment.grade == 0)) && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">assessment</i> Points earned: ${assignment.grade}</p>` : ""}
+                ${assignment.letter && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">font_download</i> Letter grade: ${assignment.letter}</p>` : ""}
+                ${assignment.category ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">category</i> Category: ${assignment.category}</p>` : ""}
+                ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">adjust</i> ${rubricItem.title}</p>`; }).join("") : ""}
+                <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">class</i> Class: ${dtps.classes[assignment.class].subject}</p>
+                ${dtps.env == "dev" ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">code</i> Assignment ID: ${assignment.id}</p>` : ""}
 
                 <br />
                 <div class="row">
-                    ${assignment.url ? `<button class="btn small outline" onclick="window.open('${assignment.url}')"><i class="material-icons">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</button>` : ``}
+                    ${assignment.url ? `<button class="btn small outline" onclick="window.open('${assignment.url}')"><i class="fluid-icon">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</button>` : ``}
                 </div>
             </div>
 
@@ -838,14 +838,14 @@ dtps.moduleStream = function (classID) {
         jQuery(".classContent").html(dtps.renderStreamTools(classNum, "modules") + /*html*/`
             <div class="module card collapsed">
                 <h4>
-                    <i class="material-icons collapseIcon shimmer">star</i>
+                    <i class="fluid-icon collapseIcon shimmer">star</i>
                     <span class="shimmer">[SHIMMER] Module title (collapsed)</span>
                 </h4>
                 <div class="moduleContents" style="padding-top: 10px;"></div>
             </div>
             <div class="module card">
                 <h4>
-                    <i class="material-icons collapseIcon shimmer">star</i>
+                    <i class="fluid-icon collapseIcon shimmer">star</i>
                     <span class="shimmer">[SHIMMER] Module title</span>
                 </h4>
         
@@ -907,7 +907,7 @@ dtps.moduleStream = function (classID) {
                 } else {
                     moduleItemHTML += `
                         <div class="moduleItem" onclick="${action}" style="margin-left: ${item.indent * 15}px;">
-                            <i ${item.completed ? `style="color: #27ba3c"` : ""} class="material-icons">${item.completed ? "check" : icon}</i>
+                            <i ${item.completed ? `style="color: #27ba3c"` : ""} class="fluid-icon">${item.completed ? "check" : icon}</i>
                             ${item.title}
                         </div>
                     `;
@@ -919,7 +919,7 @@ dtps.moduleStream = function (classID) {
                 <div class="module card ${module.collapsed ? "collapsed" : ""}">
                     <h4>
                         <i onclick="dtps.moduleCollapse(this, '${dtps.classes[classNum].id}', '${module.id}');" 
-                            class="material-icons collapseIcon">${module.collapsed ? "keyboard_arrow_right" : "keyboard_arrow_down"}</i>
+                            class="fluid-icon collapseIcon">${module.collapsed ? "keyboard_arrow_right" : "keyboard_arrow_down"}</i>
                         ${module.title}
                     </h4>
 
@@ -945,7 +945,7 @@ dtps.moduleStream = function (classID) {
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
             $(".classContent").html(modulesHTML);
             if (dtpsLMS.collapseAllModules) {
-                $("#moduleExpandCollapse").html(allCollapsed ? `<i class="material-icons">unfold_more</i> Expand all` : `<i class="material-icons">unfold_less</i> Collapse all`);
+                $("#moduleExpandCollapse").html(allCollapsed ? `<i class="fluid-icon">unfold_more</i> Expand all` : `<i class="fluid-icon">unfold_less</i> Collapse all`);
                 $("#moduleExpandCollapse").attr("onclick", allCollapsed ? `dtps.moduleCollapseAll(false)` : `dtps.moduleCollapseAll(true)`);
                 $("#moduleExpandCollapse").show();
             }
@@ -991,14 +991,14 @@ dtps.moduleCollapseAll = function (collapse) {
         $(".classContent .card.module h4 i").text("keyboard_arrow_right");
         $(".classContent .module.card").addClass("collapsed");
         dtps.classes[dtps.selectedClass].modules.forEach(m => m.collapsed = true);
-        $("#moduleExpandCollapse").html(`<i class="material-icons">unfold_more</i> Expand all`);
+        $("#moduleExpandCollapse").html(`<i class="fluid-icon">unfold_more</i> Expand all`);
         $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(false)`);
     } else if (dtpsLMS.collapseAllModules) {
         dtpsLMS.collapseAllModules(dtps.classes[dtps.selectedClass].lmsID, false);
         $(".classContent .card.module h4 i").text("keyboard_arrow_down");
         $(".classContent .module.card").removeClass("collapsed");
         dtps.classes[dtps.selectedClass].modules.forEach(m => m.collapsed = false);
-        $("#moduleExpandCollapse").html(`<i class="material-icons">unfold_less</i> Collapse all`);
+        $("#moduleExpandCollapse").html(`<i class="fluid-icon">unfold_less</i> Collapse all`);
         $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(true)`);
     }
 }
@@ -1018,8 +1018,8 @@ dtps.renderStreamTools = function (num, type) {
                 ${modulesSelector ? /*html*/`
                     ${(type == "modules") && dtpsLMS.collapseAllModules ? `<button id="moduleExpandCollapse" onclick="dtps.moduleCollapseAll()" style="margin-right:20px;display:none;" class="btn"></button>` : ""}
                     <div class="btns row small acrylicMaterial assignmentPicker" style="margin: 5px 20px 5px 0px !important;">
-                        <button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">assignment</i>Assignments</button>
-                        <button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">view_module</i>Modules</button>
+                        <button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);"><i class="fluid-icon">assignment</i>Assignments</button>
+                        <button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);"><i class="fluid-icon">view_module</i>Modules</button>
                     </div>
                 ` : ``}
                 

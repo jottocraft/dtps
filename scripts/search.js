@@ -39,7 +39,7 @@ dtps.globalSearch = function (term) {
 
                 <h5 style="white-space: nowrap; overflow: hidden;">
                     <div style="width: 200px;" class="infoChip shimmer"></div>
-                    <i class="material-icons statusIcon shimmer">more_horiz</i>
+                    <i class="fluid-icon statusIcon shimmer">more_horiz</i>
                 </h5>
             </div>
         `
@@ -353,22 +353,22 @@ dtps.globalSearch = function (term) {
             $(".classContent").html(/*html*/`
                 <div ${!["assignments", "coursework"].includes(type) ? `style="display: none;"` : ``} id="searchFilterContainer">
                     <div id="searchFilterCard" class="card">
-                        <h5><i class="material-icons">filter_alt</i><span>Filters</span></h5>
+                        <h5><i class="fluid-icon">filter_alt</i><span>Filters</span></h5>
                         <div class="checkContainer">
-                            <div id="missingSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
-                            <div class="label"><i class="material-icons">remove_circle_outline</i> Missing</div> 
+                            <div id="missingSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="fluid-icon">check</i></div> 
+                            <div class="label"><i class="fluid-icon">remove_circle_outline</i> Missing</div> 
                         </div>
                         <div class="checkContainer">
-                            <div id="turnedInSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
-                            <div class="label"><i class="material-icons">assignment_turned_in</i> Turned in</div> 
+                            <div id="turnedInSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="fluid-icon">check</i></div> 
+                            <div class="label"><i class="fluid-icon">assignment_turned_in</i> Turned in</div> 
                         </div>
                         <div class="checkContainer">
-                            <div id="lateSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
-                            <div class="label"><i class="material-icons">assignment_late</i> Late</div> 
+                            <div id="lateSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="fluid-icon">check</i></div> 
+                            <div class="label"><i class="fluid-icon">assignment_late</i> Late</div> 
                         </div>
                         <div class="checkContainer">
-                            <div id="lockedSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="material-icons">check</i></div> 
-                            <div class="label"><i class="material-icons">lock_outline</i> Locked</div> 
+                            <div id="lockedSearchFilter" init="true" onclick="dtps.filterSearch(this)" class="checkbox"><i class="fluid-icon">check</i></div> 
+                            <div class="label"><i class="fluid-icon">lock_outline</i> Locked</div> 
                         </div>
                     </div>
                 </div>
@@ -539,9 +539,9 @@ dtps.renderSearchResult = function (result, matchData, mixedClasses) {
             ${result.title ? `<h4>${result.title}</h4>` : ""}
 
             <h5>
-                <div class="infoChip"><i style="margin-top: -2px;" class="material-icons">${result.icon}</i> ${result.locatedIn}</div>
+                <div class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">${result.icon}</i> ${result.locatedIn}</div>
                 ${result.info ? result.info.map(info => (
-        `<div class="infoChip"><i style="margin-top: -2px;" class="material-icons">${info.icon}</i> ${info.info}</div>`
+        `<div class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">${info.icon}</i> ${info.info}</div>`
     )).join("") : ""}
             </h5>
 
@@ -551,7 +551,7 @@ dtps.renderSearchResult = function (result, matchData, mixedClasses) {
             ${result.bodyOverflow ? `<p style="color: var(--secText);">+${result.bodyOverflow} more matches</p>` : ""}
 
             <h5>
-                ${result.icons.map((icon, i) => (`<i class="material-icons statusIcon">${icon.icon}</i>`)).join("")}
+                ${result.icons.map((icon, i) => (`<i class="fluid-icon statusIcon">${icon.icon}</i>`)).join("")}
             </h5>
         </div>
     `;

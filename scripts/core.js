@@ -113,7 +113,7 @@ dtps.changelog = function (onlyIfNewVersion) {
         jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases/latest", function (data) {
             //Convert changelog to HTML and render in the changelog card
             var changelogHTML = markdown.makeHtml(data.body);
-            jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>` + changelogHTML);
+            jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="fluid-icon close">close</i>` + changelogHTML);
 
             if (!onlyIfNewVersion) {
                 //Show changelog
@@ -174,7 +174,7 @@ dtps.firstrun = function () {
         <h5 style="color: var(--secText); font-weight: bold; font-size: 22px;">${dtps.readableVer}</h5>
 
         <div class="welcomeSection">
-            <i class="material-icons">dashboard</i>
+            <i class="fluid-icon">dashboard</i>
             <h5>${dtpsLMS.gradebook ? "Manage your coursework and grades" : "Manage your coursework"}</h5>
             <p>Power+ organizes all of your coursework so you can easily see what you need to do next. The dashboard shows upcoming assignments, recent grades, and announcements.
             ${dtpsLMS.gradebook ? `Power+ includes a gradebook designed for ${dtpsLMS.name} to help you understand your grades.` : ``}</p>
@@ -182,19 +182,19 @@ dtps.firstrun = function () {
 
         ${dtpsLMS.isDemoLMS ? /*html*/`
             <div class="welcomeSection">
-                <i class="material-icons">priority_high</i>
+                <i class="fluid-icon">priority_high</i>
                 <h5>This is a demo</h5>
                 <p>Assignment information, grades, and other content displayed is not real and is for demonstration purposes only. This demo does not retrieve or collect any data.</p>
             </div>
         ` : /*html*/`
             <div class="welcomeSection">
-                <i class="material-icons">security</i>
+                <i class="fluid-icon">security</i>
                 <h5>Privacy</h5>
                 <p>Power+ does not collect any information. All of the data used in Power+ is fetched directly from ${dtpsLMS.shortName} and is never sent anywhere else. 
                  User preferences, grade history, and other Power+ data is stored locally on your computer and is not associated with your ${dtpsLMS.shortName} account.</p>
             </div>
             <div class="welcomeSection">
-                <i class="material-icons">priority_high</i>
+                <i class="fluid-icon">priority_high</i>
                 <h5>Power+ is not official</h5>
                 <p>Assignment information, grades, and other content displayed in Power+ are not official. Power+ is neither created nor endorsed by ${dtpsLMS.legalName}.
                  Power+ may have bugs that could cause it to display inaccurate information. Use Power+ at your own risk.</p>
@@ -203,7 +203,7 @@ dtps.firstrun = function () {
         
         <br />
         <button onclick="window.localStorage.setItem('dtpsInstalled', 'true'); fluid.cards.close('.card.changelog');" class="btn">
-            <i class="material-icons">arrow_forward</i> Continue
+            <i class="fluid-icon">arrow_forward</i> Continue
         </button>
     `);
 
@@ -252,7 +252,11 @@ dtps.JS = function (cb) {
     //dtao/nearest-color is used for finding the nearest class color
     jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
         //Fluid UI for core UI elements
-        jQuery.getScript('https://cdn.jottocraft.com/fluid/v5.min.js', cb);
+        if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
+            jQuery.getScript('http://localhost:1222/dev/fluid.js', cb);
+        } else {
+            jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', cb);
+        }
     });
 }
 
@@ -263,7 +267,7 @@ dtps.CSS = function () {
     jQuery("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: "https://cdn.jottocraft.com/fluid/v5.min.css",
+        href: window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true" ? "http://localhost:1222/dev/fluid.css" : "https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.css",
         class: "dtpsHeadItem"
     }).appendTo("head");
 
@@ -733,7 +737,7 @@ dtps.showClasses = function (override) {
             dtps.classlist.push(/*html*/`
                 <div id="dtpsClassListGroup-${dtps.classes[i].group}" class="group open">
                   <div class="name item">
-                    <i class="material-icons"></i> <span class="label">${dtps.classes[i].group}</span>
+                    <i class="fluid-icon"></i> <span class="label">${dtps.classes[i].group}</span>
                   </div>
 
                   <div class="items">
@@ -749,7 +753,7 @@ dtps.showClasses = function (override) {
                 class="${'class item ' + i + ' ' + (dtps.selectedClass == i ? " active" : "")}"
                 style="${'--classColor: ' + dtps.classes[i].color}"
             >
-                <i class="material-icons grade">${letterGradeHTML}</i>
+                <i class="fluid-icon grade">${letterGradeHTML}</i>
                 <span class="label">${dtps.classes[i].subject}</span>
             </div>
         `);
@@ -769,7 +773,7 @@ dtps.showClasses = function (override) {
             
             <div class="items">
                 <div onclick="dtps.selectedClass = 'dash';" class="class item main dash ${dtps.selectedClass == "dash" ? "active" : ""}">
-                    <i class="material-icons">dashboard</i>    
+                    <i class="fluid-icon">dashboard</i>    
                     <span class="label">Dashboard</span>
                 </div>
 
@@ -779,7 +783,7 @@ dtps.showClasses = function (override) {
             </div>
 
             <div class="collapse">
-                <i class="material-icons"></i>
+                <i class="fluid-icon"></i>
             </div>
         `);
         fluid.init();
@@ -970,7 +974,7 @@ dtps.presentClass = function (classNum) {
 dtps.classHome = function (num) {
     //Render loading screen
     $(".card.details").html(/*html*/`
-        <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+        <i onclick="fluid.cards.close('.card.details')" class="fluid-icon close">close</i>
         <h3 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h3>
 
         <br />
@@ -1020,16 +1024,16 @@ dtps.classHome = function (num) {
                 });
 
                 $(".card.details").html(/*html*/`
-                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+                    <i onclick="fluid.cards.close('.card.details')" class="fluid-icon close">close</i>
 
                     <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
 
                     <br />
-                    ${dtps.classes[num].videoMeetingURL ? `<button onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="btn small"><i class="material-icons">videocam</i> Zoom</button>` : ``}
+                    ${dtps.classes[num].videoMeetingURL ? `<button onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="btn small"><i class="fluid-icon">videocam</i> Zoom</button>` : ``}
                     <div class="btns row small">
                         ${fragments.map((fragment, i) => {
                     return `<button onclick="$(this).addClass('active');$(this).siblings().removeClass('active');$('#homepageFragment').attr('src', '${fragment.frameURL}'); dtps.iframeLoad('homepageFragment');" 
-                                style="text-transform: capitalize;" class="btn ${i == 0 ? "active" : ""}">${fragment.icon ? `<i class="material-icons">${fragment.icon}</i> ` : ""}${fragment.text}</button>`;
+                                style="text-transform: capitalize;" class="btn ${i == 0 ? "active" : ""}">${fragment.icon ? `<i class="fluid-icon">${fragment.icon}</i> ` : ""}${fragment.text}</button>`;
                 }).join("")}
                     </div>
 
@@ -1049,7 +1053,7 @@ dtps.classHome = function (num) {
                 var homepageURL = window.URL.createObjectURL(blob);
 
                 $(".card.details").html(/*html*/`
-                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+                    <i onclick="fluid.cards.close('.card.details')" class="fluid-icon close">close</i>
 
                     <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
 
@@ -1214,7 +1218,7 @@ dtps.settings = function (forceRerenderDashboard) {
                 return /*html*/`
                 <div dashboardItem-id="${dashboardItem.id}" style="height: ${dashboardItem.size * 1.7 + 50}px" class="dashboardItem">
                     <h5>
-                        <i class="material-icons">${dashboardItem.icon}</i>
+                        <i class="fluid-icon">${dashboardItem.icon}</i>
                         <span>${dashboardItem.name}</span>
                     </h5>
                 </div>
@@ -1432,7 +1436,7 @@ dtps.render = function () {
 
     //Render HTML
     jQuery("body").append(/*html*/`
-        <div class="sidebar acrylicMaterial"></div>        
+        <div class="sidebar"></div>        
 
         <div class="navbar">
           <div class="logo">
@@ -1442,13 +1446,13 @@ dtps.render = function () {
         
           ${dtps.unstable ? `
             <div id="dtpsUnstable" class="navitem">
-              <i style="font-size: 16px;" class="material-icons">warning</i>
+              <i style="font-size: 16px;" class="fluid-icon">warning</i>
               <span style="font-weight: bold; font-size: 10px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</span>
             </div>
           ` : ""}
           
-          <div class="items" style="position: fixed; left: calc(50% - 250px); margin: 0px;">
-            <i class="inputIcon material-icons">search</i>
+          <div class="items" id="dtpsFixedSearch">
+            <i class="inputIcon fluid-icon">search</i>
             <input id="dtpsMainSearchBox" style="margin: 0px; width: 500px;" type="search" class="inputIcon filled" placeholder="Search" />
           </div>
 
@@ -1457,7 +1461,7 @@ dtps.render = function () {
           </div>
         </div>
 
-        <div class="card close focus profileMenu">
+        <div class="card profileMenu">
           <div class="person">
             <div class="profileImage"></div>
             <div class="info">
@@ -1467,23 +1471,23 @@ dtps.render = function () {
 
           <div class="actions">
             <div class="item">
-              <i class="material-icons">feedback</i>
+              <i class="fluid-icon">feedback</i>
               <span class="label">Feedback</span>
             </div>
             ${dtps.remoteConfig.showBugReportButton || dtps.unstable || (dtps.env == "dev") ? /*html*/`
                 <div class="item">
-                    <i class="material-icons">bug_report</i>
+                    <i class="fluid-icon">bug_report</i>
                     <span class="label">Bug Report</span>
                 </div>
             ` : ""}
             <div onclick="dtps.settings();" class="item">
-              <i class="material-icons">settings</i>
+              <i class="fluid-icon">settings</i>
               <span class="label">Settings</span>
             </div>
             <div class="divider"></div>
             <a style="color: var(--text);" href="/">
                 <div class="item">
-                  <i class="material-icons">exit_to_app</i>
+                  <i class="fluid-icon">exit_to_app</i>
                   <span class="label">Go to Canvas</span>
                 </div>
             </a>
@@ -1491,25 +1495,25 @@ dtps.render = function () {
         </div>
 
         <div id="dtpsSearchResults" class="card acrylicMaterial" style="display: none;">
-            <h5 id="dtpsSearchStatus"><i class="material-icons">search</i> <span>Search</span></h5>
+            <h5 id="dtpsSearchStatus"><i class="fluid-icon">search</i> <span>Search</span></h5>
             <div id="dtpsSearchData" style="display: none;"></div>
             <div id="dtpsSearchInfo">
                 <p>By defualt, Power+ will search based on the page you're on. You can use the keywords below for more advanced searches:</p>
                 <div class="grid samesize">
                     <div class="item">
-                        <p><i class="material-icons">library_books</i> type:coursework</p>
-                        <p><i class="material-icons">view_module</i> type:module</p>
-                        <p><i class="material-icons">assignment</i> type:assignment</p>
-                        <p><i class="material-icons">assessment</i> type:grade</p>
-                        <p><i class="material-icons">announcement</i> type:announcement</p>
+                        <p><i class="fluid-icon">library_books</i> type:coursework</p>
+                        <p><i class="fluid-icon">view_module</i> type:module</p>
+                        <p><i class="fluid-icon">assignment</i> type:assignment</p>
+                        <p><i class="fluid-icon">assessment</i> type:grade</p>
+                        <p><i class="fluid-icon">announcement</i> type:announcement</p>
                     </div>
                     <div class="item">
-                        <p><i class="material-icons">home</i> type:homepage</p>
-                        <p><i class="material-icons">insert_drive_file</i> type:page</p>
-                        <p><i class="material-icons">forum</i> type:discussion</p>
-                        <p><i class="material-icons">people</i> type:person</p>
+                        <p><i class="fluid-icon">home</i> type:homepage</p>
+                        <p><i class="fluid-icon">insert_drive_file</i> type:page</p>
+                        <p><i class="fluid-icon">forum</i> type:discussion</p>
+                        <p><i class="fluid-icon">people</i> type:person</p>
                         <div class="divider"></div>
-                        <p><i class="material-icons">class</i> class:English</p>
+                        <p><i class="fluid-icon">class</i> class:English</p>
                     </div>
                 </div>
             </div>
@@ -1518,40 +1522,40 @@ dtps.render = function () {
         <div class="headerArea classImage">
           <img style="display: none;" />
           <div class="content">
-            <h1 id="headText"><i class="material-icons">dashboard</i> <span>Dashboard</span></h1>
+            <h1 id="headText"><i class="fluid-icon">dashboard</i> <span>Dashboard</span></h1>
             <div id="classInfo" style="min-height: 18px;">
               <p class="teacher" style="display: none;">
                 <span class="teacherImage"></span> <span class="teacherName"></span>
               </p>
               <p onclick="dtps.classHome(dtps.selectedClass);" class="homepage" style="cursor: pointer; display: none;">
-                <i class="material-icons">home</i> <span>Homepage</span>
+                <i class="fluid-icon">home</i> <span>Homepage</span>
               </p>
               <p class="videoMeeting" style="cursor: pointer; display: none;">
-                <i class="material-icons">videocam</i> <span>Meeting</span>
+                <i class="fluid-icon">videocam</i> <span>Meeting</span>
               </p>
               <p class="contentLabel" style="display: none;">
-                <i class="material-icons"></i> <span></span>
+                <i class="fluid-icon"></i> <span></span>
               </p>
             </div>
             <div style="display: none;" id="dtpsTabBar" class="btns">
                 <button init="true" onclick="if (dtps.classes[dtps.selectedClass].modules && (window.localStorage.getItem('courseworkPref-' + dtps.classes[dtps.selectedClass].id) == 'moduleStream')) { fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id); } else { fluid.screen('stream', dtps.classes[dtps.selectedClass].id); }" class="btn stream">
-                    <i class="material-icons">library_books</i>
+                    <i class="fluid-icon">library_books</i>
                     Coursework
                 </button>
                 <button init="true" onclick="fluid.screen('people', dtps.classes[dtps.selectedClass].id);" class="btn people">
-                    <i class="material-icons">people</i>
+                    <i class="fluid-icon">people</i>
                     People
                 </button>
                 <button init="true" onclick="fluid.screen('discussions', dtps.classes[dtps.selectedClass].id);" class="btn discuss">
-                    <i class="material-icons">forum</i>
+                    <i class="fluid-icon">forum</i>
                     Discussions
                 </button>
                 <button init="true" onclick="fluid.screen('pages', dtps.classes[dtps.selectedClass].id);" class="btn pages">
-                    <i class="material-icons">insert_drive_file</i>
+                    <i class="fluid-icon">insert_drive_file</i>
                     Pages
                 </button>
                 <button init="true" onclick="fluid.screen('gradebook', dtps.classes[dtps.selectedClass].id);" class="btn grades">
-                    <i class="material-icons">assessment</i>
+                    <i class="fluid-icon">assessment</i>
                     ${dtpsLMS.gradebook ? "Grades" : "Gradebook"}
                 </button>
             </div>
@@ -1568,20 +1572,20 @@ dtps.render = function () {
 
         <!-- Changelog card -->
         <div style="border-radius: 30px;" class="card focus changelog close container">
-            <i onclick="fluid.cards.close('.card.changelog')" class="material-icons close">close</i>
+            <i onclick="fluid.cards.close('.card.changelog')" class="fluid-icon close">close</i>
             <h3>What's new in Power+</h3>
             <h5>Loading...</h5>
         </div>
 
         <!-- General details card for assignments, outcomes, class info, etc. -->
         <div style="border-radius: 30px;" class="card focus details close container">
-            <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
+            <i onclick="fluid.cards.close('.card.details')" class="fluid-icon close">close</i>
             <p>An error occured</p>
         </div>
 
         <!-- General iFrame card (with white background) -->
         <div style="border-radius: 30px; top: 50px; background-color: white; color: black;" class="card focus close iFrameCard container">
-            <i style="color: black !important;" onclick="fluid.cards.close('.card.iFrameCard'); $('#CardIFrame').attr('src', '');" class="material-icons close">close</i>
+            <i style="color: black !important;" onclick="fluid.cards.close('.card.iFrameCard'); $('#CardIFrame').attr('src', '');" class="fluid-icon close">close</i>
             <br /><br />
             <iframe style="width: 100%; height: calc(100vh - 175px); border: none;" id="CardIFrame"></iframe>
         </div>
@@ -1732,7 +1736,7 @@ dtps.renderLite = function () {
     //Render settings card
     var baseHost = new URL(dtps.baseURL).hostname;
     jQuery(".card.settingsCard").html(/*html*/`
-        <i onclick="fluid.cards.close('.card.settingsCard')" class="material-icons close">close</i>
+        <i onclick="fluid.cards.close('.card.settingsCard')" class="fluid-icon close">close</i>
 
         <div style="position: fixed; height: calc(100% - 100px);" class="sidenav">
             <div class="title">
@@ -1744,69 +1748,69 @@ dtps.renderLite = function () {
             </div>
 
             <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();" class="item active">
-                <i class="material-icons">settings</i> Settings
+                <i class="fluid-icon">settings</i> Settings
+            </div>
+            <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();" class="item">
+                <i class="fluid-icon">format_paint</i> Theme
             </div>
             ${dtps.remoteConfig.showGradesInSettings ? /*html*/`
                 <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
-                    <i class="material-icons">assessment</i> Grades
+                    <i class="fluid-icon">assessment</i> Grades
                 </div>
             ` : ``}
             <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();" class="item">
-                <i class="material-icons">dashboard</i> Dashboard
+                <i class="fluid-icon">dashboard</i> Dashboard
             </div>
             ${dtps.env == "dev" ? /*html*/`
                 <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();" class="item">
-                    <i class="material-icons">bug_report</i> Debugging
+                    <i class="fluid-icon">bug_report</i> Debugging
                 </div>
                 <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item">
-                    <i class="material-icons">science</i> Experiments
+                    <i class="fluid-icon">science</i> Experiments
                 </div>
             ` : ``}
             <div onclick="$('.abtpage').hide();$('.abtpage.about').show();" class="item abt">
-                <i class="material-icons">info</i> About
+                <i class="fluid-icon">info</i> About
             </div>
         </div>
 
         <div style="min-height: 100%" class="content">
             <div class="abtpage settings">
                 <h5><b>Settings</b></h5>
-                
+
+                <p style="display: none;" id="settingsReloadWarning">You must reload for the changes you've made to take effect</p>
+
                 <br />
-                <p>Theme</p>
+                <p>Sidebar</p>
 
-                <div>
-                    <div class="btns row themeSelector"></div>
-                    
-                    <br /><br />
-                    <p>Grades</p>
+                <div onclick="fluid.set('pref-hideGrades');" class="switch pref-hideGrades"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">visibility_off</i> Hide class grades</div>
 
-                    <div onclick="fluid.set('pref-hideGrades');" class="switch pref-hideGrades"><span class="head"></span></div>
-                    <div class="label"><i class="material-icons">visibility_off</i> Hide class grades</div>
-                </div>
+                ${dtpsLMS.dtech && !dtps.user.parent ? /*html*/`
+                        <br /><br />
+                        <div onclick="fluid.set('pref-autoGroupClasses'); dtps.settingsReloadWarning();" class="switch pref-autoGroupClasses active"><span class="head"></span></div>
+                        <div class="label"><i class="fluid-icon">sort</i> Automatically group and sort classes</div>
+                    ` : ""
+                }
 
                 <br /><br />
                 <p>Classes</p>
-                <p style="display: none;" id="settingsReloadWarning">You must reload for the changes you've made to take effect</p>
 
-                <div>
-                    <div onclick="fluid.set('pref-fullNames'); dtps.settingsReloadWarning();" class="switch pref-fullNames"><span class="head"></span></div>
-                    <div class="label"><i class="material-icons">title</i> Show full class names</div>
+                <div onclick="fluid.set('pref-fullNames'); dtps.settingsReloadWarning();" class="switch pref-fullNames"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">title</i> Show full class names</div>
                     
-                    <br /><br />
-                    <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
-                    <div class="label"><i class="material-icons">image</i> Hide class images</div>
+                <br /><br />
+                <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">image</i> Hide class images</div>
 
-                    ${dtpsLMS.dtech && !dtps.user.parent ? /*html*/`
-                            <br /><br />
-                            <div onclick="fluid.set('pref-autoGroupClasses'); dtps.settingsReloadWarning();" class="switch pref-autoGroupClasses active"><span class="head"></span></div>
-                            <div class="label"><i class="material-icons">sort</i> Automatically group and sort classes</div>
-                            <br /><br />
-                            <div onclick="fluid.set('pref-formatAssignmentContent');" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
-                            <div class="label"><i class="material-icons">format_paint</i> Reformat assignment content</div>
-                        ` : ""
-                    }
+                ${dtpsLMS.dtech ? /*html*/`
+                        <br /><br />
+                        <p>Assignments</p>
 
-                </div>
+                        <div onclick="fluid.set('pref-formatAssignmentContent');" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
+                        <div class="label"><i class="fluid-icon">format_paint</i> Reformat assignment content</div>
+                    ` : ""
+                }
 
                 <div id="dtpsPrereleaseTesting" style="${window.localStorage.prereleaseEnabled || (dtps.env == "dev") || window.localStorage.githubRepo || window.localStorage.externalReleaseURL ? "" : "display: none;"}">
                     <br /><br />
@@ -1817,36 +1821,44 @@ dtps.renderLite = function () {
                             <button 
                                 onclick="window.localStorage.setItem('dtpsLoaderPref', 'prod')" 
                                 class="btn ${!["dev", "github", "external", "local"].includes(window.localStorage.dtpsLoaderPref) ? "active" : ""}">
-                                <i class="material-icons">label</i> Production
+                                <i class="fluid-icon">label</i> Production
                             </button>
                             <button 
                                 onclick="window.localStorage.setItem('dtpsLoaderPref', 'dev')" 
                                 class="btn ${window.localStorage.dtpsLoaderPref == "dev" ? "active" : ""}">
-                                <i class="material-icons">feedback</i> Dev
+                                <i class="fluid-icon">feedback</i> Dev
                             </button>
                             ${window.localStorage.githubRepo ? /*html*/`
                                 <button 
                                     onclick="window.localStorage.setItem('dtpsLoaderPref', 'github')" 
                                     class="btn ${window.localStorage.dtpsLoaderPref == "github" ? "active" : ""}">
-                                    <i class="material-icons">account_tree</i> Branch
+                                    <i class="fluid-icon">account_tree</i> Branch
                                 </button>
                             ` : ``}
                             ${window.localStorage.externalReleaseURL ? /*html*/`
                                 <button 
                                     onclick="window.localStorage.setItem('dtpsLoaderPref', 'external')" 
                                     class="btn ${window.localStorage.dtpsLoaderPref == "external" ? "active" : ""}">
-                                    <i class="material-icons">public</i> External
+                                    <i class="fluid-icon">public</i> External
                                 </button>
                             ` : ``}
                             <button
                                 onclick="window.localStorage.setItem('dtpsLoaderPref', 'local')" 
                                 class="btn ${window.localStorage.dtpsLoaderPref == "local" ? "active" : ""}">
-                                <i class="material-icons">developer_board</i> Local
+                                <i class="fluid-icon">developer_board</i> Local
                             </button>
                         </div>
                     </div>
                 </div>
 
+            </div>
+
+            <div style="display: none;" class="abtpage theme">
+                <h5><b>Theme</b></h5>
+                
+                <br />
+
+                <div class="btns row themeSelector"></div>
             </div>
 
             <div style="display: none;" class="abtpage grades">
@@ -1868,7 +1880,7 @@ dtps.renderLite = function () {
                 <h5><b>Dashboard</b></h5>
                 <p>You can rearrange the items shown on the dashboard by dragging them below. You might have to reload Power+ for changes to take effect.</p>
 
-                <button onclick="dtps.resetDashboardPrefs();" class="btn small"><i class="material-icons">refresh</i> Reset dashboard layout</button>
+                <button onclick="dtps.resetDashboardPrefs();" class="btn small"><i class="fluid-icon">refresh</i> Reset dashboard layout</button>
 
                 <br />
                 
@@ -1883,29 +1895,29 @@ dtps.renderLite = function () {
                    <p>These settings are for development only and might break Power+. Use at your own risk.</p>
 
                    <div>
-                    <button onclick="dtps.firstrun()" class="btn small"><i class="material-icons">web_asset</i> Show firstrun screen</button>
+                    <button onclick="dtps.firstrun()" class="btn small"><i class="fluid-icon">web_asset</i> Show firstrun screen</button>
                    </div>
 
                    <br /><br />
 
                    <h5>Release configuration</h5>
 
-                   <button onclick="['dtpsLoaderPref', 'prereleaseEnabled', 'githubRepo', 'externalReleaseURL', 'dtpsLMSOverride'].forEach(k => window.localStorage.removeItem(k)); window.location.reload();" class="btn small"><i class="material-icons">cancel</i> Clear release configurations</button>
+                   <button onclick="['dtpsLoaderPref', 'prereleaseEnabled', 'githubRepo', 'externalReleaseURL', 'dtpsLMSOverride'].forEach(k => window.localStorage.removeItem(k)); window.location.reload();" class="btn small"><i class="fluid-icon">cancel</i> Clear release configurations</button>
                    <br /><br />
 
                    <div>
                        <input id="dtpsGithubRepo" value="${window.localStorage.githubRepo || ""}" placeholder="Branch GitHub repo" />
-                       <button class="btn small" onclick="window.localStorage.setItem('githubRepo', $('#dtpsGithubRepo').val())"><i class="material-icons">save</i> Save</button>
+                       <button class="btn small" onclick="window.localStorage.setItem('githubRepo', $('#dtpsGithubRepo').val())"><i class="fluid-icon">save</i> Save</button>
                    </div>
 
                    <div>
                        <input id="dtpsExternalReleaseURL" value="${window.localStorage.externalReleaseURL || ""}" placeholder="External release URL" />
-                       <button class="btn small" onclick="window.localStorage.setItem('externalReleaseURL', $('#dtpsExternalReleaseURL').val())"><i class="material-icons">save</i> Save</button>
+                       <button class="btn small" onclick="window.localStorage.setItem('externalReleaseURL', $('#dtpsExternalReleaseURL').val())"><i class="fluid-icon">save</i> Save</button>
                    </div>
 
                    <div>
                        <input id="dtpsLMSOverride" value="${window.localStorage.dtpsLMSOverride || ""}" placeholder="LMS override" />
-                       <button class="btn small" onclick="window.localStorage.setItem('dtpsLMSOverride', $('#dtpsLMSOverride').val())"><i class="material-icons">save</i> Save</button>
+                       <button class="btn small" onclick="window.localStorage.setItem('dtpsLMSOverride', $('#dtpsLMSOverride').val())"><i class="fluid-icon">save</i> Save</button>
                    </div>
 
                    <br />
@@ -1915,18 +1927,29 @@ dtps.renderLite = function () {
                    <br />
                    <div onclick="fluid.set('pref-debuggingGenericGradebook')" class="switch pref-debuggingGenericGradebook"><span class="head"></span></div>
                    <div class="label">Always use the generic gradebook</div>
+
+                   <br /><br />
+                   <div onclick="fluid.set('pref-debuggingLocalFluidUI')" class="switch pref-debuggingLocalFluidUI"><span class="head"></span></div>
+                   <div class="label">Use local Fluid UI</div>
+
+                   <br /><br />
+
+                   <br /><br />
+                   <input type="date" />
+                   <br /><br />
+                   <input type="color" />
                 </div>
                 <div style="display: none;" class="abtpage experiments">
                     <h5><b>Experiments</b></h5>
-                    <p>These settings control how Power+ behaves. Changing these settings may enabled unsupported and/or unfinished features that can break Power+. Use at your own risk.</p>
+                    <p>These settings control how Power+ behaves. Changing these settings may enable unsupported and/or unfinished features that can break Power+. Use at your own risk.</p>
 
-                    <button onclick="Object.keys(dtps.remoteConfig).forEach(k => window.localStorage.removeItem('dtpsRemoteConfig-' + k));" class="btn small"><i class="material-icons">cancel</i> Clear Overrides</button>
+                    <button onclick="Object.keys(dtps.remoteConfig).forEach(k => window.localStorage.removeItem('dtpsRemoteConfig-' + k));" class="btn small"><i class="fluid-icon">cancel</i> Clear Overrides</button>
                     <br /><br />
                    ${Object.keys(dtps.remoteConfig).map(k => (`
                         <div>
                             <p>${k} ${window.localStorage.getItem("dtpsRemoteConfig-" + k) ? " <b>(overridden)</b>" : ""}</p>
                             <input value="${dtps.remoteConfig[k]}" placeholder="Value" />
-                            <button class="btn small" onclick="window.localStorage.setItem('dtpsRemoteConfig-${k}', $(this).siblings('input').val())"><i class="material-icons">save</i> Save</button>
+                            <button class="btn small" onclick="window.localStorage.setItem('dtpsRemoteConfig-${k}', $(this).siblings('input').val())"><i class="fluid-icon">save</i> Save</button>
                         </div>
                     `)).join("")}
                 </div>
@@ -1946,9 +1969,9 @@ dtps.renderLite = function () {
                         </div>
                     </div>
 
-                    <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="material-icons" style="vertical-align: middle">update</i> Changelog</a>
-                        <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px; cursor: pointer;"><i class="material-icons" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="material-icons" style="vertical-align: middle">email</i> Contact</a>
+                    <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="fluid-icon" style="vertical-align: middle">update</i> Changelog</a>
+                        <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px; cursor: pointer;"><i class="fluid-icon" style="vertical-align: middle">delete_outline</i> Uninstall</a>
+                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="fluid-icon" style="vertical-align: middle">email</i> Contact</a>
                     </div>
                 </div>
 
@@ -1962,7 +1985,7 @@ dtps.renderLite = function () {
                     </div>
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="/logout"><i class="material-icons" style="vertical-align: middle">exit_to_app</i> Logout</a>
+                        <a style="color: var(--lightText); margin: 0px 5px;" href="/logout"><i class="fluid-icon" style="vertical-align: middle">exit_to_app</i> Logout</a>
                     </div>
                 </div>
 
@@ -1977,7 +2000,7 @@ dtps.renderLite = function () {
                     </div>
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="${dtpsLMS.source}"><i class="material-icons" style="vertical-align: middle">code</i> LMS integration source code</a>
+                        <a style="color: var(--lightText); margin: 0px 5px;" href="${dtpsLMS.source}"><i class="fluid-icon" style="vertical-align: middle">code</i> LMS integration source code</a>
                     </div>
                 </div>
 
@@ -1987,8 +2010,8 @@ dtps.renderLite = function () {
                     </div>
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
-                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="material-icons" style="vertical-align: middle">refresh</i> Reset Power+</a>
-                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="if (confirm('Prerelease versions of Power+ are often untested and can break or display incorrect information. Are you sure you want to continue?')) {window.localStorage.prereleaseEnabled = 'true'; $('#dtpsPrereleaseTesting').show(); alert('Prerelease versions can be enabled by going to Settings -> Prerelease testing');}"><i class="material-icons" style="vertical-align: middle">feedback</i> Test prerelease versions</a>
+                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="fluid-icon" style="vertical-align: middle">refresh</i> Reset Power+</a>
+                        <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="if (confirm('Prerelease versions of Power+ are often untested and can break or display incorrect information. Are you sure you want to continue?')) {window.localStorage.prereleaseEnabled = 'true'; $('#dtpsPrereleaseTesting').show(); alert('Prerelease versions can be enabled by going to Settings -> Prerelease testing');}"><i class="fluid-icon" style="vertical-align: middle">feedback</i> Test prerelease versions</a>
                     </div>
                 </div>
 

@@ -529,15 +529,15 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                       <div style="background-color: var(--classColor); color: white;" class="block status letterGrade card">
                         <h2 class="main">${course.letter}</h2>
                         ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
-                        <h5 class="bottom"><i class="material-icons">grade</i> Grade</h5>
+                        <h5 class="bottom"><i class="fluid-icon">grade</i> Grade</h5>
                       </div>
                       <div class="block status number75">
                         <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(2)}</h2>
-                        <h5 class="bottom"><i class="material-icons">functions</i> 75% of outcomes (${course.gradeCalculation.dtech.results.parameters.number75thresh}) ≥</h5>
+                        <h5 class="bottom"><i class="fluid-icon">functions</i> 75% of outcomes (${course.gradeCalculation.dtech.results.parameters.number75thresh}) ≥</h5>
                       </div>
                       <div class="block status lowestScore">
                         <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(2)}</h2>
-                        <h5 class="bottom"><i class="material-icons">leaderboard</i> Lowest outcome</h5>
+                        <h5 class="bottom"><i class="fluid-icon">leaderboard</i> Lowest outcome</h5>
                       </div>
                     </div>
 
@@ -567,7 +567,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                         </div>
 
                     <div onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).children('i').text('keyboard_arrow_up'); $(this).children('span').text('Show less'); dtps.gradebookExpanded = true;} else {$(this).children('i').text('keyboard_arrow_down'); $(this).children('span').text('Show more'); dtps.gradebookExpanded = false;}" class="gradeSummaryShowHide">
-                        ${dtps.gradebookExpanded ? `<i class="material-icons">keyboard_arrow_up</i> <span>Show less</span>` : `<i class="material-icons">keyboard_arrow_down</i> <span>Show more</span>`}
+                        ${dtps.gradebookExpanded ? `<i class="fluid-icon">keyboard_arrow_up</i> <span>Show less</span>` : `<i class="fluid-icon">keyboard_arrow_down</i> <span>Show more</span>`}
                     </div>
                 `;
                 } else {
@@ -619,7 +619,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
                         ${dtps.remoteConfig.allowWhatIfGrades ? /*html*/`
                             <p class="addWhatIf" outcomeID="${outcomeID}" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 16px; cursor: pointer;">
-                                <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
+                                <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="fluid-icon down">add_box</i>
                                 Add a What-If grade
                             </p>
                         ` : ""}
@@ -778,7 +778,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             //Show what-if mode for grade summary
             $("#gradeSummary .block.card").css("background-color", "");
             $("#gradeSummary .block.card").css("color", "var(--classColor)");
-            $("#gradeSummary .block.card h5.bottom").html(`<i class="material-icons">analytics</i> What-If Grade`);
+            $("#gradeSummary .block.card h5.bottom").html(`<i class="fluid-icon">analytics</i> What-If Grade`);
             $("#gradeSummary .block.card .previousGrade").remove();
             $("#gradeSummary .block.card h2.main").after(`<h5 onclick="fluid.screen();" class="showActualGrades">Show actual grades</h5>`);
 
