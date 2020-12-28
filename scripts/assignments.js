@@ -1017,7 +1017,7 @@ dtps.renderStreamTools = function (num, type) {
             <div style="text-align: right;${modulesSelector ? "" : "margin-top: 20px;"}">
                 ${modulesSelector ? /*html*/`
                     ${(type == "modules") && dtpsLMS.collapseAllModules ? `<button id="moduleExpandCollapse" onclick="dtps.moduleCollapseAll()" style="margin-right:20px;display:none;" class="btn"></button>` : ""}
-                    <div class="btns row small acrylicMaterial assignmentPicker" style="margin: 5px 20px 5px 0px !important;">
+                    <div class="btns row small assignmentPicker" style="margin: 5px 20px 5px 0px !important;">
                         <button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);"><i class="fluid-icon">assignment</i>Assignments</button>
                         <button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);"><i class="fluid-icon">view_module</i>Modules</button>
                     </div>
