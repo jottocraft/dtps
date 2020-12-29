@@ -12,14 +12,12 @@
  * 
  * @param term {string} The search term typed in the input box
  */
-dtps.globalSearch = function (term) {
-    //Validate search and get search vars
-    var type = $("#dtpsMainSearchBox").attr("data-search-type");
-    var courseNum = $("#dtpsMainSearchBox").attr("data-dtps-course");
-    var term = term ? decodeURI(term) : "";
-    if (!type || !courseNum) {
-        return fluid.screen("dashboard");
-    }
+dtps.globalSearch = function (param) {
+    var term = param.term;
+    var type = param.type;
+    var courseNum = param.course;
+
+    $("#dtpsMainSearchBox").attr("data-search-type", param.type).attr("data-dtps-course", param.course).attr("data-ctx-type", param.ctxType).attr("data-ctx-course", param.ctxCourse);
 
     //Ensure classes are rendered in the sidebar
     dtps.presentClass("search");
@@ -48,6 +46,7 @@ dtps.globalSearch = function (term) {
     //Fetch everything
     var dataset = [];
     var datasetPromises = [];
+    var checkedCourses = [];
 
     (courseNum == "all" ? dtps.classes : [dtps.classes[Number(courseNum)]]).forEach(course => {
         if ((type == "assignments") || (type == "coursework") || (type == "everything")) {
@@ -62,10 +61,12 @@ dtps.globalSearch = function (term) {
                     icon: "assignment",
                     type: "assignment",
                     infoIcons: [
-                        assignment.dueAt ? "alarm" : null
+                        assignment.dueAt ? "alarm" : null,
+                        dtps.user.parent ? "person" : null
                     ].filter(i => i),
                     info: [
-                        assignment.dueAt ? "Due: " + dtps.formatDate(assignment.dueAt) : null
+                        assignment.dueAt ? "Due: " + dtps.formatDate(assignment.dueAt) : null,
+                        dtps.user.parent ? dtps.user.children.find(c => c.id == course.userID).name : null
                     ].filter(i => i).join("$|$"),
                     icons: [
                         {
@@ -88,6 +89,61 @@ dtps.globalSearch = function (term) {
                 })));
             }));
         }
+
+        if ((type == "grades") || (type == "everything")) {
+            datasetPromises.push(new Promise((resolve, reject) => {
+                if (!course.assignments) return resolve([]);
+                var res = [];
+
+                course.assignments.forEach(assignment => {
+                    if (dtpsLMS.useRubricGrades && assignment.rubric) {
+                        assignment.rubric.forEach(rubric => {
+                            if (rubric.score) {
+                                res.push({
+                                    title: assignment.title,
+                                    class: course.num,
+                                    onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
+                                    locatedIn: rubric.title,
+                                    icon: "assessment",
+                                    infoIcons: [
+                                        "bar_chart",
+                                        dtps.user.parent ? "person" : null
+                                    ].filter(i => i),
+                                    info: [
+                                        "Score: " + rubric.score + "/" + rubric.value + (rubric.scoreName ? " " + rubric.scoreName : ""),
+                                        dtps.user.parent ? dtps.user.children.find(c => c.id == course.userID).name : null
+                                    ].filter(i => i).join("$|$"),
+                                    icons: []
+                                });
+                            }
+                        });
+                    } else if (assignment.grade) {
+                        res.push({
+                            title: assignment.title,
+                            class: course.num,
+                            onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
+                            locatedIn: "Grade",
+                            icon: "assessment",
+                            infoIcons: [
+                                "bar_chart",
+                                dtps.user.parent ? "person" : null
+                            ].filter(i => i),
+                            info: [
+                                "Score: " + assignment.grade + "/" + assignment.value + " (" + Math.round((assignment.grade / assignment.value) * 100) + "%" + (assignment.letter ? ", " + assignment.letter : "") + ")",
+                                dtps.user.parent ? dtps.user.children.find(c => c.id == course.userID).name : null
+                            ].filter(i => i).join("$|$"),
+                            icons: []
+                        });
+                    }
+                });
+
+                resolve(res);
+            }));
+        }
+
+        //Check if this course has already been checked
+        if (checkedCourses.includes(course.lmsID)) return;
+        checkedCourses.push(course.lmsID);
 
         if ((type == "modules") || (type == "coursework") || (type == "everything")) {
             datasetPromises.push(new Promise((resolve, reject) => {
@@ -248,53 +304,6 @@ dtps.globalSearch = function (term) {
                         icons: []
                     })));
                 }).catch(() => resolve([]));
-            }));
-        }
-
-        if ((type == "grades") || (type == "everything")) {
-            datasetPromises.push(new Promise((resolve, reject) => {
-                if (!course.assignments) return resolve([]);
-                var res = [];
-
-                course.assignments.forEach(assignment => {
-                    if (dtpsLMS.useRubricGrades && assignment.rubric) {
-                        assignment.rubric.forEach(rubric => {
-                            if (rubric.score) {
-                                res.push({
-                                    title: assignment.title,
-                                    class: course.num,
-                                    onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
-                                    locatedIn: rubric.title,
-                                    icon: "assessment",
-                                    infoIcons: [
-                                        "bar_chart"
-                                    ].filter(i => i),
-                                    info: [
-                                        "Score: " + rubric.score + "/" + rubric.value + (rubric.scoreName ? " " + rubric.scoreName : "")
-                                    ].filter(i => i).join("$|$"),
-                                    icons: []
-                                });
-                            }
-                        });
-                    } else if (assignment.grade) {
-                        res.push({
-                            title: assignment.title,
-                            class: course.num,
-                            onclick: "dtps.assignment('" + assignment.id + "', " + assignment.class + ")",
-                            locatedIn: "Grade",
-                            icon: "assessment",
-                            infoIcons: [
-                                "bar_chart"
-                            ].filter(i => i),
-                            info: [
-                                "Score: " + assignment.grade + "/" + assignment.value + " (" + Math.round((assignment.grade / assignment.value) * 100) + "%" + (assignment.letter ? ", " + assignment.letter : "") + ")"
-                            ].filter(i => i).join("$|$"),
-                            icons: []
-                        });
-                    }
-                });
-
-                resolve(res);
             }));
         }
 
