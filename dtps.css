@@ -1397,10 +1397,6 @@ body.dashboard .background:before {
     transition: background-color 0.2s;
 }
 
-body {
-    --cardShadow: 0 5px 15px rgb(0 0 0 / 0.08) !important;
-}
-
 .headerArea {
     margin: 10px 20px;
     width: auto;

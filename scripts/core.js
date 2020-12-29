@@ -884,7 +884,7 @@ dtps.presentClass = function (classNum) {
     }
 
     //Set search box content
-    if (classNum !== "search") dtps.setSearchBox();
+    dtps.setSearchBox();
 
     if (dtps.classes[classNum]) {
         //Show pages tab if the class supports it, otherwise, hide it
@@ -1608,7 +1608,13 @@ dtps.render = function () {
             //Validate input and tags
             var term = $("#dtpsMainSearchBox").val().replace(/(type|class):[a-z]*/gi, "").trim();
             if ($("#dtpsMainSearchBox").attr("data-search-type") && $("#dtpsMainSearchBox").attr("data-dtps-course")) {
-                fluid.screen("search", term);
+                fluid.screen("search", {
+                    term: term,
+                    type: $("#dtpsMainSearchBox").attr("data-search-type"),
+                    course: $("#dtpsMainSearchBox").attr("data-dtps-course"),
+                    ctxType: $("#dtpsMainSearchBox").attr("data-ctx-type"),
+                    ctxCourse: $("#dtpsMainSearchBox").attr("data-ctx-course")
+                });
                 $("#dtpsMainSearchBox").blur();
             }
         }
