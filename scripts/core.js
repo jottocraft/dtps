@@ -1864,7 +1864,7 @@ dtps.renderLite = function () {
                 
                 <br />
 
-                <div class="btns row themeSelector"></div>
+                <div class="themeSelectionUI flat"></div>
             </div>
 
             <div style="display: none;" class="abtpage grades">
