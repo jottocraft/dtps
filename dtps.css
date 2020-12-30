@@ -1479,7 +1479,6 @@ body.themeImage .headerArea img {
 }
 
 .fixedGradeSummary #gradeSummary {
-    box-shadow: var(--lightShadow);
     left: 275px;
     padding: 20px;
     position: fixed;
@@ -1491,7 +1490,7 @@ body.themeImage .headerArea img {
     backdrop-filter: blur(20px);
 }
 
-body.collapsedSidebar #gradeSummary {
+body.collapsedSidebar .fixedGradeSummary #gradeSummary {
     left: 72px;
     width: calc(100% - 72px);
 }
