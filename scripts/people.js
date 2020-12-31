@@ -2,7 +2,7 @@
  * @file DTPS course user list screen
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  */
 
@@ -34,11 +34,65 @@ dtps.usersList = function (courseID) {
     }
 
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "people")) {
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        jQuery(".classContent").html(/*html*/`
+            <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
+              <div class="block status card">
+                <h2 class="main"><span class="shimmer">--</span></h2>
+                <h5 class="bottom"><i class="fluid-icon">contact_page</i> Your section</h5>
+              </div>
+              <div class="block status">
+                <h2 class="main numFont"><span class="shimmer">--</span></h2>
+                <h5 class="bottom"><i class="fluid-icon">groups</i> Total Students</h5>
+              </div>
+              <div class="block status">
+                <h2 class="main numFont"><span class="shimmer">--</span></h2>
+                <h5 class="bottom"><i class="fluid-icon">school</i> Teachers</h5>
+              </div>
+            </div>
+            <div class="card">
+                <h5><b style="width: 300px; display: inline-block;" class="shimmer">Title</b></h5>
+                ${[1, 2, 3, 4, 5, 6].map(() => (
+                    /*html*/`
+                        <div>
+                            <p class="shimmerParent">
+                                <span style="width: 30px; height: 30px; outline: none; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 5px;"></span>
+                                <a style="color: var(--text); vertical-align: middle;">User name</a>
+                            </p>
+                        </div>
+                    `
+        )).join("")}
+            </div>
+        `);
     }
 
     //Fetch users list
-    dtpsLMS.fetchUsers(dtps.classes[classNum].id).then(function (sections) {
+    new Promise(resolve => {
+        if (dtps.classes[classNum].people && (dtps.classes[classNum].people !== true)) {
+            resolve(dtps.classes[classNum].people);
+        } else {
+            dtpsLMS.fetchUsers(dtps.classes[classNum].lmsID).then(data => resolve(data));
+        }
+    }).then(function (sections) {
+        dtps.classes[classNum].people = sections;
+
+        //Count students and teachers by user ID
+        var allStudents = [];
+        var allTeachers = [];
+        var currentSection = null;
+        sections.forEach(section => {
+            section.users.forEach(user => {
+                if ((section.title == "Teachers") && !allTeachers.includes(user.id)) {
+                    allTeachers.push(user.id);
+                } else if (!allStudents.includes(user.id)) {
+                    allStudents.push(user.id);
+                }
+
+                if (!currentSection && (user.id == dtps.user.id)) {
+                    currentSection = section.title;
+                }
+            });
+        });
+
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "people")) {
             if (!sections || (sections.length == 0)) {
                 //No people in this class? (this shouldn't be possible)
@@ -49,7 +103,22 @@ dtps.usersList = function (courseID) {
                     </div>
                 `);
             } else {
-                jQuery(".classContent").html(sections.map(section => (
+                jQuery(".classContent").html(/*html*/`
+                    <div style="--size: 250px; margin: 0px 20px;" class="grid flex">
+                      <div class="block status card">
+                        <h2 style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" class="main">${currentSection || "--"}</h2>
+                        <h5 class="bottom"><i class="fluid-icon">contact_page</i> Your section</h5>
+                      </div>
+                      <div class="block status">
+                        <h2 class="main numFont">${allStudents.length}</h2>
+                        <h5 class="bottom"><i class="fluid-icon">groups</i> Total Students</h5>
+                      </div>
+                      <div class="block status">
+                        <h2 class="main numFont">${allTeachers.length}</h2>
+                        <h5 class="bottom"><i class="fluid-icon">school</i> ${allTeachers.length == 1 ? "Teacher" : "Teachers"}</h5>
+                      </div>
+                    </div>
+                ` + sections.map(section => (
                     /*html*/`
                         <div class="card">
                             <h5><b>${section.title}</b></h5>
@@ -62,7 +131,7 @@ dtps.usersList = function (courseID) {
                                         </p>
                                     </div>
                                 `
-                            )).join("")}
+                )).join("")}
                         </div>
                     `
                 )).join(""));

@@ -32,7 +32,6 @@
             color: var(--elementText);
             padding: 100px;
             padding-bottom: 120px;
-            margin-bottom: 125px;
             text-align: center;
         }
 
@@ -117,73 +116,43 @@
 
 
 <body>
-
-    <script>
-        $(document).ready(() => {
-            if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
-                if ($("#dtpsInstallBtn").text().includes("extension")) {
-                    $("#dtpsInstallBtn").attr("onclick", "window.location.href = 'https://powerplus.app/firefox.xpi';");
-                }
-            }
-        })
-    </script>
-
     <div id="header">
         <div class="content">
             <div class="title">
                 <img src="/icon.svg" />
-                <h1>Power+</h1>
+                <h1>Power+ (dev)</h1>
             </div>
             <div class="row">
-                <button id="dtpsInstallBtn"
-                    onclick="window.location.href = 'https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo';"
-                    class="btn"><i class="material-icons">extension</i> Add the extension</button>
-                <button class="btn outline" onclick="window.location.href = '/demo';"><i
-                        class="material-icons">exit_to_app</i> Demo</button>
-                <button class="btn outline" onclick="window.location.href = 'https://github.com/jottocraft/dtps';"><i
+                <button
+                    onclick="fluid.alert('Send Feedback', 'Email canary@jottocraft.com to send feedback about Power+ (dev)', 'email')"
+                    class="btn"><i class="material-icons">feedback</i> Send Feedback</button>
+                <button onclick="window.location.href = 'https://github.com/jottocraft/dtps/issues/new';" class="btn"><i
+                        class="material-icons">bug_report</i> Report a bug</button>
+                <button onclick="window.location.href = '/docs';" class="btn outline"><i
+                        class="material-icons">article</i> Documentation</button>
+                <button class="btn outline"
+                    onclick="window.location.href = 'https://github.com/jottocraft/dtps/tree/dev';"><i
                         class="material-icons">code</i> Source code</button>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <div class="row">
-            <div class="block small six columns">
-                <img src="assets/todo.svg" />
-                <div class="description">
-                    <h3>Manage your coursework</h3>
-                    <p>Power+ shows you upcoming assignments, a calendar, and updates at a glance</p>
-                </div>
-            </div>
-
-            <div class="block small six columns">
-                <img src="assets/calculator.svg" />
-                <div class="description">
-                    <h3>Grade Calculation</h3>
-                    <p>Power+ calculates your CBL class grades and lets you test what-if grades</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="block left">
-            <img src="assets/server.svg" />
+        <div style="background: var(--elements); padding: 40px; border-radius: var(--cardRadius);" class="block left">
+            <img src="assets/dev.svg" />
             <div class="description">
-                <h3>Privacy</h3>
-                <ul>
-                    <li>Power+ does not collect any personal information</li>
-                    <li>Power+ gets data directly from Canvas to your computer without being processed by a Power+
-                        server or a 3rd party</li>
-                    <li>Grades are calculated on-device</li>
-                    <li>Prefrences and grade history are stored on-device</li>
-                    <li>Power+'s code is open-source and hosted directly from <a
-                            href="https://github.com/jottocraft/dtps">GitHub</a></li>
-                </ul>
+                <h3>Development Status</h3>
+                <p>v3.1.0 - New fixes and improvements will be released to the dev version first</p>
+                <span>To start using the dev version of Power+, visit Settings -> About -> Advanced Options and
+                    select "Test prerelease versions". Then, navigate to Settings -> Prerelease testing and select
+                    "Dev". Once you've done that, just reload Power+ to load the dev version. Keep in mind that the
+                    dev version uses the latest, often untested, code and can completely break. Use the dev version
+                    at your own risk.</span>
             </div>
         </div>
     </div>
 
-    <br /><br /><br /><br />
-    <div style="text-align: center; padding: 50px 0px;">
+    <div style="text-align: center; padding-bottom: 50px;">
         <img style="height: 45px; margin-right: 20px; vertical-align: middle;"
             src="https://cdn.jottocraft.com/images/footerImage.png" />
         <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
