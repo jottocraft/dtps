@@ -2,7 +2,7 @@
  * @file d.tech-specific features, CBL & grade calculation
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  * 
  * JSDoc documentation for these LMS functions can be found near the end of core.js
@@ -13,10 +13,9 @@ var baseURL = document.currentScript.src.split("/scripts/lms/dtech.js")[0];
 
 //Load Canvas integration
 jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
-
     //Add d.tech-specific items to dtpsLMS
     dtpsLMS.name = "d.tech";
-    dtpsLMS.legalName = "Canvas LMS, Design Tech High School, and Instructure Inc";
+    dtpsLMS.legalName = "Canvas LMS, Design Tech High School, or Instructure Inc";
     dtpsLMS.description = "Power+ integration for Canvas LMS, customized for d.tech";
     dtpsLMS.logo = "https://i.imgur.com/efGrLq3.png";
     dtpsLMS.source = "https://github.com/jottocraft/dtps/blob/main/scripts/lms/dtech.js";
@@ -24,6 +23,21 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     dtpsLMS.institutionSpecific = true;
     dtpsLMS.genericGradebook = false;
     dtpsLMS.dtech = true;
+
+    //Check if due date is usual
+    dtpsLMS.isUsualDueDate = function (date) {
+        var date = new Date(date);
+
+        if (date.getHours() >= 22) {
+            return true;
+        } else if ((date.getHours() == 21) && (date.getMinutes() > 50)) {
+            return true;
+        } else if (date.getHours() < 8) {
+            return true;
+        }
+
+        return false;
+    };
 
     //Update assignments
     //This is for customizing rubric names and colors to match d.tech CBL
@@ -36,7 +50,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     assignment.rubric.forEach(rubricItem => {
                         rubricItem.scoreName = shortenDtechRubricScoreName(rubricItem.scoreName);
 
-                        if (rubricItem.score) {
+                        if (rubricItem.score !== undefined) {
                             rubricItem.color = dtechRubricColor(rubricItem.score);
                         }
                     });
@@ -62,64 +76,129 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 } else if (!course.endDate || (new Date() < new Date(course.endDate))) {
                     tmpNewArray.push(course);
                 }
+
+                //Check if course is ineligible for videoMeetingURL
+                if (!dtps.remoteConfig.showVideoMeetingButton || dtps.user.parent || !course.homepage || (course.term !== dtps.remoteConfig.dtechCurrentTerm)) {
+                    course.videoMeetingURL = null;
+                }
+
+                //Get course period
+                var matches = course.period.match(/[0-9](?=\(A)/);
+                if (matches && matches[0]) {
+                    course.period = matches[0] == "7" ? 0 : Number(matches[0]);
+                } else if (/(d|design)(\.| |-)?lab/gi.test(course.subject)) {
+                    course.period = 11;
+                } else if (/exploration/gi.test(course.subject)) {
+                    course.period = 12;
+                } else {
+                    course.period = Infinity;
+                }
+
+                //Get course cycle
+                if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
+                    if ((course.period >= 1) && (course.period <= 3)) {
+                        course.group = "Cycle 1/3";
+                    } else if ((course.period >= 4) && (course.period <= 6)) {
+                        course.group = "Cycle 2/4";
+                    } else if ((course.period == 11) || (course.period == 12)) {
+                        course.group = "Intersession";
+                    }
+                }
+
+                //Add course icon
+                if (course.id == dtps.remoteConfig.debugClassID) {
+                    course.icon = "bug_report";
+                } else if (/Game/gi.test(course.subject)) {
+                    course.icon = "games";
+                } else if (/Architecture/gi.test(course.subject)) {
+                    course.icon = "architecture";
+                } else if (/History/gi.test(course.subject)) {
+                    course.icon = "history_edu";
+                } else if (/Biology/gi.test(course.subject)) {
+                    course.icon = "biotech";
+                } else if (/Physics|Science|Chemistry/gi.test(course.subject)) {
+                    course.icon = "science";
+                } else if (/Math|Algebra|Geometry|Calculus|Statistics/gi.test(course.subject)) {
+                    course.icon = "calculate";
+                } else if (/Engineering|DRG/gi.test(course.subject)) {
+                    course.icon = "engineering";
+                } else if (/((d|design)(\.| |-)?lab)|Prototyping/gi.test(course.subject)) {
+                    course.icon = "design_services";
+                } else if (/Exploration/gi.test(course.subject)) {
+                    course.icon = "explore";
+                } else if (/@d.?tech/gi.test(course.subject)) {
+                    course.icon = "school";
+                } else if (/English/gi.test(course.subject)) {
+                    course.icon = "description";
+                } else if (/Model( |-|)(United Nations|UN)/gi.test(course.subject)) {
+                    course.icon = "public";
+                } else if (/Spanish|Language/gi.test(course.subject)) {
+                    course.icon = "translate";
+                } else if (/Government/gi.test(course.subject)) {
+                    course.icon = "gavel";
+                } else if (/(Koi|Live)( |-|)Stream/gi.test(course.subject)) {
+                    course.icon = "live_tv";
+                } else if (/Film/gi.test(course.subject)) {
+                    course.icon = "camera_roll";
+                } else if (/Leadership/gi.test(course.subject)) {
+                    course.icon = "stars";
+                } else if (/Athletics/gi.test(course.subject)) {
+                    course.icon = "sports_handball";
+                }
             });
             classes = tmpNewArray;
 
-            //Don't fetch videoMeetingURL if disable by remoteConfig
-            if (!dtps.remoteConfig.showVideoMeetingButton) {
-                resolve(classes);
-                return;
+            //Automatically sort and group classes if enabled
+            if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
+                classes.sort((a, b) => {
+                    return a.period - b.period;
+                });
             }
 
-            var promises = [];
-
-            //Create a new promise for each class
-            classes.forEach(course => {
-                if (course.homepage) {
-                    promises.push(new Promise((resolve, reject) => {
-                        dtpsLMS.fetchHomepage(course.id).then(homepage => {
-                            //get zoom link
-                            var matches = 0;
-                            for (var i = 0; i < $(homepage).find("a").length; i++) {
-                                var link = $($(homepage).find("a")[i]);
-                                if (link.children("img").attr("alt") && link.children("img").attr("alt").toUpperCase().includes("ZOOM BUTTON") && link.attr("href")) {
-                                    //Button labelled as zoom button
-                                    course.videoMeetingURL = link.attr("href");
-                                } else if (link.attr("href") && link.attr("href").includes("zoom.us")) {
-                                    //Button link goes to a zoom meeting, only use this if there is no other zoom link
-                                    //if (!course.videoMeetingURL) course.videoMeetingURL = link.attr("href");
-                                }
-                            }
-
-                            if (matches > 1) {
-                                //Multiple zoom links found
-                                course.videoMeetingURL = null;
-                            }
-
-                            resolve();
-                        })
-                    }))
-                }
-            })
-
-            //Run all promises
-            Promise.all(promises).then(() => {
-                resolve(classes);
-            })
+            resolve(classes);
         });
+    }
+
+    //Fetch videoMeetingURL for a class
+    dtpsLMS.fetchMeetingURL = function (classID) {
+        return new Promise((resolve, reject) => {
+            var course = dtps.classes.find(course => course.id == classID);
+
+            if (course.homepage && (course.term == dtps.remoteConfig.dtechCurrentTerm)) {
+                dtpsLMS.fetchHomepage(classID).then(homepage => {
+                    //get zoom link
+                    var meetingURL = null;
+                    var matches = 0;
+                    for (var i = 0; i < $(homepage).find("a").length; i++) {
+                        var link = $($(homepage).find("a")[i]);
+                        if (link.children("img").attr("alt") && link.children("img").attr("alt").toUpperCase().includes("ZOOM BUTTON") && link.attr("href")) {
+                            //Button labelled as zoom button
+                            meetingURL = link.attr("href");
+                        } else if (link.attr("href") && link.attr("href").includes("zoom.us")) {
+                            //Button link goes to a zoom meeting, only use this if there is no other zoom link
+                            //if (!meetingURL) meetingURL = link.attr("href");
+                        }
+                    }
+
+                    if (matches > 1) {
+                        //Multiple zoom links found
+                        meetingURL = null;
+                    }
+
+                    resolve(meetingURL);
+                });
+            }
+        })
     }
 
     //Run d.tech grade calculation algorithm (defined below)
     dtpsLMS.calculateGrade = function (course, assignments) {
-        //If grade calculation is disabled, don't run grade calc
-        if (!dtps.remoteConfig.gradeCalculationEnabled) return;
-
         var formula = null;
 
         //Get d.tech grade calculation formula
         if (course.term == "20-21") {
             formula = "2020s1";
-        } else if (course.id == dtps.remoteConfig.debugClassID) {
+        } else if (String(course.id).includes(dtps.remoteConfig.debugClassID)) {
             formula = "2020s1";
         }
 
@@ -155,11 +234,40 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
     //Get score color from rubric percentage
     var dtechRubricColor = function (score) {
-        if (score >= 4) return "#4f9e59";
-        if (score >= 3) return "#a1b553";
-        if (score >= 2) return "#c26d44";
-        if (score >= 1) return "#c4474e";
-        if (score >= 0) return "#bd3139";
+        if (score > 4.0) return "#20D684";
+        if (score == 4.0) return "#41BA35";
+        if (score >= 3.9) return "#50BC39";
+        if (score >= 3.8) return "#5FBD3D";
+        if (score >= 3.7) return "#6EBF40";
+        if (score >= 3.6) return "#7DC044";
+        if (score >= 3.5) return "#8CC248";
+        if (score >= 3.4) return "#9AC44C";
+        if (score >= 3.3) return "#A9C550";
+        if (score >= 3.2) return "#B8C753";
+        if (score >= 3.1) return "#C7C857";
+        if (score >= 3.0) return "#D6CA5B";
+        if (score >= 2.9) return "#D8C35A";
+        if (score >= 2.8) return "#DABB59";
+        if (score >= 2.7) return "#DCB458";
+        if (score >= 2.6) return "#DEAC57";
+        if (score >= 2.5) return "#E1A556";
+        if (score >= 2.4) return "#E39E55";
+        if (score >= 2.3) return "#E59654";
+        if (score >= 2.2) return "#E78F53";
+        if (score >= 2.1) return "#E98752";
+        if (score >= 2.0) return "#EB8051";
+        if (score >= 1.9) return "#E97A50";
+        if (score >= 1.8) return "#E7744F";
+        if (score >= 1.7) return "#E56F4E";
+        if (score >= 1.6) return "#E3694D";
+        if (score >= 1.5) return "#E1634C";
+        if (score >= 1.4) return "#DE5D4A";
+        if (score >= 1.3) return "#DC5749";
+        if (score >= 1.2) return "#DA5248";
+        if (score >= 1.1) return "#D84C47";
+        if (score >= 1.0) return "#D64646";
+        if (score >= 0.0) return "#D72727";
+        if (score < 0.0) return "#BF0000";
     }
 
     /**
@@ -237,7 +345,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                             //Assignment has a rubric
 
                             assignment.rubric.forEach(rubricItem => {
-                                if (rubricItem.score && rubricItem.outcome) {
+                                if ((rubricItem.score !== undefined) && rubricItem.outcome) {
                                     //Rubric item is assessed and is linked with an outcome
 
                                     if (!outcomes[rubricItem.outcome]) {
@@ -265,8 +373,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
                 //Loop over the values of each item in the outcomes object
                 Object.values(outcomes).forEach(outcome => {
-                    //Get array of scores for the outcome
-                    var outcomeScores = outcome.scores.map(RubricItem => RubricItem.score);
+                    //Get array of scores for the outcome, remove null scores
+                    var outcomeScores = outcome.scores.map(RubricItem => RubricItem.score).filter(score => score !== null);
 
                     //Calculate outcome average with all outcome scores
                     var average = this.average(outcomeScores);
@@ -284,7 +392,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     if (droppedAverage > average) {
                         //The dropped score was higher
                         outcome.scoreType = "dropped";
-                        outcome.droppedScore = outcomeScores.indexOf(lowestScore);
+                        outcome.droppedScore = outcome.scores.map(RubricItem => RubricItem.score).indexOf(lowestScore);
                         outcome.average = droppedAverage;
                     } else {
                         //Calculating with all outcome scores was the same or higher
@@ -417,47 +525,25 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
                 if (course.gradeCalculation.dtech.formula == "2020s1") {
                     var gradeCalcSummary = /*html*/`
-                    <div style="--classColor: ${course.color}" class="card">
+                    <div id="gradeSummary" style="--size: 250px; margin: 0px 20px; --classColor: ${course.color};" class="grid flex">
+                      <div style="background-color: var(--classColor); color: white;" class="block status letterGrade card">
+                        <h2 class="main">${course.letter}</h2>
+                        ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
+                        <h5 class="bottom"><i class="fluid-icon">grade</i> Grade</h5>
+                      </div>
+                      <div class="block status number75">
+                        <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(2)}</h2>
+                        <h5 class="bottom"><i class="fluid-icon">functions</i> 75% of outcomes (${course.gradeCalculation.dtech.results.parameters.number75thresh}) ≥</h5>
+                      </div>
+                      <div class="block status lowestScore">
+                        <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(2)}</h2>
+                        <h5 class="bottom"><i class="fluid-icon">leaderboard</i> Lowest outcome</h5>
+                      </div>
+                    </div>
 
-                        <h3 class="gradeTitle">
-                            Grades
-
-                            <div class="classGradeCircle">
-                                <div class="letter">${course.letter}</div>
-                            </div>
-
-                        </h3>
-
-                        <h5 class="gradeStat">
-                            75% (rounded down) of outcome scores are ≥
-                            <div class="numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(1)}</div>
-                        </h5>
-
-                        <h5 class="gradeStat">
-                            No outcome scores are lower than
-                            <div class="numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(1)}</div>
-                        </h5>
-
-                        <div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
+                    <div style="--classColor: ${course.color};${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
                             <br />
-
-                            ${course.previousLetter ? /*html*/`
-                            <h5 class="smallStat">
-                                Previous Grade
-                                <div class="numFont">${course.previousLetter}</div>
-                            </h5>
-                            ` : ``}
-
-                            ${course.gradeCalculation.dtech.results.parameters.number75thresh ? /*html*/`
-                            <h5 class="smallStat">
-                                75% of outcomes (rounded down) is
-                                <div class="numFont">${course.gradeCalculation.dtech.results.parameters.number75thresh}</div>
-                            </h5>
-                            ` : ``}
-                        
-                            <br />
-
-                            <table class="u-full-width dtpsTable">
+                            <table class="table">
                                 <thead>
                                     <tr>
                                     <th>&nbsp;&nbsp;Final Letter</th>
@@ -469,7 +555,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                                 <tbody>
                                     ${dtechGradeCalc.letters.map(letter => {
                         return /*html*/`
-                                            <tr ${course.letter == letter ? `style="background-color: var(--classColor); color: white; font-size:20px; font-weight: bold;"` : ``}>
+                                            <tr class="letter${letter} ${course.letter == letter ? `active` : ``}">
                                                 <td>&nbsp;&nbsp;${letter}</td>
                                                 <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].percentage[letter]}</td>
                                                 <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].lowest[letter]}</td>
@@ -480,12 +566,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                             </table>
                         </div>
 
-                        <br />
-
-                        <br />
-                        <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
-                            style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">${dtps.gradebookExpanded ? "Show less" : "Show more"}</a>
-                        <a href="https://docs.google.com/document/d/1g4-aYZ_BS5_I4Ie64WGCwXeArl1K_pHbBbebDHra_sM/edit" style="color: var(--secText, gray);">Using 2020-21 grade calculation</a>
+                    <div onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).children('i').text('keyboard_arrow_up'); $(this).children('span').text('Show less'); dtps.gradebookExpanded = true;} else {$(this).children('i').text('keyboard_arrow_down'); $(this).children('span').text('Show more'); dtps.gradebookExpanded = false;}" class="gradeSummaryShowHide">
+                        ${dtps.gradebookExpanded ? `<i class="fluid-icon">keyboard_arrow_up</i> <span>Show less</span>` : `<i class="fluid-icon">keyboard_arrow_down</i> <span>Show more</span>`}
                     </div>
                 `;
                 } else {
@@ -517,7 +599,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                         <h5 style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;">${outcome.title}</h5>
 
                         ${outcome.average !== undefined ? `
-                            <div id="outcomeScore${outcomeID}" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ${dtechRubricColor(outcome.average)}">${outcome.average.toFixed(2)}</div>
+                            <div id="outcomeScore${outcomeID}" class="numFont" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ${dtechRubricColor(outcome.average)}">${outcome.average.toFixed(2)}</div>
                         ` : ``}
                         
                         <div class="assessments">
@@ -526,11 +608,10 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                             ` :
                             outcome.scores.map((assessment, aIndex) => {
                                 return /*html*/`
-                                        <p id="outcome${assessment.outcome}assessment${aIndex}" class="${aIndex == outcome.droppedScore ? "dropped" : ""}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
-                                            <span aIndex="${aIndex}" outcomeID="${outcomeID}"
-                                                style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: ${assessment.color}" class="editableScore" ${dtps.remoteConfig.allowWhatIfGrades ? `contenteditable` : ""}>${assessment.score}</span>
+                                        <div class="assessmentWrapper ${aIndex == outcome.droppedScore ? "dropped" : ""}" id="outcome${assessment.outcome}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+                                            <div style="color: ${assessment.color};" aIndex="${aIndex}" outcomeID="${outcomeID}" class="editableScore" ${dtps.remoteConfig.allowWhatIfGrades ? `contenteditable` : ""}>${assessment.score}</div>
                                             <span class="assessmentTitle" style="cursor: pointer;" onclick="dtps.assignment('${assessment.assignmentID}', ${course.num});">${assessment.assignmentTitle}</span>
-                                        </p>
+                                        </div>
                                     `;
                             }).join("")
                         }
@@ -538,7 +619,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
                         ${dtps.remoteConfig.allowWhatIfGrades ? /*html*/`
                             <p class="addWhatIf" outcomeID="${outcomeID}" style="font-size: 14px; color: var(--secText); margin: 0px; margin-top: 16px; cursor: pointer;">
-                                <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="material-icons down">add_box</i>
+                                <i style="cursor: pointer; vertical-align: middle; font-size: 16px;" class="fluid-icon down">add_box</i>
                                 Add a What-If grade
                             </p>
                         ` : ""}
@@ -570,6 +651,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
     }
 
     //Enable What-If grades
+    var scrollListenerAdded = false;
     dtpsLMS.gradebookDidRender = function (course) {
         //Add event listeners for every editable score in the gradebook
         $(".card.outcomeResults .assessments .editableScore").toArray().forEach(ele => {
@@ -579,7 +661,21 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         //Add event listeners for the "Add a What-If grade" buttons
         $("p.addWhatIf").click(function () {
             addWhatIf(course, $(this).attr("outcomeID"));
-        })
+        });
+
+        //Keep the grade summary on top
+        if (!scrollListenerAdded) {
+            scrollListenerAdded = true;
+            var gradeSummary = document.getElementById("gradeSummary");
+            var sticky = gradeSummary.offsetTop - parseFloat($("body").css("padding-top")) - 10;
+            window.onscroll = function () {
+                if ((window.pageYOffset >= sticky) && ((dtps.classes[dtps.selectedClass]) && (dtps.selectedContent == "grades"))) {
+                    $(".classContent").addClass("fixedGradeSummary");
+                } else {
+                    $(".classContent").removeClass("fixedGradeSummary");
+                }
+            };
+        }
     }
 
     //Adds a What-If grade listener to the provided element
@@ -592,9 +688,17 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             var typedScore = Number($(ele).text());
 
             //Check if score is valid
-            if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(typedScore) && (typedScore >= 1) && (typedScore <= 4)) {
+            if ($(ele).text() && ($(ele).text().length < 4) && !isNaN(typedScore) && (typedScore >= 0) && (typedScore <= 4)) {
                 //Valid outcome score, update color to match
-                $(ele).css("color", dtechRubricColor(typedScore))
+                $(ele).css("color", dtechRubricColor(typedScore));
+
+                //Check if score is modified
+                var isWhatIf = course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].whatIfGrade;
+                if (isWhatIf || (typedScore !== course.gradeCalculation.dtech.outcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score)) {
+                    $(ele).addClass("modified");
+                } else {
+                    $(ele).removeClass("modified");
+                }
 
                 //Update score in the what-if outcomes
                 course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = typedScore;
@@ -602,29 +706,84 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //Calculate what-if grade
                 calcWhatIf(course);
             } else {
-                //Invalid outcome score, gray out and reset what-if letter
+                //Invalid outcome score, gray out and calculate without this score
                 $(ele).css("color", "var(--secText)");
-                $("#outcomeScore" + Number($(ele).attr("outcomeID"))).html("--");
-                $("#outcomeScore" + Number($(ele).attr("outcomeID"))).css("color", "var(--secText)");
-                $(".card#whatIfResults .resultLetter").html("--");
-                $(".card#whatIfResults .resultLetter").css("color", "var(--secText)");
+                $(ele).addClass("modified");
+
+                //Update score in the what-if outcomes
+                course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = null;
+
+                //Calculate what-if grade
+                calcWhatIf(course);
             }
 
+        }, false);
+
+        ele.addEventListener("focus", function () {
+            $(ele).addClass("focused");
+        }, false);
+
+        ele.addEventListener("blur", function () {
+            if ($(ele).hasClass("whatIf") && ($(ele).text() == "")) {
+                $(ele).parent().remove();
+                course.gradeCalculation.dtech.whatIfOutcomes[Number($(ele).attr("outcomeID"))].scores[Number($(ele).attr("aIndex"))].score = null;
+            } else {
+                $(ele).removeClass("focused");
+            }
+        }, false);
+
+        ele.addEventListener("keydown", function (e) {
+            function placeCaretAtEnd(el) {
+                el.focus();
+                if (typeof window.getSelection != "undefined"
+                    && typeof document.createRange != "undefined") {
+                    var range = document.createRange();
+                    range.selectNodeContents(el);
+                    range.collapse(false);
+                    var sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                } else if (typeof document.body.createTextRange != "undefined") {
+                    var textRange = document.body.createTextRange();
+                    textRange.moveToElementText(el);
+                    textRange.collapse(false);
+                    textRange.select();
+                }
+            }
+
+            if (e.key == "ArrowDown") {
+                e.preventDefault();
+                var scores = $(".editableScore").toArray();
+                if (scores[scores.indexOf(ele) + 1]) {
+                    placeCaretAtEnd(scores[scores.indexOf(ele) + 1]);
+                }
+            } else if (e.key == "ArrowUp") {
+                e.preventDefault();
+                var scores = $(".editableScore").toArray();
+                if (scores[scores.indexOf(ele) - 1]) {
+                    placeCaretAtEnd(scores[scores.indexOf(ele) - 1]);
+                }
+            }
         }, false);
     }
 
     //Copies outcomes for modification, shows what-if UI
     var initWhatIf = function (course) {
-        if (!$(".card#whatIfResults").is(":visible")) {
+        if (!$("#gradeSummary").hasClass("whatIf")) {
             //Initialize what-if grades
 
             //Copy outcomes for modification
             course.gradeCalculation.dtech.whatIfOutcomes = JSON.parse(JSON.stringify(course.gradeCalculation.dtech.outcomes));
 
-            //Show what-if card, reset state
-            $(".card#whatIfResults").show();
-            $(".card#whatIfResults .resultLetter").html("--");
-            $(".card#whatIfResults .resultLetter").css("color", "var(--secText)");
+            //Show what-if mode for grade summary
+            $("#gradeSummary .block.card").css("background-color", "");
+            $("#gradeSummary .block.card").css("color", "var(--classColor)");
+            $("#gradeSummary .block.card h5.bottom").html(`<i class="fluid-icon">analytics</i> What-If Grade`);
+            $("#gradeSummary .block.card .previousGrade").remove();
+            $("#gradeSummary .block.card h2.main").after(`<h5 onclick="fluid.screen();" class="showActualGrades">Show actual grades</h5>`);
+
+            $("#gradeSummary").addClass("whatIf");
+            $("#classGradeMore").addClass("whatIf");
         }
     }
 
@@ -640,13 +799,11 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             course.gradeCalculation.dtech.whatIfOutcomes = results.outcomes;
 
             //Update what-if results card with the grade calculation results
-            $(".card#whatIfResults .resultLetter").html(results.results.letter);
-            if (results.results.percentage) {
-                $(".card#whatIfResults .resultPercentage").html("Percentage: " + Number(results.results.percentage).toFixed(2) + "%");
-            } else {
-                $(".card#whatIfResults .resultPercentage").html("");
-            }
-            $(".card#whatIfResults .resultLetter").css("color", "var(--classColor)");
+            $("#gradeSummary .block.letterGrade h2.main").html(results.results.letter);
+            $("#gradeSummary .block.number75 h2.main").html(results.results.parameters.number75.toFixed(2));
+            $("#gradeSummary .block.lowestScore h2.main").html(results.results.parameters.lowestScore.toFixed(2));
+            $("#classGradeMore .table tr").removeClass("active");
+            $("#classGradeMore .table tr.letter" + results.results.letter).addClass("active");
 
             //Remove dropped state
             $(".card.outcomeResults .dropped").removeClass("dropped");
@@ -655,7 +812,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 var outcome = course.gradeCalculation.dtech.whatIfOutcomes[outcomeID];
 
                 //Update outcome average
-                if (outcome.average) {
+                if (outcome.average !== undefined) {
                     $("#outcomeScore" + outcomeID).html(outcome.average.toFixed(2));
                     $("#outcomeScore" + outcomeID).css("color", dtechRubricColor(outcome.average));
                 }
@@ -679,7 +836,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         //Add new assessment to the outcome
         course.gradeCalculation.dtech.whatIfOutcomes[outcomeID].scores.push({ //most of the stuff in this object is optional but I'm adding it anyways
             id: "whatIf" + aIndex, //if changing this, update the id for the rendered what-if grade assessment as well
-            score: "--",
+            score: null,
             value: 4,
             whatIfGrade: true,
             outcome: outcomeID,
@@ -692,16 +849,11 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
         //Add a new What-If assessment to the UI
         $(".card.outcomeResults.outcome-" + outcomeID + " .assessments").append(/*html*/`
-            <p id="outcome${outcomeID}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
-                <span aIndex="${aIndex}" outcomeID="${outcomeID}"
-                      style="outline: none;margin-right: 5px; font-size: 20px; vertical-align: middle; color: var(--secText);" class="editableScore" contenteditable>-</span>
+            <div class="assessmentWrapper" id="outcome${outcomeID}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+                <div style="color: var(--secText);" aIndex="${aIndex}" outcomeID="${outcomeID}" class="editableScore modified whatIf" contenteditable></div>
                 <span class="assessmentTitle">What-If Grade</span>
-            </p>
+            </div>
         `);
-
-        //Reset what-if results card
-        $(".card#whatIfResults .resultLetter").html("--");
-        $(".card#whatIfResults .resultLetter").css("color", "var(--secText)");
 
         //Add an event listener for the new score
         listenForWhatIf($(`#outcome${outcomeID}assessment${aIndex} .editableScore`)[0], course);

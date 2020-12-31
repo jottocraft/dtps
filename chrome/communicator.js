@@ -4,7 +4,7 @@ if (window.location.hostname == "powerplus.app") {
       addedNodes.forEach(node => {
         //Power+ button
         if (node.nodeType === 1 && node.id == "dtpsInstallBtn") {
-          node.setAttribute("onclick", "window.location.href = 'https://dtechhs.instructure.com/power+'");
+          node.setAttribute("onclick", "window.location.href = 'https://dtechhs.instructure.com/power+/'");
           node.innerHTML = `<i class="material-icons">open_in_new</i> Open`;
         }
       })
@@ -16,7 +16,7 @@ if (window.location.hostname == "powerplus.app") {
     childList: true,
     subtree: true
   })
-} else if (window.location.pathname == "/power+") {
+} else if ((window.location.pathname == "/power+") || (window.location.pathname == "/power+/")) {
   //Check for light or dark theme
   var light = false;
   if (window.localStorage.fluidTheme == "light") {
@@ -133,7 +133,7 @@ if (window.location.hostname == "powerplus.app") {
 } else if (window.location.search.includes("dtpsLogin=true")) {
   //redirect to Power+ after login
   console.log("[DTPS Chrome] Redirecting after login...");
-  window.location.href = "/power+";
+  window.location.href = "/power+/";
 } else {
   var releaseType = null;
   if (window.localStorage.dtpsLoaderPref == "dev") releaseType = "Power+ (dev)";
@@ -148,7 +148,7 @@ if (window.location.hostname == "powerplus.app") {
         if (node.nodeType === 1 && node.id == "menu") {
           node.insertAdjacentHTML("beforeend", /*html*/`
             <li class="menu-item ic-app-header__menu-list-item ">
-              <a id="global_nav_dtps_link" role="button" href="/power+" class="ic-app-header__menu-list-link">
+              <a id="global_nav_dtps_link" role="button" href="/power+/" class="ic-app-header__menu-list-link">
                 <div class="menu-item-icon-container" aria-hidden="true">
                   <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--dtps" version="1.1" viewBox="0 0 48 63.999"><path d="m5.333 0c-2.946 0-5.333 2.4-5.333 5.333v48c0 2.933 2.388 5.333 5.333 5.333h5.333v5.333l6.667-5.333 6.667 5.333v-5.333h18.667c2.947 0 5.333-2.4 5.333-5.333v-2.667c0 2.933-2.387 5.333-5.333 5.333h-18.667v-5.333h-13.333v5.333h-4c-2.209 0-4-1.867-4-4 0-2.4 1.791-4 4-4h36c2.947 0 5.333-2.4 5.333-5.333v-37.333c0-2.933-2.387-5.333-5.333-5.333h-37.333z"/></svg>
                 </div>

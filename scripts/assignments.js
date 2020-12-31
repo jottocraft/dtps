@@ -2,7 +2,7 @@
  * @file DTPS assignment functions
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  */
 
@@ -10,15 +10,16 @@
  * Renders HTML for an assignment item in a list
  * 
  * @param {Assignment} assignment The assignment object to render
+ * @param {string} [childDisplay] Text to display for specifying the child or children this assignment is for
  * @return {string} Assignment HTML for use in a list
  */
-dtps.renderAssignment = function (assignment) {
+dtps.renderAssignment = function (assignment, childDisplay) {
     //Render points/letter score
     var scoreHTML = dtps.renderAssignmentScore(assignment);
 
     var HTML = /*html*/`
         <div 
-            onclick="${`dtps.assignment('` + assignment.id + `', ` + assignment.class + `)`}" 
+            onclick="${`dtps.assignment('` + assignment.id + `', ` + assignment.class + `, ` + (!isNaN(childDisplay) ? true : false) + `)`}" 
             class="card ${scoreHTML ? "graded assignment" : "assignment"}"
             style="${'--classColor: ' + dtps.classes[assignment.class].color}"
         >
@@ -34,18 +35,23 @@ dtps.renderAssignment = function (assignment) {
                 ${scoreHTML ? `<div class="points">${scoreHTML}</div>` : ``}
             </h4>
 
-            <h5 style="white-space: nowrap; overflow: hidden;">
+            <h5>
                 <!-- Assignment info -->
-                ${assignment.dueAt ? `<div class="infoChip"><i style="margin-top: -2px;" class="material-icons">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
-                ${assignment.outcomes ? `<div class="infoChip weighted"><i class="material-icons">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
-                ${assignment.category ? `<div class="infoChip weighted"><i class="material-icons">category</i> ` + assignment.category + `</div>` : ""}
+                <div class="info">
+                    ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
+                    ${assignment.outcomes ? `<div class="infoChip weighted"><i class="fluid-icon">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
+                    ${assignment.category ? `<div class="infoChip weighted"><i class="fluid-icon">category</i> ` + assignment.category + `</div>` : ""}
+                    ${childDisplay ? `<div class="infoChip weighted"><i class="fluid-icon">person</i> ` + childDisplay + `</div>` : ""}
+                </div>
 
                 <!-- Status icons -->
-                ${assignment.turnedIn ? `<i title="Assignment submitted" class="material-icons statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
-                ${assignment.missing ? `<i title="Assignment is missing" class="material-icons statusIcon" style="color: #c44848;">remove_circle_outline</i>` : ``}
-                ${assignment.late ? `<i title="Assignment is late" class="material-icons statusIcon" style="color: #c44848;">assignment_late</i>` : ``}
-                ${assignment.locked ? `<i title="Assignment submissions are locked" class="material-icons statusIcon" style="font-family: 'Material Icons Extended'; color: var(--secText, gray);">lock_outline</i>` : ``}
-                ${assignment.pending ? `<i title="Grade is pending review" class="material-icons statusIcon" style="color: #b3b70b;">rate_review</i>` : ``}
+                <div class="status">
+                    ${assignment.turnedIn ? `<i title="Assignment submitted" class="fluid-icon statusIcon" style="color: #0bb75b;">assignment_turned_in</i>` : ``}
+                    ${assignment.missing ? `<i title="Assignment is missing" class="fluid-icon statusIcon" style="color: #c44848;">remove_circle_outline</i>` : ``}
+                    ${assignment.late ? `<i title="Assignment is late" class="fluid-icon statusIcon" style="color: #c44848;">assignment_late</i>` : ``}
+                    ${assignment.locked ? `<i title="Assignment submissions are locked" class="fluid-icon statusIcon" style="color: var(--secText, gray);">lock_outline</i>` : ``}
+                    ${assignment.pending ? `<i title="Grade is pending review" class="fluid-icon statusIcon" style="color: #b3b70b;">rate_review</i>` : ``}
+                </div>
             </h5>
         </div>
     `;
@@ -67,7 +73,7 @@ dtps.renderAssignmentScore = function (assignment) {
         var rubricHTML = [];
 
         assignment.rubric.forEach(rubricItem => {
-            if (rubricItem.score) {
+            if (rubricItem.score !== undefined) {
                 rubricHTML.push(/*html*/`
                     <div title="${rubricItem.title}" style="color: ${rubricItem.color || "var(--text)"};">
                         ${rubricItem.score}
@@ -83,7 +89,7 @@ dtps.renderAssignmentScore = function (assignment) {
             <div class="assignmentGrade">
                 <div class="grade">${Number(assignment.grade.toFixed(2))}</div>
                 <div class="value">/${Number(assignment.value.toFixed(2))}</div>
-                ${assignment.letter ? `<div class="letter">${assignment.letter.replace("incomplete", `<i class="material-icons">cancel</i>`).replace("complete", `<i class="material-icons">done</i>`)}</div>` : ""}
+                ${assignment.letter ? `<div class="letter">${assignment.letter.replace("incomplete", `<i class="fluid-icon">cancel</i>`).replace("complete", `<i class="fluid-icon">done</i>`)}</div>` : ""}
                 <div class="percentage">${Math.round((assignment.grade / assignment.value) * 100)}%</div>
             </div>
         `;
@@ -93,9 +99,46 @@ dtps.renderAssignmentScore = function (assignment) {
 }
 
 /**
+* Merges and renders assignments for children in the same class
+* 
+* @param {Assignment[]} assignments An array of assignment objects to merge
+* @return {string} HTML with the assignments merged and labelled
+*/
+dtps.mergeAndRenderChildAssignments = function (assignments) {
+    var assignmentGroups = [];
+
+    assignments.forEach(assignment => {
+        var matchedGroup = false;
+        assignmentGroups.forEach(group => {
+            var groupAssignment = group[0];
+
+            //Check if assignment matches group assignment
+            var matchKeys = ["id", "dueAt", "locked", "category", "turnedIn", "late", "missing", "grade", "value", "letter"];
+            var matches = 0;
+            matchKeys.forEach(k => {
+                if (assignment[k] == groupAssignment[k]) matches++;
+            });
+
+            if (matches == matchKeys.length) {
+                matchedGroup = true;
+                group.push(assignment);
+            }
+        });
+
+        if (!matchedGroup) {
+            assignmentGroups.push([assignment]);
+        }
+    });
+
+    return assignmentGroups.map(g => {
+        return dtps.renderAssignment(g[0], g.length == 1 ? dtps.user.children.find(c => c.id == dtps.classes[g[0].class].userID).name : g.length);
+    }).join("");
+}
+
+/**
  * Renders the DTPS dashboard and calls dtps.renderCalendar, dtps.renderUpdates, and dtps.renderUpcoming
  */
-dtps.masterStream = function () {
+dtps.mainStream = function () {
     //Ensure classes are rendered in the sidebar
     dtps.presentClass("dash");
     dtps.showClasses();
@@ -128,17 +171,19 @@ dtps.masterStream = function () {
     //Render HTML with loading placeholder
     if (dtps.selectedClass == "dash") {
         jQuery(".classContent").html(/*html*/`
-            <div class="dash cal" style="width: 40%;display: inline-block; vertical-align: top;">
-                ${dtps.leftDashboard.map(dashboardItem => {
+            <div style="letter-spacing: 0px;">
+                <div style="float: left; width: 45%; display: inline-block;" class="dash">
+                    ${dtps.leftDashboard.map(dashboardItem => {
             return dashboardContainerHTML(dashboardItem);
         }).join("")}
-            </div>
+                </div>
 
-            <div style="width: 59%; display: inline-block;" class="dash stream">
-                ${!doneLoading ? `<div style="margin: 75px 25px 10px 75px;"><div class="spinner"></div></div>` : ""}
-                ${dtps.rightDashboard.map(dashboardItem => {
+                <div style="float: left; width: 55%; display: inline-block;" class="dash">
+                    ${!doneLoading ? `<div style="margin: 75px 25px 10px 75px;"><div class="spinner"></div></div>` : ""}
+                    ${dtps.rightDashboard.map(dashboardItem => {
             return dashboardContainerHTML(dashboardItem);
         }).join("")}
+                </div>
             </div>
         `);
     }
@@ -147,21 +192,46 @@ dtps.masterStream = function () {
     dtps.renderUpdates();
 
     //Render upcoming assignments stream
-    dtps.renderUpcoming(doneLoading);
+    dtps.renderUpcoming();
 
     //Render calendar
-    dtps.calendar();
+    dtps.calendar(doneLoading);
 
     //Render due today
     dtps.renderDueToday(doneLoading);
 }
 
 /**
+ * Checks if a due date is on a date
+ * 
+ * @param {Date} date Date to check 
+ * @param {Date} [onDate] Date checked against (defaults to today)
+ */
+dtps.isDueOnDate = function (date, onDate) {
+    var today = onDate ? new Date(onDate) : new Date();
+    var tomorrow = new Date(today.getTime() + 86400000);
+    var d1 = new Date(date);
+
+    var isActuallyTodayAfter9 = d1.getFullYear() === today.getFullYear() &&
+        d1.getMonth() === today.getMonth() &&
+        d1.getDate() === today.getDate() &&
+        d1.getHours() >= 9;
+
+    var isTomorrowBefore9 = d1.getFullYear() === tomorrow.getFullYear() &&
+        d1.getMonth() === tomorrow.getMonth() &&
+        d1.getDate() === tomorrow.getDate() &&
+        d1.getHours() < 9;
+
+    return isActuallyTodayAfter9 || isTomorrowBefore9;
+}
+
+/**
  * Compiles and displays due today / to-do stream
  * 
  * @param {boolean} doneLoading True if all classes have finished loading their assignment lists
+ * @param {Date} [fromDate] The date to display assignments from. Defaults to the current date.
  */
-dtps.renderDueToday = function (doneLoading) {
+dtps.renderDueToday = function (doneLoading, fromDate) {
     //Combine class stream arrays
     var combinedStream = [];
     if (dtps.classes) {
@@ -170,7 +240,7 @@ dtps.renderDueToday = function (doneLoading) {
                 //If course has assignments, add them to the combined stream array
                 course.assignments.forEach(assignment => {
                     //Only assignments that are due today
-                    if (dtps.isToday(assignment.dueAt)) {
+                    if (dtps.isDueOnDate(assignment.dueAt, fromDate)) {
                         combinedStream.push(assignment);
                     }
                 })
@@ -190,21 +260,25 @@ dtps.renderDueToday = function (doneLoading) {
     });
 
     //Get due today stream HTML
-    var combinedHTML = combinedStream.map(assignment => {
-        return dtps.renderAssignment(assignment);
-    }).join("");
+    if (dtps.user.parent) {
+        var combinedHTML = dtps.mergeAndRenderChildAssignments(combinedStream);
+    } else {
+        var combinedHTML = combinedStream.map(assignment => {
+            return dtps.renderAssignment(assignment);
+        }).join("");
+    }
 
     if (combinedStream.length == 0) {
         //Nothing due today
         if (doneLoading) {
-            combinedHTML = `<p style="text-align: center;margin: 10px 25px 10px 75px; font-size: 18px;"><i class="material-icons">done</i> Nothing due today</p>`;
+            combinedHTML = `<p style="text-align: center;margin: 10px 0px; font-size: 18px;"><i class="fluid-icon">done</i> ${fromDate ? "Nothing is due on " + fromDate.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }) : "Nothing is due today"}</p>`;
         } else {
             combinedHTML = ``;
         }
     } else {
         //Add header
         combinedHTML = /*html*/`
-            <h5 style="text-align: center; margin: 10px 25px 10px 75px; font-weight: bold;">Due today</h5>
+            <h5 style="text-align: center; margin: 10px 0px; font-weight: bold;">${fromDate ? "Due on " + fromDate.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }) : "Due Today"}</h5>
         ` + combinedHTML;
     }
 
@@ -215,9 +289,12 @@ dtps.renderDueToday = function (doneLoading) {
 
 /**
  * Compiles and displays upcoming assignments stream
+ * 
+ * @param {Date} [fromDate] The date to display assignments from. Defaults to the current date.
  */
-dtps.renderUpcoming = function () {
+dtps.renderUpcoming = function (fromDate) {
     //Combine class stream arrays
+    var today = fromDate ? new Date(fromDate) : new Date();
     var combinedStream = [];
     if (dtps.classes) {
         dtps.classes.forEach(course => {
@@ -225,7 +302,7 @@ dtps.renderUpcoming = function () {
                 //If course has assignments, add them to the combined stream array
                 course.assignments.forEach(assignment => {
                     //Only include upcoming assignments that aren't due today
-                    if ((new Date(assignment.dueAt) > new Date()) && !dtps.isToday(assignment.dueAt)) {
+                    if ((new Date(assignment.dueAt).getTime() > today.getTime()) && !dtps.isDueOnDate(assignment.dueAt, today)) {
                         combinedStream.push(assignment);
                     }
                 })
@@ -244,10 +321,19 @@ dtps.renderUpcoming = function () {
         return 0;
     });
 
+    //Limit stream length to 30 assignments
+    if (combinedStream.length > 30) {
+        combinedStream.length = 30;
+    }
+
     //Render upcoming assignments stream
-    var combinedHTML = combinedStream.map(assignment => {
-        return dtps.renderAssignment(assignment);
-    }).join("");
+    if (dtps.user.parent) {
+        var combinedHTML = dtps.mergeAndRenderChildAssignments(combinedStream);
+    } else {
+        var combinedHTML = combinedStream.map(assignment => {
+            return dtps.renderAssignment(assignment);
+        }).join("");
+    }
 
     //No upcoming assignments
     if (combinedStream.length == 0) {
@@ -261,10 +347,34 @@ dtps.renderUpcoming = function () {
 
 /**
  * Renders updates stream (recently graded & announcements)
+ * 
+ * @param {boolean} [dateSelected] True if a date is selected in the dashboard
  */
-dtps.renderUpdates = function () {
+dtps.renderUpdates = function (dateSelected) {
     //Get updates HTML
     var updatesHTML = "";
+
+    if (dtps.remoteConfig.remoteUpdate.active) {
+        markdown = new showdown.Converter();
+        updatesHTML += /*html*/`
+            <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
+                <div class="className">
+                    <img src="${dtps.baseURL + "/icon.svg"}" style="vertical-align: middle;width: 22px;margin-right: 5px;" />
+                    <span style="font-weight: bold; vertical-align: middle; color: var(--text); font-size: 18px;">${dtps.remoteConfig.remoteUpdate.title}</span>
+                </div>
+                ${markdown.makeHtml(dtps.remoteConfig.remoteUpdate.md)}
+            </div>
+        `;
+    }
+
+    if (dateSelected && (dtps.selectedClass == "dash")) {
+        return jQuery(".classContent .dash .updatesStream").html(/*html*/`
+            <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
+                <div class="className">Date Selected</div>
+                <p>Updates are not shown while a date is selected</p>
+            </div>
+        `);
+    }
 
     dtps.updates.forEach(update => {
         if (update.type == "announcement") {
@@ -285,7 +395,7 @@ dtps.renderUpdates = function () {
                         ${scoreHTML ? `<div class="points">${scoreHTML}</div>` : ``}
                     </h5>
 
-                    <p>Graded at ${dtps.formatDate(update.gradedAt)}</p>
+                    <p>${dtps.user.parent ? "Graded for " + dtps.user.children.find(c => c.id == dtps.classes[update.class].userID).name : "Graded"} at ${dtps.formatDate(update.gradedAt)}</p>
                 </div>
             `;
         }
@@ -299,8 +409,10 @@ dtps.renderUpdates = function () {
 
 /**
  * Compiles and displays the assignment calendar
+ * 
+ * @param {boolean} doneLoading True if all classes have finished loading their assignment lists
  */
-dtps.calendar = function () {
+dtps.calendar = function (doneLoading) {
     if (dtps.selectedClass == "dash") {
         //Calendar events array
         var calEvents = [];
@@ -310,18 +422,36 @@ dtps.calendar = function () {
             if (course.assignments) {
                 //Class has assignments
                 course.assignments.forEach(assignment => {
-                    calEvents.push({
-                        title: assignment.title,
-                        start: assignment.dueAt,
-                        id: assignment.id,
-                        allDay: true,
-                        backgroundColor: course.color,
-                        borderColor: (assignment.missing === true) ? '#c44848' : 'transparent',
-                        textColor: "white",
-                        classNum: courseIndex,
-                        assignmentID: assignment.id,
-                        missing: assignment.missing
-                    });
+                    //Show assignments due before 9AM on the previous day
+                    var date = new Date(assignment.dueAt);
+                    if (date.getHours() < 9) {
+                        //Set the date to 23:59 the previous day for calendar display
+                        date.setTime(date.getTime() - 86400000);
+                        date.setHours(23);
+                        date.setMinutes(59);
+                    }
+
+                    var existingEvent = calEvents.find(e => e.id == assignment.id);
+                    if (existingEvent && assignment.missing) {
+                        //Mark existing event as missing and link to missing assignment
+                        existingEvent.missing = true;
+                        existingEvent.borderColor = "#c44848";
+                        existingEvent.assignmentID = assignment.id;
+                        existingEvent.classNum = courseIndex;
+                    } else if (!existingEvent) {
+                        calEvents.push({
+                            title: assignment.title,
+                            start: date,
+                            id: assignment.id,
+                            allDay: true,
+                            backgroundColor: course.color,
+                            borderColor: (assignment.missing === true) ? '#c44848' : 'transparent',
+                            textColor: "white",
+                            classNum: courseIndex,
+                            assignmentID: assignment.id,
+                            missing: assignment.missing
+                        });
+                    }
                 });
             }
         });
@@ -339,7 +469,7 @@ dtps.calendar = function () {
                         <div class='fc-event-main-frame'>
                             <div class='fc-event-title-container'>
                                 <div class='fc-event-title fc-sticky'>
-                                    ${missing ? `<i title="Assignment is missing" class="material-icons statusIcon">remove_circle_outline</i>` : ``}
+                                    ${missing ? `<i title="Assignment is missing" class="fluid-icon statusIcon">remove_circle_outline</i>` : ``}
                                     <span style="vertical-align: middle;">${info.event.title}</span>
                                 </div>
                             </div>
@@ -355,7 +485,22 @@ dtps.calendar = function () {
                     end: 'prev,next'
                 },
                 dateClick: function (info) {
-                    // Set the current day and update the upcoming assignments based on that
+                    if ($(info.dayEl).hasClass("fc-day-today")) return fluid.screen();
+
+                    //Update calendar
+                    $("#calendar .fc-daygrid-day").removeClass("active");
+                    $(info.dayEl).addClass("active");
+                    $("#calendar").addClass("dateSelected");
+
+                    //Display selected date
+                    $(".headerArea .contentLabel i").text("event");
+                    $(".headerArea .contentLabel span").text("Showing assignments from " + info.date.toLocaleString("en", { weekday: 'short', month: 'short', day: 'numeric' }));
+                    $(".headerArea .contentLabel").show();
+
+                    //Re-render dashboard from the selected date
+                    dtps.renderDueToday(doneLoading, info.date);
+                    dtps.renderUpcoming(info.date);
+                    dtps.renderUpdates(true);
                 },
                 eventClick: function (info) {
                     dtps.assignment(info.event.extendedProps.assignmentID, info.event.extendedProps.classNum);
@@ -371,9 +516,8 @@ dtps.calendar = function () {
  * 
  * @param {string} classID The class ID to show assignments for
  * @param {Assignment[]} [searchResults] An array of assignemnts to render instead of course.assignments. Used for assignment search.
- * @param {string} [searchText] Text to render in the search box. Used for assignment search.
  */
-dtps.classStream = function (classID, searchResults, searchText) {
+dtps.classStream = function (classID, searchResults) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(classID);
     dtps.selectedClass = classNum;
@@ -382,6 +526,9 @@ dtps.classStream = function (classID, searchResults, searchText) {
     dtps.selectedContent = "stream";
     $("#dtpsTabBar .btn").removeClass("active");
     $("#dtpsTabBar .btn.stream").addClass("active");
+
+    //Save coursework stream preference
+    window.localStorage.setItem("courseworkPref-" + classID, "stream");
 
     //Load class color, name, etc.
     dtps.presentClass(classNum);
@@ -401,25 +548,33 @@ dtps.classStream = function (classID, searchResults, searchText) {
     if (!assignments) {
         //Assignments are still loading
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-            jQuery(".classContent").html(dtps.renderClassTools(classNum, "stream", searchText) + `<div class="spinner"></div>`);
+            jQuery(".classContent").html(dtps.renderStreamTools(classNum, "stream") + [1, 2, 3, 4].map(() => (
+                /*html*/`
+                    <div class="card assignment graded">
+                        <h4>
+                            <span style="width: 450px;" class="shimmer">Assignment Title</span>
+                            <div class="points shimmer">00/00</div>
+                        </h4>
+
+                        <h5 style="white-space: nowrap; overflow: hidden;">
+                            <div style="width: 200px;" class="infoChip shimmer"></div>
+                            <i class="fluid-icon statusIcon shimmer">more_horiz</i>
+                        </h5>
+                    </div>
+                `
+            )).join(""));
         }
     } else if (assignments.length == 0) {
-        if (searchText) {
-            //No search results
-            if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-                $(".classContent").html(/*html*/ dtps.renderClassTools(classNum, "stream", searchText) + `
-                    <div style="cursor: auto;" class="card assignment">
-                        <h4>No results</h4>
-                        <p>There weren't any search results</p>
-                        <button onclick="fluid.screen()" class="btn"><i class="material-icons">arrow_back</i> Back</button>
+        //This class doesn't have any assignments
+        if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
+            $(".classContent").html(dtps.renderStreamTools(classNum, "stream") + /*html*/`
+                <div style="text-align: center;">
+                    <div style="margin: 60px; padding: 20px 40px; display: inline-block; border: 2px solid var(--elements); border-radius: var(--elementRadius);">
+                        <h5>No Assignments</h5>
+                        <p>There aren't any assignments in this class yet.</p>
                     </div>
-                `);
-            }
-        } else {
-            //This class doesn't have any assignments
-            if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
-                $(".classContent").html(dtps.renderClassTools(classNum, "stream", searchText) + `<div style="cursor: auto;" class="card assignment"><h4>No assignments</h4><p>There aren't any assignments in this class yet</p></div>`);
-            }
+                </div>
+            `);
         }
     } else {
         //Sort assignments
@@ -454,13 +609,13 @@ dtps.classStream = function (classID, searchResults, searchText) {
 
             if (!assignment.dueAt) {
                 if (prevAssignment && (prevAssignment !== "undated")) {
-                    divider = `<h5 style="margin: 75px 75px 10px 75px;font-weight: bold;">Undated Assignments</h5>`;
+                    divider = `<h5 style="margin: 75px 20px 10px 20px;font-weight: bold;">Undated Assignments</h5>`;
                 }
 
                 prevAssignment = "undated";
             } else if (new Date(assignment.dueAt) < new Date()) {
                 if (prevAssignment && (prevAssignment !== "old")) {
-                    divider = `<h5 style="margin: 75px 75px 10px 75px;font-weight: bold;">Old Assignments</h5>`;
+                    divider = `<h5 style="margin: 75px 20px 10px 20px;font-weight: bold;">Old Assignments</h5>`;
                 }
 
                 prevAssignment = "old";
@@ -472,7 +627,7 @@ dtps.classStream = function (classID, searchResults, searchText) {
         }).join("");
 
         //Add stream header with class info buttons and search box
-        streamHTML = dtps.renderClassTools(classNum, "stream", searchText) + streamHTML;
+        streamHTML = dtps.renderStreamTools(classNum, "stream") + streamHTML;
 
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "stream")) {
             $(".classContent").html(streamHTML);
@@ -485,8 +640,9 @@ dtps.classStream = function (classID, searchResults, searchText) {
  * 
  * @param {string} id Assignment ID
  * @param {number} classNum Assignment class number
+ * @param {boolean} [generic] True if user-specific details, such as grades, should not be displayed
  */
-dtps.assignment = function (id, classNum) {
+dtps.assignment = function (id, classNum, generic) {
     //Get assignment from the id prop
     var assignmentIDs = dtps.classes[classNum].assignments.map(assignment => assignment.id);
     var assignment = dtps.classes[classNum].assignments[assignmentIDs.indexOf(id)];
@@ -505,7 +661,7 @@ dtps.assignment = function (id, classNum) {
 
         var hasKeywords = false;
         if (body.toLowerCase().includes("deliverable") && body.toLowerCase().includes("instruction") && body.toLowerCase().includes("look for")) hasKeywords = true;
-        if (dtps.remoteConfig.dtechCleanUpAssignments && (fluid.get('pref-formatAssignmentContent') !== "false") && dtpsLMS.dtech && hasKeywords && ($('<div></div>').append(body).children("table").find("tbody tr").length > 1)) {
+        if ((fluid.get('pref-formatAssignmentContent') !== "false") && dtpsLMS.dtech && hasKeywords && ($('<div></div>').append(body).children("table").find("tbody tr").length > 1)) {
             var sections = [];
             $('<div></div>').append(body).children("table").find("tbody tr").toArray().forEach((element, i) => {
                 var text = $(element).find("h4:first-child").text().toLowerCase();
@@ -528,7 +684,7 @@ dtps.assignment = function (id, classNum) {
             tmpjQuery.children("table").replaceWith(sections.map(s => {
                 return `
                     <div class="dtpsFormattedAssignmentSection" style="margin: 20px 0px;">
-                        <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="material-icons-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
+                        <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="fluid-icon-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
                         ${s.innerHTML}
                     </div>
                 `;
@@ -563,11 +719,11 @@ dtps.assignment = function (id, classNum) {
                     <div class="dtpsAssignmentRubricItem">
                         <h5>${rubricItem.title}</h5>
                         <div class="score">
-                            <p style="color: ${rubricItem.color ? rubricItem.color : "var(--secText)"};" class="scoreName">
-                                ${rubricItem.score ? rubricItem.scoreName || "" : "Not assessed"}
+                            <p style="color: ${(!generic && rubricItem.color) ? rubricItem.color : "var(--secText)"};" class="scoreName">
+                                ${generic ? "" : (rubricItem.score !== undefined ? rubricItem.scoreName || "" : "Not assessed")}
 
                                 <div class="points">
-                                    <p class="earned">${rubricItem.score || "-"}</p>
+                                    <p class="earned">${generic ? "" : rubricItem.score ?? "-"}</p>
                                     <p class="possible">${"/" + rubricItem.value}</p>
                                 </div>
                             </p>
@@ -599,17 +755,18 @@ dtps.assignment = function (id, classNum) {
 
     //Render assignment details
     $(".card.details").html(/*html*/`
-            <i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="material-icons close">close</i>
+            <i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="fluid-icon close">close</i>
 
             <h4 style="font-weight: bold;">${assignment.title}</h4>
 
             <div>
-                ${assignment.dueAt ? `<div class="assignmentChip"><i class="material-icons">alarm</i><span>Due ${dtps.formatDate(assignment.dueAt)}</span></div>` : ""}
-                ${assignment.turnedIn ? `<div title="Assignment submitted" class="assignmentChip" style="color: #0bb75b"><i class="material-icons">assignment_turned_in</i></div>` : ""}
-                ${assignment.missing ? `<div  title="Assignment is missing" class="assignmentChip" style="color: #c44848"><i class="material-icons">remove_circle_outline</i></div>` : ""}
-                ${assignment.late ? `<div title="Assignment is late" class="assignmentChip" style="color: #c44848"><i class="material-icons">assignment_late</i></div>` : ""}
-                ${assignment.locked ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i style="font-family: 'Material Icons Extended';" class="material-icons">lock_outline</i></div>` : ""}
-                ${scoreHTML}
+                ${assignment.dueAt ? `<div class="assignmentChip"><i class="fluid-icon">alarm</i><span>Due ${dtps.formatDate(assignment.dueAt)}</span></div>` : ""}
+                ${assignment.turnedIn && !generic ? `<div title="Assignment submitted" class="assignmentChip" style="color: #0bb75b"><i class="fluid-icon">assignment_turned_in</i></div>` : ""}
+                ${assignment.missing && !generic ? `<div  title="Assignment is missing" class="assignmentChip" style="color: #c44848"><i class="fluid-icon">remove_circle_outline</i></div>` : ""}
+                ${assignment.late && !generic ? `<div title="Assignment is late" class="assignmentChip" style="color: #c44848"><i class="fluid-icon">assignment_late</i></div>` : ""}
+                ${assignment.locked && !generic ? `<div title="Assignment submissions are locked" class="assignmentChip" style="color: var(--secText, gray);"><i class="fluid-icon">lock_outline</i></div>` : ""}
+                ${(dtps.user.parent && !generic) ? `<div class="assignmentChip"><i class="fluid-icon">person</i><span>${dtps.user.children.find(c => c.id == dtps.classes[assignment.class].userID).name}</span></div>` : ""}
+                ${generic ? "" : scoreHTML}
             </div>
 
             <div style="margin-top: 20px;" class="assignmentBody">
@@ -619,24 +776,24 @@ dtps.assignment = function (id, classNum) {
             ${assignment.body ? `<div style="margin: 5px 0px; background-color: var(--darker); height: 1px; width: 100%;" class="divider"></div>` : ""}
 
             <div style="width: calc(40% - 2px); margin-top: 20px; display: inline-block; overflow: hidden; vertical-align: top;">
-                ${assignment.publishedAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">add_box</i> Published: ${dtps.formatDate(assignment.publishedAt)}</p>` : ""}
-                ${assignment.dueAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">alarm</i> Due: ${dtps.formatDate(assignment.dueAt)}</p>` : ""}
-                ${assignment.value ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">bar_chart</i> Point value: ${assignment.value}</p>` : ""}
-                ${(assignment.grade || (assignment.grade == 0)) ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">assessment</i> Points earned: ${assignment.grade}</p>` : ""}
-                ${assignment.letter ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">font_download</i> Letter grade: ${assignment.letter}</p>` : ""}
-                ${assignment.category ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">category</i> Category: ${assignment.category}</p>` : ""}
-                ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">adjust</i> ${rubricItem.title}</p>`; }).join("") : ""}
-                <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">class</i> Class: ${dtps.classes[assignment.class].subject}</p>
-                ${dtps.env == "dev" ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="material-icons">code</i> Assignment ID: ${assignment.id}</p>` : ""}
+                ${assignment.publishedAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">add_box</i> Published: ${dtps.formatDate(assignment.publishedAt)}</p>` : ""}
+                ${assignment.dueAt ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">alarm</i> Due: ${dtps.formatDate(assignment.dueAt)}</p>` : ""}
+                ${assignment.value ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">bar_chart</i> Point value: ${assignment.value}</p>` : ""}
+                ${(assignment.grade || (assignment.grade == 0)) && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">assessment</i> Points earned: ${assignment.grade}</p>` : ""}
+                ${assignment.letter && !generic ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">font_download</i> Letter grade: ${assignment.letter}</p>` : ""}
+                ${assignment.category ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">category</i> Category: ${assignment.category}</p>` : ""}
+                ${assignment.rubric ? assignment.rubric.map(function (rubricItem) { return `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">adjust</i> ${rubricItem.title}</p>`; }).join("") : ""}
+                <p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">class</i> Class: ${dtps.classes[assignment.class].subject}</p>
+                ${dtps.env == "dev" ? `<p style="color: var(--secText); margin: 5px 0px;"><i style="vertical-align: middle;" class="fluid-icon">code</i> Assignment ID: ${assignment.id}</p>` : ""}
 
                 <br />
                 <div class="row">
-                    ${assignment.url ? `<div class="btn small outline" onclick="window.open('${assignment.url}')"><i class="material-icons">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</div>` : ``}
+                    ${assignment.url ? `<button class="btn small outline" onclick="window.open('${assignment.url}')"><i class="fluid-icon">open_in_new</i> Open in ${dtpsLMS.shortName || dtpsLMS.name}</button>` : ``}
                 </div>
             </div>
 
             <div style="width: calc(60% - 7px); margin-top: 20px; margin-left: 5px; display: inline-block; overflow: hidden; vertical-align: middle;">
-                ${assignmentFeedbackHTML}
+                ${!generic ? assignmentFeedbackHTML : ""}
 
                 ${assignmentRubricHTML}
             </div>
@@ -644,22 +801,7 @@ dtps.assignment = function (id, classNum) {
 
     //Close other active cards and open the assignment details card
     fluid.cards.close(".card.focus");
-    fluid.modal(".card.details");
-}
-
-/**
- * Searches the assignment stream for a keyword using Fuse.js
- */
-dtps.search = function () {
-    if ($("input.search").val() == "") {
-        fluid.screen();
-    } else {
-        var input = $("input.search").val();
-        var search = new Fuse(dtps.classes[dtps.selectedClass].assignments, {
-            keys: ["title", "body"]
-        });
-        dtps.classStream(dtps.classes[dtps.selectedClass].id, search.search(input), input);
-    }
+    fluid.cards(".card.details");
 }
 
 /**
@@ -677,6 +819,9 @@ dtps.moduleStream = function (classID) {
     $("#dtpsTabBar .btn").removeClass("active");
     $("#dtpsTabBar .btn.stream").addClass("active");
 
+    //Save coursework stream preference
+    window.localStorage.setItem("courseworkPref-" + classID, "moduleStream");
+
     //Load class color, name, etc.
     dtps.presentClass(classNum);
 
@@ -690,23 +835,47 @@ dtps.moduleStream = function (classID) {
 
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
-        jQuery(".classContent").html(dtps.renderClassTools(classNum, "modules") + `<div class="spinner"></div>`);
+        jQuery(".classContent").html(dtps.renderStreamTools(classNum, "modules") + /*html*/`
+            <div class="module card collapsed">
+                <h4>
+                    <i class="fluid-icon collapseIcon shimmer">star</i>
+                    <span class="shimmer">[SHIMMER] Module title (collapsed)</span>
+                </h4>
+                <div class="moduleContents" style="padding-top: 10px;"></div>
+            </div>
+            <div class="module card">
+                <h4>
+                    <i class="fluid-icon collapseIcon shimmer">star</i>
+                    <span class="shimmer">[SHIMMER] Module title</span>
+                </h4>
+        
+                <div class="moduleContents" style="padding-top: 10px;">
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                    <div class="moduleItem shimmer">[SHMMER] module item</div>
+                </div>
+            </div>
+        `);
     }
 
     new Promise(resolve => {
         if (dtps.classes[classNum].modules && (dtps.classes[classNum].modules !== true)) {
             resolve(dtps.classes[classNum].modules);
         } else {
-            dtpsLMS.fetchModules(dtps.classes[classNum].id).then(data => resolve(data));
+            dtpsLMS.fetchModules(dtps.user.id, dtps.classes[classNum].lmsID).then(data => resolve(data));
         }
     }).then(data => {
         //Save modules data in the class object for future use
         dtps.classes[classNum].modules = data;
 
-        var modulesHTML = dtps.renderClassTools(classNum, "modules");
+        var modulesHTML = dtps.renderStreamTools(classNum, "modules");
+        var allCollapsed = true;
 
         data.forEach(module => {
             var moduleItemHTML = "";
+            if (!module.collapsed) allCollapsed = false;
 
             //Get HTML for each module item
             module.items.forEach(item => {
@@ -734,11 +903,11 @@ dtps.moduleStream = function (classID) {
 
                 //Get module HTML
                 if (item.type == "header") {
-                    moduleItemHTML += `<h5 style="font-size: 22px;padding: 2px 10px;">${item.title}</h5>`;
+                    moduleItemHTML += `<h5 style="font-size: 16px;padding: 0px 10px; text-decoration: underline;">${item.title}</h5>`;
                 } else {
                     moduleItemHTML += `
                         <div class="moduleItem" onclick="${action}" style="margin-left: ${item.indent * 15}px;">
-                            <i ${item.completed ? `style="color: #27ba3c"` : ""} class="material-icons">${item.completed ? "check" : icon}</i>
+                            <i ${item.completed ? `style="color: #27ba3c"` : ""} class="fluid-icon">${item.completed ? "check" : icon}</i>
                             ${item.title}
                         </div>
                     `;
@@ -750,7 +919,7 @@ dtps.moduleStream = function (classID) {
                 <div class="module card ${module.collapsed ? "collapsed" : ""}">
                     <h4>
                         <i onclick="dtps.moduleCollapse(this, '${dtps.classes[classNum].id}', '${module.id}');" 
-                            class="material-icons collapseIcon">${module.collapsed ? "keyboard_arrow_right" : "keyboard_arrow_down"}</i>
+                            class="fluid-icon collapseIcon">${module.collapsed ? "keyboard_arrow_right" : "keyboard_arrow_down"}</i>
                         ${module.title}
                     </h4>
 
@@ -762,12 +931,24 @@ dtps.moduleStream = function (classID) {
         });
 
         if (data.length == 0) {
-            modulesHTML += `<div style="cursor: auto;" class="card assignment"><h4>No modules</h4><p>There aren't any modules in this class yet</p></div>`;
+            modulesHTML += /*html*/`
+                <div style="text-align: center;">
+                    <div style="margin: 60px; padding: 20px 40px; display: inline-block; border: 2px solid var(--elements); border-radius: var(--elementRadius);">
+                        <h5>No Modules</h5>
+                        <p>There aren't any modules in this class yet.</p>
+                    </div>
+                </div>
+            `;
         }
 
         //Render module HTML
         if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "moduleStream")) {
-            jQuery(".classContent").html(modulesHTML);
+            $(".classContent").html(modulesHTML);
+            if (dtpsLMS.collapseAllModules) {
+                $("#moduleExpandCollapse").html(allCollapsed ? `<i class="fluid-icon">unfold_more</i> Expand all` : `<i class="fluid-icon">unfold_less</i> Collapse all`);
+                $("#moduleExpandCollapse").attr("onclick", allCollapsed ? `dtps.moduleCollapseAll(false)` : `dtps.moduleCollapseAll(true)`);
+                $("#moduleExpandCollapse").show();
+            }
         }
     }).catch(err => {
         dtps.error("Could not load modules", "Caught promise rejection @ dtps.moduleStream", err);
@@ -789,11 +970,37 @@ dtps.moduleCollapse = function (ele, classID, modID) {
     if ($(ele).parents('.card').hasClass('collapsed')) {
         if (dtpsLMS.collapseModule) dtpsLMS.collapseModule(classID, modID, true);
         $(ele).html('keyboard_arrow_right');
+        dtps.classes[dtps.selectedClass].modules.find(m => m.id == modID).collapsed = true;
     } else {
         if (dtpsLMS.collapseModule) dtpsLMS.collapseModule(classID, modID, false);
         $(ele).html('keyboard_arrow_down');
+        dtps.classes[dtps.selectedClass].modules.find(m => m.id == modID).collapsed = false;
     }
 
+}
+
+
+/**
+ * Collapses all module
+ * 
+ * @param {boolean} collapse If true, modules will be collapsed, otherwise, they will all be expanded
+ */
+dtps.moduleCollapseAll = function (collapse) {
+    if (collapse && dtpsLMS.collapseAllModules) {
+        dtpsLMS.collapseAllModules(dtps.classes[dtps.selectedClass].lmsID, true);
+        $(".classContent .card.module h4 i").text("keyboard_arrow_right");
+        $(".classContent .module.card").addClass("collapsed");
+        dtps.classes[dtps.selectedClass].modules.forEach(m => m.collapsed = true);
+        $("#moduleExpandCollapse").html(`<i class="fluid-icon">unfold_more</i> Expand all`);
+        $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(false)`);
+    } else if (dtpsLMS.collapseAllModules) {
+        dtpsLMS.collapseAllModules(dtps.classes[dtps.selectedClass].lmsID, false);
+        $(".classContent .card.module h4 i").text("keyboard_arrow_down");
+        $(".classContent .module.card").removeClass("collapsed");
+        dtps.classes[dtps.selectedClass].modules.forEach(m => m.collapsed = false);
+        $("#moduleExpandCollapse").html(`<i class="fluid-icon">unfold_less</i> Collapse all`);
+        $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(true)`);
+    }
 }
 
 /**
@@ -801,208 +1008,24 @@ dtps.moduleCollapse = function (ele, classID, modID) {
  * 
  * @param {number} num Class number
  * @param {string} type Class content these tools are for (e.g. "stream")
- * @param {string} [searchText] Text to render in the search box for assignment search
  * @return {string} Stream tools HTML
  */
-dtps.renderClassTools = function (num, type, searchText) {
+dtps.renderStreamTools = function (num, type) {
     var modulesSelector = dtps.classes[num].modules;
     return /*html*/`
-        <div style="position: absolute;display:inline-block;margin: ${modulesSelector ? "82px" : "38px 82px"};">
-
-            ${dtps.classes[num].teacher ? /*html*/`
-                <div style="background-color: var(--elements); border-radius: 20px; display: inline-block; margin-right: 5px;">
-                    <img src="${dtps.classes[num].teacher.photoURL}" style="width: 40px; height: 40px; border-radius: 50%;vertical-align: middle;"> 
-                    <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 10px;">${dtps.classes[num].teacher.name}</div>
-                </div>` : ``
-        }
-
-            <div onclick="dtps.classInfo(${num})" class="classToolChip">
-                <i style="line-height: 40px;" class="material-icons">${dtps.classes[num].id == dtps.remoteConfig.debugClassID ? "bug_report" : "info"}</i>
-            </div>
-
-            ${dtps.classes[num].homepage ? /*html*/`
-                <div onclick="dtps.classHome(${num})" class="classToolChip">
-                    <i style="line-height: 40px;" class="material-icons">home</i>
-                </div>` : ""
-        }
-
-        ${dtps.classes[num].videoMeetingURL ? /*html*/`
-                <div onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="classToolChip">
-                    <i style="line-height: 40px;" class="material-icons">videocam</i>
-                </div>` : ""
-        }
-
-        </div>
-        
         ${(type == "modules") || (type == "stream") ? /*html*/`
             <div style="text-align: right;${modulesSelector ? "" : "margin-top: 20px;"}">
-
-                ${type == "stream" ? `<i class="inputIcon material-icons">search</i><input ${searchText ? `value="${searchText}"` : ``} onchange="dtps.search()" class="search inputIcon filled shadow" placeholder="Search assignments" type="search" />` : ""}
-
-                <br />
                 ${modulesSelector ? /*html*/`
-                    <div class="btns row small acrylicMaterial assignmentPicker" style="margin: ${type == "stream" ? `20px 80px 20px 0px !important` : `63px 80px 20px 0px !important`};">
-                        <button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">assignment</i>Assignments</button>
-                        <button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);"><i class="material-icons">view_module</i>Modules</button>
+                    ${(type == "modules") && dtpsLMS.collapseAllModules ? `<button id="moduleExpandCollapse" onclick="dtps.moduleCollapseAll()" style="margin-right:20px;display:none;" class="btn"></button>` : ""}
+                    <div class="btns row small assignmentPicker" style="margin: 5px 20px 5px 0px !important;">
+                        <button class="btn ${type == "stream" ? "active" : ""}" onclick="fluid.screen('stream', dtps.classes[dtps.selectedClass].id);"><i class="fluid-icon">assignment</i>Assignments</button>
+                        <button class="btn ${type == "modules" ? "active" : ""}" onclick="fluid.screen('moduleStream', dtps.classes[dtps.selectedClass].id);"><i class="fluid-icon">view_module</i>Modules</button>
                     </div>
                 ` : ``}
                 
             </div>` : ``
         }
     `;
-}
-
-/**
- * Displays class info & syllabus card
- * 
- * @param {number} num Class number to show info for
- */
-dtps.classInfo = function (num) {
-    //Get syllabus blob if the class has a syllabus
-    if ((dtps.classes[num].syllabus !== "") && dtps.classes[num].syllabus !== null) {
-        //Get computed background and text color to style the iFrame with
-        var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
-        var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
-
-        //Generate a blob with the assignment body and get its data URL
-        var blob = new Blob([`
-            <base target="_blank" /> 
-            <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-            <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
-            ${dtps.classes[num].syllabus}
-        `], { type: 'text/html' });
-        var syllabusURL = window.URL.createObjectURL(blob);
-    }
-
-    //Show class info HTML
-    $(".card.details").html(/*html*/`
-        <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
-
-        <h4 style="font-weight: bold;">${dtps.classes[num].name}</h4>
-        <p style="color: var(--secText)">${dtps.classes[num].description || ""}</p>
-
-        ${dtps.classes[num].numStudents ? `<div class="assignmentChip"><i class="material-icons">group</i><span>${dtps.classes[num].numStudents} students</span></div>` : ``}
-        ${dtps.env == "dev" ? `<div class="assignmentChip"><i class="material-icons">code</i><span>Class ID: ${dtps.classes[num].id}</span></div>` : ``}
-        ${dtps.classes[num].id == dtps.remoteConfig.debugClassID ? `<div class="assignmentChip"><i class="material-icons">bug_report</i><span>Debug class</span></div>` : ``}
-    
-        <br />
-
-        <div style="margin-top: 20px;" class="syllabusBody">
-            ${dtps.classes[num].syllabus ? `
-                <iframe id="syllabusIframe" onload="dtps.iframeLoad('syllabusIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${syllabusURL}" />` : ""}
-        </div>
-    `)
-
-    //Show the class info card
-    fluid.modal(".card.details")
-}
-
-/**
- * Displays the class homepage
- * 
- * @param {number} num Class number to show the homepage for
- */
-dtps.classHome = function (num) {
-    //Render loading screen
-    $(".card.details").html(/*html*/`
-        <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
-        <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
-
-        <br />
-        <p>Loading...</p>
-    `);
-
-    //Fetch homepage from the LMS
-    dtpsLMS.fetchHomepage(dtps.classes[num].id).then(homepage => {
-        if (homepage) {
-            //Get computed background and text color to style the iFrame with
-            var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
-            var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
-
-            if ($("body").hasClass("dark")) {
-                homepage = dtps.brightenTextForDarkMode(homepage, computedBackgroundColor);
-            }
-
-            if (dtps.remoteConfig.dtechHomepageFluidUITabs && ($('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().length > 1)) {
-                //Use special tab optimized homepage
-                var fragments = [];
-                $('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().forEach((fragment) => {
-                    var text = $(fragment).text().toLowerCase();
-                    if (!text) return;
-
-                    var id = $(fragment).find("a").attr("href").replace("#", "");
-                    if (!id) return;
-
-                    var html = $(homepage).find("#" + id).html();
-                    if (!html) return;
-
-                    var icon = null;
-                    if (text.includes("agenda")) { icon = "format_list_numbered"; text = "Agenda"; }
-                    if (text.includes("instructor")) { icon = "person"; text = "Instructor"; }
-                    if (text.includes("course info")) { icon = "info"; text = "Course Info"; }
-                    if (text.includes("resources")) { icon = "article"; text = "Course Resources"; }
-
-                    //Generate a blob with the assignment body and get its data URL
-                    var blob = new Blob([`
-                        <base target="_blank" /> 
-                        <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-                        <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
-                        ${html}
-                    `], { type: 'text/html' });
-                    var frameURL = window.URL.createObjectURL(blob);
-
-                    fragments.push({ text, id, icon, frameURL });
-                });
-
-                $(".card.details").html(/*html*/`
-                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
-
-                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
-
-                    <br />
-                    ${dtps.classes[num].videoMeetingURL ? `<button onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="btn small"><i class="material-icons">videocam</i> Zoom</button>` : ``}
-                    <div class="btns row small">
-                        ${fragments.map((fragment, i) => {
-                    return `<button onclick="$(this).addClass('active');$(this).siblings().removeClass('active');$('#homepageFragment').attr('src', '${fragment.frameURL}'); dtps.iframeLoad('homepageFragment');" 
-                                style="text-transform: capitalize;" class="btn ${i == 0 ? "active" : ""}">${fragment.icon ? `<i class="material-icons">${fragment.icon}</i> ` : ""}${fragment.text}</button>`;
-                }).join("")}
-                    </div>
-
-                    <br />
-                    <div style="margin-top: 20px;" class="homepageBody">
-                        <iframe id="homepageFragment" onload="dtps.iframeLoad('homepageFragment')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${fragments[0].frameURL}" />
-                    </div>
-                `);
-            } else {
-                //Generate a blob with the assignment body and get its data URL
-                var blob = new Blob([`
-                    <base target="_blank" /> 
-                    <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-                    <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
-                    ${homepage}
-                `], { type: 'text/html' });
-                var homepageURL = window.URL.createObjectURL(blob);
-
-                $(".card.details").html(/*html*/`
-                    <i onclick="fluid.cards.close('.card.details')" class="material-icons close">close</i>
-
-                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
-
-                    <br />
-                    <div style="margin-top: 20px;" class="homepageBody">
-                        <iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${homepageURL}" />
-                    </div>
-                `);
-            }
-
-            fluid.modal(".card.details");
-        } else {
-            fluid.cards.close('.card.details');
-            dtps.error("Homepage unavailable", "homepage is either empty or undefined @ dtps.classHome");
-        }
-    }).catch(e => {
-        dtps.error("Couldn't load homepage", "Caught a promise rejection @ dtps.classHome", e);
-    })
 }
 
 /**
@@ -1099,7 +1122,7 @@ dtps.gradebook = function (classID) {
                 </h5>
             ` : ``}
 
-            <div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
+            <div style="${dtps.gradebookExpanded ? "" : "display: none;"}" id="genericClassGradeMore">
                 <br />
 
                 ${dtps.classes[classNum].previousLetter ? /*html*/`
@@ -1124,7 +1147,7 @@ dtps.gradebook = function (classID) {
             </div>
 
             <br />
-            <a onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
+            <a onclick="$('#genericClassGradeMore').toggle(); if ($('#genericClassGradeMore').is(':visible')) {$(this).html('Show less'); dtps.gradebookExpanded = true;} else {$(this).html('Show more'); dtps.gradebookExpanded = false;}"
                 style="color: var(--secText, gray); cursor: pointer; margin-right: 10px;">${dtps.gradebookExpanded ? "Show less" : "Show more"}</a>
         </div>
 
@@ -1140,7 +1163,7 @@ dtps.gradebook = function (classID) {
 
 //Fluid UI screen definitions
 fluid.externalScreens.dashboard = () => {
-    dtps.masterStream();
+    dtps.mainStream();
 }
 
 fluid.externalScreens.stream = (courseID) => {
@@ -1163,6 +1186,7 @@ fluid.externalScreens.gradebook = (courseID) => {
 * @property {string} title Title of the assignment
 * @property {string} [body] HTML of the assignment's body
 * @property {string} id Assignment ID
+* @property {number} class Automatically managed by DTPS. The class number that this assignment belongs to.
 * @property {Date} [dueAt] Assignment due date
 * @property {string} [url] Assignment URL
 * @property {AssignmentFeedback[]} [feedback] Feedback / private comments for this assignment
@@ -1206,6 +1230,7 @@ fluid.externalScreens.gradebook = (courseID) => {
 * @property {string} title Title of the announcement
 * @property {Date} postedAt Date when the announcement was posted
 * @property {string} body Announcement content
+* @property {string} url Announcement URL
 */
 
 /**

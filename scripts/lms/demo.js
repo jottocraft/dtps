@@ -2,7 +2,7 @@
  * @file DTPS Demo LMS
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  * 
  * This LMS script is for demonstrating Power+ and doesn't fetch actual data
@@ -33,7 +33,7 @@ dtpsLMS.fetchUser = function () {
 }
 
 //Fetch class data from Canvas
-dtpsLMS.fetchClasses = function () {
+dtpsLMS.fetchClasses = function (userID) {
     return new Promise(function (resolve, reject) {
         resolve([{
             name: "Demo Class",
@@ -60,7 +60,7 @@ dtpsLMS.fetchClasses = function () {
 }
 
 //Fetches assignment data from Canvas
-dtpsLMS.fetchAssignments = function (classID) {
+dtpsLMS.fetchAssignments = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         if (classID == "1") {
             resolve([
@@ -187,7 +187,7 @@ dtpsLMS.fetchAssignments = function (classID) {
 }
 
 //Fetches modules data from Canvas
-dtpsLMS.fetchModules = function (classID) {
+dtpsLMS.fetchModules = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         resolve([
             {

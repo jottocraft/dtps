@@ -1,7 +1,17 @@
 /*
 Power+ CSS
-(c) jottocraft 2018-2020
+(c) jottocraft 2018-2021
 */
+
+[data-theme-type=light] {
+    --theme: #ccac56 !important;
+    --themeText: #ffffff !important;
+}
+
+[data-theme-type=dark] {
+    --theme: #8c793e !important;
+    --themeText: #ffffff !important;
+}
 
 .dashboardItem {
     text-align: center;
@@ -190,7 +200,7 @@ Power+ CSS
 }
 
 .discussionReply {
-    border-left: 2px solid var(--darker);
+    border-left: 2px solid var(--elementHover);
     padding: 10px 0px;
     padding-left: 30px;
 }
@@ -200,25 +210,21 @@ Power+ CSS
     color: var(--lightText);
 }
 
-.dash .card .colorBar {
+.dash .colorBar {
     width: 7px;
-    height: calc(100% - 40px);
+    height: calc(100% - 32px);
     position: absolute;
-    top: 20px;
+    top: 16px;
     left: 14px;
     border-radius: 10px;
     display: block !important;
 }
 
-body.dark .dash .card .colorBar {
+.dash .colorBar {
     background: var(--classColor);
 }
 
-body.light .dash .card .colorBar {
-    background: var(--classColor);
-}
-
-.card .colorBar {
+.colorBar {
     display: none;
 }
 
@@ -228,17 +234,18 @@ body.light .dash .card .colorBar {
     font-size: 16px;
 }
 
-.dropped {
-    filter: opacity(0.4);
+
+.assessmentWrapper.dropped span.assessmentTitle, .assessmentWrapper.dropped .editableScore:not(.focused) {
+    opacity: 0.4;
 }
 
-.dropped span.assessmentTitle {
+.assessmentWrapper.dropped span.assessmentTitle {
     text-decoration: line-through;
 }
 
-/* POWERPOINTS THEME */
-body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
-    --flex-light: #b39a46; --flex-bg: #a78e3a; --flex-text: #ffffff; --flex-sectext: #e4d8ae; --flex-layer1: #867027; --flex-layer2: #726021; --flex-layer3: #5f4f1c; --theme-color: #6d6d6d; --theme-text-color: #b39a46; --links: #686868; --acrylic: black; }
+.assessmentWrapper span.assessmentTitle {
+    transition: opacity 0.2s;
+}
 
 .recentGrade.card {
     padding: 20px;
@@ -267,14 +274,6 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
     color: var(--secText);
 }
 
-/* Fluid UI theme prefs */
-:root {
-    --icons: "Material Icons Outlined", "Material Icons Extended" !important; }
-
-.blur * {
-    pointer-events: none !important;
-}
-
 .numFont {
     font-family: Cascadia Code,Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace !important;
 }
@@ -284,44 +283,16 @@ body.darkPowerpoints, body.showThemeWindows .themeWindow.darkPowerpoints {
 }
 
 .classContent .card.collapsed h4 {
-    font-size: 24px !important;
+    font-size: 18px !important;
     font-weight: normal !important;
 }
 
 .classContent .card.collapsed h4 i {
-    margin-top: -6px;
+    margin-top: -3px;
 }
 
 .classContent .card.collapsed .moduleContents {
     display: none;
-}
-
-table.dtpsTable {
-    border-collapse: collapse;
-}
-
-table.dtpsTable, table.dtpsTable * {
-    border-color: transparent !important;
-}
-
-table.dtpsTable tr, table.dtpsTable td {
-    height: 32px !important;
-    padding: 0px;
-}
-
-table.dtpsTable th {
-    padding-left: 0px;
-    padding-right: 0px;
-}
-
-table.dtpsTable td:first-child {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-}
-
-table.dtpsTable td:last-child {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
 }
 
 .classGradeCircle {
@@ -497,9 +468,6 @@ table.dtpsTable td:last-child {
     display: none !important;
 }
 
-body.darkDtech {
-    --flex-light: #bb4a2d; --flex-bg: #a73a21; --flex-text: white; --flex-sectext: #ffb6a3; --flex-layer1: #da5332; --flex-layer2: #923923; --flex-layer3: #6f2715; --theme-color: #f2896f; --theme-color-outline: rgb(242, 137, 111, 0.75); --theme-text-color: #af4125; }
-
 .dash.cal .announcement {
     margin-right: 0px;
 }
@@ -510,13 +478,6 @@ body.isolatedGoogleClass .header .btns {
 
 body.isolatedGoogleClass .background {
     background: linear-gradient(to right bottom, rgb(177, 168, 35), rgb(8, 101, 59)) !important;
-}
-
-@media (min-width: 1001px) {
-    .card.focus {
-        max-height: calc(100vh - 50px);
-        top: 25px !important;
-    }
 }
 
 .announcement:not(.open) {
@@ -564,8 +525,8 @@ body {
 }
 
 .classContent .assignmentPicker .btn.active {
-    background: #7b7b7b45 !important;
-    color: inherit !important;
+    background: var(--elementHover) !important;
+    color: var(--elementText) !important;
 }
 
 .class.active .dot {
@@ -573,20 +534,7 @@ body {
     color: white;
 }
 
-.card .dot {
-    right: 0;
-    background-color: #e9e8e8;
-    border-radius: 20px;
-    display: inline-block;
-    position: absolute;
-    margin-top: 10px;
-    height: 35px;
-    padding: 0px 10px;
-    line-height: 35px;
-    font-size: 20px;
-}
-
-body.dark .card .dot {
+[data-theme-type=dark] .card .dot {
     background-color: #181b1d;
 }
 
@@ -595,31 +543,18 @@ body.titlebar .sidebar {
     top: 75;
 }
 
-.sidebar .item .label {
-    max-width: calc(100% - 40px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .sidebar .item:not(.active) {
     filter: none !important;
 }
 
-body.dark .sidebar .item:not(.active) {
+[data-theme-type=dark] .sidebar .item:not(.active) {
     filter: brightness(1.2) !important;
 }
 
-body.collapsedSidebar .sidebar .bigLogo {
-    display: none;
-}
-
-.sidebar {
-    box-shadow: 10px 0px 30px rgba(0, 0, 0, 0.03) !important;
-}
-
-body.hasSidebar {
-    padding: 0px !important;
+.sidebar .item .label {
+    max-width: calc(100% - 32px);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .classDivider {
@@ -631,8 +566,17 @@ body.hasSidebar {
     margin: 15px 0;
 }
 
-.hidegrades .class .grade.val {
-    display: none !important;
+.sidebar .item .grade {
+    text-align: center;
+    width: 22px;
+    font-size: 18px;
+    font-family: var(--textFont);
+    font-weight: bold;
+}
+
+.hidegrades .sidebar .item .grade {
+    visibility: hidden !important;
+    width: 0px;
 }
 
 .class .icon {
@@ -647,7 +591,7 @@ body.hasSidebar {
     border-color: var(--secText) !important;
 }
 
-body.dark .class.main:not(.active), body.dark .class.overrideClass:not(.active) {
+[data-theme-type=dark] .class.main:not(.active), [data-theme-type=dark] .class.overrideClass:not(.active) {
     color: #ffffffbf !important;
     border-color: #ffffff36 !important;
 }
@@ -673,11 +617,6 @@ body.noSidebar .sidebar {
 body.noSidebar .header {
     width: 100%;
     margin-left: 0px;
-}
-
-body.collapsedSidebar .header {
-    width: calc(100% - 80px);
-    margin-left: 80px;
 }
 
 body.titlebar .background, body.titlebar .cover.image {
@@ -708,11 +647,6 @@ body.noSidebar .classContent {
     width: 100%;
 }
 
-body.collapsedSidebar .classContent {
-    margin-left: 80px;
-    width: calc(100% - 80px);
-}
-
 body.titlebar .header h1 {
     font-size: 40px;
     line-height: 75px;
@@ -735,17 +669,8 @@ body.titlebar:not(.noSidebar) .header .btns {
 }
 
 .classContent {
-    margin-left: 275px;
-    padding-top: 300px;
     z-index: 100;
     top: 0;
-    width: calc(100% - 275px);
-}
-
-body.titlebar .classContent {
-    position: absolute;
-    top: 0;
-    margin-top: 321px;
 }
 
 .tabs.btns {
@@ -780,10 +705,6 @@ body.titlebar .classContent {
     transition: all 0.5s;
 }
 
-.classContent {
-    transition: all 0.5s, color 0s, background-color 0s, background 0s;
-}
-
 .dot {
     display: none;
 }
@@ -803,7 +724,6 @@ body.titlebar .classContent {
 .header {
     margin-left: 275px;
     text-align: center;
-    color: white;
     padding-top: 132px;
     z-index: 200;
     position: absolute;
@@ -812,7 +732,7 @@ body.titlebar .classContent {
 }
 
 .classContent .card {
-    margin: 25px 75px;
+    margin: 12px 20px;
     text-align: left;
     border-radius: 25px;
 }
@@ -827,14 +747,6 @@ body.titlebar .classContent {
     cursor: pointer;
     top: 0;
     margin: 25px;
-}
-
-#headText {
-    -webkit-transition: opacity .5s ease-in-out;
-    -moz-transition: opacity .5s ease-in-out;
-    -ms-transition: opacity .5s ease-in-out;
-    -o-transition: opacity .5s ease-in-out;
-    transition: opacity .5s ease-in-out;
 }
 
 .spinner {
@@ -879,24 +791,24 @@ body.titlebar .classContent {
     flex-shrink: 0;
 }
 
-.classContent .card .points.spinner {
+.classContent .points.spinner {
     top: 25px;
     margin-top: 0px;
 }
 
-.classContent .card .points .earned {
+.classContent .points .earned {
     font-size: 24px;
     display: inline-block;
     font-weight: bold;
 }
 
-.classContent .card .points .total {
+.classContent .points .total {
     font-size: 14px;
     display: inline-block;
     color: var(--secText);
 }
 
-.classContent .card:not(.color) .points .total, .assignment:not(.color) .weighted {
+.classContent .assignment:not(.color) .points .total, .assignment:not(.color) .weighted {
     color: var(--secText);
 }
 
@@ -982,16 +894,40 @@ body.titlebar .classContent {
     display: none;
 }
 
-.card.assignment {
+.assignment {
     cursor: pointer;
-    padding: 18px 25px;
+    padding: 15px 18px;
+    position: relative;
+    border-radius: var(--cardRadius);
+    border: 2px solid transparent;
+    transition: border 0.2s, background-color 0.2s;
+    user-select: none;
 }
 
-.classContent .card.assignment h5 {
+.assignment:hover {
+    background-color: var(--elements);
+    border-color: var(--highlight);
+}
+
+.classContent .assignment h5 {
     margin: 0px;
-    margin-top: 10px;
+    margin-top: 6px;
     font-size: 1rem !important;
     min-height: 20px;
+    white-space: nowrap; 
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+}
+
+.classContent .assignment h5 div {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.classContent .assignment h5 .status {
+    flex-shrink: 0;
 }
 
 .classContent .card.assignment h4 {
@@ -1009,7 +945,7 @@ body.titlebar .classContent {
     text-overflow: ellipsis;
 }
 
-.card.assignment .statusIcon {
+.assignment .statusIcon {
     float: right;
     font-size: 16px;
     vertical-align: middle;
@@ -1017,16 +953,6 @@ body.titlebar .classContent {
 
 .class.active .name {
     font-weight: bold;
-}
-
-body:not(.dark) {
-    --light: var(--flex-light, #efefef); --norm: var(--flex-layer1, #929292); --dark: var(--flex-layer3, #5f5f5f); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
-
-body.dark {
-    --light: var(--flex-light, #949494); --norm: var(--flex-layer1, #444444); --dark: var(--flex-layer3, #292929); --grad: linear-gradient(to bottom right, var(--cards), var(--background)); }
-
-body:not(.dark) .background, body:not(.dark) .header h1 {
-    --grad: linear-gradient(to bottom right, var(--darker), var(--background)) !important; color: black !important;
 }
 
 #whatIfResults {
@@ -1158,8 +1084,8 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 }
 
 .card.module h4 {
-    margin: 5px 2px; 
-    font-size: 32px; 
+    margin: 0px 2px; 
+    font-size: 24px; 
     font-weight: bold;
 }
 
@@ -1171,8 +1097,8 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 
 .moduleItem {
     color: var(--lightText); 
-    padding:10px;
-    font-size:17px;
+    padding:5px;
+    font-size:14px;
     border-radius:15px;
     margin:5px 0; 
     cursor: pointer;
@@ -1180,7 +1106,8 @@ body:not(.dark) .background, body:not(.dark) .header h1 {
 
 .moduleItem i {
     vertical-align: middle; 
-    margin-right: 10px;
+    margin-right: 4px;
+    font-size: 20px;
 }
 
 .background, .cover.image {
@@ -1217,86 +1144,16 @@ body.dashboard .background:before {
     transition: all 0.5s;
 }
 
-.dash .card.assignment {
+.dash .assignment {
     padding-left: 34px;
 }
 
-.dash .card .weighted {
+.dash .weighted {
     color: var(--classColor) !important;
 }
 
-.dash .card .weighted {
+.dash .weighted {
     opacity: 0.7;
-}
-
-body:not(.dev) .dev, body:not(.sudo) .sudo, body:not(.contributor) .contributor, body:not(.prerelease) .prerelease, body:not(.marketer) .marketer {
-    display: none !important;
-}
-
-body.titlebar .items.toolbar {
-    display: none !important;
-}
-
-.items.toolbar {
-    position: absolute;
-    right: 0;
-    top: 0;
-    margin: 12px;
-    color: white;
-    padding-right: 10px;
-    z-index: 300;
-}
-
-.items.toolbar .itemButton {
-    display: inline-block;
-    font-size: 12px;
-    padding: 5px;
-    margin: 0px 4px;
-    border-radius: 12px;
-    cursor: pointer;
-    color: var(--text);
-}
-
-.items.toolbar .itemButton i {
-    font-size: 18px;
-    margin: 0px;
-    margin-right: 5px;
-    vertical-align: middle;
-}
-
-.items.toolbar .itemButton img {
-    width: 18px;
-    height: 18px;
-    margin: 0px;
-    margin-right: 5px;
-    vertical-align: middle;
-}
-
-body:not(.dark) .items.toolbar, body:not(.dark) .items.toolbar i, body:not(.dark) .items.toolbar h4, body:not(.dark) #timeRemaining {
-    color: black !important;
-}
-
-body:not(.dark) #headText {
-    color: black !important;
-}
-
-body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, body:not(.dark) .items.toolbar.black h4 {
-    color: black !important;
-}
-
-.items.toolbar h4 {
-    vertical-align: middle;
-    display: inline-block;
-    margin: 0;
-    margin-right: 5px;
-}
-
-.items.toolbar i {
-    cursor: pointer;
-    vertical-align: middle;
-    margin-left: 7px;
-    margin-right: 7px;
-    margin-top: 3px;
 }
 
 .item.link {
@@ -1472,13 +1329,35 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
     vertical-align: middle; 
 }
 
+#calendar .fc-daygrid-day {
+    border-radius: 5px;
+    transition: background-color 0.4s;
+    cursor: pointer;
+}
+
+#calendar .fc-daygrid-day:hover {
+    background-color: var(--elements);
+}
+
+#calendar .fc-daygrid-day.active {
+    background-color: var(--elementHover);
+}
+
 #calendar .fc-event-title span {
     vertical-align: middle; 
 }
 
 #calendar .fc-daygrid-day.fc-day-today {
     background-color: var(--theme);
-    border-radius: 5px;
+}
+
+#calendar.dateSelected .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    border-radius: 50%;
+    background-color: var(--theme);
+}
+
+#calendar.dateSelected .fc-daygrid-day.fc-day-today {
+    background-color: transparent;
 }
 
 #calendar .fc-daygrid-day.fc-day-today a {
@@ -1514,10 +1393,316 @@ body:not(.dark) .items.toolbar.black, body:not(.dark) .items.toolbar.black i, bo
 }
 
 .classToolChip:hover {
-    background-color: var(--darker);
+    background-color: var(--elementHover);
     transition: background-color 0.2s;
 }
 
-body {
-    --cardShadow: 0 5px 15px rgb(0 0 0 / 0.1) !important;
+.headerArea {
+    margin: 10px 20px;
+    width: auto;
+    height: 250px;
+}
+
+body.themeImage .headerArea .content {
+    background: none !important;
+}
+
+#dtpsUnstable {
+    position: absolute; 
+    color: #ff4e4e;
+    cursor: auto;
+}
+
+@media(max-width: 1550px) {
+    #dtpsUnstable {
+        top: 55px;
+        right: 5px;
+    }
+}
+
+body:not(.themeImage) .headerArea:not(.classImage) h1 {
+    text-shadow: none !important;
+}
+
+body.themeImage .headerArea img {
+    display: none !important;
+}
+
+#headText {
+    transition: color 0.2s;
+    white-space: nowrap;
+    max-width: 95%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#headText span {
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+#headText i {
+    margin-right: 5px;
+    vertical-align: middle;
+    font-size: 36px;
+}
+
+.gradeSummaryShowHide {
+    margin: 10px 0px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.gradeSummaryShowHide i, .gradeSummaryShowHide span {
+    vertical-align: middle;
+}
+
+.gradeSummaryShowHide i {
+    margin-right: 5px;
+}
+
+#classGradeMore {
+    margin: 0px 20px;
+    padding: 20px;
+}
+
+.block.status .bottom {
+    font-size: 18px;
+}
+
+.block .previousGrade {
+    font-size: 14px;
+    opacity: 0.5;
+    position: absolute;
+    top: 50px;
+}
+
+.fixedGradeSummary #gradeSummary {
+    left: 275px;
+    padding: 20px;
+    position: fixed;
+    top: 60px;
+    z-index: 99;
+    width: calc(100% - 275px);
+    margin: 0px !important;
+    background: var(--navbar);
+    backdrop-filter: blur(20px);
+}
+
+body.collapsedSidebar .fixedGradeSummary #gradeSummary {
+    left: 72px;
+    width: calc(100% - 72px);
+}
+
+.classContent.fixedGradeSummary {
+    padding-top: 160px;
+}
+
+.block .showActualGrades {
+    font-size: 14px;
+    position: absolute;
+    top: 50px;
+    color: var(--secText);
+    cursor: pointer;
+}
+
+#classGradeMore .table tr.active {
+    background-color: var(--classColor); 
+}
+
+#classGradeMore .table tr.active, #classGradeMore .table tr.active * {
+    color: white;
+    font-weight: bold;
+}
+
+#classGradeMore.whatIf .table tr.active {
+    background-color: var(--elements); 
+}
+
+#classGradeMore.whatIf .table tr.active, #classGradeMore.whatIf .table tr.active * {
+    color: var(--classColor);
+}
+
+.editableScore {
+    outline: none;
+    font-size: 20px; 
+    vertical-align: middle; 
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 5px;
+    margin-right: 5px; 
+    transition: background-color 0.2s, border-color 0.2s, opacity 0.2s;
+    border: 2px solid transparent;
+    width: 45px;
+    text-align: center;
+}
+
+.editableScore.modified, .editableScore.focused, .editableScore:hover {
+    background-color: var(--inputColor);
+    border-color: var(--elements);
+}
+
+.teacherName {
+    color: var(--text);
+    font-size: 18px;
+}
+
+.teacherImage {
+    margin-right: 4px;
+    height: 32px; 
+    width: 32px;
+    border-radius: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: var(--elements);
+    vertical-align: middle;
+}
+
+#dtpsFixedSearch {
+    position: fixed; 
+    left: calc(50% - 250px);
+    margin: 0px;
+}
+
+#dtpsSearchResults {
+    position: fixed;
+    z-index: 100;
+    width: 500px;
+    top: 70px;
+    left: calc(50% - 250px);
+    box-shadow: 0px 0px 20px rgb(0 0 0 / 0.5);
+    border: 2px solid var(--elements);
+}
+
+#dtpsSearchResults h5 {
+    margin-top: 0px;
+}
+
+#dtpsSearchResults h5 i {
+    vertical-align: middle;
+}
+
+#dtpsSearchResults h5 span {
+    font-size: 18px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+#settingsReloadWarning {
+    background: var(--elements);
+    border-radius: var(--elementRadius);
+    padding: 15px 18px;
+    box-shadow: var(--elementShadow);
+    margin: 24px 0px;
+}
+
+.card.searchResult {
+    padding: 15px 18px;
+    position: relative;
+    border-radius: var(--cardRadius);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border 0.2s, background-color 0.2s;
+    user-select: none;
+}
+
+.card.searchResult h4 {
+    font-size: 20px;
+    margin: 0px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 24px;
+    line-height: 24px;
+    font-weight: bold;
+}
+
+.card.searchResult h5 {
+    margin: 0px;
+}
+
+.card.searchResult .highlight {
+    font-weight: bold;
+    background-color: var(--theme);
+    color: var(--themeText);
+}
+
+.card.searchResult .highlight i {
+    color: var(--themeText) !important;
+    font-weight: bold !important;
+}
+
+.card.searchResult .statusIcon {
+    font-size: 18px;
+    color: var(--secText);
+}
+
+.searchResult.mixedClasses .colorBar {
+    width: 7px;
+    height: calc(100% - 32px);
+    position: absolute;
+    top: 16px;
+    left: 14px;
+    border-radius: 10px;
+    display: block !important;
+}
+
+.searchResult.mixedClasses .colorBar {
+    background: var(--classColor);
+}
+
+.searchResult.mixedClasses {
+    padding-left: 34px;
+}
+
+.searchResult:hover {
+    background-color: var(--elements);
+    border-color: var(--highlight);
+}
+
+#searchFilterContainer {
+    width: 400px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#searchFilterContainer .card {
+    margin-right: 10px;
+}
+
+#searchResultsContainer.withFilters {
+    margin-left: 0px;
+    width: calc(100% - 410px);
+    display: inline-block;
+}
+
+#searchResultsContainer.withFilters .card {
+    margin-left: 10px;
+}
+
+#searchFilterContainer .card h5 {
+    margin-top: 0px;
+    font-weight: bold;
+}
+
+#searchFilterContainer .card h5 span {
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#searchFilterContainer .card h5 i {
+    vertical-align: middle;
+    margin-right: 3px;
+}
+
+#searchFilterContainer .card .checkContainer {
+    margin: 10px 0px;
+}
+
+.fixedSearchFilters #searchFilterContainer .card {
+    top: 60px;
+    position: fixed;
+    width: 370px;
 }

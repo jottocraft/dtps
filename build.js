@@ -2,7 +2,7 @@
  * @file DTPS predeploy script
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  * 
  * This script file minifies DTPS and generates docs
@@ -19,12 +19,18 @@ const glob = require("glob");
 const mkdirp = require('mkdirp');
 const rimraf = require("rimraf");
 const ncp = require('ncp').ncp;
+const dev = process.argv.includes("--dev");
 
 //Delete existing build folder
 rimraf.sync("./build/*");
 
 //Run functions
-minifyJS();
+if (dev) {
+    console.log("\n[1/3] Skipping minification (dev)");
+    copyStatic();
+} else {
+    minifyJS();
+}
 
 //[1/3] Minify JavaScript
 function minifyJS() {
@@ -71,10 +77,28 @@ function copyStatic() {
     //Copy dtps.css
     fs.copyFileSync("dtps.css", "build/dtps.css");
 
+    //Write CNAME
+    fs.writeFileSync(path.join("build", "CNAME"), dev ? "dev.dtps.jottocraft.com" : "powerplus.app", "utf8");
+
     //Copy www
     ncp("www", "build", function () {
-        console.log("[2/3] Done");
-        generateDocs();
+        if (dev) {
+            //Copy dev assets
+            ncp("www/dev", "build", function () {
+                //Copy JS without minification
+                fs.copyFileSync("init.js", "build/init.js");
+                ncp("scripts", "build/scripts", function () {
+                    console.log("[2/3] Done");
+                    generateDocs();
+                });
+            });
+        } else {
+            //Remove dev assets for stable build
+            rimraf.sync("./build/dev/*");
+
+            console.log("[2/3] Done");
+            generateDocs();
+        }
     });
 }
 
@@ -86,7 +110,10 @@ function generateDocs() {
     mkdirp.sync("./build/docs");
 
     //Generate docs
-    var cp = exec("node ./node_modules/jsdoc/jsdoc.js -r scripts -d ./build/docs -c ./docs/jsdoc.conf.json -t ./node_modules/foodoc/template -R ./docs/README.md", function (e, o) {
+    var docConf = "./docs/jsdoc.conf.json";
+    if (dev) docConf = "./docs/jsdoc.dev.conf.json";
+
+    var cp = exec("node ./node_modules/jsdoc/jsdoc.js -r scripts -d ./build/docs -c " + docConf + " -t ./node_modules/foodoc/template -R ./docs/README.md", function (e, o) {
         if (e) console.error(e);
         if (o) console.log(o);
     });

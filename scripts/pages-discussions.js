@@ -2,7 +2,7 @@
  * @file DTPS pages & discussion functions
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  */
 
@@ -12,9 +12,10 @@
  * 
  * @param {string} courseID The course ID to render discussion threads for
  * @param {string} [defaultThread] The thread to load by default
- * @param {boolean} fromModules True if this page is being loaded from the moduleStream
+ * @param {boolean} [fromModules] True if this page is being loaded from the moduleStream
+ * @param {string} [defaultPost] The post to load by default
  */
-dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
+dtps.loadThreadsList = function (courseID, defaultThread, fromModules, defaultPost) {
     //Get class index and set as selected class
     var classNum = dtps.classes.map(course => course.id).indexOf(courseID);
     dtps.selectedClass = classNum;
@@ -37,20 +38,37 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
 
     //Load module thread
     if (fromModules) {
-        dtps.loadThreadPosts(classNum, defaultThread, fromModules);
+        dtps.loadThreadPosts(classNum, defaultThread, fromModules, defaultPost);
         return;
     }
 
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
         //Render sidebar
         jQuery(".sidebar").html(/*html*/`
-            <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; height: 38px;">
-                <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="material-icons">forum</i>
-                <h4 style="color: var(--text); display: inline-block; font-size: 26px; vertical-align: middle; margin: 0px;">Discussions</h4>
-            </div>
+            <div class="title">
+                <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="fluid-icon">forum</i>
+               <h4>Discussions</h4>
+             </div>
                         
             <div class="items">
-                <div class="spinner"></div>
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="fluid-icon">keyboard_arrow_left</i> <span class="label">Classes</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="item shimmerParent">
+                    <i class="fluid-icon">star</i>
+                    <span class="label">Discussion thread Title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="fluid-icon">star</i>
+                    <span class="label">Discussion thread Title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="fluid-icon">star</i>
+                    <span class="label">Discussion thread Title</span>
+                </div>
             </div>
         `);
 
@@ -59,18 +77,15 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
     }
 
     //Fetch discussion thread data
-    dtpsLMS.fetchDiscussionThreads(dtps.classes[classNum].id).then(function (threadData) {
+    dtpsLMS.fetchDiscussionThreads(dtps.classes[classNum].lmsID).then(function (threadData) {
         //Store fetched data to the selected class
         dtps.classes[classNum].discussions = threadData;
 
         if (dtps.classes[classNum].discussions.length == 0) {
             //No discussion topics in this class
             jQuery(".sidebar .items").html(/*html*/`
-                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
-                    <span class="label">Classes</span>
-                    <div class="icon">
-                        <i class="material-icons">keyboard_arrow_left</i>
-                    </div>
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="fluid-icon">keyboard_arrow_left</i> <span class="label">Classes</span>
                 </div>
 
                 <p style="text-align: center; font-weight: bold; margin-top: 60px; margin-bottom: 10px;">No discussions found</p>
@@ -81,10 +96,8 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
             var discussionHTML = dtps.classes[classNum].discussions.map(discussionThread => {
                 return /*html*/`
                     <div data-threadID="${discussionThread.id}" class="item">
+                        <i class="fluid-icon">${discussionThread.locked ? "lock_outline" : "chat_bubble_outline"}</i>
                         <span class="label">${discussionThread.title}</span>
-                        <div class="icon">
-                            <i style="font-family: 'Material Icons Extended';" class="material-icons">${discussionThread.locked ? "lock_outline" : "chat_bubble_outline"}</i>
-                        </div>
                     </div>
                 `;
             }).join("");
@@ -92,20 +105,15 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
             //Render discussion threads in the sidebar
             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "discuss")) {
                 jQuery(".sidebar .items").html(/*html*/`
-                    <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
-                        <span class="label">Classes</span>
-                        <div class="icon">
-                            <i class="material-icons">keyboard_arrow_left</i>
-                        </div>
-                    </div>
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="fluid-icon">keyboard_arrow_left</i> <span class="label">Classes</span>
+                </div>
 
                     ${
                     dtps.classes[classNum].newDiscussionThreadURL ? (/*html*/`
-                            <div onclick="window.open('${dtps.classes[classNum].newDiscussionThreadURL}')" class="class item back">
+                            <div onclick="window.open('${dtps.classes[classNum].newDiscussionThreadURL}')" class="item back">
+                                <i class="fluid-icon">add</i>
                                 <span class="label">New discussion</span>
-                                <div class="icon">
-                                    <i class="material-icons">add</i>
-                                </div>
                             </div>
                         `) : ""
                     }
@@ -117,7 +125,7 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
 
                 //Load default thread if provided
                 if (defaultThread) {
-                    dtps.loadThreadPosts(classNum, defaultThread);
+                    dtps.loadThreadPosts(classNum, defaultThread, fromModules, defaultPost);
                 }
 
                 //Add click event listeners for discussion threads
@@ -145,16 +153,34 @@ dtps.loadThreadsList = function (courseID, defaultThread, fromModules) {
  * 
  * @param {number} classNum The class number to render
  * @param {string} threadID The discussion thread to render
- * @param {boolean} fromModules True if this page is being loaded from the moduleStream
+ * @param {boolean} [fromModules] True if this page is being loaded from the moduleStream
+ * @param {string} [defaultPost] The post ID to jump to
  */
-dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
+dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "discuss") || fromModules)) {
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        jQuery(".classContent").html(/*html*/`
+            <div class="card" style="margin-top: 20px;margin-bottom: 75px;">
+                <h4><span class="shimmer">[SHIMMER] Thread Title</span></h4>
+
+                <div style="margin-bottom: 32px;" class="discussionHeader">
+                    <h5 ><span class="shimmer">Discussion author name</span></h5>
+
+                    <i class="fluid-icon shimmer">calendar_today</i>
+                    <span class="shimmer">Discussion date</span>
+                </div>
+
+                <div class="shimmer" style="margin: 10px 0px; width: 100%; height: 400px; border: none; outline: none;"></div>
+
+                <div style="margin-top: 32px;" class="discussionFooter">
+                    <button class="btn small shimmer"><i class="fluid-icon">post_add</i> Add Post</button>
+                </div> 
+            </div>
+        `);
     }
 
     //Fetch discussion posts from the LMS
-    dtpsLMS.fetchDiscussionPosts(dtps.classes[classNum].id, threadID).then(function (thread) {
+    dtpsLMS.fetchDiscussionPosts(dtps.classes[classNum].lmsID, threadID).then(function (thread) {
         //Post HTML array
         var postHTML = [];
 
@@ -181,7 +207,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
                 //Get HTML for each reply and add to array
                 post.replies.forEach(reply => {
                     replyHTML.push(/*html*/`
-                        <div style="margin-left: ${(reply.depth || 0) * 50}px;" class="discussionReply">
+                        <div data-post-id="${reply.id}" style="margin-left: ${(reply.depth || 0) * 50}px;" class="discussionReply">
                             <div class="discussionHeader">
                                 ${post.author ? /*html*/`
                                     <img src="${reply.author.photoURL}" />
@@ -189,7 +215,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
                                 ` : ``}
                                 
                                 <span style="cursor: pointer;" onclick="window.open('${reply.replyURL}')">
-                                    <i class="material-icons">reply</i>
+                                    <i class="fluid-icon">reply</i>
                                     <span>Reply</span>
                                 </span>
                             </div>
@@ -206,7 +232,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
             //Create HTML for this post
             //Note that index == 0 is the initial post
             postHTML.push(/*html*/`
-                    <div class="card" style="margin-top: 20px;${index == 0 ? "margin-bottom: 75px;" : "padding: 20px 30px;"}">
+                    <div class="card" data-post-id="${post.id}" style="margin-top: 20px;${index == 0 ? "margin-bottom: 75px;" : "padding: 20px 30px;"}">
                         <!-- Thread title (Initial post) -->
                         ${index == 0 ? /*html*/`
                             <h4 style="font-weight: bold">${thread.title}</h4>
@@ -219,14 +245,14 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
                                 <h5>${post.author.name}</h5>
                             ` : ``}
 
-                            <i class="material-icons">calendar_today</i>
+                            <i class="fluid-icon">calendar_today</i>
                             <span>${dtps.formatDate(post.postedAt)}</span>
 
                             <!-- Thread info (initial post) -->
                             ${index == 0 ? /*html*/`
-                                ${thread.locked ? `<i class="material-icons">lock</i>` : ""}
+                                ${thread.locked ? `<i class="fluid-icon">lock</i>` : ""}
                                 ${thread.requireInitialPost ? /*html*/`
-                                    <i class="material-icons">visibility</i>
+                                    <i class="fluid-icon">visibility</i>
                                     <span>You must post before you can see other replies</span>
                                 ` : ""}
                             ` : ''}
@@ -242,9 +268,9 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
                         ${post.replyURL ? /*html*/`
                             <div ${index == 0 ? `style="margin-top: 32px;"` : ""} class="discussionFooter">
                                 ${index == 0 ? /*html*/`
-                                    <button onclick="window.open('${post.replyURL}')" class="btn small"><i class="material-icons">post_add</i> Add Post</button>
+                                    <button onclick="window.open('${post.replyURL}')" class="btn small"><i class="fluid-icon">post_add</i> Add Post</button>
                                 ` : /*html*/`
-                                    <button onclick="window.open('${post.replyURL}')" class="btn small"><i class="material-icons">reply</i> Reply</button>
+                                    <button onclick="window.open('${post.replyURL}')" class="btn small"><i class="fluid-icon">reply</i> Reply</button>
                                 `}
                             </div> 
                         ` : ""}
@@ -255,10 +281,15 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules) {
         //Render HTML
         if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "discuss") || fromModules)) {
             jQuery(".classContent").html((fromModules ? /*html*/`
-                <div class="acrylicMaterial" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
-                    <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div>
-                </div>
+                <button style="margin: 10px 0px 0px 20px;" class="btn" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')">
+                    <i class="fluid-icon">keyboard_arrow_left</i> Back
+                </button>
             ` : "") + postHTML.join(""));
+
+            //Jump to post if specified
+            if (defaultPost) {
+                $("[data-post-id=" + defaultPost + "]").get(0).scrollIntoView();
+            }
         }
     }).catch(function (err) {
         dtps.error("Could not fetch discussion posts", "Caught promise rejection @ dtps.loadThreadPosts", err);
@@ -302,13 +333,30 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
     if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
         //Render sidebar
         jQuery(".sidebar").html(/*html*/`
-            <div class="bigLogo" style="text-align: center; margin: 10px 0 20px; height: 38px;">
-                <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="material-icons">insert_drive_file</i>
-                <h4 style="color: var(--text); display: inline-block; font-size: 26px; vertical-align: middle; margin: 0px;">Pages</h4>
-            </div>
-                        
-            <div class="items">
-                <div class="spinner"></div>
+            <div class="title">
+                <i style="font-size: 28px; margin-right: 7px; vertical-align: middle;" class="fluid-icon">insert_drive_file</i>
+                <h4>Pages</h4>
+             </div>
+
+             <div class="items">
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="fluid-icon">keyboard_arrow_left</i> <span class="label">Classes</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="item shimmerParent">
+                    <i class="fluid-icon">star</i>
+                    <span class="label">Class page title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="fluid-icon">star</i>
+                    <span class="label">Class page title</span>
+                </div>
+                <div class="item shimmerParent">
+                    <i class="fluid-icon">star</i>
+                    <span class="label">Class page title</span>
+                </div>
             </div>
         `);
 
@@ -316,18 +364,16 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
         jQuery(".classContent").html("");
     }
 
-    dtpsLMS.fetchPages(dtps.classes[classNum].id).then(function (pagesData) {
+    dtpsLMS.fetchPages(dtps.classes[classNum].lmsID).then(function (pagesData) {
         //Store fetched pages data to the class
         dtps.classes[classNum].pages = pagesData;
 
         if (pagesData.length == 0) {
             //No pages in this class
             jQuery(".sidebar .items").html(/*html*/`
-                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
+                <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                    <i class="fluid-icon">keyboard_arrow_left</i>
                     <span class="label">Classes</span>
-                    <div class="icon">
-                        <i class="material-icons">keyboard_arrow_left</i>
-                    </div>
                 </div>
 
                 <p style="text-align: center; font-weight: bold; margin-top: 60px; margin-bottom: 10px;">No pages found</p>
@@ -338,10 +384,8 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
             var pageHTML = dtps.classes[classNum].pages.map(page => {
                 return /*html*/`
                     <div data-pageID="${page.id}" class="item ${(defaultPage && (page.id == defaultPage)) ? "active" : ""}">
+                        <i class="fluid-icon">insert_drive_file</i>    
                         <span class="label">${page.title}</span>
-                        <div class="icon">
-                            <i class="material-icons">insert_drive_file</i>
-                        </div>
                     </div>
                 `;
             }).join("");
@@ -349,11 +393,9 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
             //Render discussion threads in the sidebar
             if ((dtps.selectedClass == classNum) && (dtps.selectedContent == "pages")) {
                 jQuery(".sidebar .items").html(/*html*/`
-                    <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="class item main back">
+                    <div onclick="fluid.screen('stream', '${dtps.classes[classNum].id}');" class="item main back">
+                        <i class="fluid-icon">keyboard_arrow_left</i>    
                         <span class="label">Classes</span>
-                        <div class="icon">
-                            <i class="material-icons">keyboard_arrow_left</i>
-                        </div>
                     </div>
 
                     <div class="divider"></div>
@@ -395,14 +437,29 @@ dtps.loadPagesList = function (courseID, defaultPage, fromModules) {
 dtps.loadPage = function (classNum, pageID, fromModules) {
     //Show loading indicator
     if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "pages") || fromModules)) {
-        jQuery(".classContent").html(`<div class="spinner"></div>`);
+        jQuery(".classContent").html(/*html*/`
+             <div style="margin: 20px; padding: 20px;">
+                <h4><span class="shimmer">[SHIMMER] Class page title</span></h4>
+
+                <div style="margin-bottom: 32px;" class="discussionHeader">
+                    <h5 class="shimmer">Page author name</h5>
+
+                    <i class="fluid-icon shimmer">calendar_today</i>
+                    <span class="shimmer">[SHIMMER] Last updated at</span>
+                </div>
+
+                <!-- Page content -->
+                <br />
+                <div class="shimmer" style="margin: 10px 0px; width: 100%; height: 600px; border: none; outline: none;"></div>
+            </div>
+         `);
     }
 
     //Fetch page content
-    dtpsLMS.fetchPageContent(dtps.classes[classNum].id, pageID).then(function (page) {
+    dtpsLMS.fetchPageContent(dtps.classes[classNum].lmsID, pageID).then(function (page) {
         if ((dtps.selectedClass == classNum) && ((dtps.selectedContent == "pages") || fromModules)) {
             //Get computed background and text color to style the iFrame with
-            var computedBackgroundColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--cards");
+            var computedBackgroundColor = getComputedStyle($(".classContent")[0]).getPropertyValue("--background");
             var computedTextColor = getComputedStyle($(".card.details")[0]).getPropertyValue("--text");
 
             //Generate a blob with the page content and get its data URL
@@ -419,11 +476,11 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
             //Render page card in the class content
             jQuery(".classContent").html(/*html*/`
                 ${fromModules ? /*html*/`
-                    <div class="acrylicMaterial" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')" style="line-height: 40px;display:  inline-block;border-radius: 20px;margin: 82px 0px 0px 82px; cursor: pointer;">
-                        <div style="font-size: 16px;display: inline-block;vertical-align: middle;margin: 0px 20px;"><i style="vertical-align: middle;" class="material-icons">keyboard_arrow_left</i> Back</div>
-                    </div>
+                    <button style="margin: 10px 0px 0px 20px;" class="btn" onclick="fluid.screen('moduleStream', '${dtps.classes[classNum].id}')">
+                        <i class="fluid-icon">keyboard_arrow_left</i> Back
+                    </button>
                 ` : ""}
-                <div class="card">
+                <div style="margin: 20px; padding: 20px;">
                     <!-- Page title -->
                     <h4 style="font-weight: bold;">${page.title}</h4>
 
@@ -434,7 +491,7 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
                             <h5>${page.author.name}</h5>
                         ` : ``}
 
-                        <i class="material-icons">calendar_today</i>
+                        <i class="fluid-icon">calendar_today</i>
                         <span>${"Last Updated " + dtps.formatDate(page.updatedAt)}</span>
                     </div>
 
@@ -455,8 +512,9 @@ fluid.externalScreens.discussions = (param) => {
     var courseID = param.split("|")[0];
     var threadID = param.split("|")[1];
     var fromModules = param.split("|")[2] == "true";
+    var postID = param.split("|")[3];
 
-    dtps.loadThreadsList(courseID, threadID, fromModules);
+    dtps.loadThreadsList(courseID, threadID, fromModules, postID);
 }
 
 fluid.externalScreens.pages = (param) => {
