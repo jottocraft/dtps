@@ -3,7 +3,7 @@
  * @author jottocraft
  * @version v3.1.0
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  */
 
@@ -81,6 +81,7 @@ var dtps = {
         debugClassID: "1098",
         topSneaky: false,
         topSneakyUI: false,
+        useV5ThemeSelectionUI: false,
         remoteUpdate: {
             title: null,
             md: null,
@@ -1756,9 +1757,11 @@ dtps.renderLite = function () {
             <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();" class="item active">
                 <i class="fluid-icon">settings</i> Settings
             </div>
-            <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();" class="item">
-                <i class="fluid-icon">format_paint</i> Theme
-            </div>
+            ${dtps.remoteConfig.useV5ThemeSelectionUI ? /*html*/`
+                <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();" class="item">
+                    <i class="fluid-icon">format_paint</i> Theme
+                </div>
+            ` : ""}
             ${dtps.remoteConfig.showGradesInSettings ? /*html*/`
                 <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
                     <i class="fluid-icon">assessment</i> Grades
@@ -1786,6 +1789,13 @@ dtps.renderLite = function () {
 
                 <p style="display: none;" id="settingsReloadWarning">You must reload for the changes you've made to take effect</p>
 
+                ${!dtps.remoteConfig.useV5ThemeSelectionUI ? /*html*/`
+                    <br />
+                    <p>Theme</p>
+                    <div class="btns row themeSelector"></div>
+                    <br />
+                ` : ""}
+                
                 <br />
                 <p>Sidebar</p>
 
@@ -1859,13 +1869,13 @@ dtps.renderLite = function () {
 
             </div>
 
-            <div style="display: none;" class="abtpage theme">
-                <h5><b>Theme</b></h5>
-                
-                <br />
-
-                <div class="themeSelectionUI flat"></div>
-            </div>
+            ${dtps.remoteConfig.useV5ThemeSelectionUI ? /*html*/`
+                <div style="display: none;" class="abtpage theme">
+                    <h5><b>Theme</b></h5>
+                    <br />
+                    <div class="themeSelectionUI flat"></div>
+                </div>
+            ` : ""}
 
             <div style="display: none;" class="abtpage grades">
                 <h5><b>Grades</b></h5>
@@ -2027,7 +2037,7 @@ dtps.renderLite = function () {
                 <div style="text-align: center; padding: 50px 0px;">
                     <img style="height: 45px; margin-right: 20px; vertical-align: middle;" src="https://cdn.jottocraft.com/images/footerImage.png" />
                     <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
-                    <p>(c) jottocraft 2018-2020. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/main/LICENSE">license</a></p>
+                    <p>(c) jottocraft 2018-2021. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/main/LICENSE">license</a></p>
                 </div>
             </div>
         </div>
