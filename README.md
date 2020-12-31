@@ -36,4 +36,4 @@ javascript:!function(){window.dtpsBaseURL="https://powerplus.app",window.dtpsLoa
 
 <br /><br /><br /><br /><br /><br />
 
-(c) 2018-2020 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/main/LICENSE)
+(c) 2018-2021 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/main/LICENSE)

@@ -2,7 +2,7 @@
  * @file d.tech-specific features, CBL & grade calculation
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2020 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
  * 
  * JSDoc documentation for these LMS functions can be found near the end of core.js
