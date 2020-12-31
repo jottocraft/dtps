@@ -1471,11 +1471,11 @@ dtps.render = function () {
           </div>
 
           <div class="actions">
-            <div class="item">
+            <!--<div class="item">
               <i class="fluid-icon">feedback</i>
               <span class="label">Feedback</span>
-            </div>
-            ${dtps.remoteConfig.showBugReportButton || dtps.unstable || (dtps.env == "dev") ? /*html*/`
+            </div>-->
+            ${false && (dtps.remoteConfig.showBugReportButton || dtps.unstable || (dtps.env == "dev")) ? /*html*/`
                 <div class="item">
                     <i class="fluid-icon">bug_report</i>
                     <span class="label">Bug Report</span>
