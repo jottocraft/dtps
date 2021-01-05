@@ -96,12 +96,17 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
                 //Get course cycle
                 if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
-                    if ((course.period >= 1) && (course.period <= 3)) {
+                    /*if ((course.period >= 1) && (course.period <= 3)) {
                         course.group = "Cycle 1/3";
                     } else if ((course.period >= 4) && (course.period <= 6)) {
-                        course.group = "Cycle 2/4";
+                        course.group = "Cycle 2/4";*/
+                    if (course.term == "20-21") {
+                        course.group = "Semester 1";
+                    } else if (course.term == "S2") {
+                        course.group = "Semester 2";
                     } else if ((course.period == 11) || (course.period == 12)) {
                         course.group = "Intersession";
+                        course.term = "int";
                     }
                 }
 
@@ -151,7 +156,10 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             //Automatically sort and group classes if enabled
             if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
                 classes.sort((a, b) => {
-                    return a.period - b.period;
+                    var termA = a.term == "20-21" ? 1 : a.term == "S2" ? 2 : a.term == "int" ? 3 : 4;
+                    var termB = b.term == "20-21" ? 1 : b.term == "S2" ? 2 : b.term == "int" ? 3 : 4;
+                    return termA - termB;
+                    //return a.period - b.period;
                 });
             }
 
@@ -197,9 +205,11 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
 
         //Get d.tech grade calculation formula
         if (course.term == "20-21") {
-            formula = "2020s1";
+            formula = "2020-21";
+        } else if (course.term == "S2") {
+            formula = "2020-21";
         } else if (String(course.id).includes(dtps.remoteConfig.debugClassID)) {
-            formula = "2020s1";
+            formula = "2020-21";
         }
 
         //If there is no grade calculation formula, don't run grade calc
@@ -280,11 +290,11 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         letters: ["A", "A-", "B+", "B", "B-", "C", "I"],
         params: {
             /**
-             * @description 2020s1 grade calculation parameters
+             * @description 2020-21 grade calculation parameters
              * @property {{string, number}} percentage Percentage criteria parameters. The key of each item in the object is the letter and the value is the percentage needed to meet the criteria
              * @property {{string, number}} lowest Lowest average criteria perameters. The key of each item in the object is the letter and the value is the lowest average needed to meet the criteria
              */
-            "2020s1": {
+            "2020-21": {
                 percentage: {
                     "A": 3.3,
                     "A-": 3.3,
@@ -321,7 +331,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
          * This function returns undefined if there is no grade.
          * 
          * @param {Assignment[]} assignments Array of assignments to use for grade calculation
-         * @param {string} formula Formula to use for grade calculation. Can be one of the following: 2020s1
+         * @param {string} formula Formula to use for grade calculation. Can be one of the following: 2020-21
          * @param {object} outcomesOverride An outcome object to use instead of using assignments. Used for what-if grades.
          * @return {object} Grade calculation results
          */
@@ -334,10 +344,10 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             //This doesn't have to be used by the grade calculation formula. Can be overridden for What-If grades.
             var outcomes = outcomesOverride || {};
 
-            if (formula == "2020s1") {
-                //2020-21 SEMESTER 1 OUTCOME AVERAGE FORMULA (2020s1)
+            if (formula == "2020-21") {
+                //2020-21 SEMESTER 1 OUTCOME AVERAGE FORMULA (2020-21)
 
-                // ------- [2020s1] Step 1: Get rubric assessments by outcome -------
+                // ------- [2020-21] Step 1: Get rubric assessments by outcome -------
 
                 if (!outcomesOverride) {
                     assignments.forEach(assignment => {
@@ -366,7 +376,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                     });
                 }
 
-                // ------- [2020s1] Step 2: Calculate outcome averages -------
+                // ------- [2020-21] Step 2: Calculate outcome averages -------
 
                 //If there are no outcomes, this class doesn't have a grade
                 if (Object.keys(outcomes).length == 0) return;
@@ -403,7 +413,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 });
 
 
-                // ------- [2020s1] Step 3: Calculate letter grade variations -------
+                // ------- [2020-21] Step 3: Calculate letter grade variations -------
 
                 //All outcomes variation
                 var outcomeAvgs = Object.values(outcomes).map(outcome => outcome.average);
@@ -444,13 +454,13 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
             //Sort outcome averages highest -> lowest
             outcomeAvgs.sort((a, b) => b - a);
 
-            if (formula == "2020s1") {
-                //2020-21 SEMESTER 1 LETTER GRADE FORMULA (2020s1)
+            if (formula == "2020-21") {
+                //2020-21 SEMESTER 1 LETTER GRADE FORMULA (2020-21)
 
                 //Array of letters from each criteria
                 var letters = [];
 
-                // ------- [2020s1] Step 1: Get highest letter for Criteria 1 (percentage of outcomes criteria) -------
+                // ------- [2020-21] Step 1: Get highest letter for Criteria 1 (percentage of outcomes criteria) -------
                 var percentage = .75;
                 var numOutcomesRequired = Math.floor(outcomeAvgs.length * percentage); //Minimum number of outcomes required
 
@@ -481,7 +491,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 //Add highest criteria 1 letter to the letters array
                 letters.push(bestLetter);
 
-                // ------- [2020s1] Step 2: Get highest letter for Criteria 2 (lowest outcome criteria) -------
+                // ------- [2020-21] Step 2: Get highest letter for Criteria 2 (lowest outcome criteria) -------
 
                 //Reset best letter
                 var bestLetter = null;
@@ -523,7 +533,7 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         return new Promise((resolve, reject) => {
             if (course.gradeCalculation && course.gradeCalculation.dtech) {
                 //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
-                if (course.gradeCalculation.dtech.formula == "2020s1") {
+                if (course.gradeCalculation.dtech.formula == "2020-21") {
                     var gradeCalcSummary = /*html*/`
                     <div id="gradeSummary" style="--size: 250px; margin: 0px 20px; --classColor: ${course.color};" class="grid flex">
                       <div style="background-color: var(--classColor); color: white;" class="block status letterGrade card">
