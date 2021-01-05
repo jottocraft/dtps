@@ -684,7 +684,7 @@ dtps.assignment = function (id, classNum, generic) {
             tmpjQuery.children("table").replaceWith(sections.map(s => {
                 return `
                     <div class="dtpsFormattedAssignmentSection" style="margin: 20px 0px;">
-                        <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="fluid-icon-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
+                        <h2><i style="vertical-align: middle; margin-right: 10px; font-size: 24px;" class="material-icons-outlined">${s.icon}</i><span style="vertical-align: middle;text-decoration: underline;">${s.text}</span></h2>
                         ${s.innerHTML}
                     </div>
                 `;
