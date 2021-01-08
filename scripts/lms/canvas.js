@@ -89,7 +89,7 @@ dtpsLMS.fetchClasses = function (userID) {
                     people: !dtps.user.parent,
                     userID: userID,
                     period: course.sections && course.sections[0] && (course.sections.find(section => /[0-9](?=\(A)/.test(section.name)) || course.sections[0]).name,
-                    subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : course.course_code.split(" - ")[0],
+                    subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : (course.original_name ? course.name : course.course_code.split(" - ")[0]),
                     homepage: course.default_view == "wiki",
                     term: course.course_code.split(" - ")[1],
                     color: colorData.custom_colors["course_" + course.id],
