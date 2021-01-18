@@ -745,6 +745,30 @@ window.lunrData = {
           "us",
           "variabl"
         ],
+        "dtpsLMS.html#.fetchQueue": [
+          "api",
+          "dtpslms.fetchqueu",
+          "fetchqueu",
+          "lt;static&gt",
+          "member",
+          "queue",
+          "request"
+        ],
+        "dtpsLMS.html#.fetchWrapper": [
+          "add",
+          "although",
+          "behav",
+          "dtpslms.fetchwrapp",
+          "fetch",
+          "fetchwrapp",
+          "function",
+          "lt;static&gt",
+          "queue",
+          "request",
+          "same",
+          "space",
+          "way"
+        ],
         "dtpsLMS.html#.fetchUser": [
           "action",
           "current",
@@ -1071,7 +1095,7 @@ window.lunrData = {
           "updateclass"
         ]
       },
-      "length": 80
+      "length": 82
     },
     "tokenStore": {
       "root": {
@@ -3077,6 +3101,43 @@ window.lunrData = {
                                       }
                                     }
                                   },
+                                  "q": {
+                                    "docs": {},
+                                    "u": {
+                                      "docs": {},
+                                      "e": {
+                                        "docs": {},
+                                        "u": {
+                                          "docs": {
+                                            "dtpsLMS.html#.fetchQueue": {
+                                              "ref": "dtpsLMS.html#.fetchQueue",
+                                              "tf": 1150
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "w": {
+                                    "docs": {},
+                                    "r": {
+                                      "docs": {},
+                                      "a": {
+                                        "docs": {},
+                                        "p": {
+                                          "docs": {},
+                                          "p": {
+                                            "docs": {
+                                              "dtpsLMS.html#.fetchWrapper": {
+                                                "ref": "dtpsLMS.html#.fetchWrapper",
+                                                "tf": 1150
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
                                   "u": {
                                     "docs": {},
                                     "s": {
@@ -4511,6 +4572,14 @@ window.lunrData = {
                                   },
                                   "dtpsLMS.html#.teacherCache": {
                                     "ref": "dtpsLMS.html#.teacherCache",
+                                    "tf": 50
+                                  },
+                                  "dtpsLMS.html#.fetchQueue": {
+                                    "ref": "dtpsLMS.html#.fetchQueue",
+                                    "tf": 50
+                                  },
+                                  "dtpsLMS.html#.fetchWrapper": {
+                                    "ref": "dtpsLMS.html#.fetchWrapper",
                                     "tf": 50
                                   },
                                   "dtpsLMS.html#.fetchUser": {
@@ -6395,6 +6464,14 @@ window.lunrData = {
                         "dtpsLMS.html#.commonHeaders": {
                           "ref": "dtpsLMS.html#.commonHeaders",
                           "tf": 3.3333333333333335
+                        },
+                        "dtpsLMS.html#.fetchQueue": {
+                          "ref": "dtpsLMS.html#.fetchQueue",
+                          "tf": 16.666666666666664
+                        },
+                        "dtpsLMS.html#.fetchWrapper": {
+                          "ref": "dtpsLMS.html#.fetchWrapper",
+                          "tf": 5
                         }
                       }
                     }
@@ -7125,6 +7202,10 @@ window.lunrData = {
                             "ref": "dtps.html#.renderLite",
                             "tf": 110
                           },
+                          "dtpsLMS.html#.fetchWrapper": {
+                            "ref": "dtpsLMS.html#.fetchWrapper",
+                            "tf": 115
+                          },
                           "dtpsLMS.html#.fetchUser": {
                             "ref": "dtpsLMS.html#.fetchUser",
                             "tf": 110
@@ -7296,6 +7377,10 @@ window.lunrData = {
                       "ref": "dtpsLMS.html",
                       "tf": 3.125
                     },
+                    "dtpsLMS.html#.fetchWrapper": {
+                      "ref": "dtpsLMS.html#.fetchWrapper",
+                      "tf": 5
+                    },
                     "dtpsLMS.html#.fetchUser": {
                       "ref": "dtpsLMS.html#.fetchUser",
                       "tf": 3.125
@@ -7343,6 +7428,43 @@ window.lunrData = {
                     "dtpsLMS.html#.fetchPageContent": {
                       "ref": "dtpsLMS.html#.fetchPageContent",
                       "tf": 7.142857142857142
+                    }
+                  },
+                  "q": {
+                    "docs": {},
+                    "u": {
+                      "docs": {},
+                      "e": {
+                        "docs": {},
+                        "u": {
+                          "docs": {
+                            "dtpsLMS.html#.fetchQueue": {
+                              "ref": "dtpsLMS.html#.fetchQueue",
+                              "tf": 700
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "w": {
+                    "docs": {},
+                    "r": {
+                      "docs": {},
+                      "a": {
+                        "docs": {},
+                        "p": {
+                          "docs": {},
+                          "p": {
+                            "docs": {
+                              "dtpsLMS.html#.fetchWrapper": {
+                                "ref": "dtpsLMS.html#.fetchWrapper",
+                                "tf": 700
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   },
                   "u": {
@@ -8623,6 +8745,10 @@ window.lunrData = {
                   "dtps.html#.mergeAndRenderChildAssignments": {
                     "ref": "dtps.html#.mergeAndRenderChildAssignments",
                     "tf": 8.333333333333332
+                  },
+                  "dtpsLMS.html#.fetchWrapper": {
+                    "ref": "dtpsLMS.html#.fetchWrapper",
+                    "tf": 5
                   }
                 }
               }
@@ -8787,6 +8913,20 @@ window.lunrData = {
                         "ref": "dtpsLMS.html#.updateClasses",
                         "tf": 3.571428571428571
                       }
+                    }
+                  }
+                }
+              }
+            },
+            "a": {
+              "docs": {},
+              "c": {
+                "docs": {},
+                "e": {
+                  "docs": {
+                    "dtpsLMS.html#.fetchWrapper": {
+                      "ref": "dtpsLMS.html#.fetchWrapper",
+                      "tf": 5
                     }
                   }
                 }
@@ -10403,6 +10543,29 @@ window.lunrData = {
                   }
                 }
               }
+            },
+            "t": {
+              "docs": {},
+              "h": {
+                "docs": {},
+                "o": {
+                  "docs": {},
+                  "u": {
+                    "docs": {},
+                    "g": {
+                      "docs": {},
+                      "h": {
+                        "docs": {
+                          "dtpsLMS.html#.fetchWrapper": {
+                            "ref": "dtpsLMS.html#.fetchWrapper",
+                            "tf": 5
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           },
           "m": {
@@ -10459,6 +10622,25 @@ window.lunrData = {
                       }
                     }
                   }
+                }
+              }
+            },
+            "d": {
+              "docs": {
+                "dtpsLMS.html#.fetchWrapper": {
+                  "ref": "dtpsLMS.html#.fetchWrapper",
+                  "tf": 5
+                }
+              }
+            }
+          },
+          "p": {
+            "docs": {},
+            "i": {
+              "docs": {
+                "dtpsLMS.html#.fetchQueue": {
+                  "ref": "dtpsLMS.html#.fetchQueue",
+                  "tf": 16.666666666666664
                 }
               }
             }
@@ -10648,6 +10830,14 @@ window.lunrData = {
                   }
                 }
               }
+            },
+            "y": {
+              "docs": {
+                "dtpsLMS.html#.fetchWrapper": {
+                  "ref": "dtpsLMS.html#.fetchWrapper",
+                  "tf": 5
+                }
+              }
             }
           }
         },
@@ -10769,6 +10959,10 @@ window.lunrData = {
                       },
                       "dtpsLMS.html#.teacherCache": {
                         "ref": "dtpsLMS.html#.teacherCache",
+                        "tf": 110
+                      },
+                      "dtpsLMS.html#.fetchQueue": {
+                        "ref": "dtpsLMS.html#.fetchQueue",
                         "tf": 110
                       }
                     }
@@ -11466,6 +11660,20 @@ window.lunrData = {
           },
           "e": {
             "docs": {},
+            "h": {
+              "docs": {},
+              "a": {
+                "docs": {},
+                "v": {
+                  "docs": {
+                    "dtpsLMS.html#.fetchWrapper": {
+                      "ref": "dtpsLMS.html#.fetchWrapper",
+                      "tf": 5
+                    }
+                  }
+                }
+              }
+            },
             "t": {
               "docs": {},
               "w": {
@@ -11513,22 +11721,50 @@ window.lunrData = {
               }
             }
           }
+        },
+        "q": {
+          "docs": {},
+          "u": {
+            "docs": {},
+            "e": {
+              "docs": {},
+              "u": {
+                "docs": {},
+                "e": {
+                  "docs": {
+                    "dtpsLMS.html#.fetchQueue": {
+                      "ref": "dtpsLMS.html#.fetchQueue",
+                      "tf": 16.666666666666664
+                    },
+                    "dtpsLMS.html#.fetchWrapper": {
+                      "ref": "dtpsLMS.html#.fetchWrapper",
+                      "tf": 5
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       },
-      "length": 871
+      "length": 891
     },
     "corpusTokens": [
       "1",
       "action",
       "actual",
+      "add",
       "adjust",
       "alert",
+      "although",
       "alway",
       "amp",
       "announc",
+      "api",
       "assign",
       "base",
       "basic",
+      "behav",
       "between",
       "bg",
       "bold",
@@ -11658,7 +11894,9 @@ window.lunrData = {
       "dtpslms.fetchmodul",
       "dtpslms.fetchpag",
       "dtpslms.fetchpagecont",
+      "dtpslms.fetchqueu",
       "dtpslms.fetchus",
+      "dtpslms.fetchwrapp",
       "dtpslms.gradebook",
       "dtpslms.gradebookdidrend",
       "dtpslms.isusualdued",
@@ -11690,7 +11928,9 @@ window.lunrData = {
       "fetchmodul",
       "fetchpag",
       "fetchpagecont",
+      "fetchqueu",
       "fetchus",
+      "fetchwrapp",
       "file",
       "filter",
       "filtersearch",
@@ -11808,6 +12048,7 @@ window.lunrData = {
       "promise.&lt;string&gt",
       "promise.&lt;user&gt",
       "provid",
+      "queue",
       "readabl",
       "readm",
       "recent",
@@ -11855,6 +12096,7 @@ window.lunrData = {
       "shown",
       "sidebar",
       "sign",
+      "space",
       "specif",
       "start",
       "static",
@@ -11900,6 +12142,7 @@ window.lunrData = {
       "version",
       "videomeetingurl",
       "warn",
+      "way",
       "web",
       "welcom"
     ],
@@ -12047,7 +12290,7 @@ window.lunrData = {
     "dtps.html#.log": {
       "id": "dtps.html#.log",
       "kind": "function",
-      "title": "&lt;static&gt; log( msg )",
+      "title": "&lt;static&gt; log( ...msg )",
       "longname": "dtps.log",
       "name": "log",
       "tags": "dtps.log log",
@@ -12514,6 +12757,26 @@ window.lunrData = {
       "tags": "dtpsLMS.teacherCache teacherCache",
       "summary": "",
       "description": "List of teachers from dtpsLMS.fetchClasses for use in other methods This variable is specific to Canvas LMS integration in DTPS and is not required for other LMS integrations."
+    },
+    "dtpsLMS.html#.fetchQueue": {
+      "id": "dtpsLMS.html#.fetchQueue",
+      "kind": "member",
+      "title": "&lt;static&gt; fetchQueue",
+      "longname": "dtpsLMS.fetchQueue",
+      "name": "fetchQueue",
+      "tags": "dtpsLMS.fetchQueue fetchQueue",
+      "summary": "",
+      "description": "A queue for API requests"
+    },
+    "dtpsLMS.html#.fetchWrapper": {
+      "id": "dtpsLMS.html#.fetchWrapper",
+      "kind": "function",
+      "title": "&lt;static&gt; fetchWrapper()",
+      "longname": "dtpsLMS.fetchWrapper",
+      "name": "fetchWrapper",
+      "tags": "dtpsLMS.fetchWrapper fetchWrapper",
+      "summary": "",
+      "description": "A function that behaves the same way as fetch, although it adds the request to the queue for spacing"
     },
     "dtpsLMS.html#.fetchUser": {
       "id": "dtpsLMS.html#.fetchUser",
