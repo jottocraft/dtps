@@ -72,12 +72,13 @@ var dtps = {
         }
     ],
     remoteConfig: {
+        canvasRequestSpacing: 25,
         showBugReportButton: false,
         gradeCalculationEnabled: true,
         allowWhatIfGrades: true,
         showVideoMeetingButton: true,
         dtechHomepageFluidUITabs: true,
-        dtechCurrentTerm: "20-21",
+        dtechCurrentTerm: "S2",
         debugClassID: "1098",
         topSneaky: false,
         topSneakyUI: false,
@@ -137,10 +138,10 @@ dtps.changelog = function (onlyIfNewVersion) {
 /**
  * Logs debugging messages
  * 
- * @param {string} msg The debugging message to log
+ * @param {...*} msg The debugging messages to log
  */
-dtps.log = function (msg) {
-    if (dtps.env == "dev") console.log("[DTPS]", msg);
+dtps.log = function () {
+    if (dtps.env == "dev") console.log("[DTPS]", ...arguments);
 }
 
 
