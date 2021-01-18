@@ -33,6 +33,36 @@ dtpsLMS.commonHeaders = { Accept: "application/json+canvas-string-ids, applicati
  */
 dtpsLMS.teacherCache = {};
 
+/**
+ * A queue for API requests
+ */
+dtpsLMS.fetchQueue = [];
+
+/**
+ * A function that behaves the same way as fetch, although it adds the request to the queue for spacing
+ */
+dtpsLMS.fetchWrapper = function () {
+    //Start a queue interval if it isn't already started
+    if (!dtpsLMS.fetchInterval) {
+        dtpsLMS.fetchInterval = setInterval(function() {
+            //Run request at the start of the queue
+            if (dtpsLMS.fetchQueue[0]) {
+                dtpsLMS.fetchQueue[0]();
+            }
+        }, dtps.remoteConfig.canvasRequestSpacing);
+    }
+
+    return new Promise((resolve, reject) => {
+        dtpsLMS.fetchQueue.push(() => {
+            dtpsLMS.fetchQueue.shift();
+            fetch(...arguments).then(function (d) {
+                dtps.log("Rate limit remaining: ", Number(d.headers.get("x-rate-limit-remaining")));
+                resolve(...arguments);
+            }).catch(reject);
+        });
+    });
+}
+
 //Fetch userdata from Canvas
 dtpsLMS.fetchUser = function () {
     return new Promise(function (resolve, reject) {
@@ -45,7 +75,7 @@ dtpsLMS.fetchUser = function () {
         };
 
         if (window.ENV.current_user_roles.includes("observer")) {
-            fetch("/api/v1/users/self/observees?include[]=avatar_url", { headers: dtpsLMS.commonHeaders }).then(response => {
+            dtpsLMS.fetchWrapper("/api/v1/users/self/observees?include[]=avatar_url", { headers: dtpsLMS.commonHeaders }).then(response => {
                 return response.json();
             }).then(childrenData => {
                 if (childrenData && childrenData.length) {
@@ -71,9 +101,9 @@ dtpsLMS.fetchUser = function () {
 dtpsLMS.fetchClasses = function (userID) {
     return new Promise(function (resolve, reject) {
         Promise.all([
-            fetch("/api/v1/users/" + dtps.user.id + "/colors", { headers: dtpsLMS.commonHeaders }),
-            fetch("/api/v1/users/" + userID + "/dashboard_positions", { headers: dtpsLMS.commonHeaders }),
-            fetch("/api/v1/users/" + userID + "/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=account&include[]=teachers&include[]=course_image&include[]=tabs&include[]=sections", { headers: dtpsLMS.commonHeaders })
+            dtpsLMS.fetchWrapper("/api/v1/users/" + dtps.user.id + "/colors", { headers: dtpsLMS.commonHeaders }),
+            dtpsLMS.fetchWrapper("/api/v1/users/" + userID + "/dashboard_positions", { headers: dtpsLMS.commonHeaders }),
+            dtpsLMS.fetchWrapper("/api/v1/users/" + userID + "/courses?per_page=100&enrollment_state=active&include[]=term&include[]=total_scores&include[]=account&include[]=teachers&include[]=course_image&include[]=tabs&include[]=sections", { headers: dtpsLMS.commonHeaders })
         ]).then(responses => {
             return Promise.all(responses.map(r => r.json()));
         }).then(data => {
@@ -136,9 +166,9 @@ dtpsLMS.fetchClasses = function (userID) {
 dtpsLMS.fetchAssignments = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         Promise.all([
-            fetch("/api/v1/courses/" + classID + "/students/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=100&student_ids[]=" + userID, { headers: dtpsLMS.commonHeaders }),
-            fetch("/api/v1/users/" + userID + "/courses/" + classID + "/assignments?per_page=100", { headers: dtpsLMS.commonHeaders })
-        ]).then(responses => {
+            dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/students/submissions?include[]=rubric_assessment&include[]=submission_comments&per_page=100&student_ids[]=" + userID, { headers: dtpsLMS.commonHeaders }),
+            dtpsLMS.fetchWrapper("/api/v1/users/" + userID + "/courses/" + classID + "/assignments?per_page=100", { headers: dtpsLMS.commonHeaders })
+        ]).then((responses) => {
             return Promise.all(responses.map(r => r.json()));
         }).then(data => {
             var [submissionData, assignmentData] = data;
@@ -251,8 +281,8 @@ dtpsLMS.fetchAssignments = function (userID, classID) {
 dtpsLMS.fetchModules = function (userID, classID) {
     return new Promise(function (resolve, reject) {
         Promise.all([
-            fetch("/api/v1/courses/" + classID + "/modules?include[]=items&include[]=content_details", { headers: dtpsLMS.commonHeaders }),
-            fetch("/courses/" + classID + "/modules/progressions", { headers: dtpsLMS.commonHeaders })
+            dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/modules?include[]=items&include[]=content_details", { headers: dtpsLMS.commonHeaders }),
+            dtpsLMS.fetchWrapper("/courses/" + classID + "/modules/progressions", { headers: dtpsLMS.commonHeaders })
         ]).then(responses => {
             return Promise.all(responses.map(r => r.json()));
         }).then(data => {
@@ -343,7 +373,7 @@ dtpsLMS.fetchModules = function (userID, classID) {
 
 //Collapses a module in Canvas
 dtpsLMS.collapseModule = function (classID, modID, collapsed) {
-    return fetch("/courses/" + classID + "/modules/" + modID + "/collapse", {
+    return dtpsLMS.fetchWrapper("/courses/" + classID + "/modules/" + modID + "/collapse", {
         method: "POST",
         headers: {
             "Accept": "application/json, text/javascript, application/json+canvas-string-ids, */*; q=0.01",
@@ -356,7 +386,7 @@ dtpsLMS.collapseModule = function (classID, modID, collapsed) {
 
 //Collapses all modules in Canvas
 dtpsLMS.collapseAllModules = function (classID, collapsed) {
-    return fetch("/courses/" + classID + "/collapse_all_modules", {
+    return dtpsLMS.fetchWrapper("/courses/" + classID + "/collapse_all_modules", {
         method: "POST",
         headers: {
             "Accept": "application/json, text/javascript, application/json+canvas-string-ids, */*; q=0.01",
@@ -370,7 +400,7 @@ dtpsLMS.collapseAllModules = function (classID, collapsed) {
 //Fetches announcement data from Canvas
 dtpsLMS.fetchAnnouncements = function (classID) {
     return new Promise(function (resolve, reject) {
-        fetch("/api/v1/announcements?context_codes[]=course_" + classID, { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
+        dtpsLMS.fetchWrapper("/api/v1/announcements?context_codes[]=course_" + classID, { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
             var dtpsAnnouncements = data.map(function (announcement) {
                 return {
                     title: announcement.title,
@@ -388,7 +418,7 @@ dtpsLMS.fetchAnnouncements = function (classID) {
 //Fetches user data from Canvas
 dtpsLMS.fetchUsers = function (classID) {
     return new Promise(function (resolve, reject) {
-        fetch("/api/v1/courses/" + classID + "/sections?include[]=avatar_url&include[]=students&per_page=99", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
+        dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/sections?include[]=avatar_url&include[]=students&per_page=99", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
             var teachers = dtpsLMS.teacherCache[classID];
             var sections = [{
                 title: "Teachers",
@@ -434,7 +464,7 @@ dtpsLMS.fetchUsers = function (classID) {
 //Fetches homepage data from Canvas
 dtpsLMS.fetchHomepage = function (classID) {
     return new Promise(function (resolve, reject) {
-        fetch("/api/v1/courses/" + classID + "/front_page", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
+        dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/front_page", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
             resolve(data.body);
         }).catch(reject);
     });
@@ -443,7 +473,7 @@ dtpsLMS.fetchHomepage = function (classID) {
 //Fetches discussion thread data from Canvas
 dtpsLMS.fetchDiscussionThreads = function (classID) {
     return new Promise(function (resolve, reject) {
-        fetch("/api/v1/courses/" + classID + "/discussion_topics", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
+        dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/discussion_topics", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
             var dtpsDiscussionThreads = data.map(function (thread) {
                 return {
                     title: thread.title,
@@ -460,11 +490,11 @@ dtpsLMS.fetchDiscussionThreads = function (classID) {
 //Fetches discussion thread posts from Canvas
 dtpsLMS.fetchDiscussionPosts = function (classID, threadID) {
     return new Promise(function (resolve, reject) {
-        fetch("/api/v1/courses/" + classID + "/discussion_topics/" + threadID + "/", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(threadData => {
+        dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/discussion_topics/" + threadID + "/", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(threadData => {
             //Check if this discussion is a group discussion
             if (threadData.group_topic_children && threadData.group_topic_children.length) {
                 //This discussion is probably a group discussion, check groups, then fetch posts
-                fetch("/api/v1/courses/" + classID + "/groups?only_own_groups=true", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(groupData => {
+                dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/groups?only_own_groups=true", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(groupData => {
                     //Get array of group IDs
                     var myGroups = groupData.map(group => group.id);
 
@@ -482,19 +512,19 @@ dtpsLMS.fetchDiscussionPosts = function (classID, threadID) {
 
                     if (!groupID || !groupDiscussionID) {
                         //Couldn't find a group match, fetch class discussion
-                        fetch("/api/v1/courses/" + classID + "/discussion_topics/" + threadID + "/view", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(responsesData => {
+                        dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/discussion_topics/" + threadID + "/view", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(responsesData => {
                             parseResponse(responsesData, "/courses/" + classID + "/discussion_topics/" + threadID);
                         });
                     } else {
                         //Group match found, fetch group discussion
-                        fetch("/api/v1/groups/" + groupID + "/discussion_topics/" + groupDiscussionID + "/view", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(responsesData => {
+                        dtpsLMS.fetchWrapper("/api/v1/groups/" + groupID + "/discussion_topics/" + groupDiscussionID + "/view", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(responsesData => {
                             parseResponse(responsesData, "/groups/" + groupID + "/discussion_topics/" + groupDiscussionID);
                         });
                     }
                 });
             } else {
                 //Not a group discussion, directly fetch posts
-                fetch("/api/v1/courses/" + classID + "/discussion_topics/" + threadID + "/view", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(responsesData => {
+                dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/discussion_topics/" + threadID + "/view", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(responsesData => {
                     parseResponse(responsesData, "/courses/" + classID + "/discussion_topics/" + threadID);
                 });
             }
@@ -616,7 +646,7 @@ dtpsLMS.fetchDiscussionPosts = function (classID, threadID) {
 //Fetches pages list data from Canvas
 dtpsLMS.fetchPages = function (classID) {
     return new Promise(function (resolve, reject) {
-        fetch("/api/v1/courses/" + classID + "/pages?per_page=100", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
+        dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/pages?per_page=100", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
             var dtpsPages = data.map(function (page) {
                 var dtpsPage = {
                     title: page.title,
@@ -634,7 +664,7 @@ dtpsLMS.fetchPages = function (classID) {
 //Fetches pages list data from Canvas
 dtpsLMS.fetchPageContent = function (classID, pageID) {
     return new Promise(function (resolve, reject) {
-        fetch("/api/v1/courses/" + classID + "/pages/" + pageID, { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
+        dtpsLMS.fetchWrapper("/api/v1/courses/" + classID + "/pages/" + pageID, { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
             //Resolve with full page object
             var dtpsPage = {
                 title: data.title,
