@@ -83,6 +83,7 @@ var dtps = {
         topSneaky: false,
         topSneakyUI: false,
         useV5ThemeSelectionUI: false,
+        loadingAlert: null,
         remoteUpdate: {
             title: null,
             md: null,
@@ -382,6 +383,8 @@ dtps.init = function () {
         //Fetch user and class data
         return dtpsLMS.fetchUser();
     }).then(data => {
+        if (dtps.remoteConfig.loadingAlert) window.alert(dtps.remoteConfig.loadingAlert);
+        
         //Prevent resetting the user if the user is already set (for parent accounts)
         dtps.user = data;
 
