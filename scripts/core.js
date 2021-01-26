@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.1.0
+ * @version v3.1.1
  * 
  * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -36,8 +36,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
  */
 var dtps = {
-    ver: 310,
-    readableVer: "v3.1.0",
+    ver: 311,
+    readableVer: "v3.1.1",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -86,7 +86,7 @@ var dtps = {
         loadingAlert: null,
         remoteUpdate: {
             title: null,
-            md: null,
+            html: null,
             active: false
         }
     }
