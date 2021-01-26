@@ -69,13 +69,9 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
         return new Promise((resolve, reject) => {
             var tmpNewArray = [];
             classes.forEach((course, i) => {
-                if (course.term == dtps.remoteConfig.dtechCurrentTerm) {
-                    tmpNewArray.push(course);
-                } else if (course.id == dtps.remoteConfig.debugClassID) {
-                    tmpNewArray.push(course);
-                } else if (!course.endDate || (new Date() < new Date(course.endDate))) {
-                    tmpNewArray.push(course);
-                }
+                //Fitler out first semester courses
+                if (course.term == "20-21") return;
+                if (course.endDate && (new Date() > new Date(course.endDate))) return;
 
                 //Check if course is ineligible for videoMeetingURL
                 if (!dtps.remoteConfig.showVideoMeetingButton || dtps.user.parent || !course.homepage || (course.term !== dtps.remoteConfig.dtechCurrentTerm)) {
@@ -86,24 +82,30 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 var matches = course.period.match(/[0-9](?=\(A)/);
                 if (matches && matches[0]) {
                     course.period = matches[0] == "7" ? 0 : Number(matches[0]);
-                } else if (/(d|design)(\.| |-)?lab/gi.test(course.subject)) {
-                    course.period = 11;
                 } else if (/exploration/gi.test(course.subject)) {
-                    course.period = 12;
+                    course.period = (/PM/g.test(course.subject) || /afternoon/gi.test(course.subject)) ? 12 : 11;
+
+                    //Remove old intersession courses
+                    var startDate = new Date(course.startDate);
+                    if ((startDate.getFullYear() == 2020) && (startDate.getMonth() == 9)) return;
+
+                    //Automatically detect AM/PM exploration and set the class name accordingly
+                    if (/AM/g.test(course.subject) || /morning/gi.test(course.subject)) course.subject = "Morning Exploration";
+                    if (/PM/g.test(course.subject) || /afternoon/gi.test(course.subject)) course.subject = "Afternoon Exploration";
                 } else {
                     course.period = Infinity;
                 }
 
                 //Get course cycle
                 if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
-                    /*if ((course.period >= 1) && (course.period <= 3)) {
+                    if ((course.period >= 1) && (course.period <= 3)) {
                         course.group = "Cycle 1/3";
                     } else if ((course.period >= 4) && (course.period <= 6)) {
-                        course.group = "Cycle 2/4";*/
-                    if (course.term == "20-21") {
+                        course.group = "Cycle 2/4";
+                    /*if (course.term == "20-21") {
                         course.group = "Semester 1";
                     } else if (course.term == "S2") {
-                        course.group = "Semester 2";
+                        course.group = "Semester 2";*/
                     } else if ((course.period == 11) || (course.period == 12)) {
                         course.group = "Intersession";
                         course.term = "int";
@@ -150,16 +152,19 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 } else if (/Athletics/gi.test(course.subject)) {
                     course.icon = "sports_handball";
                 }
+
+                //Add course to list
+                tmpNewArray.push(course);
             });
             classes = tmpNewArray;
 
             //Automatically sort and group classes if enabled
             if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
                 classes.sort((a, b) => {
-                    var termA = a.term == "20-21" ? 1 : a.term == "S2" ? 2 : a.term == "int" ? 3 : 4;
+                    /*var termA = a.term == "20-21" ? 1 : a.term == "S2" ? 2 : a.term == "int" ? 3 : 4;
                     var termB = b.term == "20-21" ? 1 : b.term == "S2" ? 2 : b.term == "int" ? 3 : 4;
-                    return termA - termB;
-                    //return a.period - b.period;
+                    return termA - termB;*/
+                    return a.period - b.period;
                 });
             }
 

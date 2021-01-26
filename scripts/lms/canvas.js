@@ -130,7 +130,8 @@ dtpsLMS.fetchClasses = function (userID) {
                     pages: course.tabs.map(tab => tab.id).includes("pages"),
                     modules: course.tabs.map(tab => tab.id).includes("modules"),
                     discussions: true || course.tabs.map(tab => tab.id).includes("discussions"),
-                    endDate: course.end_at
+                    endDate: course.end_at,
+                    startDate: course.start_at
                 };
 
                 //Save teachers in cache
