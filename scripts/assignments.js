@@ -355,14 +355,13 @@ dtps.renderUpdates = function (dateSelected) {
     var updatesHTML = "";
 
     if (dtps.remoteConfig.remoteUpdate.active) {
-        markdown = new showdown.Converter();
         updatesHTML += /*html*/`
             <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
                 <div class="className">
                     <img src="${dtps.baseURL + "/icon.svg"}" style="vertical-align: middle;width: 22px;margin-right: 5px;" />
                     <span style="font-weight: bold; vertical-align: middle; color: var(--text); font-size: 18px;">${dtps.remoteConfig.remoteUpdate.title}</span>
                 </div>
-                ${markdown.makeHtml(dtps.remoteConfig.remoteUpdate.md)}
+                ${dtps.remoteConfig.remoteUpdate.html}
             </div>
         `;
     }
