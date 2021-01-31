@@ -9,7 +9,7 @@ Power+ CSS
 }
 
 [data-theme-type=dark] {
-    --theme: #8c793e !important;
+    --theme: #8c7541 !important;
     --themeText: #ffffff !important;
 }
 
@@ -45,19 +45,6 @@ Power+ CSS
 
 .dashboardItem i {
     vertical-align: middle;
-}
-
-.dashboardItem .compactModeSwitch {
-    cursor: auto;
-    margin-top: 20px;
-}
-
-.dashboardItem .compactModeSwitch .switch {
-    text-align: left;
-}
-
-.btns.tabs .btn {
-    transition: color 0.4s, font-size 0.4s !important;
 }
 
 .welcomeSection {
@@ -234,7 +221,6 @@ Power+ CSS
     font-size: 16px;
 }
 
-
 .assessmentWrapper.dropped span.assessmentTitle, .assessmentWrapper.dropped .editableScore:not(.focused) {
     opacity: 0.4;
 }
@@ -297,11 +283,7 @@ Power+ CSS
 
 .classGradeCircle {
     display: inline-block;
-    height: 60px; 
-    font-size: 40px; 
     text-align: right;
-    line-height: 60px;
-    border-radius: 50%;
     float: right;
     vertical-align: middle;
 }
@@ -311,14 +293,17 @@ Power+ CSS
     font-size: 20px;
     font-weight: bold;
     vertical-align: middle;
-    margin-right: 20px;
+    width: 200px;
+    text-align: center;
+    display: inline-block;
 }
 
 .classGradeCircle .letter {
     color: var(--classColor);
     font-weight: bold;
+    font-size: 40px;
     vertical-align: middle;
-    width: 110px;
+    width: 200px;
     text-align: center;
     display: inline-block;
 }
@@ -341,7 +326,7 @@ Power+ CSS
 
 .gradeStat .numFont, .smallStat .numFont {
     display: inline-block; 
-    width: 110px; 
+    width: 200px; 
     text-align: center; 
     height: 60px; 
     line-height: 60px; 
@@ -376,11 +361,9 @@ Power+ CSS
 
 .gradeTitle {
     margin-bottom: 10px; 
-    height: 60px; 
-    line-height: 60px; 
     margin-top: 0px; 
     font-weight: bold;
-    font-size: 36px;
+    font-size: 32px;
 }
 
 .infoChip {
@@ -459,27 +442,6 @@ Power+ CSS
     font-size: 18px;
 }
 
-.dash.cal .card {
-    margin: 25px;
-    width: 100%;
-}
-
-#id_email, #id_name {
-    display: none !important;
-}
-
-.dash.cal .announcement {
-    margin-right: 0px;
-}
-
-body.isolatedGoogleClass .header .btns {
-    display: none !important;
-}
-
-body.isolatedGoogleClass .background {
-    background: linear-gradient(to right bottom, rgb(177, 168, 35), rgb(8, 101, 59)) !important;
-}
-
 .announcement:not(.open) {
     max-height: 200px;
 }
@@ -488,112 +450,52 @@ body.isolatedGoogleClass .background {
     overflow: hidden;
 }
 
-body {
-    position: relative;
-    height: 100%;
-    min-height: 100vh;
-}
-
-.sidenav .item {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.sidenav .item i {
-    margin-right: 10px;
-}
-
-.class.whatif .letter {
-    display: none;
-}
-
-.class.whatif .points {
-    display: inline !important;
-}
-
-.label i {
-    vertical-align: middle;
-}
-
-.search, .classContent i.inputIcon {
-    margin: 15px 75px 0px 10px !important;
-}
-
-.dash.stream .search, .classContent .dash.stream i.inputIcon {
-    margin: 15px 25px 0px 10px !important;
-}
-
 .classContent .assignmentPicker .btn.active {
     background: var(--elementHover) !important;
     color: var(--elementText) !important;
-}
-
-.class.active .dot {
-    background-color: var(--dark);
-    color: white;
-}
-
-[data-theme-type=dark] .card .dot {
-    background-color: #181b1d;
-}
-
-body.titlebar .sidebar {
-    position: fixed;
-    top: 75;
-}
-
-.sidebar .item:not(.active) {
-    filter: none !important;
 }
 
 [data-theme-type=dark] .sidebar .item:not(.active) {
     filter: brightness(1.2) !important;
 }
 
-.sidebar .item .label {
-    max-width: calc(100% - 32px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.classDivider {
-    display: inline-block;
-    width: 250px;
-    height: 2px;
-    border-radius: 10px;
-    background-color: transparent;
-    margin: 15px 0;
-}
-
 .sidebar .item .grade {
     text-align: center;
-    width: 22px;
     font-size: 18px;
     font-family: var(--textFont);
     font-weight: bold;
+    margin: 0px;
+}
+
+.sidebar .item .grade.letter, .sidebar .item .grade .letter {
+    font-size: 18px;
+    width: 32px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.sidebar .item .grade.percentage, .sidebar .item .grade .percentage {
+    font-size: 14px;
+    min-width: 32px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.sidebar .item .grade.percentage.large, .sidebar .item .grade .percentage.large {
+    font-size: 12px;
+}
+
+.sidebar .item .grade .percentSymbol {
+    font-size: 10px;
+}
+
+.sidebar .item .grade:hover .letter, .sidebar .item .grade:not(:hover) .percentage {
+    display: none;
 }
 
 .hidegrades .sidebar .item .grade {
     visibility: hidden !important;
-    width: 0px;
-}
-
-.class .icon {
-    font-size: 20px;
-    font-weight: bold;
-    height: 24px;
-    line-height: 24px;
-}
-
-.class.main:not(.active) {
-    color: var(--lightText) !important;
-    border-color: var(--secText) !important;
-}
-
-[data-theme-type=dark] .class.main:not(.active), [data-theme-type=dark] .class.overrideClass:not(.active) {
-    color: #ffffffbf !important;
-    border-color: #ffffff36 !important;
+    width: 5px;
 }
 
 .class:not(.main):not(.active) {
@@ -605,148 +507,10 @@ body.titlebar .sidebar {
     color: white !important;
 }
 
-.sidebar, .abtheader {
-    background-color: var(--nav);
-}
-
-body.noSidebar .sidebar {
-    display: none;
-    visibility: hidden;
-}
-
-body.noSidebar .header {
-    width: 100%;
-    margin-left: 0px;
-}
-
-body.titlebar .background, body.titlebar .cover.image {
-    position: fixed;
-    height: 75px;
-    z-index: 10;
-}
-
-.sticky {
-    position: fixed;
-    top: 0;
-    width: 100%;
-}
-
-body.titlebar .header {
-    padding: 0px;
-    z-index: 10;
-    text-align: left;
-}
-
-body.titlebar .classContent {
-    z-index: 1;
-    padding-top: 100px;
-}
-
-body.noSidebar .classContent {
-    margin-left: 0px;
-    width: 100%;
-}
-
-body.titlebar .header h1 {
-    font-size: 40px;
-    line-height: 75px;
-    display: inline-block;
-    margin: 0px;
-    margin-left: 25px;
-    position: fixed;
-    left: 0px;
-    z-index: 200;
-}
-
-body.titlebar .header .btns {
-    margin-top: 30px;
-    position: fixed;
-    margin-left: calc(50% - 175px)
-}
-
-body.titlebar:not(.noSidebar) .header .btns {
-    margin-left: calc(50% - 525px);
-}
-
-.classContent {
-    z-index: 100;
-    top: 0;
-}
-
-.tabs.btns {
-    padding: 0px;
-    background-color: transparent !important;
-}
-
-.tabs.btns .btn {
-    border: none !important;
-    background-color: transparent !important;
-    box-shadow: none !important;
-    color: var(--text);
-    border-radius: 0px !important;
-    font-size: 15px;
-    border-bottom: 2px solid transparent !important;
-    transition: color 0.2s, border-color 0.2s !important;
-    opacity: 0.5;
-    font-weight: normal;
-}
-
-.tabs.btns .btn.active {
-    border-color: var(--text) !important;
-    font-weight: bold;
-    opacity: 1;
-}
-
-.tabs.btns .btn i {
-    font-size: 24px;
-}
-
-.sidebar, .header {
-    transition: all 0.5s;
-}
-
-.dot {
-    display: none;
-}
-
-.background, .cover.image {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 500px;
-    opacity: 0.2;
-}
-
-.background {
-    filter: blur(10px);
-}
-
-.header {
-    margin-left: 275px;
-    text-align: center;
-    padding-top: 132px;
-    z-index: 200;
-    position: absolute;
-    top: 0;
-    width: calc(100% - 275px);
-}
-
 .classContent .card {
     margin: 12px 20px;
     text-align: left;
     border-radius: 25px;
-}
-
-.classContent .card {
-    color: var(--text);
-}
-
-.card:not(.alert) i.close {
-    position: absolute;
-    right: 0;
-    cursor: pointer;
-    top: 0;
-    margin: 25px;
 }
 
 .spinner {
@@ -783,115 +547,14 @@ body.titlebar:not(.noSidebar) .header .btns {
     }
 }
 
-.classContent .card .points {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    height: 24px;
-    flex-shrink: 0;
-}
-
-.classContent .points.spinner {
-    top: 25px;
-    margin-top: 0px;
-}
-
-.classContent .points .earned {
-    font-size: 24px;
-    display: inline-block;
-    font-weight: bold;
-}
-
-.classContent .points .total {
-    font-size: 14px;
-    display: inline-block;
-    color: var(--secText);
-}
-
-.classContent .assignment:not(.color) .points .total, .assignment:not(.color) .weighted {
-    color: var(--secText);
-}
-
 .assignment .weighted {
     color: var(--secText);
-    font-size: 0.82rem;
+    font-size: 14px;
 }
 
 .assignment .weighted i {
     font-size: 16px !important;
     margin-top: -3px;
-}
-
-.weight.parent .weight {
-    padding: 10px !important;
-    overflow: auto;
-    margin: 10px 75px !important;
-    transition: height 0.4s;
-}
-
-.weight.parent .weight.open {
-    height: 400px !important;
-}
-
-.weight.parent .weight:not(.open) .open, .weight.parent .weight.open .close {
-    display: none !important;
-}
-
-.weight .close p {
-    margin: 0px !important;
-    cursor: pointer;
-}
-
-.weight.parent .weight h4 {
-    cursor: pointer;
-}
-
-.weight.parent .weight p {
-    color: gray !important;
-}
-
-.weight.parent .weight:not(.open) {
-    overflow: hidden !important;
-}
-
-.badge i {
-    vertical-align: middle;
-    font-size: 20px;
-}
-
-.dash.stream .card {
-    margin-right: 25px;
-}
-
-.badge.missing {
-    color: #b7630a;
-    border-color: #b7630a;
-}
-
-.weight.parent {
-    padding: 0px !important;
-    overflow: visible;
-    margin-bottom: 100px;
-}
-
-.card .weight p {
-    color: var(--secText) !important;
-}
-
-.card.gb {
-    padding: 0 !important;
-}
-
-.dash .card .points .total {
-    color: var(--classColor);
-}
-
-.dash .card .floatingIcon {
-    color: var(--classColor) !important;
-}
-
-.card.details fieldset, .card.details #tb_handin_link, .card.details div.p, .card.details label {
-    display: none;
 }
 
 .assignment {
@@ -920,12 +583,6 @@ body.titlebar:not(.noSidebar) .header .btns {
     justify-content: space-between;
 }
 
-.classContent .assignment h5 div {
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
 .classContent .assignment h5 .status {
     flex-shrink: 0;
 }
@@ -949,36 +606,6 @@ body.titlebar:not(.noSidebar) .header .btns {
     float: right;
     font-size: 16px;
     vertical-align: middle;
-}
-
-.class.active .name {
-    font-weight: bold;
-}
-
-#whatIfResults {
-    display: none; 
-    border: 2px solid var(--cards);
-    background-color: var(--elements);
-    position: fixed;
-    top: 0;
-    width: 400px;
-    z-index: 999 !important;
-    padding: 20px;
-    margin: 10px;
-    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.51);
-}
-
-#whatIfResults h5 {
-    font-weight: bold;
-    margin-bottom: 28px;
-}
-
-#whatIfResults .resultLetter {
-    color: gray;
-    font-weight: bold;
-    float: right;
-    display: inline-block;
-    font-size: 32px;
 }
 
 .assignmentGrade {
@@ -1110,184 +737,13 @@ body.titlebar:not(.noSidebar) .header .btns {
     font-size: 20px;
 }
 
-.background, .cover.image {
-    background-size: 100%;
-    position: absolute;
-    z-index: -90;
-}
-
-.background:before {
-    border-radius: inherit;
-    background: linear-gradient(to bottom right, var(--classColor), var(--background));
-    content: '';
-    display: block;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    opacity: 0;
-    z-index: -100;
-    transition: all 0.5s ease-in-out;
-}
-
-body.dashboard .background:before {
-    background: var(--grad, linear-gradient(to bottom right, var(--cards), var(--background)));
-}
-
-.cover.image {
-    transition: all 0.2s ease-in-out;
-}
-
-.background.trans:before {
-    opacity: 1;
-    transition: all 0.5s;
-}
-
 .dash .assignment {
     padding-left: 34px;
 }
 
 .dash .weighted {
     color: var(--classColor) !important;
-}
-
-.dash .weighted {
     opacity: 0.7;
-}
-
-.item.link {
-    font-size: 20px;
-    cursor: pointer;
-    margin-top: 10px;
-    padding-left: 10px;
-}
-
-.item.link i {
-    vertical-align: middle;
-    margin-right: 10px;
-}
-
-.item.link span {
-    vertical-align: middle;
-}
-
-.earned.outcomes {
-    height: 20px;
-    text-align: right;
-    writing-mode: vertical-rl;
-    line-height: 0px;
-    font-size: 0px !important;
-    white-space: normal;
-}
-
-.earned.outcomes .outcome {
-    background-color: var(--text);
-    display: inline-block;
-    vertical-align: middle;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    margin: 1px;
-}
-
-.earned.outcomes .outcome.score1 {
-    background-color: #b90000;
-}
-
-.earned.outcomes .outcome.score2 {
-    background-color: #cc8400;
-}
-
-.earned.outcomes .outcome.score3 {
-    background-color: #b5b500;
-}
-
-.earned.outcomes .outcome.score4 {
-    background-color: #007700;
-}
-
-#whatIfGrade {
-    position: fixed;
-    top: 0px;
-    margin: 20px;
-    border-radius: 15px;
-    background-color: var(--elements);
-    border: 2px solid var(--secText);
-    padding: 20px;
-    z-index: 800;
-    box-shadow: 0px 0px 20px 10px var(--elements);
-}
-
-#whatIfGrade .letter {
-    width: 50px;
-    height: 50px;
-    background-color: var(--cards);
-    font-size: 28px;
-    font-weight: bold;
-    display: inline-block;
-    vertical-align: middle;
-    text-align: center;
-    line-height: 50px;
-    border-radius: 10px;
-    margin-right: 12px;
-}
-
-#whatIfGrade .notice {
-    display: inline-block;
-    vertical-align: middle;
-    width: 300px;
-}
-
-#whatIfGrade .notice h5 {
-    font-size: 22px;
-    margin: 0px;
-    font-weight: bold;
-}
-
-#whatIfGrade .notice p {
-    font-size: 14px;
-    margin: 0px;
-    margin-top: 10px;
-}
-
-#whatIfGrade .notice a {
-    color: var(--lightText);
-}
-
-.recentChanges .changeName {
-    font-size: 20px;
-    margin-top: 20px;
-    height: 32px;
-    line-height: 32px;
-}
-
-.recentChanges i {
-    margin-right: 10px;
-}
-
-.recentChanges .letter {
-    display: inline-block;
-    vertical-align: middle;
-    background-color: var(--elements);
-    width: 32px;
-    height: 32px;
-    text-align: center;
-    line-height: 32px;
-    margin-right: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.recentChanges .alignmentChange {
-    margin-left: 32px;
-    font-size: 14px;
-}
-
-.recentChanges .alignmentChange span {
-    font-size: 24px;
-    margin-right: 5px;
 }
 
 /* FullCalendar Fluid UI CSS cutomizations v5.3.2 */
@@ -1380,31 +836,10 @@ body.dashboard .background:before {
     font-size: 12px;
 }
 
-.classToolChip {
-    border-radius: 50%; 
-    height: 40px; 
-    width: 40px; 
-    text-align: center; 
-    display: inline-block; 
-    vertical-align: middle; 
-    cursor: pointer; 
-    margin-right: 3px;
-    background-color: var(--elements);
-}
-
-.classToolChip:hover {
-    background-color: var(--elementHover);
-    transition: background-color 0.2s;
-}
-
 .headerArea {
     margin: 10px 20px;
     width: auto;
     height: 250px;
-}
-
-body.themeImage .headerArea .content {
-    background: none !important;
 }
 
 #dtpsUnstable {
@@ -1413,19 +848,11 @@ body.themeImage .headerArea .content {
     cursor: auto;
 }
 
-@media(max-width: 1550px) {
+@media(max-width: 1700px) {
     #dtpsUnstable {
         top: 55px;
         right: 5px;
     }
-}
-
-body:not(.themeImage) .headerArea:not(.classImage) h1 {
-    text-shadow: none !important;
-}
-
-body.themeImage .headerArea img {
-    display: none !important;
 }
 
 #headText {
@@ -1705,4 +1132,17 @@ body.collapsedSidebar .fixedGradeSummary #gradeSummary {
     top: 60px;
     position: fixed;
     width: 370px;
+}
+
+/*Theme image styling*/
+[data-theme-image] .headerArea .content {
+    background: none;
+}
+
+[data-theme-image] .headerArea img {
+    display: none !important;
+}
+
+:not([data-theme-image]) .headerArea:not(.classImage) h1 {
+    text-shadow: none;
 }
