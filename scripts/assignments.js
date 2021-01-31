@@ -500,6 +500,8 @@ dtps.calendar = function (doneLoading) {
                     dtps.renderDueToday(doneLoading, info.date);
                     dtps.renderUpcoming(info.date);
                     dtps.renderUpdates(true);
+
+                    dtps.analytics.logEvent('dashboard_date_click');
                 },
                 eventClick: function (info) {
                     dtps.assignment(info.event.extendedProps.assignmentID, info.event.extendedProps.classNum);
@@ -801,6 +803,10 @@ dtps.assignment = function (id, classNum, generic) {
     //Close other active cards and open the assignment details card
     fluid.cards.close(".card.focus");
     fluid.cards(".card.details");
+
+    dtps.analytics.logEvent('select_content', {
+        content_type: 'assignment'
+    });
 }
 
 /**
@@ -976,6 +982,7 @@ dtps.moduleCollapse = function (ele, classID, modID) {
         dtps.classes[dtps.selectedClass].modules.find(m => m.id == modID).collapsed = false;
     }
 
+    dtps.analytics.logEvent('module_collapse', { collapseAll: false });
 }
 
 
@@ -1000,6 +1007,8 @@ dtps.moduleCollapseAll = function (collapse) {
         $("#moduleExpandCollapse").html(`<i class="fluid-icon">unfold_less</i> Collapse all`);
         $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(true)`);
     }
+
+    dtps.analytics.logEvent('module_collapse', { collapseAll: true });
 }
 
 /**
@@ -1059,7 +1068,7 @@ dtps.gradebook = function (classID) {
     }
 
     //Terminate function if the class doesn't have a letter grade or assignments
-    if (!dtps.classes[classNum].letter || !dtps.classes[classNum].assignments) {
+    if (!(dtps.classes[classNum].letter || dtps.classes[classNum].grade) || !dtps.classes[classNum].assignments) {
         return;
     }
 
@@ -1085,8 +1094,8 @@ dtps.gradebook = function (classID) {
 
                         <div class="stats">
                             ${assignment.letter ? `<div class="gradebookLetter">${assignment.letter}</div>` : ""}
-                            <div class="gradebookScore">${assignment.grade}</div>
-                            <div class="gradebookValue">/${assignment.value}</div>
+                            <div class="gradebookScore">${Math.round(assignment.grade * 100) / 100}</div>
+                            <div class="gradebookValue">/${Math.round(assignment.value * 100) / 100}</div>
                             <div class="gradebookPercentage">${Math.round((assignment.grade / assignment.value) * 100)}%</div>
                         </div>
                     </h5>
@@ -1109,8 +1118,8 @@ dtps.gradebook = function (classID) {
             <h3 class="gradeTitle">
                 Grade Summary
                 <div class="classGradeCircle">
-                    ${dtps.classes[classNum].grade ? `<span class="percentage">${dtps.classes[classNum].grade}%</span>` : ``}
-                    <div class="letter">${dtps.classes[classNum].letter || ``}</div>
+                    ${dtps.classes[classNum].grade ? `<div class="percentage">${dtps.classes[classNum].grade}%</div>` : ``}
+                    ${dtps.classes[classNum].letter ? `<div class="letter">${dtps.classes[classNum].letter}</div>` : ""}
                 </div>
             </h3>
 
@@ -1134,8 +1143,8 @@ dtps.gradebook = function (classID) {
                 <h5 class="smallStat">
                     Points
                     <div class="numFont fraction">
-                        <span class="earned">${earnedPoints}</span>
-                        <span class="total">/${totalPoints}</span>
+                        <span class="earned">${Math.round(earnedPoints)}</span>
+                        <span class="total">/${Math.round(totalPoints)}</span>
                     </div>
                 </h5>
 

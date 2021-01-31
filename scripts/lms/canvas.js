@@ -56,7 +56,6 @@ dtpsLMS.fetchWrapper = function () {
         dtpsLMS.fetchQueue.push(() => {
             dtpsLMS.fetchQueue.shift();
             fetch(...arguments).then(function (d) {
-                dtps.log("Rate limit remaining: ", Number(d.headers.get("x-rate-limit-remaining")));
                 resolve(...arguments);
             }).catch(reject);
         });
