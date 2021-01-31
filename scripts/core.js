@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.1.1
+ * @version v3.1.2
  * 
  * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
  * @license GPL-2.0-only
@@ -34,10 +34,12 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
+ * @property {object} analytics The {@link https://firebase.google.com/docs/reference/js/firebase.analytics.Analytics|Firebase Analytics} object for logging events
+ * @property {object} gtag The {@link https://developers.google.com/analytics/devguides/collection/ga4|gtag} object for Google Analytics configuration
  */
 var dtps = {
-    ver: 311,
-    readableVer: "v3.1.1",
+    ver: 312,
+    readableVer: "v3.1.2",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -73,17 +75,15 @@ var dtps = {
     ],
     remoteConfig: {
         canvasRequestSpacing: 25,
-        showBugReportButton: false,
         gradeCalculationEnabled: true,
         allowWhatIfGrades: true,
         showVideoMeetingButton: true,
-        dtechHomepageFluidUITabs: true,
         dtechCurrentTerm: "S2",
         debugClassID: "1098",
         topSneaky: false,
         topSneakyUI: false,
         useV5ThemeSelectionUI: false,
-        loadingAlert: null,
+        loadingAlert: false,
         remoteUpdate: {
             title: null,
             html: null,
@@ -94,6 +94,12 @@ var dtps = {
 
 //Load jQuery ASAP
 jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js");
+
+//Fluid UI screen change listener
+document.addEventListener("fluidScreen", function (data) {
+    dtps.analytics.setCurrentScreen(data.detail);
+    dtps.analytics.logEvent("screen_view");
+});
 
 /**
  * Debugging shortcut for getting the selected class. This should only be used in the web inspector and not in actual code.
@@ -122,6 +128,7 @@ dtps.changelog = function (onlyIfNewVersion) {
                 //Show changelog
                 fluid.cards.close(".card.focus");
                 fluid.cards(".card.changelog");
+                dtps.analytics.logEvent('changelog', { forNewVersion: false });
             } else if (Number(data.tag_name.replace(/[^0-9]/g, '')) > Number(window.localStorage.dtps)) {
                 //Show changelog if this is a new(er) version
                 localStorage.setItem('dtps', data.tag_name.replace(/[^0-9]/g, ''));
@@ -130,6 +137,7 @@ dtps.changelog = function (onlyIfNewVersion) {
                     //s in tag_name means a silent release
                     fluid.cards.close(".card.focus");
                     fluid.cards(".card.changelog");
+                    dtps.analytics.logEvent('changelog', { forNewVersion: true });
                 }
             }
         });
@@ -161,6 +169,10 @@ dtps.error = function (msg, devNotes, err) {
         }
         console.error("[DTPS !!ERROR!!]", devNotes + ": ", err);
         fluid.alert("Error", msg + formattedDevNotes, "error");
+        dtps.analytics.logEvent('exception', {
+            description: msg,
+            devNotes: devNotes
+        });
     }
 }
 
@@ -193,8 +205,10 @@ dtps.firstrun = function () {
             <div class="welcomeSection">
                 <i class="fluid-icon">security</i>
                 <h5>Privacy</h5>
-                <p>Power+ does not collect any information. All of the data used in Power+ is fetched directly from ${dtpsLMS.shortName} and is never sent anywhere else. 
-                 User preferences, grade history, and other Power+ data is stored locally on your computer and is not associated with your ${dtpsLMS.shortName} account.</p>
+                <p>Starting Febuary 1st, Power+ will collect basic non-personally identifiable information to understand how people use Power+. 
+                 This helps determine how Power+ can be improved to meet its user's needs and to make sure Power+ works as intended across a variety of users and use cases.
+                 Power+ does <b>not</b> and will <b>never</b> collect any personal information, such as names, classes, or grades.
+                 To learn more about your privacy on Power+, check the privacy section at <a href="https://powerplus.app">powerplus.app</a> or contact <a href="mailto:privacy@jottocraft.com">privacy@jottocraft.com</a> with any questions.</p>
             </div>
             <div class="welcomeSection">
                 <i class="fluid-icon">priority_high</i>
@@ -213,6 +227,8 @@ dtps.firstrun = function () {
     //Show Welcome to DTPS card
     fluid.cards.close(".card.focus");
     fluid.cards(".card.changelog", "stayOpen");
+
+    dtps.analytics.logEvent('firstrun');
 };
 
 /**
@@ -237,29 +253,68 @@ dtps.renderLoadingScreen = function () {
  * 
  * @param {function} cb Callback function
  */
-dtps.JS = function (cb) {
-    //Moment & Fullcalendar are used for the calendar on the dashboard
-    jQuery.getScript("https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js", function () {
-        jQuery.getScript("https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js");
-    });
+dtps.JS = function () {
+    return new Promise((resolve, reject) => {
+        //Moment & Fullcalendar are used for the calendar on the dashboard
+        jQuery.getScript("https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/main.min.js", function () {
+            jQuery.getScript("https://cdn.jsdelivr.net/npm/fullcalendar@5.3.2/locales-all.min.js");
+        });
 
-    //Lunr is used for search
-    jQuery.getScript('https://unpkg.com/lunr@2.3.9/lunr.min.js');
+        //Lunr is used for search
+        jQuery.getScript('https://unpkg.com/lunr@2.3.9/lunr.min.js');
 
-    //jQuery UI for dashboard settings page
-    jQuery.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js');
+        //jQuery UI for dashboard settings page
+        jQuery.getScript('https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js');
 
-    //Tinycolor used for better dark mode support
-    jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js");
+        //Tinycolor used for better dark mode support
+        jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js");
 
-    //dtao/nearest-color is used for finding the nearest class color
-    jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
-        //Fluid UI for core UI elements
-        if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
-            jQuery.getScript('http://localhost:1222/dev/fluid.js', cb);
-        } else {
-            jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', cb);
-        }
+        //Create fake analytics object that doesn't actually do anything to prevent errors since analytics isn't enabled yet
+        dtps.analytics = new Proxy({}, {
+            get() {
+              return function() {};
+            }
+        });
+
+        //[a]
+        //dtao/nearest-color is used for finding the nearest class color
+        jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js", () => {
+            jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
+                //Fluid UI for core UI elements
+                if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
+                    jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
+                } else {
+                    jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
+                }
+            });
+        });
+
+        //Firebase modules
+        /*jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
+            jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js", () => {
+                // Set additional gtag settings
+                window.dataLayer = window.dataLayer || [];
+                dtps.gtag = function () { dataLayer.push(arguments); }
+                dtps.gtag('set', { 'page_title': "Power+", 'page_location': window.location.protocol + '//' + window.location.host + window.location.pathname, 'send_page_view': false, 'allow_google_signals': false, 'allow_ad_personalization_signals': false });
+
+                // Your web app's Firebase configuration
+                var firebaseConfig = {
+                    apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
+                    authDomain: "project-dtps.firebaseapp.com",
+                    databaseURL: "https://project-dtps.firebaseio.com",
+                    projectId: "project-dtps",
+                    storageBucket: "project-dtps.appspot.com",
+                    messagingSenderId: "117676227556",
+                    appId: "1:117676227556:web:b0bafbea651245207ce5f1",
+                    measurementId: "G-KLKEMX3T6F"
+                };
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                dtps.analytics = firebase.analytics();
+
+                //[a]
+            });
+        });*/
     });
 }
 
@@ -310,6 +365,11 @@ dtps.init = function () {
     //Initial log
     dtps.log("Starting DTPS " + dtps.readableVer + "...");
 
+    //Disable dev version
+    if (window.localStorage.getItem('dtpsLoaderPref') == "dev") {
+        window.localStorage.removeItem('dtpsLoaderPref');
+    }
+
     //Check for LMS config
     if (!window.dtpsLMS) {
         throw "Error: No DTPS LMS configuration found";
@@ -353,19 +413,22 @@ dtps.init = function () {
     //Begin loading static DTPS HTML
     dtps.render();
 
-    //Fetch remote config
-    new Promise((r) => {
-        jQuery.getJSON('https://project-dtps.firebaseio.com/config.json', (remoteConfig) => {
-            if (remoteConfig) {
-                Object.keys(remoteConfig).forEach(k => {
-                    var val = remoteConfig[k];
+    //Fetch remote config and JavaScript modules
+    Promise.all([
+        new Promise((r) => {
+            jQuery.getJSON('https://project-dtps.firebaseio.com/config.json', (remoteConfig) => {
+                if (remoteConfig) {
+                    Object.keys(remoteConfig).forEach(k => {
+                        var val = remoteConfig[k];
 
-                    dtps.remoteConfig[k] = val;
-                });
-            }
-            r();
-        }).fail(() => r());
-    }).then(() => {
+                        dtps.remoteConfig[k] = val;
+                    });
+                }
+                r();
+            }).fail(() => r());
+        }),
+        dtps.JS()
+    ]).then(() => {
         //dev env remote config overrides
         if (dtps.env == "dev") {
             Object.keys(dtps.remoteConfig).forEach(k => {
@@ -384,7 +447,7 @@ dtps.init = function () {
         return dtpsLMS.fetchUser();
     }).then(data => {
         if (dtps.remoteConfig.loadingAlert) window.alert(dtps.remoteConfig.loadingAlert);
-        
+
         //Prevent resetting the user if the user is already set (for parent accounts)
         dtps.user = data;
 
@@ -440,103 +503,194 @@ dtps.init = function () {
         //Add course num props
         dtps.classes.forEach((course, index) => course.num = index);
 
-        //Fetch JavaScript modules
-        dtps.JS(() => {
-            //Define DTPS class color pallete
-            var nearestCourseColor = nearestColor.from({
-                //Primary color shades
-                red: "#cc4747",
-                brown: "#9a4429",
-                orange: "#ce734e",
-                pumpkin: "#c58535",
-                yellow: "#b58f38",
-                yellowGreen: "#7c9630",
-                green: "#439a47",
-                oceanGreen: "#339a70",
-                keppel: "#40b5c3",
-                skyBlue: "#40a4d6",
-                blue: "#2d72a0",
-                purple: "#985cab",
-                magenta: "#bd3e69",
-                pink: "#ec7ca5",
-                gray: "#888888",
-                //Dark color shades
-                gold: "#94652a",
-                darkRed: "#943f3f",
-                darkBlue: "#485182",
-                darkPurple: "#6f4882",
-                darkGreen: "#3d7358",
-                //Light color shades
-                lightOrange: "#ea7a44",
-                lightRed: "#e07f7f",
-                lightBlue: "#76c1e6",
-                lightPurple: "#978fd6",
-                lightGreen: "#7ebb95",
-                lightBrown: "#928871"
-            });
+        //Set user ID and properties
+        dtps.analytics.setUserId(CryptoJS.SHA1(window.location.host + "/" + dtps.user.id).toString());
+        dtps.analytics.setUserProperties({
+            isParent: dtps.user.parent || false,
+            numClasses: dtps.classes.length,
+            dtpsLoader: window.dtpsPreLoader ? "preloader" : window.dtpsLoader,
+            host: window.location.host,
+            releaseChannel: window.localStorage.dtpsLoaderPref || "prod",
+            dtpsVersion: dtps.ver
+        });
 
-            //Loop over each class to update the color and check for grade calculation
-            dtps.classes.forEach(course => {
-                course.color = course.color ? nearestCourseColor(course.color).value : "gray";
+        //Define DTPS class color pallete
+        var nearestCourseColor = nearestColor.from({
+            //Primary color shades
+            red: "#cc4747",
+            brown: "#9a4429",
+            orange: "#ce734e",
+            pumpkin: "#c58535",
+            yellow: "#b58f38",
+            yellowGreen: "#7c9630",
+            green: "#439a47",
+            oceanGreen: "#339a70",
+            keppel: "#40b5c3",
+            skyBlue: "#40a4d6",
+            blue: "#2d72a0",
+            purple: "#985cab",
+            magenta: "#bd3e69",
+            pink: "#ec7ca5",
+            gray: "#888888",
+            //Dark color shades
+            gold: "#94652a",
+            darkRed: "#943f3f",
+            darkBlue: "#485182",
+            darkPurple: "#6f4882",
+            darkGreen: "#3d7358",
+            //Light color shades
+            lightOrange: "#ea7a44",
+            lightRed: "#e07f7f",
+            lightBlue: "#76c1e6",
+            lightPurple: "#978fd6",
+            lightGreen: "#7ebb95",
+            lightBrown: "#928871"
+        });
 
+        //Loop over each class to update the color and check for grade calculation
+        dtps.classes.forEach(course => {
+            course.color = course.color ? nearestCourseColor(course.color).value : "gray";
+
+            if (dtpsLMS.calculateGrade && dtps.remoteConfig.gradeCalculationEnabled) {
+                //This LMS/Institution supports grade calculation, show loading indicator for grade
+                //Grade will be calculated once assignments are fetched
+
+                course.letter = "..."; //Setting this to ... shows the loading indicator
+                course.grade = undefined;
+            }
+        });
+
+        //Fluid UI screens
+        fluid.defaultScreen = "dashboard";
+        fluid.screens.dashboard = dtps.baseURL + "/scripts/assignments.js";
+        fluid.screens.stream = dtps.baseURL + "/scripts/assignments.js";
+        fluid.screens.moduleStream = dtps.baseURL + "/scripts/assignments.js";
+        fluid.screens.people = dtps.baseURL + "/scripts/people.js";
+        fluid.screens.search = dtps.baseURL + "/scripts/search.js";
+        fluid.screens.pages = dtps.baseURL + "/scripts/pages-discussions.js";
+        fluid.screens.discussions = dtps.baseURL + "/scripts/pages-discussions.js";
+
+        if (dtpsLMS.gradebook && !((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
+            //Handle LMS gradebook
+            fluid.screens.gradebook = dtps.showLMSGradebook;
+        } else if (dtpsLMS.genericGradebook || ((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
+            //Generic gradebook script
+            fluid.screens.gradebook = dtps.baseURL + "/scripts/assignments.js";
+        }
+
+        //Begin fetching class assignments
+        var fetchedAnnouncements = [];
+        dtps.classes.forEach((course, courseIndex) => {
+            dtpsLMS.fetchAssignments(course.userID, course.lmsID).then((rawAssignments) => {
+                return new Promise((resolve, reject) => {
+                    if (dtpsLMS.institutionSpecific && dtpsLMS.updateAssignments) {
+                        //Using an institution-specific script, make any nessasary changes and return updated assignments
+                        dtpsLMS.updateAssignments(rawAssignments).then(updatedAssignments => {
+                            resolve(updatedAssignments);
+                        }).catch(reject);
+                    } else {
+                        //No institution-specific script, return assignments as-is
+                        resolve(rawAssignments);
+                    }
+                });
+            }).then(assignments => {
+                //Store assignments in the class
+                course.assignments = assignments;
+
+                //Add class props to assignments and add recent assignments to updates array 
+                course.assignments.forEach(assignment => {
+                    assignment.class = courseIndex;
+
+                    if (assignment.gradedAt && assignment.grade) {
+                        //Add class number and type to object
+                        dtps.updates.push({
+                            class: course.num,
+                            type: "assignment",
+                            ...assignment
+                        })
+                    }
+                });
+
+                //Sort updates array from newest -> oldest
+                dtps.updates.sort(function (a, b) {
+                    //Sort by postedAt (announcements) or gradedAt (assignments)
+                    return new Date(b.gradedAt || b.postedAt).getTime() - new Date(a.gradedAt || a.postedAt).getTime()
+                });
+
+                //Keep only the 15 most recent updates
+                if (dtps.updates.length > 15) dtps.updates.length = 15;
+
+                //Calculate class grade if supported
                 if (dtpsLMS.calculateGrade && dtps.remoteConfig.gradeCalculationEnabled) {
-                    //This LMS/Institution supports grade calculation, show loading indicator for grade
-                    //Grade will be calculated once assignments are fetched
+                    let gradeCalcResults = dtpsLMS.calculateGrade(course, assignments);
 
-                    course.letter = "..."; //Setting this to ... shows the loading indicator
-                    course.grade = undefined;
+                    if (gradeCalcResults) {
+                        //This class has a grade
+
+                        //Set course letter and grade to grade calc results
+                        course.letter = gradeCalcResults.letter;
+                        course.grade = gradeCalcResults.grade;
+
+                        //Save raw results object to the course so it can be accessed by the gradebook
+                        course.gradeCalculation = gradeCalcResults;
+                    } else {
+                        //No grade for this class
+                        course.letter = null;
+                        course.grade = null;
+                    }
+
+                    //Force re-render sidebar to show grades only if the user isn't on pages or discussions
+                    if ((dtps.selectedContent !== "pages") && (dtps.selectedContent !== "discuss")) {
+                        dtps.showClasses(true);
+                    }
+                }
+
+                //Grade history and gradebook
+                if ((course.letter || course.grade) && (course.letter !== "...")) {
+                    //Enable gradebook for this class
+                    course.hasGradebook = true;
+
+                    //Save grade history
+                    dtps.logGrades(courseIndex);
+
+                    //If the class is selected, call dtps.presentClass again to show the grades tab
+                    if (courseIndex == dtps.selectedClass) {
+                        dtps.presentClass(courseIndex);
+
+                        //If the gradebook is selected, reload the gradebook
+                        if (dtps.selectedContent == "grades") {
+                            fluid.screen('gradebook', dtps.classes[courseIndex].id);
+                        }
+                    }
+                } else {
+                    //This class doesn't have a gradebook, exit gradebook if selected
+                    if ((courseIndex == dtps.selectedClass) && (dtps.selectedContent == "grades")) {
+                        fluid.screen('stream', dtps.classes[courseIndex].id);
+                    }
+                }
+
+                //Render grades tab in settings
+                dtps.renderGradesInSettings();
+
+                //Re-render screen if the dashboard or stream is selected
+                if ((dtps.selectedClass == "dash") || ((dtps.selectedContent == "stream") && (dtps.selectedClass == course.num))) {
+                    fluid.screen();
                 }
             });
 
-            //Fluid UI screens
-            fluid.defaultScreen = "dashboard";
-            fluid.screens.dashboard = dtps.baseURL + "/scripts/assignments.js";
-            fluid.screens.stream = dtps.baseURL + "/scripts/assignments.js";
-            fluid.screens.moduleStream = dtps.baseURL + "/scripts/assignments.js";
-            fluid.screens.people = dtps.baseURL + "/scripts/people.js";
-            fluid.screens.search = dtps.baseURL + "/scripts/search.js";
-            fluid.screens.pages = dtps.baseURL + "/scripts/pages-discussions.js";
-            fluid.screens.discussions = dtps.baseURL + "/scripts/pages-discussions.js";
+            if (!fetchedAnnouncements.includes(course.lmsID)) {
+                //Add lmsID to list of fetched announcements to prevent duplicates
+                fetchedAnnouncements.push(course.lmsID);
 
-            if (dtpsLMS.gradebook && !((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
-                //Handle LMS gradebook
-                fluid.screens.gradebook = dtps.showLMSGradebook;
-            } else if (dtpsLMS.genericGradebook || ((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
-                //Generic gradebook script
-                fluid.screens.gradebook = dtps.baseURL + "/scripts/assignments.js";
-            }
-
-            //Begin fetching class assignments
-            var fetchedAnnouncements = [];
-            dtps.classes.forEach((course, courseIndex) => {
-                dtpsLMS.fetchAssignments(course.userID, course.lmsID).then((rawAssignments) => {
-                    return new Promise((resolve, reject) => {
-                        if (dtpsLMS.institutionSpecific && dtpsLMS.updateAssignments) {
-                            //Using an institution-specific script, make any nessasary changes and return updated assignments
-                            dtpsLMS.updateAssignments(rawAssignments).then(updatedAssignments => {
-                                resolve(updatedAssignments);
-                            }).catch(reject);
-                        } else {
-                            //No institution-specific script, return assignments as-is
-                            resolve(rawAssignments);
-                        }
-                    });
-                }).then(assignments => {
-                    //Store assignments in the class
-                    course.assignments = assignments;
-
-                    //Add class props to assignments and add recent assignments to updates array 
-                    course.assignments.forEach(assignment => {
-                        assignment.class = courseIndex;
-
-                        if (assignment.gradedAt && assignment.grade) {
-                            //Add class number and type to object
-                            dtps.updates.push({
-                                class: course.num,
-                                type: "assignment",
-                                ...assignment
-                            })
-                        }
+                dtpsLMS.fetchAnnouncements(course.lmsID).then(announcements => {
+                    //Add announcements to updates array
+                    announcements.forEach(announcement => {
+                        //Add class number and type to object
+                        dtps.updates.push({
+                            class: course.num,
+                            type: "announcement",
+                            ...announcement
+                        });
                     });
 
                     //Sort updates array from newest -> oldest
@@ -548,124 +702,41 @@ dtps.init = function () {
                     //Keep only the 15 most recent updates
                     if (dtps.updates.length > 15) dtps.updates.length = 15;
 
-                    //Calculate class grade if supported
-                    if (dtpsLMS.calculateGrade && dtps.remoteConfig.gradeCalculationEnabled) {
-                        let gradeCalcResults = dtpsLMS.calculateGrade(course, assignments);
-
-                        if (gradeCalcResults) {
-                            //This class has a grade
-
-                            //Set course letter and grade to grade calc results
-                            course.letter = gradeCalcResults.letter;
-                            course.grade = gradeCalcResults.grade;
-
-                            //Save raw results object to the course so it can be accessed by the gradebook
-                            course.gradeCalculation = gradeCalcResults;
-                        } else {
-                            //No grade for this class
-                            course.letter = null;
-                            course.grade = null;
-                        }
-
-                        //Force re-render sidebar to show grades only if the user isn't on pages or discussions
-                        if ((dtps.selectedContent !== "pages") && (dtps.selectedContent !== "discuss")) {
-                            dtps.showClasses(true);
-                        }
-                    }
-
-                    //Grade history and gradebook
-                    if (course.letter && (course.letter !== "...")) {
-                        //Enable gradebook for this class
-                        course.hasGradebook = true;
-
-                        //Save grade history
-                        dtps.logGrades(courseIndex);
-
-                        //If the class is selected, call dtps.presentClass again to show the grades tab
-                        if (courseIndex == dtps.selectedClass) {
-                            dtps.presentClass(courseIndex);
-
-                            //If the gradebook is selected, reload the gradebook
-                            if (dtps.selectedContent == "grades") {
-                                fluid.screen('gradebook', dtps.classes[courseIndex].id);
-                            }
-                        }
-                    } else {
-                        //This class doesn't have a gradebook, exit gradebook if selected
-                        if ((courseIndex == dtps.selectedClass) && (dtps.selectedContent == "grades")) {
-                            fluid.screen('stream', dtps.classes[courseIndex].id);
-                        }
-                    }
-
-                    //Render grades tab in settings
-                    if (dtps.remoteConfig.showGradesInSettings) dtps.renderGradesInSettings();
-
-                    //Re-render screen if the dashboard or stream is selected
-                    if ((dtps.selectedClass == "dash") || ((dtps.selectedContent == "stream") && (dtps.selectedClass == course.num))) {
+                    if (dtps.selectedClass == "dash") {
                         fluid.screen();
                     }
                 });
-
-                if (!fetchedAnnouncements.includes(course.lmsID)) {
-                    //Add lmsID to list of fetched announcements to prevent duplicates
-                    fetchedAnnouncements.push(course.lmsID);
-
-                    dtpsLMS.fetchAnnouncements(course.lmsID).then(announcements => {
-                        //Add announcements to updates array
-                        announcements.forEach(announcement => {
-                            //Add class number and type to object
-                            dtps.updates.push({
-                                class: course.num,
-                                type: "announcement",
-                                ...announcement
-                            });
-                        });
-
-                        //Sort updates array from newest -> oldest
-                        dtps.updates.sort(function (a, b) {
-                            //Sort by postedAt (announcements) or gradedAt (assignments)
-                            return new Date(b.gradedAt || b.postedAt).getTime() - new Date(a.gradedAt || a.postedAt).getTime()
-                        });
-
-                        //Keep only the 15 most recent updates
-                        if (dtps.updates.length > 15) dtps.updates.length = 15;
-
-                        if (dtps.selectedClass == "dash") {
-                            fluid.screen();
-                        }
-                    });
-                }
-            });
-
-            //Render remaining HTML
-            dtps.renderLite();
-
-            //Render initial screen
-            fluid.screen();
-
-            //Load popup if needed
-            if (dtps.popup == "firstrun") {
-                dtps.firstrun();
-            } else if (dtps.popup == "changelog") {
-                //Changelog will only show if the release notes are on GitHub
-                dtps.changelog(true);
-            }
-
-            //Check URL parameter
-            if ((urlParams.get("prerelease") == "canary") && urlParams.get("repo")) {
-                fluid.alert("Power+ Canary", "<p>Do you want to add this release configuration to Power+?</p>", "build_circle", [
-                    {
-                        name: "Add",
-                        icon: "add",
-                        action: "window.localStorage.githubCanary = '" + urlParams.get("repo") + "'; alert('Please reload the page for changes to take effect');"
-                    },
-                    {
-                        name: "Cancel",
-                        icon: "cancel"
-                    }
-                ]);
             }
         });
+
+        //Render remaining HTML
+        dtps.renderLite();
+
+        //Render initial screen
+        fluid.screen();
+
+        //Load popup if needed
+        if (dtps.popup == "firstrun") {
+            dtps.firstrun();
+        } else if (dtps.popup == "changelog") {
+            //Changelog will only show if the release notes are on GitHub
+            dtps.changelog(true);
+        }
+
+        //Check URL parameter
+        if ((urlParams.get("prerelease") == "canary") && urlParams.get("repo")) {
+            fluid.alert("Power+ Canary", "<p>Do you want to add this release configuration to Power+?</p>", "build_circle", [
+                {
+                    name: "Add",
+                    icon: "add",
+                    action: "window.localStorage.githubCanary = '" + urlParams.get("repo") + "'; alert('Please reload the page for changes to take effect');"
+                },
+                {
+                    name: "Cancel",
+                    icon: "cancel"
+                }
+            ]);
+        }
     }).catch(function (err) {
         //Web request error
         console.error("[DTPS] Error fetching user and classes at dtps.init", err);
@@ -735,7 +806,7 @@ dtps.showClasses = function (override) {
         var letterGradeHTML = "";
         if (dtps.classes[i].letter) letterGradeHTML = dtps.classes[i].letter;
         if (dtps.classes[i].letter == null) letterGradeHTML = "--";
-        if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="shimmer" style="width: 100%;height: 22px;border-radius: 8px;"></div>`; //Show loading indicator for ...
+        if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="shimmer" style="vertical-align:middle;display: inline-block;width: 22px;height: 22px;border-radius: 8px;"></div>`; //Show loading indicator for ...
 
         if (dtps.classes[i].group && (dtps.classes[i].group !== previousClassGroup)) {
             if (previousClassGroup) dtps.classlist.push(`</div></div>`);
@@ -758,7 +829,21 @@ dtps.showClasses = function (override) {
                 class="${'class item ' + i + ' ' + (dtps.selectedClass == i ? " active" : "")}"
                 style="${'--classColor: ' + dtps.classes[i].color}"
             >
-                <i class="fluid-icon grade">${letterGradeHTML}</i>
+                ${dtps.classes[i].grade && dtps.classes[i].letter ? /*html*/`
+                    <i class="fluid-icon grade">
+                        <span class="letter">${letterGradeHTML}</span>
+                        <span class="percentage ${Math.round(dtps.classes[i].grade) >= 100 ? "large" : ""}">${Math.round(dtps.classes[i].grade)}<span class="percentSymbol">%</span></span>
+                    </i>
+                ` : dtps.classes[i].grade ? /*html*/`
+                    <i class="fluid-icon grade percentage ${Math.round(dtps.classes[i].grade) >= 100 ? "large" : ""}">
+                        ${Math.round(dtps.classes[i].grade)}<span class="percentSymbol">%</span>
+                    </i>
+                ` : /*html*/`
+                    <i class="fluid-icon grade letter">
+                        ${letterGradeHTML}
+                    </i>
+                `}
+                
                 <span class="label">${dtps.classes[i].subject}</span>
             </div>
         `);
@@ -800,7 +885,7 @@ dtps.showClasses = function (override) {
         }
 
         //Class onclick listener
-        $(".class:not(.overrideClass)").click(function (event) {
+        $(".class").click(function (event) {
             //Load class content based on what's selected
             if (((dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) && dtps.classes[dtps.selectedClass]) {
                 if (dtps.classes[dtps.selectedClass].modules && (window.localStorage.getItem("courseworkPref-" + dtps.classes[dtps.selectedClass].id) == "moduleStream")) {
@@ -941,7 +1026,7 @@ dtps.presentClass = function (classNum) {
         }
 
         if (dtps.classes[classNum].videoMeetingURL) {
-            $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
+            $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.analytics.logEvent('select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
             $("#classInfo .videoMeeting").removeClass("shimmerParent");
             $("#classInfo .videoMeeting").show();
         } else if ((dtps.classes[classNum].videoMeetingURL !== null) && dtpsLMS.fetchMeetingURL) {
@@ -954,7 +1039,7 @@ dtps.presentClass = function (classNum) {
 
                 if (dtps.selectedClass == classNum) {
                     if (url) {
-                        $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "')");
+                        $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.analytics.logEvent('select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
                         $("#classInfo .videoMeeting").removeClass("shimmerParent");
                         $("#classInfo .videoMeeting").show();
                     } else {
@@ -967,7 +1052,6 @@ dtps.presentClass = function (classNum) {
         }
     }
 
-    console.log(dtps.selectedContent);
     if (dtps.selectedContent !== "grades") $(".classContent").removeClass("fixedGradeSummary");
 }
 
@@ -997,79 +1081,31 @@ dtps.classHome = function (num) {
                 homepage = dtps.brightenTextForDarkMode(homepage, computedBackgroundColor);
             }
 
-            if (dtpsLMS.dtech && dtps.remoteConfig.dtechHomepageFluidUITabs && ($('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().length > 1)) {
-                //Use special tab optimized homepage
-                var fragments = [];
-                $('<div></div>').append(homepage).find(".enhanceable_content.tabs>ul>li").toArray().forEach((fragment) => {
-                    var text = $(fragment).text().toLowerCase();
-                    if (!text) return;
-
-                    var id = $(fragment).find("a").attr("href").replace("#", "");
-                    if (!id) return;
-
-                    var html = $(homepage).find("#" + id).html();
-                    if (!html) return;
-
-                    var icon = null;
-                    if (text.includes("agenda")) { icon = "format_list_numbered"; text = "Agenda"; }
-                    if (text.includes("instructor")) { icon = "person"; text = "Instructor"; }
-                    if (text.includes("course info")) { icon = "info"; text = "Course Info"; }
-                    if (text.includes("resources")) { icon = "article"; text = "Course Resources"; }
-
-                    //Generate a blob with the assignment body and get its data URL
-                    var blob = new Blob([`
-                        <base target="_blank" /> 
-                        <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
-                        <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
-                        ${html}
-                    `], { type: 'text/html' });
-                    var frameURL = window.URL.createObjectURL(blob);
-
-                    fragments.push({ text, id, icon, frameURL });
-                });
-
-                $(".card.details").html(/*html*/`
-                    <i onclick="fluid.cards.close('.card.details')" class="fluid-icon close">close</i>
-
-                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
-
-                    <br />
-                    ${dtps.classes[num].videoMeetingURL ? `<button onclick="window.open('${dtps.classes[num].videoMeetingURL}')" class="btn small"><i class="fluid-icon">videocam</i> Zoom</button>` : ``}
-                    <div class="btns row small">
-                        ${fragments.map((fragment, i) => {
-                    return `<button onclick="$(this).addClass('active');$(this).siblings().removeClass('active');$('#homepageFragment').attr('src', '${fragment.frameURL}'); dtps.iframeLoad('homepageFragment');" 
-                                style="text-transform: capitalize;" class="btn ${i == 0 ? "active" : ""}">${fragment.icon ? `<i class="fluid-icon">${fragment.icon}</i> ` : ""}${fragment.text}</button>`;
-                }).join("")}
-                    </div>
-
-                    <br />
-                    <div style="margin-top: 20px;" class="homepageBody">
-                        <iframe id="homepageFragment" onload="dtps.iframeLoad('homepageFragment')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${fragments[0].frameURL}" />
-                    </div>
-                `);
-            } else {
-                //Generate a blob with the assignment body and get its data URL
-                var blob = new Blob([`
+            //Generate a blob with the assignment body and get its data URL
+            var blob = new Blob([`
                     <base target="_blank" /> 
                     <link type="text/css" rel="stylesheet" href="https://cdn.jottocraft.com/CanvasCSS.css" media="screen,projection"/>
                     <style>body {background-color: ${computedBackgroundColor}; color: ${computedTextColor};</style>
                     ${homepage}
                 `], { type: 'text/html' });
-                var homepageURL = window.URL.createObjectURL(blob);
+            var homepageURL = window.URL.createObjectURL(blob);
 
-                $(".card.details").html(/*html*/`
-                    <i onclick="fluid.cards.close('.card.details')" class="fluid-icon close">close</i>
+            $(".card.details").html(/*html*/`
+                <i onclick="fluid.cards.close('.card.details')" class="fluid-icon close">close</i>
 
-                    <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
+                <h4 style="font-weight: bold;">${dtps.classes[num].subject} Homepage</h4>
 
-                    <br />
-                    <div style="margin-top: 20px;" class="homepageBody">
-                        <iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${homepageURL}" />
-                    </div>
-                `);
-            }
+                <br />
+                <div style="margin-top: 20px;" class="homepageBody">
+                    <iframe id="homepageIframe" onload="dtps.iframeLoad('homepageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${homepageURL}" />
+                </div>
+            `);
 
             fluid.cards(".card.details");
+
+            dtps.analytics.logEvent('select_content', {
+                content_type: 'homepage'
+            });
         } else {
             fluid.cards.close('.card.details');
             dtps.error("Homepage unavailable", "homepage is either empty or undefined @ dtps.classHome");
@@ -1189,6 +1225,7 @@ dtps.logGrades = function (classNum) {
         gradeHistory-ID: current|previous (e.g. "A|B+" represents a change of B+ -> A)
         if there is only one grade, it is the current one
     */
+   if (!dtps.classes[classNum].letter) return;
     if (window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id)) {
         var savedCurrent = window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id).split("|")[0];
         var savedPrevious = window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id).split("|")[1];
@@ -1248,9 +1285,13 @@ dtps.settings = function (forceRerenderDashboard) {
     }
 
     //Render grades tab in settings
-    if (dtps.remoteConfig.showGradesInSettings) dtps.renderGradesInSettings();
+    dtps.renderGradesInSettings();
 
     fluid.cards('.settingsCard');
+
+    dtps.analytics.logEvent('select_content', {
+        content_type: 'settings'
+    });
 }
 
 /**
@@ -1461,41 +1502,11 @@ dtps.render = function () {
             <input id="dtpsMainSearchBox" style="margin: 0px; width: 500px;" type="search" class="inputIcon filled" placeholder="Search" />
           </div>
 
-          <div class="profile">
-            <div class="profileImage"></div>
-          </div>
-        </div>
-
-        <div class="card profileMenu">
-          <div class="person">
-            <div class="profileImage"></div>
-            <div class="info">
-              <h5 class="name">Logged out</h5>
+          <div class="items" style="float: right;">
+            <div class="navitem" onclick="dtps.settings();">
+                <i class="fluid-icon">settings</i>
+                <span>Settings</span>
             </div>
-          </div>
-
-          <div class="actions">
-            <!--<div class="item">
-              <i class="fluid-icon">feedback</i>
-              <span class="label">Feedback</span>
-            </div>-->
-            ${false && (dtps.remoteConfig.showBugReportButton || dtps.unstable || (dtps.env == "dev")) ? /*html*/`
-                <div class="item">
-                    <i class="fluid-icon">bug_report</i>
-                    <span class="label">Bug Report</span>
-                </div>
-            ` : ""}
-            <div onclick="dtps.settings();" class="item">
-              <i class="fluid-icon">settings</i>
-              <span class="label">Settings</span>
-            </div>
-            <div class="divider"></div>
-            <a style="color: var(--text);" href="/">
-                <div class="item">
-                  <i class="fluid-icon">exit_to_app</i>
-                  <span class="label">Go to Canvas</span>
-                </div>
-            </a>
           </div>
         </div>
 
@@ -1622,6 +1633,13 @@ dtps.render = function () {
                 });
                 $("#dtpsMainSearchBox").blur();
             }
+
+            dtps.analytics.logEvent('search', {
+                search_term: term,
+                type: $("#dtpsMainSearchBox").attr("data-search-type"),
+                typeOverridden: $("#dtpsMainSearchBox").attr("data-search-type") !== $("#dtpsMainSearchBox").attr("data-ctx-type"),
+                courseOverridden: $("#dtpsMainSearchBox").attr("data-dtps-course") !== $("#dtpsMainSearchBox").attr("data-ctx-course")
+            });
         }
     });
 }
@@ -1645,8 +1663,8 @@ dtps.setSearchBox = function () {
     if (dtps.selectedContent == "pages") type = "pages";
     if (dtps.selectedContent == "grades") type = "grades";
     if ((dtps.selectedClass == "dash") || (dtps.selectedContent == "stream") || (dtps.selectedContent == "moduleStream")) type = "coursework";
-    autoType = type;   
-    
+    autoType = type;
+
     //Reuse auto type if on search
     if (dtps.selectedClass == "search") {
         type = $("#dtpsMainSearchBox").attr("data-ctx-type");
@@ -1758,31 +1776,27 @@ dtps.renderLite = function () {
 	            </div>
             </div>
 
-            <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();" class="item active">
+            <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'settings' });" class="item active">
                 <i class="fluid-icon">settings</i> Settings
             </div>
-            ${dtps.remoteConfig.useV5ThemeSelectionUI ? /*html*/`
-                <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();" class="item">
-                    <i class="fluid-icon">format_paint</i> Theme
-                </div>
-            ` : ""}
-            ${dtps.remoteConfig.showGradesInSettings ? /*html*/`
-                <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
-                    <i class="fluid-icon">assessment</i> Grades
-                </div>
-            ` : ``}
-            <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();" class="item">
+            <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'theme' });" class="item">
+                <i class="fluid-icon">format_paint</i> Theme
+            </div>
+            <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'grades' });" class="item">
+                <i class="fluid-icon">assessment</i> GPA
+            </div>
+            <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'dashboard' });" class="item">
                 <i class="fluid-icon">dashboard</i> Dashboard
             </div>
             ${dtps.env == "dev" ? /*html*/`
-                <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();" class="item">
+                <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'debugging' });" class="item">
                     <i class="fluid-icon">bug_report</i> Debugging
                 </div>
-                <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item">
+                <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'experiments' });" class="item">
                     <i class="fluid-icon">science</i> Experiments
                 </div>
             ` : ``}
-            <div onclick="$('.abtpage').hide();$('.abtpage.about').show();" class="item abt">
+            <div onclick="$('.abtpage').hide();$('.abtpage.about').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'about' });" class="item abt">
                 <i class="fluid-icon">info</i> About
             </div>
         </div>
@@ -1791,14 +1805,7 @@ dtps.renderLite = function () {
             <div class="abtpage settings">
                 <h5><b>Settings</b></h5>
 
-                <p style="display: none;" id="settingsReloadWarning">You must reload for the changes you've made to take effect</p>
-
-                ${!dtps.remoteConfig.useV5ThemeSelectionUI ? /*html*/`
-                    <br />
-                    <p>Theme</p>
-                    <div class="btns row themeSelector"></div>
-                    <br />
-                ` : ""}
+                <p style="display: none;" id="settingsReloadWarning">You need to reload for the changes you've made to take effect</p>
                 
                 <br />
                 <p>Sidebar</p>
@@ -1811,7 +1818,7 @@ dtps.renderLite = function () {
                         <div onclick="fluid.set('pref-autoGroupClasses'); dtps.settingsReloadWarning();" class="switch pref-autoGroupClasses active"><span class="head"></span></div>
                         <div class="label"><i class="fluid-icon">sort</i> Automatically group and sort classes</div>
                     ` : ""
-                }
+        }
 
                 <br /><br />
                 <p>Classes</p>
@@ -1830,11 +1837,12 @@ dtps.renderLite = function () {
                         <div onclick="fluid.set('pref-formatAssignmentContent');" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
                         <div class="label"><i class="fluid-icon">format_paint</i> Reformat assignment content</div>
                     ` : ""
-                }
+        }
 
                 <div id="dtpsPrereleaseTesting" style="${window.localStorage.prereleaseEnabled || (dtps.env == "dev") || window.localStorage.githubRepo || window.localStorage.externalReleaseURL ? "" : "display: none;"}">
                     <br /><br />
                     <p>Prerelease testing</p>
+                    <p style="font-size: 12px;"><i>The dev version of Power+ has been temporarily disabled</i></p>
 
                     <div>
                         <div class="btns row small">
@@ -1843,11 +1851,11 @@ dtps.renderLite = function () {
                                 class="btn ${!["dev", "github", "external", "local"].includes(window.localStorage.dtpsLoaderPref) ? "active" : ""}">
                                 <i class="fluid-icon">label</i> Production
                             </button>
-                            <button 
+                            <!-- check dtps.init before uncommenting <button 
                                 onclick="window.localStorage.setItem('dtpsLoaderPref', 'dev')" 
                                 class="btn ${window.localStorage.dtpsLoaderPref == "dev" ? "active" : ""}">
                                 <i class="fluid-icon">feedback</i> Dev
-                            </button>
+                            </button>-->
                             ${window.localStorage.githubRepo ? /*html*/`
                                 <button 
                                     onclick="window.localStorage.setItem('dtpsLoaderPref', 'github')" 
@@ -1873,22 +1881,20 @@ dtps.renderLite = function () {
 
             </div>
 
-            ${dtps.remoteConfig.useV5ThemeSelectionUI ? /*html*/`
-                <div style="display: none;" class="abtpage theme">
-                    <h5><b>Theme</b></h5>
-                    <br />
-                    <div class="themeSelectionUI flat"></div>
-                </div>
-            ` : ""}
+            <div style="display: none;" class="abtpage theme">
+                <h5><b>Theme</b></h5>
+                <br />
+                <div class="themeSelectionUI flat"></div>
+            </div>
 
             <div style="display: none;" class="abtpage grades">
-                <h5><b>Grades</b></h5>
+                <h5><b>GPA</b></h5>
                 
                 <br />
 
                 <div>
-                <h6>Estimated GPA: <b id="dtpsGpaText">...</b></h6>
-                <p style="color: var(--secText);"><i>This GPA calculation is unofficial and does not account for honors credit</i></p>
+                <h6>Unweighted GPA: <b id="dtpsGpaText">...</b></h6>
+                <p style="color: var(--secText);"><i>This GPA calculation is based on the letter grades shown below and is not official</i></p>
                 </div>
                 
                 <br />
@@ -2046,10 +2052,6 @@ dtps.renderLite = function () {
             </div>
         </div>
     `);
-
-    //Set profile image
-    jQuery(".profileImage").css("background-image", "url('" + dtps.user.photoURL + "')");
-    jQuery(".profileMenu .name").text(dtps.user.name);
 
     //Load Fluid UI
     fluid.onLoad();
@@ -2295,7 +2297,7 @@ dtps.init();
 * @property {boolean} [homepage] True if the class has a homepage. If a class has a homepage, dtpsLMS.fetchHomepage must be implemented.
 * @property {string} [term] Class term
 * @property {string} [color] Class color
-* @property {number} [grade] Current percentage grade in the class
+* @property {number} [grade] Current percentage grade in the class (a number from 0 to 100)
 * @property {string} [letter] Current letter grade in the class
 * @property {string} [previousLetter] Automatically managed by DTPS. The previous letter grade in this class, based on local grade history.
 * @property {string} [image] URL to the class background image

@@ -642,23 +642,8 @@ jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
                 `);
                 })
 
-                //RENDERER: RENDER WHAT-IF RESULTS
-                var whatIfResults = /*html*/`
-                    <div style="--classColor: ${course.color}" class="card" id="whatIfResults">
-                        <div style="display: inline-block;">
-                           <h5>
-                              What-If Grade
-                              <div class="resultLetter">--</div>
-                           </h5>
-                           <p style="color: var(--lightText);" class="resultPercentage"></p>
-                           <p>This grade is hypothetical and does not represent your actual grade for this class.</p>
-                           <p onclick="fluid.screen();" style="color: var(--secText); cursor: pointer;">Show actual grades</p>
-                        </div>
-                    </div>
-                `;
-
                 //RESOLVE WITH HTML
-                resolve(whatIfResults + gradeCalcSummary + `<br />` + outcomeHTML.join(""));
+                resolve(gradeCalcSummary + `<br />` + outcomeHTML.join(""));
             } else {
                 resolve();
             }
