@@ -269,28 +269,8 @@ dtps.JS = function () {
         //Tinycolor used for better dark mode support
         jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js");
 
-        //Create fake analytics object that doesn't actually do anything to prevent errors since analytics isn't enabled yet
-        dtps.analytics = new Proxy({}, {
-            get() {
-              return function() {};
-            }
-        });
-
-        //[a]
-        //dtao/nearest-color is used for finding the nearest class color
-        jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js", () => {
-            jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
-                //Fluid UI for core UI elements
-                if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
-                    jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
-                } else {
-                    jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
-                }
-            });
-        });
-
         //Firebase modules
-        /*jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
+        jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
             jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js", () => {
                 // Set additional gtag settings
                 window.dataLayer = window.dataLayer || [];
@@ -312,9 +292,19 @@ dtps.JS = function () {
                 firebase.initializeApp(firebaseConfig);
                 dtps.analytics = firebase.analytics();
 
-                //[a]
+                //dtao/nearest-color is used for finding the nearest class color
+                jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js", () => {
+                    jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
+                        //Fluid UI for core UI elements
+                        if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
+                            jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
+                        } else {
+                            jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
+                        }
+                    });
+                });
             });
-        });*/
+        });
     });
 }
 
@@ -1225,7 +1215,7 @@ dtps.logGrades = function (classNum) {
         gradeHistory-ID: current|previous (e.g. "A|B+" represents a change of B+ -> A)
         if there is only one grade, it is the current one
     */
-   if (!dtps.classes[classNum].letter) return;
+    if (!dtps.classes[classNum].letter) return;
     if (window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id)) {
         var savedCurrent = window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id).split("|")[0];
         var savedPrevious = window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id).split("|")[1];
