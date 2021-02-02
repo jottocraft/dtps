@@ -205,10 +205,10 @@ dtps.firstrun = function () {
             <div class="welcomeSection">
                 <i class="fluid-icon">security</i>
                 <h5>Privacy</h5>
-                <p>Starting Febuary 1st, Power+ will collect basic non-personally identifiable information to understand how people use Power+. 
-                 This helps determine how Power+ can be improved to meet its user's needs and to make sure Power+ works as intended across a variety of users and use cases.
+                <p>Power+ uses Google Analytics to collect basic non-personally identifiable information to understand how people use Power+.
+                 Data collected does not use Google account signals, is not used for ad personalization, and is not shared with Google or other third parties.
                  Power+ does <b>not</b> and will <b>never</b> collect any personal information, such as names, classes, or grades.
-                 To learn more about your privacy on Power+, check the privacy section at <a href="https://powerplus.app">powerplus.app</a> or contact <a href="mailto:privacy@jottocraft.com">privacy@jottocraft.com</a> with any questions.</p>
+                 To learn more about your privacy on Power+ and how to opt-out of analytics, check the privacy section at <a href="https://powerplus.app">powerplus.app</a> or contact <a href="mailto:privacy@jottocraft.com">privacy@jottocraft.com</a> with any questions.</p>
             </div>
             <div class="welcomeSection">
                 <i class="fluid-icon">priority_high</i>
