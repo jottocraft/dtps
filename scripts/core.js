@@ -272,6 +272,11 @@ dtps.JS = function () {
         //Firebase modules
         jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
             jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js", () => {
+                //Check for user opt-out
+                if (window.localStorage.dtpsAnalyticsOptOut == "true") {
+                    window['ga-disable-G-KLKEMX3T6F'] = true;
+                }
+
                 // Set additional gtag settings
                 window.dataLayer = window.dataLayer || [];
                 dtps.gtag = function () { dataLayer.push(arguments); }
@@ -2028,6 +2033,7 @@ dtps.renderLite = function () {
                     <div style="margin-top: 15px; margin-bottom: 7px;">
                         <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="fluid-icon" style="vertical-align: middle">refresh</i> Reset Power+</a>
                         <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="if (confirm('Prerelease versions of Power+ are often untested and can break or display incorrect information. Are you sure you want to continue?')) {window.localStorage.prereleaseEnabled = 'true'; $('#dtpsPrereleaseTesting').show(); alert('Prerelease versions can be enabled by going to Settings -> Prerelease testing');}"><i class="fluid-icon" style="vertical-align: middle">feedback</i> Test prerelease versions</a>
+                        ${window.localStorage.dtpsAnalyticsOptOut == "true" ? `<a style="color: var(--secText); margin: 0px 5px;">Analytics disabled</a>` : `<a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="window.localStorage.dtpsAnalyticsOptOut = 'true'; window.alert('Analytics have been disabled on this device. The page will now reload.'); window.location.reload();"><i class="fluid-icon" style="vertical-align: middle">analytics</i> Analytics opt-out</a>`}
                     </div>
                 </div>
 
