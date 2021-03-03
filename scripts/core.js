@@ -1992,7 +1992,7 @@ dtps.renderLite = function () {
 
                     <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="fluid-icon" style="vertical-align: middle">update</i> Changelog</a>
                         <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px; cursor: pointer;"><i class="fluid-icon" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="fluid-icon" style="vertical-align: middle">email</i> Contact</a>
+                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="fluid-icon" style="vertical-align: middle">email</i> hello@jottocraft.com</a>
                     </div>
                 </div>
 
