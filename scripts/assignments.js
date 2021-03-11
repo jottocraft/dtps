@@ -724,7 +724,7 @@ dtps.assignment = function (id, classNum, generic) {
                                 ${generic ? "" : (rubricItem.score !== undefined ? rubricItem.scoreName || "" : "Not assessed")}
 
                                 <div class="points">
-                                    <p class="earned">${generic ? "" : rubricItem.score ?? "-"}</p>
+                                    <p class="earned">${generic || (rubricItem.score == undefined) ? "" : rubricItem.score}</p>
                                     <p class="possible">${"/" + rubricItem.value}</p>
                                 </div>
                             </p>

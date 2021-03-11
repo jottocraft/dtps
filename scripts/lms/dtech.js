@@ -8,11 +8,8 @@
  * JSDoc documentation for these LMS functions can be found near the end of core.js
  */
 
-//Get baseURL from the URL of this script
-var baseURL = document.currentScript.src.split("/scripts/lms/dtech.js")[0];
-
 //Load Canvas integration
-jQuery.getScript(baseURL + "/scripts/lms/canvas.js", function () {
+jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
     //Add d.tech-specific items to dtpsLMS
     dtpsLMS.name = "d.tech";
     dtpsLMS.legalName = "Canvas LMS, Design Tech High School, or Instructure Inc";

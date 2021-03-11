@@ -687,8 +687,5 @@ dtpsLMS.fetchPageContent = function (classID, pageID) {
     })
 }
 
-//Get baseURL from the URL of this script
-var baseURL = document.currentScript.src.split("/scripts/lms/canvas.js")[0];
-
 //Load Power+
-jQuery.getScript(baseURL + "/scripts/core.js");
+jQuery.getScript(window.dtpsBaseURL + "/scripts/core.js");

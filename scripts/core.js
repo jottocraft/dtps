@@ -1458,8 +1458,10 @@ dtps.loadDashboardPrefs = function () {
  */
 dtps.render = function () {
     //Remove all existing link tags and LMS head content
-    $("link:not(.dtpsHeadItem)").remove();
-    $("head *:not(.dtpsHeadItem)").remove();
+    if (!dtpsLMS.isDemoLMS) {
+        $("link:not(.dtpsHeadItem)").remove();
+        $("head *:not(.dtpsHeadItem)").remove();
+    }
 
     //Set default body classes
     $("body").attr("class", "dark showThemeWindows hasSidebar hasNavbar dashboard");
@@ -1485,7 +1487,7 @@ dtps.render = function () {
             <h4>${dtps.baseURL == "https://dev.dtps.jottocraft.com" ? "Power+ (dev)" : "Power+"}</h4>
           </div>
         
-          ${dtps.unstable ? `
+          ${dtps.unstable && !dtpsLMS.isDemoLMS ? `
             <div id="dtpsUnstable" class="navitem">
               <i style="font-size: 16px;" class="fluid-icon">warning</i>
               <span style="font-weight: bold; font-size: 10px;">THIS IS AN UNSTABLE VERSION OF POWER+. USE AT YOUR OWN RISK.</span>
