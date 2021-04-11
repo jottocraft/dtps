@@ -2,7 +2,7 @@
  * @file DTPS Canvas LMS Integration
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft
  * @license GPL-2.0-only
  * 
  * JSDoc documentation for these LMS functions can be found near the end of core.js

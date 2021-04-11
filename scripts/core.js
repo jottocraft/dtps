@@ -3,7 +3,7 @@
  * @author jottocraft
  * @version v3.1.2
  * 
- * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft
  * @license GPL-2.0-only
  */
 
@@ -2045,7 +2045,7 @@ dtps.renderLite = function () {
                 <div style="text-align: center; padding: 50px 0px;">
                     <img style="height: 45px; margin-right: 20px; vertical-align: middle;" src="https://cdn.jottocraft.com/images/footerImage.png" />
                     <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
-                    <p>(c) jottocraft 2018-2021. All rights reserved.&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/main/LICENSE">license</a></p>
+                    <p>(c) jottocraft 2018-2021 &nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/main/LICENSE">license</a></p>
                 </div>
             </div>
         </div>

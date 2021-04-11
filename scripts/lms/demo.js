@@ -2,7 +2,7 @@
  * @file DTPS Demo LMS
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2021 jottocraft. All rights reserved.
+ * @copyright Copyright (c) 2018-2021 jottocraft
  * @license GPL-2.0-only
  * 
  * This LMS script is for demonstrating Power+ and doesn't fetch actual data
