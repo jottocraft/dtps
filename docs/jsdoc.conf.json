@@ -5,7 +5,7 @@
         "systemSummary": "Reference documentation for the latest version of Power+",
         "systemLogo": "./www/favicon.png",
         "systemColor": "#c5982f",
-        "copyright": "(c) 2018-2021 jottocraft. All rights reserved.",
+        "copyright": "(c) 2018-2021 jottocraft",
         "favicon": "./www/favicon.png",
         "collapseSymbols": false,
         "footer": "<img style='height: 32px; margin: 10px 0px;' src='https://cdn.jottocraft.com/images/footerImage.png' />"
