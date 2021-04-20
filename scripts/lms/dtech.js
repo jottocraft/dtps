@@ -73,11 +73,6 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                 //Manually filter out other stale courses
                 if (course.name.toUpperCase().includes("FEB 2021")) return;
 
-                //Check if course is ineligible for videoMeetingURL
-                if (!dtps.remoteConfig.showVideoMeetingButton || dtps.user.parent || !course.homepage || (course.term !== dtps.remoteConfig.dtechCurrentTerm)) {
-                    course.videoMeetingURL = null;
-                }
-
                 //Get course period
                 var matches = course.period.match(/[0-9](?=\(A)/);
                 if (matches && matches[0]) {
@@ -98,18 +93,21 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
 
                 //Get course cycle
                 if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
-                    if ((course.period >= 1) && (course.period <= 3)) {
+                    if (course.term == "20-21") {
+                        course.group = "Semester 1";
+                    } else if ((course.period >= 1) && (course.period <= 3)) {
                         course.group = "Cycle 1/3";
                     } else if ((course.period >= 4) && (course.period <= 6)) {
                         course.group = "Cycle 2/4";
-                    /*if (course.term == "20-21") {
-                        course.group = "Semester 1";
-                    } else if (course.term == "S2") {
-                        course.group = "Semester 2";*/
                     } else if ((course.period == 11) || (course.period == 12)) {
                         course.group = "Intersession";
                         course.term = "int";
                     }
+                }
+
+                //Check if course is ineligible for videoMeetingURL
+                if (!dtps.remoteConfig.showVideoMeetingButton || dtps.user.parent || !course.homepage || !course.group || (course.group == "Semester 1")) {
+                    course.videoMeetingURL = null;
                 }
 
                 //Add course icon
