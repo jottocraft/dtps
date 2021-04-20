@@ -160,17 +160,6 @@ window.lunrData = {
           "us",
           "web"
         ],
-        "dtps.html#.changelog": [
-          "changelog",
-          "display",
-          "dtp",
-          "dtps.changelog",
-          "fetch",
-          "function",
-          "lt;static&gt",
-          "modal",
-          "onlyifnewvers"
-        ],
         "dtps.html#.mainStream": [
           "call",
           "dashboard",
@@ -183,15 +172,6 @@ window.lunrData = {
           "lt;static&gt",
           "mainstream",
           "render"
-        ],
-        "dtps.html#.log": [
-          "debug",
-          "dtps.log",
-          "function",
-          "log",
-          "lt;static&gt",
-          "messag",
-          "msg"
         ],
         "dtps.html#.loadThreadPosts": [
           "classnum",
@@ -206,6 +186,36 @@ window.lunrData = {
           "lt;static&gt",
           "post",
           "threadid"
+        ],
+        "dtps.html#.changelog": [
+          "changelog",
+          "display",
+          "dtp",
+          "dtps.changelog",
+          "fetch",
+          "function",
+          "lt;static&gt",
+          "modal",
+          "onlyifnewvers"
+        ],
+        "dtps.html#.log": [
+          "debug",
+          "dtps.log",
+          "function",
+          "log",
+          "lt;static&gt",
+          "messag",
+          "msg"
+        ],
+        "dtps.html#.isDueOnDate": [
+          "check",
+          "date",
+          "dtps.isdueond",
+          "due",
+          "function",
+          "isdueond",
+          "lt;static&gt",
+          "ondat"
         ],
         "dtps.html#.error": [
           "alert",
@@ -234,16 +244,6 @@ window.lunrData = {
           "screen",
           "welcom"
         ],
-        "dtps.html#.isDueOnDate": [
-          "check",
-          "date",
-          "dtps.isdueond",
-          "due",
-          "function",
-          "isdueond",
-          "lt;static&gt",
-          "ondat"
-        ],
         "dtps.html#.renderDueToday": [
           "compil",
           "display",
@@ -267,17 +267,6 @@ window.lunrData = {
           "renderloadingscreen",
           "screen"
         ],
-        "dtps.html#.JS": [
-          "cb",
-          "dtps.j",
-          "extern",
-          "function",
-          "javascript",
-          "js",
-          "librari",
-          "load",
-          "lt;static&gt"
-        ],
         "dtps.html#.renderUpcoming": [
           "assign",
           "compil",
@@ -289,6 +278,17 @@ window.lunrData = {
           "renderupcom",
           "stream",
           "upcom"
+        ],
+        "dtps.html#.JS": [
+          "cb",
+          "dtps.j",
+          "extern",
+          "function",
+          "javascript",
+          "js",
+          "librari",
+          "load",
+          "lt;static&gt"
         ],
         "dtps.html#.loadPagesList": [
           "class",
@@ -303,15 +303,6 @@ window.lunrData = {
           "page",
           "render"
         ],
-        "dtps.html#.CSS": [
-          "css",
-          "dtp",
-          "dtps.css",
-          "file",
-          "function",
-          "load",
-          "lt;static&gt"
-        ],
         "dtps.html#.renderUpdates": [
           "amp",
           "announc",
@@ -325,6 +316,15 @@ window.lunrData = {
           "renderupd",
           "stream",
           "updat"
+        ],
+        "dtps.html#.CSS": [
+          "css",
+          "dtp",
+          "dtps.css",
+          "file",
+          "function",
+          "load",
+          "lt;static&gt"
         ],
         "dtps.html#.init": [
           "dtp",
@@ -411,6 +411,17 @@ window.lunrData = {
           "number",
           "show"
         ],
+        "dtps.html#.moduleStream": [
+          "class",
+          "classid",
+          "dtps.modulestream",
+          "function",
+          "lt;static&gt",
+          "modul",
+          "modulestream",
+          "show",
+          "stream"
+        ],
         "dtps.html#.formatDate": [
           "date",
           "dtps.formatd",
@@ -453,33 +464,6 @@ window.lunrData = {
           "showclass",
           "sidebar"
         ],
-        "dtps.html#.moduleStream": [
-          "class",
-          "classid",
-          "dtps.modulestream",
-          "function",
-          "lt;static&gt",
-          "modul",
-          "modulestream",
-          "show",
-          "stream"
-        ],
-        "dtps.html#.presentClass": [
-          "class",
-          "classnum",
-          "color",
-          "dtps.presentclass",
-          "etc",
-          "function",
-          "header",
-          "lt;static&gt",
-          "name",
-          "presentclass",
-          "render",
-          "select",
-          "set",
-          "tab"
-        ],
         "dtps.html#.moduleCollapse": [
           "classid",
           "collaps",
@@ -498,6 +482,22 @@ window.lunrData = {
           "lt;static&gt",
           "modul",
           "modulecollapseal"
+        ],
+        "dtps.html#.presentClass": [
+          "class",
+          "classnum",
+          "color",
+          "dtps.presentclass",
+          "etc",
+          "function",
+          "header",
+          "lt;static&gt",
+          "name",
+          "presentclass",
+          "render",
+          "select",
+          "set",
+          "tab"
         ],
         "dtps.html#.renderStreamTools": [
           "box",
@@ -1184,13 +1184,13 @@ window.lunrData = {
                   "ref": "dtps.html",
                   "tf": 1911.111111111111
                 },
-                "dtps.html#.changelog": {
-                  "ref": "dtps.html#.changelog",
-                  "tf": 10
-                },
                 "dtps.html#.mainStream": {
                   "ref": "dtps.html#.mainStream",
                   "tf": 7.142857142857142
+                },
+                "dtps.html#.changelog": {
+                  "ref": "dtps.html#.changelog",
+                  "tf": 10
                 },
                 "dtps.html#.firstrun": {
                   "ref": "dtps.html#.firstrun",
@@ -2265,6 +2265,81 @@ window.lunrData = {
                       }
                     }
                   },
+                  "i": {
+                    "docs": {},
+                    "s": {
+                      "docs": {},
+                      "d": {
+                        "docs": {},
+                        "u": {
+                          "docs": {},
+                          "e": {
+                            "docs": {},
+                            "o": {
+                              "docs": {},
+                              "n": {
+                                "docs": {},
+                                "d": {
+                                  "docs": {
+                                    "dtps.html#.isDueOnDate": {
+                                      "ref": "dtps.html#.isDueOnDate",
+                                      "tf": 1150
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "n": {
+                      "docs": {},
+                      "i": {
+                        "docs": {},
+                        "t": {
+                          "docs": {
+                            "dtps.html#.init": {
+                              "ref": "dtps.html#.init",
+                              "tf": 1150
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "f": {
+                      "docs": {},
+                      "r": {
+                        "docs": {},
+                        "a": {
+                          "docs": {},
+                          "m": {
+                            "docs": {},
+                            "e": {
+                              "docs": {},
+                              "l": {
+                                "docs": {},
+                                "o": {
+                                  "docs": {},
+                                  "a": {
+                                    "docs": {},
+                                    "d": {
+                                      "docs": {
+                                        "dtps.html#.iframeLoad": {
+                                          "ref": "dtps.html#.iframeLoad",
+                                          "tf": 1150
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
                   "e": {
                     "docs": {},
                     "r": {
@@ -2363,81 +2438,6 @@ window.lunrData = {
                                   "dtps.html#.formatDate": {
                                     "ref": "dtps.html#.formatDate",
                                     "tf": 1150
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  },
-                  "i": {
-                    "docs": {},
-                    "s": {
-                      "docs": {},
-                      "d": {
-                        "docs": {},
-                        "u": {
-                          "docs": {},
-                          "e": {
-                            "docs": {},
-                            "o": {
-                              "docs": {},
-                              "n": {
-                                "docs": {},
-                                "d": {
-                                  "docs": {
-                                    "dtps.html#.isDueOnDate": {
-                                      "ref": "dtps.html#.isDueOnDate",
-                                      "tf": 1150
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "n": {
-                      "docs": {},
-                      "i": {
-                        "docs": {},
-                        "t": {
-                          "docs": {
-                            "dtps.html#.init": {
-                              "ref": "dtps.html#.init",
-                              "tf": 1150
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "f": {
-                      "docs": {},
-                      "r": {
-                        "docs": {},
-                        "a": {
-                          "docs": {},
-                          "m": {
-                            "docs": {},
-                            "e": {
-                              "docs": {},
-                              "l": {
-                                "docs": {},
-                                "o": {
-                                  "docs": {},
-                                  "a": {
-                                    "docs": {},
-                                    "d": {
-                                      "docs": {
-                                        "dtps.html#.iframeLoad": {
-                                          "ref": "dtps.html#.iframeLoad",
-                                          "tf": 1150
-                                        }
-                                      }
-                                    }
                                   }
                                 }
                               }
@@ -3704,13 +3704,13 @@ window.lunrData = {
                     "docs": {},
                     "y": {
                       "docs": {
-                        "dtps.html#.changelog": {
-                          "ref": "dtps.html#.changelog",
-                          "tf": 10
-                        },
                         "dtps.html#.loadThreadPosts": {
                           "ref": "dtps.html#.loadThreadPosts",
                           "tf": 12.5
+                        },
+                        "dtps.html#.changelog": {
+                          "ref": "dtps.html#.changelog",
+                          "tf": 10
                         },
                         "dtps.html#.renderDueToday": {
                           "ref": "dtps.html#.renderDueToday",
@@ -4382,21 +4382,25 @@ window.lunrData = {
                                     "ref": "dtps.html#.class",
                                     "tf": 33.33333333333333
                                   },
-                                  "dtps.html#.changelog": {
-                                    "ref": "dtps.html#.changelog",
-                                    "tf": 33.33333333333333
-                                  },
                                   "dtps.html#.mainStream": {
                                     "ref": "dtps.html#.mainStream",
                                     "tf": 50
+                                  },
+                                  "dtps.html#.loadThreadPosts": {
+                                    "ref": "dtps.html#.loadThreadPosts",
+                                    "tf": 16.666666666666664
+                                  },
+                                  "dtps.html#.changelog": {
+                                    "ref": "dtps.html#.changelog",
+                                    "tf": 33.33333333333333
                                   },
                                   "dtps.html#.log": {
                                     "ref": "dtps.html#.log",
                                     "tf": 33.33333333333333
                                   },
-                                  "dtps.html#.loadThreadPosts": {
-                                    "ref": "dtps.html#.loadThreadPosts",
-                                    "tf": 16.666666666666664
+                                  "dtps.html#.isDueOnDate": {
+                                    "ref": "dtps.html#.isDueOnDate",
+                                    "tf": 25
                                   },
                                   "dtps.html#.error": {
                                     "ref": "dtps.html#.error",
@@ -4406,10 +4410,6 @@ window.lunrData = {
                                     "ref": "dtps.html#.firstrun",
                                     "tf": 50
                                   },
-                                  "dtps.html#.isDueOnDate": {
-                                    "ref": "dtps.html#.isDueOnDate",
-                                    "tf": 25
-                                  },
                                   "dtps.html#.renderDueToday": {
                                     "ref": "dtps.html#.renderDueToday",
                                     "tf": 25
@@ -4418,25 +4418,25 @@ window.lunrData = {
                                     "ref": "dtps.html#.renderLoadingScreen",
                                     "tf": 50
                                   },
-                                  "dtps.html#.JS": {
-                                    "ref": "dtps.html#.JS",
-                                    "tf": 33.33333333333333
-                                  },
                                   "dtps.html#.renderUpcoming": {
                                     "ref": "dtps.html#.renderUpcoming",
+                                    "tf": 33.33333333333333
+                                  },
+                                  "dtps.html#.JS": {
+                                    "ref": "dtps.html#.JS",
                                     "tf": 33.33333333333333
                                   },
                                   "dtps.html#.loadPagesList": {
                                     "ref": "dtps.html#.loadPagesList",
                                     "tf": 20
                                   },
-                                  "dtps.html#.CSS": {
-                                    "ref": "dtps.html#.CSS",
-                                    "tf": 50
-                                  },
                                   "dtps.html#.renderUpdates": {
                                     "ref": "dtps.html#.renderUpdates",
                                     "tf": 33.33333333333333
+                                  },
+                                  "dtps.html#.CSS": {
+                                    "ref": "dtps.html#.CSS",
+                                    "tf": 50
                                   },
                                   "dtps.html#.init": {
                                     "ref": "dtps.html#.init",
@@ -4466,6 +4466,10 @@ window.lunrData = {
                                     "ref": "dtps.html#.assignment",
                                     "tf": 20
                                   },
+                                  "dtps.html#.moduleStream": {
+                                    "ref": "dtps.html#.moduleStream",
+                                    "tf": 33.33333333333333
+                                  },
                                   "dtps.html#.formatDate": {
                                     "ref": "dtps.html#.formatDate",
                                     "tf": 25
@@ -4482,20 +4486,16 @@ window.lunrData = {
                                     "ref": "dtps.html#.showClasses",
                                     "tf": 33.33333333333333
                                   },
-                                  "dtps.html#.moduleStream": {
-                                    "ref": "dtps.html#.moduleStream",
-                                    "tf": 33.33333333333333
-                                  },
-                                  "dtps.html#.presentClass": {
-                                    "ref": "dtps.html#.presentClass",
-                                    "tf": 33.33333333333333
-                                  },
                                   "dtps.html#.moduleCollapse": {
                                     "ref": "dtps.html#.moduleCollapse",
                                     "tf": 20
                                   },
                                   "dtps.html#.moduleCollapseAll": {
                                     "ref": "dtps.html#.moduleCollapseAll",
+                                    "tf": 33.33333333333333
+                                  },
+                                  "dtps.html#.presentClass": {
+                                    "ref": "dtps.html#.presentClass",
                                     "tf": 33.33333333333333
                                   },
                                   "dtps.html#.renderStreamTools": {
@@ -7018,20 +7018,24 @@ window.lunrData = {
                             "ref": "dtps.html#.class",
                             "tf": 110
                           },
-                          "dtps.html#.changelog": {
-                            "ref": "dtps.html#.changelog",
-                            "tf": 110
-                          },
                           "dtps.html#.mainStream": {
                             "ref": "dtps.html#.mainStream",
+                            "tf": 110
+                          },
+                          "dtps.html#.loadThreadPosts": {
+                            "ref": "dtps.html#.loadThreadPosts",
+                            "tf": 110
+                          },
+                          "dtps.html#.changelog": {
+                            "ref": "dtps.html#.changelog",
                             "tf": 110
                           },
                           "dtps.html#.log": {
                             "ref": "dtps.html#.log",
                             "tf": 110
                           },
-                          "dtps.html#.loadThreadPosts": {
-                            "ref": "dtps.html#.loadThreadPosts",
+                          "dtps.html#.isDueOnDate": {
+                            "ref": "dtps.html#.isDueOnDate",
                             "tf": 110
                           },
                           "dtps.html#.error": {
@@ -7042,10 +7046,6 @@ window.lunrData = {
                             "ref": "dtps.html#.firstrun",
                             "tf": 110
                           },
-                          "dtps.html#.isDueOnDate": {
-                            "ref": "dtps.html#.isDueOnDate",
-                            "tf": 110
-                          },
                           "dtps.html#.renderDueToday": {
                             "ref": "dtps.html#.renderDueToday",
                             "tf": 110
@@ -7054,24 +7054,24 @@ window.lunrData = {
                             "ref": "dtps.html#.renderLoadingScreen",
                             "tf": 110
                           },
-                          "dtps.html#.JS": {
-                            "ref": "dtps.html#.JS",
-                            "tf": 110
-                          },
                           "dtps.html#.renderUpcoming": {
                             "ref": "dtps.html#.renderUpcoming",
+                            "tf": 110
+                          },
+                          "dtps.html#.JS": {
+                            "ref": "dtps.html#.JS",
                             "tf": 110
                           },
                           "dtps.html#.loadPagesList": {
                             "ref": "dtps.html#.loadPagesList",
                             "tf": 110
                           },
-                          "dtps.html#.CSS": {
-                            "ref": "dtps.html#.CSS",
-                            "tf": 110
-                          },
                           "dtps.html#.renderUpdates": {
                             "ref": "dtps.html#.renderUpdates",
+                            "tf": 110
+                          },
+                          "dtps.html#.CSS": {
+                            "ref": "dtps.html#.CSS",
                             "tf": 110
                           },
                           "dtps.html#.init": {
@@ -7102,6 +7102,10 @@ window.lunrData = {
                             "ref": "dtps.html#.assignment",
                             "tf": 110
                           },
+                          "dtps.html#.moduleStream": {
+                            "ref": "dtps.html#.moduleStream",
+                            "tf": 110
+                          },
                           "dtps.html#.formatDate": {
                             "ref": "dtps.html#.formatDate",
                             "tf": 110
@@ -7118,20 +7122,16 @@ window.lunrData = {
                             "ref": "dtps.html#.showClasses",
                             "tf": 110
                           },
-                          "dtps.html#.moduleStream": {
-                            "ref": "dtps.html#.moduleStream",
-                            "tf": 110
-                          },
-                          "dtps.html#.presentClass": {
-                            "ref": "dtps.html#.presentClass",
-                            "tf": 110
-                          },
                           "dtps.html#.moduleCollapse": {
                             "ref": "dtps.html#.moduleCollapse",
                             "tf": 110
                           },
                           "dtps.html#.moduleCollapseAll": {
                             "ref": "dtps.html#.moduleCollapseAll",
+                            "tf": 110
+                          },
+                          "dtps.html#.presentClass": {
+                            "ref": "dtps.html#.presentClass",
                             "tf": 110
                           },
                           "dtps.html#.renderStreamTools": {
@@ -7361,13 +7361,13 @@ window.lunrData = {
                 "docs": {},
                 "h": {
                   "docs": {
-                    "dtps.html#.changelog": {
-                      "ref": "dtps.html#.changelog",
-                      "tf": 10
-                    },
                     "dtps.html#.loadThreadPosts": {
                       "ref": "dtps.html#.loadThreadPosts",
                       "tf": 12.5
+                    },
+                    "dtps.html#.changelog": {
+                      "ref": "dtps.html#.changelog",
+                      "tf": 10
                     },
                     "dtps.html#.loadPage": {
                       "ref": "dtps.html#.loadPage",
@@ -8996,12 +8996,12 @@ window.lunrData = {
                       "ref": "dtps.html#.assignment",
                       "tf": 6.25
                     },
-                    "dtps.html#.showClasses": {
-                      "ref": "dtps.html#.showClasses",
-                      "tf": 12.5
-                    },
                     "dtps.html#.moduleStream": {
                       "ref": "dtps.html#.moduleStream",
+                      "tf": 12.5
+                    },
+                    "dtps.html#.showClasses": {
+                      "ref": "dtps.html#.showClasses",
                       "tf": 12.5
                     },
                     "dtps.html#.presentClass": {
@@ -9435,17 +9435,6 @@ window.lunrData = {
             },
             "l": {
               "docs": {},
-              "o": {
-                "docs": {},
-                "r": {
-                  "docs": {
-                    "dtps.html#.presentClass": {
-                      "ref": "dtps.html#.presentClass",
-                      "tf": 4.545454545454546
-                    }
-                  }
-                }
-              },
               "l": {
                 "docs": {},
                 "a": {
@@ -9523,6 +9512,17 @@ window.lunrData = {
                           }
                         }
                       }
+                    }
+                  }
+                }
+              },
+              "o": {
+                "docs": {},
+                "r": {
+                  "docs": {
+                    "dtps.html#.presentClass": {
+                      "ref": "dtps.html#.presentClass",
+                      "tf": 4.545454545454546
                     }
                   }
                 }
@@ -10931,6 +10931,69 @@ window.lunrData = {
               }
             }
           },
+          "a": {
+            "docs": {},
+            "i": {
+              "docs": {},
+              "n": {
+                "docs": {},
+                "s": {
+                  "docs": {},
+                  "t": {
+                    "docs": {},
+                    "r": {
+                      "docs": {},
+                      "e": {
+                        "docs": {},
+                        "a": {
+                          "docs": {},
+                          "m": {
+                            "docs": {
+                              "dtps.html#.mainStream": {
+                                "ref": "dtps.html#.mainStream",
+                                "tf": 700
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "t": {
+              "docs": {},
+              "c": {
+                "docs": {},
+                "h": {
+                  "docs": {
+                    "dtps.html#.iframeLoad": {
+                      "ref": "dtps.html#.iframeLoad",
+                      "tf": 10
+                    }
+                  },
+                  "d": {
+                    "docs": {},
+                    "a": {
+                      "docs": {},
+                      "t": {
+                        "docs": {},
+                        "a": {
+                          "docs": {
+                            "dtps.html#.renderSearchResult": {
+                              "ref": "dtps.html#.renderSearchResult",
+                              "tf": 16.666666666666664
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
           "o": {
             "docs": {},
             "d": {
@@ -11107,69 +11170,6 @@ window.lunrData = {
                   "dtpsLMS.html#.gradebook": {
                     "ref": "dtpsLMS.html#.gradebook",
                     "tf": 2.941176470588235
-                  }
-                }
-              }
-            }
-          },
-          "a": {
-            "docs": {},
-            "i": {
-              "docs": {},
-              "n": {
-                "docs": {},
-                "s": {
-                  "docs": {},
-                  "t": {
-                    "docs": {},
-                    "r": {
-                      "docs": {},
-                      "e": {
-                        "docs": {},
-                        "a": {
-                          "docs": {},
-                          "m": {
-                            "docs": {
-                              "dtps.html#.mainStream": {
-                                "ref": "dtps.html#.mainStream",
-                                "tf": 700
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "t": {
-              "docs": {},
-              "c": {
-                "docs": {},
-                "h": {
-                  "docs": {
-                    "dtps.html#.iframeLoad": {
-                      "ref": "dtps.html#.iframeLoad",
-                      "tf": 10
-                    }
-                  },
-                  "d": {
-                    "docs": {},
-                    "a": {
-                      "docs": {},
-                      "t": {
-                        "docs": {},
-                        "a": {
-                          "docs": {
-                            "dtps.html#.renderSearchResult": {
-                              "ref": "dtps.html#.renderSearchResult",
-                              "tf": 16.666666666666664
-                            }
-                          }
-                        }
-                      }
-                    }
                   }
                 }
               }
@@ -11387,17 +11387,6 @@ window.lunrData = {
               }
             }
           },
-          "t": {
-            "docs": {},
-            "c": {
-              "docs": {
-                "dtps.html#.presentClass": {
-                  "ref": "dtps.html#.presentClass",
-                  "tf": 4.545454545454546
-                }
-              }
-            }
-          },
           "l": {
             "docs": {
               "dtps.html#.moduleCollapse": {
@@ -11422,6 +11411,17 @@ window.lunrData = {
                       }
                     }
                   }
+                }
+              }
+            }
+          },
+          "t": {
+            "docs": {},
+            "c": {
+              "docs": {
+                "dtps.html#.presentClass": {
+                  "ref": "dtps.html#.presentClass",
+                  "tf": 4.545454545454546
                 }
               }
             }
@@ -12267,16 +12267,6 @@ window.lunrData = {
       "summary": "",
       "description": "Debugging shortcut for getting the selected class. This should only be used in the web inspector and not in actual code."
     },
-    "dtps.html#.changelog": {
-      "id": "dtps.html#.changelog",
-      "kind": "function",
-      "title": "&lt;static&gt; changelog( onlyIfNewVersion )",
-      "longname": "dtps.changelog",
-      "name": "changelog",
-      "tags": "dtps.changelog changelog",
-      "summary": "",
-      "description": "Fetches and displays the DTPS changelog modal"
-    },
     "dtps.html#.mainStream": {
       "id": "dtps.html#.mainStream",
       "kind": "function",
@@ -12286,6 +12276,26 @@ window.lunrData = {
       "tags": "dtps.mainStream mainStream",
       "summary": "",
       "description": "Renders the DTPS dashboard and calls dtps.renderCalendar, dtps.renderUpdates, and dtps.renderUpcoming"
+    },
+    "dtps.html#.loadThreadPosts": {
+      "id": "dtps.html#.loadThreadPosts",
+      "kind": "function",
+      "title": "&lt;static&gt; loadThreadPosts( classNum, threadID [, fromModules [, defaultPost ] ] )",
+      "longname": "dtps.loadThreadPosts",
+      "name": "loadThreadPosts",
+      "tags": "dtps.loadThreadPosts loadThreadPosts",
+      "summary": "",
+      "description": "Fetches and displays posts in a discussion"
+    },
+    "dtps.html#.changelog": {
+      "id": "dtps.html#.changelog",
+      "kind": "function",
+      "title": "&lt;static&gt; changelog( onlyIfNewVersion )",
+      "longname": "dtps.changelog",
+      "name": "changelog",
+      "tags": "dtps.changelog changelog",
+      "summary": "",
+      "description": "Fetches and displays the DTPS changelog modal"
     },
     "dtps.html#.log": {
       "id": "dtps.html#.log",
@@ -12297,15 +12307,15 @@ window.lunrData = {
       "summary": "",
       "description": "Logs debugging messages"
     },
-    "dtps.html#.loadThreadPosts": {
-      "id": "dtps.html#.loadThreadPosts",
+    "dtps.html#.isDueOnDate": {
+      "id": "dtps.html#.isDueOnDate",
       "kind": "function",
-      "title": "&lt;static&gt; loadThreadPosts( classNum, threadID [, fromModules [, defaultPost ] ] )",
-      "longname": "dtps.loadThreadPosts",
-      "name": "loadThreadPosts",
-      "tags": "dtps.loadThreadPosts loadThreadPosts",
+      "title": "&lt;static&gt; isDueOnDate( date [, onDate ] )",
+      "longname": "dtps.isDueOnDate",
+      "name": "isDueOnDate",
+      "tags": "dtps.isDueOnDate isDueOnDate",
       "summary": "",
-      "description": "Fetches and displays posts in a discussion"
+      "description": "Checks if a due date is on a date"
     },
     "dtps.html#.error": {
       "id": "dtps.html#.error",
@@ -12327,16 +12337,6 @@ window.lunrData = {
       "summary": "",
       "description": "Renders \"Welcome to Project DTPS\" screen on the first run"
     },
-    "dtps.html#.isDueOnDate": {
-      "id": "dtps.html#.isDueOnDate",
-      "kind": "function",
-      "title": "&lt;static&gt; isDueOnDate( date [, onDate ] )",
-      "longname": "dtps.isDueOnDate",
-      "name": "isDueOnDate",
-      "tags": "dtps.isDueOnDate isDueOnDate",
-      "summary": "",
-      "description": "Checks if a due date is on a date"
-    },
     "dtps.html#.renderDueToday": {
       "id": "dtps.html#.renderDueToday",
       "kind": "function",
@@ -12357,16 +12357,6 @@ window.lunrData = {
       "summary": "",
       "description": "Renders the DTPS loading screen"
     },
-    "dtps.html#.JS": {
-      "id": "dtps.html#.JS",
-      "kind": "function",
-      "title": "&lt;static&gt; JS( cb )",
-      "longname": "dtps.JS",
-      "name": "JS",
-      "tags": "dtps.JS JS",
-      "summary": "",
-      "description": "Load all external JavaScript libraries"
-    },
     "dtps.html#.renderUpcoming": {
       "id": "dtps.html#.renderUpcoming",
       "kind": "function",
@@ -12376,6 +12366,16 @@ window.lunrData = {
       "tags": "dtps.renderUpcoming renderUpcoming",
       "summary": "",
       "description": "Compiles and displays upcoming assignments stream"
+    },
+    "dtps.html#.JS": {
+      "id": "dtps.html#.JS",
+      "kind": "function",
+      "title": "&lt;static&gt; JS( cb )",
+      "longname": "dtps.JS",
+      "name": "JS",
+      "tags": "dtps.JS JS",
+      "summary": "",
+      "description": "Load all external JavaScript libraries"
     },
     "dtps.html#.loadPagesList": {
       "id": "dtps.html#.loadPagesList",
@@ -12387,16 +12387,6 @@ window.lunrData = {
       "summary": "",
       "description": "Renders the pages list for a class"
     },
-    "dtps.html#.CSS": {
-      "id": "dtps.html#.CSS",
-      "kind": "function",
-      "title": "&lt;static&gt; CSS()",
-      "longname": "dtps.CSS",
-      "name": "CSS",
-      "tags": "dtps.CSS CSS",
-      "summary": "",
-      "description": "Load all DTPS CSS files"
-    },
     "dtps.html#.renderUpdates": {
       "id": "dtps.html#.renderUpdates",
       "kind": "function",
@@ -12406,6 +12396,16 @@ window.lunrData = {
       "tags": "dtps.renderUpdates renderUpdates",
       "summary": "",
       "description": "Renders updates stream (recently graded &amp; announcements)"
+    },
+    "dtps.html#.CSS": {
+      "id": "dtps.html#.CSS",
+      "kind": "function",
+      "title": "&lt;static&gt; CSS()",
+      "longname": "dtps.CSS",
+      "name": "CSS",
+      "tags": "dtps.CSS CSS",
+      "summary": "",
+      "description": "Load all DTPS CSS files"
     },
     "dtps.html#.init": {
       "id": "dtps.html#.init",
@@ -12477,6 +12477,16 @@ window.lunrData = {
       "summary": "",
       "description": "Shows details for an assignment given the assignment ID and class number"
     },
+    "dtps.html#.moduleStream": {
+      "id": "dtps.html#.moduleStream",
+      "kind": "function",
+      "title": "&lt;static&gt; moduleStream( classID )",
+      "longname": "dtps.moduleStream",
+      "name": "moduleStream",
+      "tags": "dtps.moduleStream moduleStream",
+      "summary": "",
+      "description": "Shows the module stream for a class"
+    },
     "dtps.html#.formatDate": {
       "id": "dtps.html#.formatDate",
       "kind": "function",
@@ -12517,26 +12527,6 @@ window.lunrData = {
       "summary": "",
       "description": "Renders the class list in the sidebar"
     },
-    "dtps.html#.moduleStream": {
-      "id": "dtps.html#.moduleStream",
-      "kind": "function",
-      "title": "&lt;static&gt; moduleStream( classID )",
-      "longname": "dtps.moduleStream",
-      "name": "moduleStream",
-      "tags": "dtps.moduleStream moduleStream",
-      "summary": "",
-      "description": "Shows the module stream for a class"
-    },
-    "dtps.html#.presentClass": {
-      "id": "dtps.html#.presentClass",
-      "kind": "function",
-      "title": "&lt;static&gt; presentClass( classNum )",
-      "longname": "dtps.presentClass",
-      "name": "presentClass",
-      "tags": "dtps.presentClass presentClass",
-      "summary": "",
-      "description": "Renders the class header (color, name, tabs, etc.) and sets the class as the selected class"
-    },
     "dtps.html#.moduleCollapse": {
       "id": "dtps.html#.moduleCollapse",
       "kind": "function",
@@ -12556,6 +12546,16 @@ window.lunrData = {
       "tags": "dtps.moduleCollapseAll moduleCollapseAll",
       "summary": "",
       "description": "Collapses all module"
+    },
+    "dtps.html#.presentClass": {
+      "id": "dtps.html#.presentClass",
+      "kind": "function",
+      "title": "&lt;static&gt; presentClass( classNum )",
+      "longname": "dtps.presentClass",
+      "name": "presentClass",
+      "tags": "dtps.presentClass presentClass",
+      "summary": "",
+      "description": "Renders the class header (color, name, tabs, etc.) and sets the class as the selected class"
     },
     "dtps.html#.renderStreamTools": {
       "id": "dtps.html#.renderStreamTools",
