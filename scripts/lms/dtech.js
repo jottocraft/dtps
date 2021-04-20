@@ -70,6 +70,9 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                 if (course.term == "20-21") return;
                 if (course.endDate && (new Date() > new Date(course.endDate))) return;
 
+                //Manually filter out other stale courses
+                if (course.name.toUpperCase().includes("FEB 2021")) return;
+
                 //Check if course is ineligible for videoMeetingURL
                 if (!dtps.remoteConfig.showVideoMeetingButton || dtps.user.parent || !course.homepage || (course.term !== dtps.remoteConfig.dtechCurrentTerm)) {
                     course.videoMeetingURL = null;
@@ -79,16 +82,16 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                 var matches = course.period.match(/[0-9](?=\(A)/);
                 if (matches && matches[0]) {
                     course.period = matches[0] == "7" ? 0 : Number(matches[0]);
-                } else if (/exploration/gi.test(course.subject)) {
-                    course.period = (/PM/g.test(course.subject) || /afternoon/gi.test(course.subject)) ? 12 : 11;
+                } else if (/(exploration)|(april 2021)/gi.test(course.name)) {
+                    course.period = (/PM/g.test(course.name) || /afternoon/gi.test(course.name)) ? 12 : 11;
 
                     //Remove old intersession courses
                     var startDate = new Date(course.startDate);
                     if ((startDate.getFullYear() == 2020) && (startDate.getMonth() == 9)) return;
 
                     //Automatically detect AM/PM exploration and set the class name accordingly
-                    if (/AM/g.test(course.subject) || /morning/gi.test(course.subject)) course.subject = "Morning Exploration";
-                    if (/PM/g.test(course.subject) || /afternoon/gi.test(course.subject)) course.subject = "Afternoon Exploration";
+                    if (/AM/g.test(course.name) || /morning/gi.test(course.name)) course.subject = "Morning Exploration";
+                    if (/PM/g.test(course.name) || /afternoon/gi.test(course.name)) course.subject = "Afternoon Exploration";
                 } else {
                     course.period = Infinity;
                 }
@@ -131,7 +134,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                 } else if (/Exploration/gi.test(course.subject)) {
                     course.icon = "explore";
                 } else if (/@d.?tech/gi.test(course.subject)) {
-                    course.icon = "school";
+                    course.icon = "supervisor_account";
                 } else if (/English/gi.test(course.subject)) {
                     course.icon = "description";
                 } else if (/Model( |-|)(United Nations|UN)/gi.test(course.subject)) {
@@ -148,6 +151,8 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                     course.icon = "stars";
                 } else if (/Athletics/gi.test(course.subject)) {
                     course.icon = "sports_handball";
+                } else if (/Beyond/gi.test(course.subject)) {
+                    course.icon = "school";
                 }
 
                 //Add course to list
