@@ -111,6 +111,7 @@ dtpsLMS.fetchClasses = function (userID) {
 
             //Add courses from canvas to courses array as a DTPS course object
             courseData.forEach((course, index) => {
+                var termSegments = course.course_code.split(" - ");
                 var dtpsCourse = {
                     name: course.course_code,
                     id: course.id,
@@ -121,7 +122,7 @@ dtpsLMS.fetchClasses = function (userID) {
                     section: course.sections && course.sections[0] && (course.sections.find(section => /[0-9](?=\(A)/.test(section.name)) || course.sections[0]).name,
                     subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : (course.original_name ? course.name : course.course_code.split(" - ")[0]),
                     homepage: course.default_view == "wiki",
-                    term: course.course_code.split(" - ")[1],
+                    term: termSegments[termSegments.length - 2],
                     color: colorData.custom_colors["course_" + course.id],
                     grade: course.enrollments[0].computed_current_score,
                     letter: course.enrollments[0].computed_current_grade,
