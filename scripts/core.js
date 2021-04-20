@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.1.2
+ * @version v3.1.3
  * 
  * @copyright Copyright (c) 2018-2021 jottocraft
  * @license GPL-2.0-only
@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {object} gtag The {@link https://developers.google.com/analytics/devguides/collection/ga4|gtag} object for Google Analytics configuration
  */
 var dtps = {
-    ver: 312,
-    readableVer: "v3.1.2",
+    ver: 313,
+    readableVer: "v3.1.3",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -108,6 +108,55 @@ document.addEventListener("fluidScreen", function (data) {
  */
 dtps.class = function () {
     return dtps.classes[dtps.selectedClass];
+};
+
+//Detect debug info shortcut
+document.onkeydown = function (event) {
+    if (event.ctrlKey && event.altKey && (event.code == "KeyD")) {
+        var replacer = function(key, value) {
+            //Truncate long properties
+            if (["assignments", "people", "modules", "discussions", "pages", "outcomes"].includes(key)) {
+                if (value instanceof Array) return "[truncated] (array, length " + value.length + ")";
+                if (typeof value == "object") return "[truncated] (object, keys " + Object.keys(value).length + ")";
+                return value;
+            }
+
+            //Remove sensitive properties/PII
+            if (["letter", "number75", "grade", "lowestScore"].includes(key)) return "[redacted] (" + (typeof value) + ")";
+
+            return value;
+        };
+
+        $(".card.details").html(/*html*/`
+            <i onclick="fluid.cards.close('.card.details'); $('.card.details').html('');" class="fluid-icon close">close</i>
+
+            <h4 style="font-weight: bold;">Debug</h4>
+
+            <div style="margin: 40px 0px;">
+                <h5>User</h5>
+                <pre><code class="prettyprint">${JSON.stringify(dtps.user, null, '\t')}</code></pre>
+            </div>
+
+            ${
+                dtps.classes[dtps.selectedClass] ? /*html*/`
+                    <div style="margin: 40px 0px;">
+                        <h5>Selected class</h5>
+                        <pre><code class="prettyprint">${JSON.stringify(dtps.classes[dtps.selectedClass], replacer, '\t')}</code></pre>
+                    </div>
+                ` : ``
+            }
+        `);
+
+        if (!window.PR) {
+            $.getScript("https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?lang=json");
+        } else {
+            PR.prettyPrint();
+        }
+
+        //Close other active cards and open the assignment details card
+        fluid.cards.close(".card.focus");
+        fluid.cards(".card.details");
+    }
 }
 
 /**
@@ -272,8 +321,8 @@ dtps.JS = function () {
         //Firebase modules
         jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
             jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js", () => {
-                //Check for user opt-out
-                if (window.localStorage.dtpsAnalyticsOptOut == "true") {
+                //Check for user opt-out (analytics temporarily disabled)
+                if ((window.localStorage.dtpsAnalyticsOptOut == "true") || true) {
                     window['ga-disable-G-KLKEMX3T6F'] = true;
                 }
 
@@ -1190,6 +1239,18 @@ dtps.brightenTextForDarkMode = function (html, bg) {
     //Use dark mode algorithm
     if (!bg) bg = "black";
     var fakeRoot = $('<div></div>').append(html);
+
+    //Reset text color to black if there is a background color set and no other color set
+    fakeRoot.find("*").filter(function () {
+        return ($(this).css("background-color") || $(this).css("background")) && !$(this).css("color") && !$(this).parents().filter(function () {
+            return $(this).css("color");
+        }).length;
+    }).toArray().forEach(element => {
+        //Reset to black
+        $(element).css("color", "#2D3B45");
+    });
+
+    //Brighten text colors
     fakeRoot.find("span").filter(function () {
         return $(this).css("color") && !($(this).css("background-color") || $(this).css("background")) && !$(this).parents().filter(function () {
             return $(this).css("background-color") || $(this).css("background");
@@ -1206,6 +1267,7 @@ dtps.brightenTextForDarkMode = function (html, bg) {
             $(element).css("color", "#" + tinycolor($(element).css("color")).darken(Math.abs(brightnessDiff)).toHex());
         }
     });
+
     return fakeRoot.html();
 }
 
@@ -1827,19 +1889,9 @@ dtps.renderLite = function () {
                 <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
                 <div class="label"><i class="fluid-icon">image</i> Hide class images</div>
 
-                ${dtpsLMS.dtech ? /*html*/`
-                        <br /><br />
-                        <p>Assignments</p>
-
-                        <div onclick="fluid.set('pref-formatAssignmentContent');" class="switch pref-formatAssignmentContent active"><span class="head"></span></div>
-                        <div class="label"><i class="fluid-icon">format_paint</i> Reformat assignment content</div>
-                    ` : ""
-        }
-
                 <div id="dtpsPrereleaseTesting" style="${window.localStorage.prereleaseEnabled || (dtps.env == "dev") || window.localStorage.githubRepo || window.localStorage.externalReleaseURL ? "" : "display: none;"}">
                     <br /><br />
                     <p>Prerelease testing</p>
-                    <p style="font-size: 12px;"><i>The dev version of Power+ has been temporarily disabled</i></p>
 
                     <div>
                         <div class="btns row small">

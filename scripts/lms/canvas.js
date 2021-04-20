@@ -118,6 +118,7 @@ dtpsLMS.fetchClasses = function (userID) {
                     people: !dtps.user.parent,
                     userID: userID,
                     period: course.sections && course.sections[0] && (course.sections.find(section => /[0-9](?=\(A)/.test(section.name)) || course.sections[0]).name,
+                    section: course.sections && course.sections[0] && (course.sections.find(section => /[0-9](?=\(A)/.test(section.name)) || course.sections[0]).name,
                     subject: window.localStorage["pref-fullNames"] == "true" ? course.course_code : (course.original_name ? course.name : course.course_code.split(" - ")[0]),
                     homepage: course.default_view == "wiki",
                     term: course.course_code.split(" - ")[1],
@@ -136,12 +137,27 @@ dtpsLMS.fetchClasses = function (userID) {
                 //Save teachers in cache
                 dtpsLMS.teacherCache[course.id] = course.teachers;
 
-                if (course.teachers[0]) {
+                if (course.teachers.length == 1) {
                     dtpsCourse.teacher = {
                         name: course.teachers[0] && course.teachers[0].display_name,
                         id: course.teachers[0] && course.teachers[0].id,
                         photoURL: course.teachers[0] && course.teachers[0].avatar_image_url
                     };
+                } else {
+                    var matches = 0;
+                    course.teachers.forEach(teacher => {
+                        teacher.display_name.split(" ").forEach((fragment) => {
+                            if (dtpsCourse.name.includes(fragment)) {
+                                dtpsCourse.teacher = {
+                                    name: teacher.display_name,
+                                    id: teacher.id,
+                                    photoURL: teacher.avatar_image_url
+                                };
+                                matches++;
+                            }
+                        });
+                    });
+                    if (matches > 1) delete dtpsCourse.teacher;
                 }
 
                 courses.push(dtpsCourse);
