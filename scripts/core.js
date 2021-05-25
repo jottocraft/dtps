@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.1.3
+ * @version v3.1.4
  * 
  * @copyright Copyright (c) 2018-2021 jottocraft
  * @license GPL-2.0-only
@@ -37,8 +37,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {object} gtag The {@link https://developers.google.com/analytics/devguides/collection/ga4|gtag} object for Google Analytics configuration
  */
 var dtps = {
-    ver: 313,
-    readableVer: "v3.1.3",
+    ver: 314,
+    readableVer: "v3.1.4",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
