@@ -214,7 +214,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
                                     <h5>${reply.author.name}</h5>
                                 ` : ``}
                                 
-                                <span style="cursor: pointer;" onclick="window.open('${reply.replyURL}'); dtps.analytics.logEvent('select_content', { content_type: 'discussionNestedReply' });">
+                                <span style="cursor: pointer;" onclick="window.open('${reply.replyURL}'); dtps.gtag('event', 'select_content', { content_type: 'discussionNestedReply' });">
                                     <i class="fluid-icon">reply</i>
                                     <span>Reply</span>
                                 </span>
@@ -268,9 +268,9 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
                         ${post.replyURL ? /*html*/`
                             <div ${index == 0 ? `style="margin-top: 32px;"` : ""} class="discussionFooter">
                                 ${index == 0 ? /*html*/`
-                                    <button onclick="window.open('${post.replyURL}');dtps.analytics.logEvent('select_content', { content_type: 'discussionPostReply' });" class="btn small"><i class="fluid-icon">post_add</i> Add Post</button>
+                                    <button onclick="window.open('${post.replyURL}');dtps.gtag('event', 'select_content', { content_type: 'discussionPostReply' });" class="btn small"><i class="fluid-icon">post_add</i> Add Post</button>
                                 ` : /*html*/`
-                                    <button onclick="window.open('${post.replyURL}');dtps.analytics.logEvent('select_content', { content_type: 'discussionMainReply' });" class="btn small"><i class="fluid-icon">reply</i> Reply</button>
+                                    <button onclick="window.open('${post.replyURL}');dtps.gtag('event', 'select_content', { content_type: 'discussionMainReply' });" class="btn small"><i class="fluid-icon">reply</i> Reply</button>
                                 `}
                             </div> 
                         ` : ""}
@@ -292,7 +292,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
             }
         }
 
-        dtps.analytics.logEvent('select_content', {
+        dtps.gtag('event', 'select_content', {
             content_type: 'discussionThread'
         });
     }).catch(function (err) {
@@ -505,7 +505,7 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
                 </div>
             `);
 
-            dtps.analytics.logEvent('select_content', {
+            dtps.gtag('event', 'select_content', {
                 content_type: 'pageContent'
             });
         }
