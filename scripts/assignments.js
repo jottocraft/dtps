@@ -501,7 +501,7 @@ dtps.calendar = function (doneLoading) {
                     dtps.renderUpcoming(info.date);
                     dtps.renderUpdates(true);
 
-                    dtps.analytics.logEvent('dashboard_date_click');
+                    dtps.gtag('event', 'dashboard_date_click');
                 },
                 eventClick: function (info) {
                     dtps.assignment(info.event.extendedProps.assignmentID, info.event.extendedProps.classNum);
@@ -752,7 +752,7 @@ dtps.assignment = function (id, classNum, generic) {
                 </div>
             </div>
 
-            <div style="width: calc(60% - 7px); margin-top: 20px; margin-left: 5px; display: inline-block; overflow: hidden; vertical-align: middle;">
+            <div style="width: calc(60% - 10px); margin-top: 20px; margin-left: 5px; display: inline-block; overflow: hidden; vertical-align: middle;">
                 ${!generic ? assignmentFeedbackHTML : ""}
 
                 ${assignmentRubricHTML}
@@ -763,7 +763,7 @@ dtps.assignment = function (id, classNum, generic) {
     fluid.cards.close(".card.focus");
     fluid.cards(".card.details");
 
-    dtps.analytics.logEvent('select_content', {
+    dtps.gtag('event', 'select_content', {
         content_type: 'assignment'
     });
 }
@@ -941,7 +941,9 @@ dtps.moduleCollapse = function (ele, classID, modID) {
         dtps.classes[dtps.selectedClass].modules.find(m => m.id == modID).collapsed = false;
     }
 
-    dtps.analytics.logEvent('module_collapse', { collapseAll: false });
+    dtps.gtag('event', 'module_collapse', {
+        collapseAll: false
+    });
 }
 
 
@@ -967,7 +969,9 @@ dtps.moduleCollapseAll = function (collapse) {
         $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(true)`);
     }
 
-    dtps.analytics.logEvent('module_collapse', { collapseAll: true });
+    dtps.gtag('event', 'module_collapse', {
+        collapseAll: true
+    });
 }
 
 /**

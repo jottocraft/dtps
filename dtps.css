@@ -13,6 +13,11 @@ Power+ CSS
     --themeText: #ffffff !important;
 }
 
+.alternateFont {
+    --titleFont: BlinkMacSystemFont,-apple-system,Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --textFont: BlinkMacSystemFont,-apple-system,Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 .dashboardItem {
     text-align: center;
     padding: 20px;

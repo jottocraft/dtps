@@ -34,7 +34,6 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
- * @property {object} analytics The {@link https://firebase.google.com/docs/reference/js/firebase.analytics.Analytics|Firebase Analytics} object for logging events
  * @property {object} gtag The {@link https://developers.google.com/analytics/devguides/collection/ga4|gtag} object for Google Analytics configuration
  */
 var dtps = {
@@ -97,8 +96,9 @@ jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.
 
 //Fluid UI screen change listener
 document.addEventListener("fluidScreen", function (data) {
-    dtps.analytics.setCurrentScreen(data.detail);
-    dtps.analytics.logEvent("screen_view");
+    dtps.gtag('event', 'screen_view', {
+        'screen_name': data.detail
+    });
 });
 
 /**
@@ -113,7 +113,7 @@ dtps.class = function () {
 //Detect debug info shortcut
 document.onkeydown = function (event) {
     if (event.ctrlKey && event.altKey && (event.code == "KeyD")) {
-        var replacer = function(key, value) {
+        var replacer = function (key, value) {
             //Truncate long properties
             if (["assignments", "people", "modules", "discussions", "pages", "outcomes"].includes(key)) {
                 if (value instanceof Array) return "[truncated] (array, length " + value.length + ")";
@@ -137,8 +137,7 @@ document.onkeydown = function (event) {
                 <pre><code class="prettyprint">${JSON.stringify(dtps.user, null, '\t')}</code></pre>
             </div>
 
-            ${
-                dtps.classes[dtps.selectedClass] ? /*html*/`
+            ${dtps.classes[dtps.selectedClass] ? /*html*/`
                     <div style="margin: 40px 0px;">
                         <h5>Selected class</h5>
                         <pre><code class="prettyprint">${JSON.stringify(dtps.classes[dtps.selectedClass], replacer, '\t')}</code></pre>
@@ -177,7 +176,7 @@ dtps.changelog = function (onlyIfNewVersion) {
                 //Show changelog
                 fluid.cards.close(".card.focus");
                 fluid.cards(".card.changelog");
-                dtps.analytics.logEvent('changelog', { forNewVersion: false });
+                dtps.gtag('event', 'changelog', { forNewVersion: false });
             } else if (Number(data.tag_name.replace(/[^0-9]/g, '')) > Number(window.localStorage.dtps)) {
                 //Show changelog if this is a new(er) version
                 localStorage.setItem('dtps', data.tag_name.replace(/[^0-9]/g, ''));
@@ -186,7 +185,7 @@ dtps.changelog = function (onlyIfNewVersion) {
                     //s in tag_name means a silent release
                     fluid.cards.close(".card.focus");
                     fluid.cards(".card.changelog");
-                    dtps.analytics.logEvent('changelog', { forNewVersion: true });
+                    dtps.gtag('event', 'changelog', { forNewVersion: true });
                 }
             }
         });
@@ -218,7 +217,7 @@ dtps.error = function (msg, devNotes, err) {
         }
         console.error("[DTPS !!ERROR!!]", devNotes + ": ", err);
         fluid.alert("Error", msg + formattedDevNotes, "error");
-        dtps.analytics.logEvent('exception', {
+        dtps.gtag('event', 'exception', {
             description: msg,
             devNotes: devNotes
         });
@@ -277,7 +276,7 @@ dtps.firstrun = function () {
     fluid.cards.close(".card.focus");
     fluid.cards(".card.changelog", "stayOpen");
 
-    dtps.analytics.logEvent('firstrun');
+    dtps.gtag('event', 'firstrun');
 };
 
 /**
@@ -318,44 +317,58 @@ dtps.JS = function () {
         //Tinycolor used for better dark mode support
         jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js");
 
+        //Google Analytics
+        jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=G-EH9P54G4CC");
+
+        //Configure analytics
+        (function () {
+            //Check for user opt-out
+            if (window.localStorage.dtpsAnalyticsOptOut == "true") {
+                window['ga-disable-G-EH9P54G4CC'] = true;
+            }
+
+            //Create gtag
+            window.dataLayer = window.dataLayer || [];
+            dtps.gtag = function () { dataLayer.push(arguments); }
+            dtps.gtag('js', new Date());
+
+            //Set gtag settings
+            dtps.gtag('set', {
+                'page_title': "Power+",
+                'page_location': window.location.protocol + '//' + window.location.host + window.location.pathname,
+                'appVersion': dtps.ver,
+                'env': dtps.env,
+                'releaseChannel': window.localStorage.dtpsLoaderPref || "prod",
+                'allow_google_signals': false,
+                'allow_ad_personalization_signals': false
+            });
+            dtps.gtag('config', 'G-EH9P54G4CC');
+        })();
+
         //Firebase modules
         jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
-            jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-analytics.js", () => {
-                //Check for user opt-out (analytics temporarily disabled)
-                if ((window.localStorage.dtpsAnalyticsOptOut == "true") || true) {
-                    window['ga-disable-G-KLKEMX3T6F'] = true;
-                }
+            // Your web app's Firebase configuration
+            var firebaseConfig = {
+                apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
+                authDomain: "project-dtps.firebaseapp.com",
+                databaseURL: "https://project-dtps.firebaseio.com",
+                projectId: "project-dtps",
+                storageBucket: "project-dtps.appspot.com",
+                messagingSenderId: "117676227556",
+                appId: "1:117676227556:web:b0bafbea651245207ce5f1"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
 
-                // Set additional gtag settings
-                window.dataLayer = window.dataLayer || [];
-                dtps.gtag = function () { dataLayer.push(arguments); }
-                dtps.gtag('set', { 'page_title': "Power+", 'page_location': window.location.protocol + '//' + window.location.host + window.location.pathname, 'send_page_view': false, 'allow_google_signals': false, 'allow_ad_personalization_signals': false });
-
-                // Your web app's Firebase configuration
-                var firebaseConfig = {
-                    apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
-                    authDomain: "project-dtps.firebaseapp.com",
-                    databaseURL: "https://project-dtps.firebaseio.com",
-                    projectId: "project-dtps",
-                    storageBucket: "project-dtps.appspot.com",
-                    messagingSenderId: "117676227556",
-                    appId: "1:117676227556:web:b0bafbea651245207ce5f1",
-                    measurementId: "G-KLKEMX3T6F"
-                };
-                // Initialize Firebase
-                firebase.initializeApp(firebaseConfig);
-                dtps.analytics = firebase.analytics();
-
-                //dtao/nearest-color is used for finding the nearest class color
-                jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js", () => {
-                    jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
-                        //Fluid UI for core UI elements
-                        if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
-                            jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
-                        } else {
-                            jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
-                        }
-                    });
+            //dtao/nearest-color is used for finding the nearest class color
+            jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js", () => {
+                jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
+                    //Fluid UI for core UI elements
+                    if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
+                        jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
+                    } else {
+                        jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
+                    }
                 });
             });
         });
@@ -548,14 +561,20 @@ dtps.init = function () {
         dtps.classes.forEach((course, index) => course.num = index);
 
         //Set user ID and properties
-        dtps.analytics.setUserId(CryptoJS.SHA1(window.location.host + "/" + dtps.user.id).toString());
-        dtps.analytics.setUserProperties({
+        dtps.gtag('set', 'user_properties', {
+            user_id: CryptoJS.SHA1(window.location.host + "/" + dtps.user.id).toString(),
+            dtpsEnv: dtps.env,
+            dtpsLoader: window.dtpsPreLoader ? "preloader" : window.dtpsLoader,
             isParent: dtps.user.parent || false,
             numClasses: dtps.classes.length,
-            dtpsLoader: window.dtpsPreLoader ? "preloader" : window.dtpsLoader,
             host: window.location.host,
-            releaseChannel: window.localStorage.dtpsLoaderPref || "prod",
-            dtpsVersion: dtps.ver
+            hideGrades: fluid.get("pref-hideGrades") == "true",
+            alternateFont: fluid.get("pref-alternateFont") == "true",
+            autoGroupClasses: fluid.get("pref-autoGroupClasses") !== "false",
+            fullNames: fluid.get("pref-fullNames") == "true",
+            hideClassImages: fluid.get("pref-hideClassImages") == "true",
+            fluidTheme: document.documentElement.dataset.theme,
+            fluidThemeImage: document.documentElement.dataset.themeImage !== undefined
         });
 
         //Define DTPS class color pallete
@@ -765,21 +784,6 @@ dtps.init = function () {
         } else if (dtps.popup == "changelog") {
             //Changelog will only show if the release notes are on GitHub
             dtps.changelog(true);
-        }
-
-        //Check URL parameter
-        if ((urlParams.get("prerelease") == "canary") && urlParams.get("repo")) {
-            fluid.alert("Power+ Canary", "<p>Do you want to add this release configuration to Power+?</p>", "build_circle", [
-                {
-                    name: "Add",
-                    icon: "add",
-                    action: "window.localStorage.githubCanary = '" + urlParams.get("repo") + "'; alert('Please reload the page for changes to take effect');"
-                },
-                {
-                    name: "Cancel",
-                    icon: "cancel"
-                }
-            ]);
         }
     }).catch(function (err) {
         //Web request error
@@ -1070,7 +1074,7 @@ dtps.presentClass = function (classNum) {
         }
 
         if (dtps.classes[classNum].videoMeetingURL) {
-            $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.analytics.logEvent('select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
+            $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.gtag('event', 'select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
             $("#classInfo .videoMeeting").removeClass("shimmerParent");
             $("#classInfo .videoMeeting").show();
         } else if ((dtps.classes[classNum].videoMeetingURL !== null) && dtpsLMS.fetchMeetingURL) {
@@ -1083,7 +1087,7 @@ dtps.presentClass = function (classNum) {
 
                 if (dtps.selectedClass == classNum) {
                     if (url) {
-                        $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.analytics.logEvent('select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
+                        $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.gtag('event', 'select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
                         $("#classInfo .videoMeeting").removeClass("shimmerParent");
                         $("#classInfo .videoMeeting").show();
                     } else {
@@ -1147,7 +1151,7 @@ dtps.classHome = function (num) {
 
             fluid.cards(".card.details");
 
-            dtps.analytics.logEvent('select_content', {
+            dtps.gtag('event', 'select_content', {
                 content_type: 'homepage'
             });
         } else {
@@ -1346,7 +1350,7 @@ dtps.settings = function (forceRerenderDashboard) {
 
     fluid.cards('.settingsCard');
 
-    dtps.analytics.logEvent('select_content', {
+    dtps.gtag('event', 'select_content', {
         content_type: 'settings'
     });
 }
@@ -1693,7 +1697,7 @@ dtps.render = function () {
                 $("#dtpsMainSearchBox").blur();
             }
 
-            dtps.analytics.logEvent('search', {
+            dtps.gtag('event', 'search', {
                 search_term: term,
                 type: $("#dtpsMainSearchBox").attr("data-search-type"),
                 typeOverridden: $("#dtpsMainSearchBox").attr("data-search-type") !== $("#dtpsMainSearchBox").attr("data-ctx-type"),
@@ -1821,6 +1825,18 @@ dtps.renderLite = function () {
         }
     });
 
+    //Add alternateFont body class if enabled and preference listener
+    if (fluid.get("pref-alternateFont") == "true") { jQuery('body').addClass('alternateFont'); }
+    document.addEventListener("pref-alternateFont", function (e) {
+        if ((e.detail == "true") || (e.detail == true)) {
+            //alternateFont has been enabled, add class to body to change font
+            jQuery('body').addClass('alternateFont');
+        } else {
+            //alternateFont has been disabled, remove class from body to revert font change
+            jQuery('body').removeClass('alternateFont');
+        }
+    });
+
     //Render settings card
     var baseHost = new URL(dtps.baseURL).hostname;
     jQuery(".card.settingsCard").html(/*html*/`
@@ -1835,27 +1851,27 @@ dtps.renderLite = function () {
 	            </div>
             </div>
 
-            <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'settings' });" class="item active">
+            <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'settings' });" class="item active">
                 <i class="fluid-icon">settings</i> Settings
             </div>
-            <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'theme' });" class="item">
+            <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'theme' });" class="item">
                 <i class="fluid-icon">format_paint</i> Theme
             </div>
-            <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'grades' });" class="item">
+            <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'grades' });" class="item">
                 <i class="fluid-icon">assessment</i> GPA
             </div>
-            <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'dashboard' });" class="item">
+            <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'dashboard' });" class="item">
                 <i class="fluid-icon">dashboard</i> Dashboard
             </div>
             ${dtps.env == "dev" ? /*html*/`
-                <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'debugging' });" class="item">
+                <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'debugging' });" class="item">
                     <i class="fluid-icon">bug_report</i> Debugging
                 </div>
-                <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'experiments' });" class="item">
+                <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'experiments' });" class="item">
                     <i class="fluid-icon">science</i> Experiments
                 </div>
             ` : ``}
-            <div onclick="$('.abtpage').hide();$('.abtpage.about').show();dtps.analytics.logEvent('select_content', { content_type: 'settings', tab: 'about' });" class="item abt">
+            <div onclick="$('.abtpage').hide();$('.abtpage.about').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'about' });" class="item abt">
                 <i class="fluid-icon">info</i> About
             </div>
         </div>
@@ -2083,6 +2099,11 @@ dtps.renderLite = function () {
                     <div style="display: inline-block; vertical-align: middle;">
                         <h4 style="font-weight: bold; font-size: 28px; margin-bottom: 0px;">Advanced Options</h4>
                     </div>
+
+                    <br /><br />
+                    <div onclick="fluid.set('pref-alternateFont')" class="switch pref-alternateFont"><span class="head"></span></div>
+                    <div class="label"><i class="fluid-icon">font_download</i> Use Alternate Font</div>
+                    <br /><br />
 
                     <div style="margin-top: 15px; margin-bottom: 7px;">
                         <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="fluid-icon" style="vertical-align: middle">refresh</i> Reset Power+</a>
