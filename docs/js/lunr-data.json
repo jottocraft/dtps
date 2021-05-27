@@ -326,6 +326,15 @@
           "load",
           "lt;static&gt"
         ],
+        "dtps.html#.init": [
+          "dtp",
+          "dtps.init",
+          "entrypoint",
+          "function",
+          "init",
+          "lt;static&gt",
+          "start"
+        ],
         "dtps.html#.filterSearch": [
           "dtps.filtersearch",
           "filter",
@@ -345,15 +354,6 @@
           "dtps.calendar",
           "function",
           "lt;static&gt"
-        ],
-        "dtps.html#.init": [
-          "dtp",
-          "dtps.init",
-          "entrypoint",
-          "function",
-          "init",
-          "lt;static&gt",
-          "start"
         ],
         "dtps.html#.loadPage": [
           "classnum",
@@ -4438,6 +4438,10 @@
                                     "ref": "dtps.html#.CSS",
                                     "tf": 50
                                   },
+                                  "dtps.html#.init": {
+                                    "ref": "dtps.html#.init",
+                                    "tf": 50
+                                  },
                                   "dtps.html#.filterSearch": {
                                     "ref": "dtps.html#.filterSearch",
                                     "tf": 33.33333333333333
@@ -4445,10 +4449,6 @@
                                   "dtps.html#.calendar": {
                                     "ref": "dtps.html#.calendar",
                                     "tf": 33.33333333333333
-                                  },
-                                  "dtps.html#.init": {
-                                    "ref": "dtps.html#.init",
-                                    "tf": 50
                                   },
                                   "dtps.html#.loadPage": {
                                     "ref": "dtps.html#.loadPage",
@@ -7074,6 +7074,10 @@
                             "ref": "dtps.html#.CSS",
                             "tf": 110
                           },
+                          "dtps.html#.init": {
+                            "ref": "dtps.html#.init",
+                            "tf": 122.5
+                          },
                           "dtps.html#.filterSearch": {
                             "ref": "dtps.html#.filterSearch",
                             "tf": 110
@@ -7081,10 +7085,6 @@
                           "dtps.html#.calendar": {
                             "ref": "dtps.html#.calendar",
                             "tf": 110
-                          },
-                          "dtps.html#.init": {
-                            "ref": "dtps.html#.init",
-                            "tf": 122.5
                           },
                           "dtps.html#.loadPage": {
                             "ref": "dtps.html#.loadPage",
@@ -12407,6 +12407,16 @@
       "summary": "",
       "description": "Load all DTPS CSS files"
     },
+    "dtps.html#.init": {
+      "id": "dtps.html#.init",
+      "kind": "function",
+      "title": "&lt;static&gt; init()",
+      "longname": "dtps.init",
+      "name": "init",
+      "tags": "dtps.init init",
+      "summary": "",
+      "description": "Starts DTPS (entrypoint function)"
+    },
     "dtps.html#.filterSearch": {
       "id": "dtps.html#.filterSearch",
       "kind": "function",
@@ -12426,16 +12436,6 @@
       "tags": "dtps.calendar calendar",
       "summary": "",
       "description": "Compiles and displays the assignment calendar"
-    },
-    "dtps.html#.init": {
-      "id": "dtps.html#.init",
-      "kind": "function",
-      "title": "&lt;static&gt; init()",
-      "longname": "dtps.init",
-      "name": "init",
-      "tags": "dtps.init init",
-      "summary": "",
-      "description": "Starts DTPS (entrypoint function)"
     },
     "dtps.html#.loadPage": {
       "id": "dtps.html#.loadPage",
