@@ -320,30 +320,10 @@ dtps.JS = function () {
         //Google Analytics
         jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=G-EH9P54G4CC");
 
-        //Configure analytics
-        (function () {
-            //Check for user opt-out
-            if (window.localStorage.dtpsAnalyticsOptOut == "true") {
-                window['ga-disable-G-EH9P54G4CC'] = true;
-            }
-
-            //Create gtag
-            window.dataLayer = window.dataLayer || [];
-            dtps.gtag = function () { dataLayer.push(arguments); }
-            dtps.gtag('js', new Date());
-
-            //Set gtag settings
-            dtps.gtag('set', {
-                'page_title': "Power+",
-                'page_location': window.location.protocol + '//' + window.location.host + window.location.pathname,
-                'appVersion': dtps.ver,
-                'env': dtps.env,
-                'releaseChannel': window.localStorage.dtpsLoaderPref || "prod",
-                'allow_google_signals': false,
-                'allow_ad_personalization_signals': false
-            });
-            dtps.gtag('config', 'G-EH9P54G4CC');
-        })();
+        //Check for analytics opt-out
+        if (window.localStorage.dtpsAnalyticsOptOut == "true") {
+            window['ga-disable-G-EH9P54G4CC'] = true;
+        }
 
         //Firebase modules
         jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
@@ -560,6 +540,22 @@ dtps.init = function () {
         //Add course num props
         dtps.classes.forEach((course, index) => course.num = index);
 
+        //Create gtag
+        window.dataLayer = window.dataLayer || [];
+        dtps.gtag = function () { dataLayer.push(arguments); }
+        dtps.gtag('js', new Date());
+
+        //Set gtag settings
+        dtps.gtag('set', {
+            'page_title': "Power+",
+            'page_location': window.location.protocol + '//' + window.location.host + window.location.pathname,
+            'appVersion': dtps.ver,
+            'env': dtps.env,
+            'releaseChannel': window.localStorage.dtpsLoaderPref || "prod",
+            'allow_google_signals': false,
+            'allow_ad_personalization_signals': false
+        });
+
         //Set user ID and properties
         dtps.gtag('set', 'user_properties', {
             user_id: CryptoJS.SHA1(window.location.host + "/" + dtps.user.id).toString(),
@@ -576,6 +572,9 @@ dtps.init = function () {
             fluidTheme: document.documentElement.dataset.theme,
             fluidThemeImage: document.documentElement.dataset.themeImage !== undefined
         });
+        
+        //Start gtag
+        dtps.gtag('config', 'G-EH9P54G4CC');
 
         //Define DTPS class color pallete
         var nearestCourseColor = nearestColor.from({
