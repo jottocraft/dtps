@@ -266,13 +266,6 @@
 									True if the search scroll listener has been added
 							</td>
 						</tr>
-						<tr>
-								<td><code>gtag</code></td>
-							<td><span class="param-type">object</span></td>
-							<td class="last">
-									The <a href="https://developers.google.com/analytics/devguides/collection/ga4">gtag</a> object for Google Analytics configuration
-							</td>
-						</tr>
 					</tbody>
 				</table>
 			</div>
@@ -654,6 +647,51 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
+			<h4 id=".class" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">class</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{object|undefined}</span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Debugging shortcut for getting the selected class. This should only be used in the web inspector and not in actual code.</div>
+			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
+							<div class="form-group">
+								<label class="col-sm-3 control-label returns-type"><span class="param-type">object</span> | <span class="param-type">undefined</span></label>
+								<div class="col-sm-9">
+									<div class="form-control-static returns-description">The selected class</div>
+								</div>
+							</div>
+					</form>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-99">line 99</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
 			<h4 id=".mergeAndRenderChildAssignments" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">mergeAndRenderChildAssignments</span><span class="signature-params">( <span class="signature-param">assignments</span>&nbsp;)</span><span class="signature-type"> &rarr;&nbsp;{string}</span></h4>
 		</dt>
 <dd class="symbol-details function public">
@@ -720,51 +758,6 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id=".class" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">class</span><span class="signature-params">()</span><span class="signature-type"> &rarr;&nbsp;{object|undefined}</span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Debugging shortcut for getting the selected class. This should only be used in the web inspector and not in actual code.</div>
-			</div>			<div class="callout callout-success"><h5>Returns</h5>		<form class="form-horizontal returns">
-							<div class="form-group">
-								<label class="col-sm-3 control-label returns-type"><span class="param-type">object</span> | <span class="param-type">undefined</span></label>
-								<div class="col-sm-9">
-									<div class="form-control-static returns-description">The selected class</div>
-								</div>
-							</div>
-					</form>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-109">line 109</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
 			<h4 id=".mainStream" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">mainStream</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
 		</dt>
 <dd class="symbol-details function public">
@@ -791,6 +784,64 @@
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
 									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-141">line 141</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id=".changelog" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">changelog</span><span class="signature-params">( <span class="signature-param">onlyIfNewVersion</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Fetches and displays the DTPS changelog modal</div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>onlyIfNewVersion</code></td>
+							<td></td>
+							<td class="last">
+									True if the changelog should only show if this is a new version
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-156">line 156</a></p>
 								</div>
 							</div>
 			
@@ -886,11 +937,11 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id=".changelog" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">changelog</span><span class="signature-params">( <span class="signature-param">onlyIfNewVersion</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id=".log" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">log</span><span class="signature-params">( <span class="signature-param">...msg</span>&nbsp;)</span><span class="signature-type"></span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Fetches and displays the DTPS changelog modal</div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Logs debugging messages</div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -898,15 +949,17 @@
 					<tr>
 							<th>Name</th>
 						<th>Type</th>
+							<th>Attributes</th>
 						<th class="last">Description</th>
 					</tr>
 					</thead>
 					<tbody>
 						<tr>
-								<td><code>onlyIfNewVersion</code></td>
-							<td></td>
+								<td><code>msg</code></td>
+							<td><span class="param-type">*</span></td>
+								<td class="attributes">&lt;repeatable&gt;<br/></td>
 							<td class="last">
-									True if the changelog should only show if this is a new version
+									The debugging messages to log
 							</td>
 						</tr>
 					</tbody>
@@ -932,7 +985,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-166">line 166</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-188">line 188</a></p>
 								</div>
 							</div>
 			
@@ -944,11 +997,11 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id=".log" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">log</span><span class="signature-params">( <span class="signature-param">...msg</span>&nbsp;)</span><span class="signature-type"></span></h4>
+			<h4 id=".error" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">error</span><span class="signature-params">( <span class="signature-param">msg</span> [,&nbsp;<span class="signature-param">devNotes</span> [,&nbsp;<span class="signature-param">err</span>&nbsp;]&nbsp;]&nbsp;)</span><span class="signature-type"></span></h4>
 		</dt>
 <dd class="symbol-details function public">
 	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Logs debugging messages</div>
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Shows an error message alert and logs to console</div>
 			</div>			<div class="callout callout-info">
 				<h5>Parameters</h5>
 				<table class="params table table-striped">
@@ -963,10 +1016,26 @@
 					<tbody>
 						<tr>
 								<td><code>msg</code></td>
-							<td><span class="param-type">*</span></td>
-								<td class="attributes">&lt;repeatable&gt;<br/></td>
+							<td><span class="param-type">string</span></td>
+								<td class="attributes"></td>
 							<td class="last">
-									The debugging messages to log
+									The error to display
+							</td>
+						</tr>
+						<tr>
+								<td><code>devNotes</code></td>
+							<td><span class="param-type">string</span></td>
+								<td class="attributes">&lt;optional&gt;<br/></td>
+							<td class="last">
+									Technical error details displayed in a smaller font
+							</td>
+						</tr>
+						<tr>
+								<td><code>err</code></td>
+							<td><span class="param-type">Error</span></td>
+								<td class="attributes">&lt;optional&gt;<br/></td>
+							<td class="last">
+									An error object to log to the console. If this is null, DTPS will assume the error has been handled elsewhere.
 							</td>
 						</tr>
 					</tbody>
@@ -1072,82 +1141,6 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id=".error" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">error</span><span class="signature-params">( <span class="signature-param">msg</span> [,&nbsp;<span class="signature-param">devNotes</span> [,&nbsp;<span class="signature-param">err</span>&nbsp;]&nbsp;]&nbsp;)</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Shows an error message alert and logs to console</div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-							<th>Attributes</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>msg</code></td>
-							<td><span class="param-type">string</span></td>
-								<td class="attributes"></td>
-							<td class="last">
-									The error to display
-							</td>
-						</tr>
-						<tr>
-								<td><code>devNotes</code></td>
-							<td><span class="param-type">string</span></td>
-								<td class="attributes">&lt;optional&gt;<br/></td>
-							<td class="last">
-									Technical error details displayed in a smaller font
-							</td>
-						</tr>
-						<tr>
-								<td><code>err</code></td>
-							<td><span class="param-type">Error</span></td>
-								<td class="attributes">&lt;optional&gt;<br/></td>
-							<td class="last">
-									An error object to log to the console. If this is null, DTPS will assume the error has been handled elsewhere.
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-212">line 212</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
 			<h4 id=".firstrun" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">firstrun</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
 		</dt>
 <dd class="symbol-details function public">
@@ -1173,7 +1166,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-230">line 230</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-214">line 214</a></p>
 								</div>
 							</div>
 			
@@ -1278,7 +1271,65 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-285">line 285</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-265">line 265</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id=".JS" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">JS</span><span class="signature-params">( <span class="signature-param">cb</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Load all external JavaScript libraries</div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>cb</code></td>
+							<td><span class="param-type">function</span></td>
+							<td class="last">
+									Callback function
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-284">line 284</a></p>
 								</div>
 							</div>
 			
@@ -1339,64 +1390,6 @@
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
 									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-295">line 295</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id=".JS" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">JS</span><span class="signature-params">( <span class="signature-param">cb</span>&nbsp;)</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Load all external JavaScript libraries</div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>cb</code></td>
-							<td><span class="param-type">function</span></td>
-							<td class="last">
-									Callback function
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-304">line 304</a></p>
 								</div>
 							</div>
 			
@@ -1472,7 +1465,44 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line-310">line 310</a></p>
+									<p class="form-control-static"><a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line-306">line 306</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id=".CSS" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">CSS</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Load all DTPS CSS files</div>
+			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-342">line 342</a></p>
 								</div>
 							</div>
 			
@@ -1544,43 +1574,6 @@
 </dd>
 											<hr/>
 											<dt class="symbol-title function public">
-			<h4 id=".CSS" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">CSS</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Load all DTPS CSS files</div>
-			</div>			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-361">line 361</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
 			<h4 id=".init" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">init</span><span class="signature-params">()</span><span class="signature-type"></span></h4>
 		</dt>
 <dd class="symbol-details function public">
@@ -1606,7 +1599,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-401">line 401</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-382">line 382</a></p>
 								</div>
 							</div>
 			
@@ -1796,7 +1789,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line-441">line 441</a></p>
+									<p class="form-control-static"><a href="pages-discussions.js.html">pages-discussions.js</a>, <a href="pages-discussions.js.html#line-437">line 437</a></p>
 								</div>
 							</div>
 			
@@ -1948,7 +1941,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-521">line 521</a></p>
+									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-519">line 519</a></p>
 								</div>
 							</div>
 			
@@ -2024,65 +2017,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-646">line 646</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id=".moduleStream" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">moduleStream</span><span class="signature-params">( <span class="signature-param">classID</span>&nbsp;)</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Shows the module stream for a class</div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>classID</code></td>
-							<td><span class="param-type">string</span></td>
-							<td class="last">
-									Class number to fetch modules for
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-776">line 776</a></p>
+									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-644">line 644</a></p>
 								</div>
 							</div>
 			
@@ -2148,7 +2083,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-810">line 810</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-755">line 755</a></p>
 								</div>
 							</div>
 			
@@ -2206,7 +2141,65 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-823">line 823</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-768">line 768</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id=".moduleStream" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">moduleStream</span><span class="signature-params">( <span class="signature-param">classID</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Shows the module stream for a class</div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>classID</code></td>
+							<td><span class="param-type">string</span></td>
+							<td class="last">
+									Class number to fetch modules for
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-770">line 770</a></p>
 								</div>
 							</div>
 			
@@ -2243,7 +2236,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-834">line 834</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-779">line 779</a></p>
 								</div>
 							</div>
 			
@@ -2303,7 +2296,65 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-846">line 846</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-791">line 791</a></p>
+								</div>
+							</div>
+			
+			
+			
+			
+					</form>
+			</div>	</div>
+</dd>
+											<hr/>
+											<dt class="symbol-title function public">
+			<h4 id=".presentClass" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">presentClass</span><span class="signature-params">( <span class="signature-param">classNum</span>&nbsp;)</span><span class="signature-type"></span></h4>
+		</dt>
+<dd class="symbol-details function public">
+	<div class="symbol-details-inner">
+			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Renders the class header (color, name, tabs, etc.) and sets the class as the selected class</div>
+			</div>			<div class="callout callout-info">
+				<h5>Parameters</h5>
+				<table class="params table table-striped">
+					<thead>
+					<tr>
+							<th>Name</th>
+						<th>Type</th>
+						<th class="last">Description</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+								<td><code>classNum</code></td>
+							<td><span class="param-type">number</span> | <span class="param-type">string</span></td>
+							<td class="last">
+									The class number to load or "dash" if loading the dashboard
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+							<!-- source -->
+							<div class="form-group">
+								<label class="col-sm-3 control-label">Source</label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-914">line 914</a></p>
 								</div>
 							</div>
 			
@@ -2375,7 +2426,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-929">line 929</a></p>
+									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-923">line 923</a></p>
 								</div>
 							</div>
 			
@@ -2433,65 +2484,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-955">line 955</a></p>
-								</div>
-							</div>
-			
-			
-			
-			
-					</form>
-			</div>	</div>
-</dd>
-											<hr/>
-											<dt class="symbol-title function public">
-			<h4 id=".presentClass" class="function public"><span class="signature-attribs">&lt;static> </span><span class="name">presentClass</span><span class="signature-params">( <span class="signature-param">classNum</span>&nbsp;)</span><span class="signature-type"></span></h4>
-		</dt>
-<dd class="symbol-details function public">
-	<div class="symbol-details-inner">
-			<div class="callout callout-primary"><h5>Description</h5>		<div class="description">Renders the class header (color, name, tabs, etc.) and sets the class as the selected class</div>
-			</div>			<div class="callout callout-info">
-				<h5>Parameters</h5>
-				<table class="params table table-striped">
-					<thead>
-					<tr>
-							<th>Name</th>
-						<th>Type</th>
-						<th class="last">Description</th>
-					</tr>
-					</thead>
-					<tbody>
-						<tr>
-								<td><code>classNum</code></td>
-							<td><span class="param-type">number</span> | <span class="param-type">string</span></td>
-							<td class="last">
-									The class number to load or "dash" if loading the dashboard
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<div class="callout callout-default"><h5>Details</h5>		<form class="form-horizontal details">
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-							<!-- source -->
-							<div class="form-group">
-								<label class="col-sm-3 control-label">Source</label>
-								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-969">line 969</a></p>
+									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-945">line 945</a></p>
 								</div>
 							</div>
 			
@@ -2564,7 +2557,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-984">line 984</a></p>
+									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-970">line 970</a></p>
 								</div>
 							</div>
 			
@@ -2622,7 +2615,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-1007">line 1007</a></p>
+									<p class="form-control-static"><a href="assignments.js.html">assignments.js</a>, <a href="assignments.js.html#line-993">line 993</a></p>
 								</div>
 							</div>
 			
@@ -2680,7 +2673,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1110">line 1110</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1055">line 1055</a></p>
 								</div>
 							</div>
 			
@@ -2738,7 +2731,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1170">line 1170</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1111">line 1111</a></p>
 								</div>
 							</div>
 			
@@ -2796,7 +2789,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1223">line 1223</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1164">line 1164</a></p>
 								</div>
 							</div>
 			
@@ -2872,7 +2865,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1241">line 1241</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1182">line 1182</a></p>
 								</div>
 							</div>
 			
@@ -2930,7 +2923,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1282">line 1282</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1223">line 1223</a></p>
 								</div>
 							</div>
 			
@@ -2990,7 +2983,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1314">line 1314</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1255">line 1255</a></p>
 								</div>
 							</div>
 			
@@ -3027,7 +3020,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1360">line 1360</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1297">line 1297</a></p>
 								</div>
 							</div>
 			
@@ -3064,7 +3057,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1367">line 1367</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1304">line 1304</a></p>
 								</div>
 							</div>
 			
@@ -3101,7 +3094,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1420">line 1420</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1357">line 1357</a></p>
 								</div>
 							</div>
 			
@@ -3138,7 +3131,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1445">line 1445</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1382">line 1382</a></p>
 								</div>
 							</div>
 			
@@ -3175,7 +3168,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1459">line 1459</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1396">line 1396</a></p>
 								</div>
 							</div>
 			
@@ -3212,7 +3205,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1477">line 1477</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1414">line 1414</a></p>
 								</div>
 							</div>
 			
@@ -3249,7 +3242,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1524">line 1524</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1461">line 1461</a></p>
 								</div>
 							</div>
 			
@@ -3286,7 +3279,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1712">line 1712</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1642">line 1642</a></p>
 								</div>
 							</div>
 			
@@ -3323,7 +3316,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label">Source</label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1814">line 1814</a></p>
+									<p class="form-control-static"><a href="core.js.html">core.js</a>, <a href="core.js.html#line-1744">line 1744</a></p>
 								</div>
 							</div>
 			
@@ -3345,7 +3338,7 @@
 	<footer>
 				<div class="footer-option"><img style='height: 32px; margin: 10px 0px;' src='https://cdn.jottocraft.com/images/footerImage.png' /></div>
 				<div class="copyright">(c) 2018-2021 jottocraft</div>
-			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on 27th May 2021 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
+			<div class="generated-by">Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a> on 2nd Jun 2021 using the <a href="https://github.com/steveush/foodoc">FooDoc template</a>.</div>
 	</footer>
 	<script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
