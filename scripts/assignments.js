@@ -500,8 +500,6 @@ dtps.calendar = function (doneLoading) {
                     dtps.renderDueToday(doneLoading, info.date);
                     dtps.renderUpcoming(info.date);
                     dtps.renderUpdates(true);
-
-                    dtps.gtag('event', 'dashboard_date_click');
                 },
                 eventClick: function (info) {
                     dtps.assignment(info.event.extendedProps.assignmentID, info.event.extendedProps.classNum);
@@ -762,10 +760,6 @@ dtps.assignment = function (id, classNum, generic) {
     //Close other active cards and open the assignment details card
     fluid.cards.close(".card.focus");
     fluid.cards(".card.details");
-
-    dtps.gtag('event', 'select_content', {
-        content_type: 'assignment'
-    });
 }
 
 /**
@@ -940,10 +934,6 @@ dtps.moduleCollapse = function (ele, classID, modID) {
         $(ele).html('keyboard_arrow_down');
         dtps.classes[dtps.selectedClass].modules.find(m => m.id == modID).collapsed = false;
     }
-
-    dtps.gtag('event', 'module_collapse', {
-        collapseAll: false
-    });
 }
 
 
@@ -968,10 +958,6 @@ dtps.moduleCollapseAll = function (collapse) {
         $("#moduleExpandCollapse").html(`<i class="fluid-icon">unfold_less</i> Collapse all`);
         $("#moduleExpandCollapse").attr("onclick", `dtps.moduleCollapseAll(true)`);
     }
-
-    dtps.gtag('event', 'module_collapse', {
-        collapseAll: true
-    });
 }
 
 /**

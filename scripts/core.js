@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.1.4
+ * @version v3.1.5
  * 
  * @copyright Copyright (c) 2018-2021 jottocraft
  * @license GPL-2.0-only
@@ -34,11 +34,10 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
- * @property {object} gtag The {@link https://developers.google.com/analytics/devguides/collection/ga4|gtag} object for Google Analytics configuration
  */
 var dtps = {
-    ver: 314,
-    readableVer: "v3.1.4",
+    ver: 315,
+    readableVer: "v3.1.5",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -73,33 +72,24 @@ var dtps = {
         }
     ],
     remoteConfig: {
-        canvasRequestSpacing: 25,
-        gradeCalculationEnabled: true,
         allowWhatIfGrades: true,
-        showVideoMeetingButton: true,
-        dtechCurrentTerm: "S2",
+        canvasRequestSpacing: 25,
         debugClassID: "1098",
-        topSneaky: false,
-        topSneakyUI: false,
-        useV5ThemeSelectionUI: false,
+        dtechCurrentTerm: "S2",
+        gradeCalculationEnabled: true,
         loadingAlert: false,
         remoteUpdate: {
             title: null,
             html: null,
             active: false
-        }
+        },
+        showVideoMeetingButton: true,
+        webAnalytics: true
     }
 };
 
 //Load jQuery ASAP
 jQuery.getScript("https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js");
-
-//Fluid UI screen change listener
-document.addEventListener("fluidScreen", function (data) {
-    dtps.gtag('event', 'screen_view', {
-        'screen_name': data.detail
-    });
-});
 
 /**
  * Debugging shortcut for getting the selected class. This should only be used in the web inspector and not in actual code.
@@ -176,7 +166,6 @@ dtps.changelog = function (onlyIfNewVersion) {
                 //Show changelog
                 fluid.cards.close(".card.focus");
                 fluid.cards(".card.changelog");
-                dtps.gtag('event', 'changelog', { forNewVersion: false });
             } else if (Number(data.tag_name.replace(/[^0-9]/g, '')) > Number(window.localStorage.dtps)) {
                 //Show changelog if this is a new(er) version
                 localStorage.setItem('dtps', data.tag_name.replace(/[^0-9]/g, ''));
@@ -185,7 +174,6 @@ dtps.changelog = function (onlyIfNewVersion) {
                     //s in tag_name means a silent release
                     fluid.cards.close(".card.focus");
                     fluid.cards(".card.changelog");
-                    dtps.gtag('event', 'changelog', { forNewVersion: true });
                 }
             }
         });
@@ -217,10 +205,6 @@ dtps.error = function (msg, devNotes, err) {
         }
         console.error("[DTPS !!ERROR!!]", devNotes + ": ", err);
         fluid.alert("Error", msg + formattedDevNotes, "error");
-        dtps.gtag('event', 'exception', {
-            description: msg,
-            devNotes: devNotes
-        });
     }
 }
 
@@ -253,10 +237,8 @@ dtps.firstrun = function () {
             <div class="welcomeSection">
                 <i class="fluid-icon">security</i>
                 <h5>Privacy</h5>
-                <p>Power+ uses Google Analytics to collect basic non-personally identifiable information to understand how people use Power+.
-                 Data collected does not use Google account signals, is not used for ad personalization, and is not shared with Google or other third parties.
+                <p>Power+ uses Cloudflare Web Analytics to count page views, load times, browsers, devices, and Canvas instances used with Power+.
                  Power+ does <b>not</b> and will <b>never</b> collect any personal information, such as names, classes, or grades.
-                 To learn more about your privacy on Power+ and how to opt-out of analytics, check the privacy section at <a href="https://powerplus.app">powerplus.app</a> or contact <a href="mailto:privacy@jottocraft.com">privacy@jottocraft.com</a> with any questions.</p>
             </div>
             <div class="welcomeSection">
                 <i class="fluid-icon">priority_high</i>
@@ -275,8 +257,6 @@ dtps.firstrun = function () {
     //Show Welcome to DTPS card
     fluid.cards.close(".card.focus");
     fluid.cards(".card.changelog", "stayOpen");
-
-    dtps.gtag('event', 'firstrun');
 };
 
 /**
@@ -317,12 +297,13 @@ dtps.JS = function () {
         //Tinycolor used for better dark mode support
         jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js");
 
-        //Google Analytics
-        jQuery.getScript("https://www.googletagmanager.com/gtag/js?id=G-EH9P54G4CC");
-
-        //Check for analytics opt-out
-        if (window.localStorage.dtpsAnalyticsOptOut == "true") {
-            window['ga-disable-G-EH9P54G4CC'] = true;
+        //Cloudflare Web Analytics
+        if (dtps.remoteConfig.webAnalytics) {
+            var script = document.createElement("script");
+            script.defer = true;
+            script.src = "https://static.cloudflareinsights.com/beacon.min.js";
+            script.setAttribute("data-cf-beacon", '{"token": "9c34e6fb6b0346c9921e4c04f3ade1ed"}');
+            document.head.appendChild(script);
         }
 
         //Firebase modules
@@ -539,42 +520,6 @@ dtps.init = function () {
 
         //Add course num props
         dtps.classes.forEach((course, index) => course.num = index);
-
-        //Create gtag
-        window.dataLayer = window.dataLayer || [];
-        dtps.gtag = function () { dataLayer.push(arguments); }
-        dtps.gtag('js', new Date());
-
-        //Set gtag settings
-        dtps.gtag('set', {
-            'page_title': "Power+",
-            'page_location': window.location.protocol + '//' + window.location.host + window.location.pathname,
-            'appVersion': dtps.ver,
-            'env': dtps.env,
-            'releaseChannel': window.localStorage.dtpsLoaderPref || "prod",
-            'allow_google_signals': false,
-            'allow_ad_personalization_signals': false
-        });
-
-        //Set user ID and properties
-        dtps.gtag('set', 'user_properties', {
-            user_id: CryptoJS.SHA1(window.location.host + "/" + dtps.user.id).toString(),
-            dtpsEnv: dtps.env,
-            dtpsLoader: window.dtpsPreLoader ? "preloader" : window.dtpsLoader,
-            isParent: dtps.user.parent || false,
-            numClasses: dtps.classes.length,
-            host: window.location.host,
-            hideGrades: fluid.get("pref-hideGrades") == "true",
-            alternateFont: fluid.get("pref-alternateFont") == "true",
-            autoGroupClasses: fluid.get("pref-autoGroupClasses") !== "false",
-            fullNames: fluid.get("pref-fullNames") == "true",
-            hideClassImages: fluid.get("pref-hideClassImages") == "true",
-            fluidTheme: document.documentElement.dataset.theme,
-            fluidThemeImage: document.documentElement.dataset.themeImage !== undefined
-        });
-        
-        //Start gtag
-        dtps.gtag('config', 'G-EH9P54G4CC');
 
         //Define DTPS class color pallete
         var nearestCourseColor = nearestColor.from({
@@ -1073,7 +1018,7 @@ dtps.presentClass = function (classNum) {
         }
 
         if (dtps.classes[classNum].videoMeetingURL) {
-            $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.gtag('event', 'select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
+            $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "');");
             $("#classInfo .videoMeeting").removeClass("shimmerParent");
             $("#classInfo .videoMeeting").show();
         } else if ((dtps.classes[classNum].videoMeetingURL !== null) && dtpsLMS.fetchMeetingURL) {
@@ -1086,7 +1031,7 @@ dtps.presentClass = function (classNum) {
 
                 if (dtps.selectedClass == classNum) {
                     if (url) {
-                        $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "'); dtps.gtag('event', 'select_content', { content_type: 'videoMeeting', from: 'classInfo' });");
+                        $("#classInfo .videoMeeting").attr("onclick", "window.open('" + dtps.classes[classNum].videoMeetingURL + "');");
                         $("#classInfo .videoMeeting").removeClass("shimmerParent");
                         $("#classInfo .videoMeeting").show();
                     } else {
@@ -1149,10 +1094,6 @@ dtps.classHome = function (num) {
             `);
 
             fluid.cards(".card.details");
-
-            dtps.gtag('event', 'select_content', {
-                content_type: 'homepage'
-            });
         } else {
             fluid.cards.close('.card.details');
             dtps.error("Homepage unavailable", "homepage is either empty or undefined @ dtps.classHome");
@@ -1348,10 +1289,6 @@ dtps.settings = function (forceRerenderDashboard) {
     dtps.renderGradesInSettings();
 
     fluid.cards('.settingsCard');
-
-    dtps.gtag('event', 'select_content', {
-        content_type: 'settings'
-    });
 }
 
 /**
@@ -1695,13 +1632,6 @@ dtps.render = function () {
                 });
                 $("#dtpsMainSearchBox").blur();
             }
-
-            dtps.gtag('event', 'search', {
-                search_term: term,
-                type: $("#dtpsMainSearchBox").attr("data-search-type"),
-                typeOverridden: $("#dtpsMainSearchBox").attr("data-search-type") !== $("#dtpsMainSearchBox").attr("data-ctx-type"),
-                courseOverridden: $("#dtpsMainSearchBox").attr("data-dtps-course") !== $("#dtpsMainSearchBox").attr("data-ctx-course")
-            });
         }
     });
 }
@@ -1850,27 +1780,27 @@ dtps.renderLite = function () {
 	            </div>
             </div>
 
-            <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'settings' });" class="item active">
+            <div onclick="$('.abtpage').hide();$('.abtpage.settings').show();" class="item active">
                 <i class="fluid-icon">settings</i> Settings
             </div>
-            <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'theme' });" class="item">
+            <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();" class="item">
                 <i class="fluid-icon">format_paint</i> Theme
             </div>
-            <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'grades' });" class="item">
+            <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
                 <i class="fluid-icon">assessment</i> GPA
             </div>
-            <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'dashboard' });" class="item">
+            <div onclick="$('.abtpage').hide();$('.abtpage.dashboard').show();" class="item">
                 <i class="fluid-icon">dashboard</i> Dashboard
             </div>
             ${dtps.env == "dev" ? /*html*/`
-                <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'debugging' });" class="item">
+                <div onclick="$('.abtpage').hide();$('.abtpage.debugging').show();" class="item">
                     <i class="fluid-icon">bug_report</i> Debugging
                 </div>
-                <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'experiments' });" class="item">
+                <div onclick="$('.abtpage').hide();$('.abtpage.experiments').show();" class="item">
                     <i class="fluid-icon">science</i> Experiments
                 </div>
             ` : ``}
-            <div onclick="$('.abtpage').hide();$('.abtpage.about').show();dtps.gtag('event', 'select_content', { content_type: 'settings', tab: 'about' });" class="item abt">
+            <div onclick="$('.abtpage').hide();$('.abtpage.about').show();" class="item abt">
                 <i class="fluid-icon">info</i> About
             </div>
         </div>
@@ -2107,7 +2037,6 @@ dtps.renderLite = function () {
                     <div style="margin-top: 15px; margin-bottom: 7px;">
                         <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="dtps.clearData();"><i class="fluid-icon" style="vertical-align: middle">refresh</i> Reset Power+</a>
                         <a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="if (confirm('Prerelease versions of Power+ are often untested and can break or display incorrect information. Are you sure you want to continue?')) {window.localStorage.prereleaseEnabled = 'true'; $('#dtpsPrereleaseTesting').show(); alert('Prerelease versions can be enabled by going to Settings -> Prerelease testing');}"><i class="fluid-icon" style="vertical-align: middle">feedback</i> Test prerelease versions</a>
-                        ${window.localStorage.dtpsAnalyticsOptOut == "true" ? `<a style="color: var(--secText); margin: 0px 5px;">Analytics disabled</a>` : `<a style="color: var(--lightText); margin: 0px 5px; cursor: pointer;" onclick="window.localStorage.dtpsAnalyticsOptOut = 'true'; window.alert('Analytics have been disabled on this device. The page will now reload.'); window.location.reload();"><i class="fluid-icon" style="vertical-align: middle">analytics</i> Analytics opt-out</a>`}
                     </div>
                 </div>
 

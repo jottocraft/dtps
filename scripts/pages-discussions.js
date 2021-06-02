@@ -214,7 +214,7 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
                                     <h5>${reply.author.name}</h5>
                                 ` : ``}
                                 
-                                <span style="cursor: pointer;" onclick="window.open('${reply.replyURL}'); dtps.gtag('event', 'select_content', { content_type: 'discussionNestedReply' });">
+                                <span style="cursor: pointer;" onclick="window.open('${reply.replyURL}');">
                                     <i class="fluid-icon">reply</i>
                                     <span>Reply</span>
                                 </span>
@@ -268,9 +268,9 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
                         ${post.replyURL ? /*html*/`
                             <div ${index == 0 ? `style="margin-top: 32px;"` : ""} class="discussionFooter">
                                 ${index == 0 ? /*html*/`
-                                    <button onclick="window.open('${post.replyURL}');dtps.gtag('event', 'select_content', { content_type: 'discussionPostReply' });" class="btn small"><i class="fluid-icon">post_add</i> Add Post</button>
+                                    <button onclick="window.open('${post.replyURL}');" class="btn small"><i class="fluid-icon">post_add</i> Add Post</button>
                                 ` : /*html*/`
-                                    <button onclick="window.open('${post.replyURL}');dtps.gtag('event', 'select_content', { content_type: 'discussionMainReply' });" class="btn small"><i class="fluid-icon">reply</i> Reply</button>
+                                    <button onclick="window.open('${post.replyURL}');" class="btn small"><i class="fluid-icon">reply</i> Reply</button>
                                 `}
                             </div> 
                         ` : ""}
@@ -291,10 +291,6 @@ dtps.loadThreadPosts = function (classNum, threadID, fromModules, defaultPost) {
                 $("[data-post-id=" + defaultPost + "]").get(0).scrollIntoView();
             }
         }
-
-        dtps.gtag('event', 'select_content', {
-            content_type: 'discussionThread'
-        });
     }).catch(function (err) {
         dtps.error("Could not fetch discussion posts", "Caught promise rejection @ dtps.loadThreadPosts", err);
     });
@@ -504,10 +500,6 @@ dtps.loadPage = function (classNum, pageID, fromModules) {
                     <iframe id="classPageIframe" onload="dtps.iframeLoad('classPageIframe')" style="margin: 10px 0px; width: 100%; border: none; outline: none;" src="${pageContentURL}" />
                 </div>
             `);
-
-            dtps.gtag('event', 'select_content', {
-                content_type: 'pageContent'
-            });
         }
     }).catch((err) => {
         dtps.error("Couldn't load page", "Caught promise rejection @ dtps.loadPage", err);
