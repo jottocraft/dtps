@@ -354,7 +354,7 @@ dtps.renderUpdates = function (dateSelected) {
     //Get updates HTML
     var updatesHTML = "";
 
-    if (dtps.remoteConfig.remoteUpdate.active && (dtps.remoteConfig.host ? dtps.remoteConfig.host == window.location.host : true)) {
+    if (dtps.remoteConfig.remoteUpdate.active && (dtps.remoteConfig.remoteUpdate.host ? dtps.remoteConfig.remoteUpdate.host == window.location.host : true)) {
         updatesHTML += /*html*/`
             <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
                 <div class="className">
