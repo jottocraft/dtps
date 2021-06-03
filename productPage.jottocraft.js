@@ -5,7 +5,7 @@ Object.defineProperty(window, "s", {
         description: "Stay on top of your coursework ~at a glance~ and with real-time ~CBL~ grade calculation.",
         productImage: "/assets/productImage.png",
         colors: { brand: "#d4a426", brandDark: "#b78e23" },
-        copyright: "(c) jottocraft 2018-2021. [source code](https://github.com/jottocraft/dtps) [license](https://github.com/jottocraft/dtps/blob/main/LICENSE)",
+        copyright: "(c) jottocraft 2018-2021. [source code](https://github.com/jottocraft/dtps) / [license](https://github.com/jottocraft/dtps/blob/main/LICENSE)",
         links: [
             { name: "Get the extension", type: "main", newWindow: true, icon: "extension", href: "https://chrome.google.com/webstore/detail/power%20/pakgdifknldaiglefmpkkgfjndemfapo" },
             { name: "Demo", icon: "exit_to_app", href: "/demo" }
