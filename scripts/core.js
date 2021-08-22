@@ -36,8 +36,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
  */
 var dtps = {
-    ver: 316,
-    readableVer: "v3.1.6",
+    ver: 317,
+    readableVer: "v3.1.7",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -74,8 +74,8 @@ var dtps = {
     remoteConfig: {
         allowWhatIfGrades: true,
         canvasRequestSpacing: 25,
-        debugClassID: "1098",
-        dtechCurrentTerm: "S2",
+        debugClassID: "1455",
+        dtechCurrentTerm: "S1",
         gradeCalculationEnabled: true,
         loadingAlert: false,
         remoteUpdate: {
