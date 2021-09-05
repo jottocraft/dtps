@@ -3,14 +3,18 @@ Power+ CSS
 (c) jottocraft 2018-2021
 */
 
+[data-theme-image] .sidebar {
+    background-color: transparent;
+}
+
 [data-theme-type=light] {
     --theme: #ccac56 !important;
     --themeText: #ffffff !important;
 }
 
 [data-theme-type=dark] {
-    --theme: #8c7541 !important;
-    --themeText: #ffffff !important;
+    --theme: #cc9e54 !important;
+    --themeText: #261900 !important;
 }
 
 .alternateFont {
@@ -907,19 +911,37 @@ Power+ CSS
     font-size: 14px;
     opacity: 0.5;
     position: absolute;
-    top: 50px;
+    top: 40px;
 }
 
 .fixedGradeSummary #gradeSummary {
     left: 275px;
+    border-radius: 0px 0px 20px 20px;
     padding: 20px;
     position: fixed;
     top: 60px;
-    z-index: 99;
+    z-index: 98;
     width: calc(100% - 275px);
     margin: 0px !important;
-    background: var(--navbar);
+    background: var(--acrylic);
     backdrop-filter: blur(20px);
+    box-shadow: var(--cardShadow);
+}
+
+.block.status {
+    min-height: 120px !important;
+}
+
+.block.status .main {
+    font-size: 28px !important;
+}
+
+.block.status .bottom {
+    font-size: 14px !important;
+}
+
+.block i {
+    font-size: 20px !important;
 }
 
 body.collapsedSidebar .fixedGradeSummary #gradeSummary {
