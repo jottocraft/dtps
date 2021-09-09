@@ -121,7 +121,7 @@ dtps.usersList = function (courseID) {
                 ` + sections.map(section => (
                     /*html*/`
                         <div class="card">
-                            <h5><b>${section.title}</b></h5>
+                            <h5><b>${section.title}</b> (${section.users.length} students)</h5>
                             ${section.users.map(user => (
                                 /*html*/`
                                     <div>
