@@ -66,12 +66,9 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
         return new Promise((resolve, reject) => {
             var tmpNewArray = [];
             classes.forEach((course, i) => {
-                //Fitler out first semester courses
-                if (course.term == "20-21") return;
+                //Fitler out outdated courses
                 if (course.endDate && (new Date() > new Date(course.endDate))) return;
-
-                //Manually filter out other stale courses
-                if (course.name.toUpperCase().includes("FEB 2021")) return;
+                if (course.termEndDate && (new Date() > new Date(course.termEndDate))) return;
 
                 //Get course period
                 var matches = course.period.match(/[0-9](?=\(A)/);
@@ -93,7 +90,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
 
                 //Get course cycle
                 if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
-                    if (course.term == "20-21") {
+                    if (false && (course.term == "S1")) {
                         course.group = "Semester 1";
                     } else if ((course.period >= 1) && (course.period <= 3)) {
                         course.group = "Cycle 1/3";
@@ -220,13 +217,17 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
         //If there is no grade calculation formula, don't run grade calc
         if (!formula) return;
 
+        if (assignments.find(a => a.error)) {
+            if (dtps.remoteConfig.angryOnRubricError == 1) return;
+        }
+
         //Run d.tech grade calculation
         var dtechResults = dtechGradeCalc.run(assignments, formula);
 
         if (dtechResults) {
             //Class has a grade
             return {
-                letter: dtechResults.results.letter,
+                letter: assignments.find(a => a.error) ? "ERROR" : dtechResults.results.letter,
                 dtech: dtechResults //Return dtech results for gradebook
             };
         } else {
@@ -341,7 +342,6 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
          * @return {object} Grade calculation results
          */
         run: function (assignments, formula, outcomesOverride) {
-
             //Array of grade variations
             var gradeVariations = [];
 
@@ -539,52 +539,71 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
             if (course.gradeCalculation && course.gradeCalculation.dtech) {
                 //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
                 if (course.gradeCalculation.dtech.formula == "2020-DASH-LT") {
+                    var erroredAssignments = course.assignments.filter(a => a.error);
                     var gradeCalcSummary = /*html*/`
-                    <div id="gradeSummary" style="--size: 250px; margin: 0px 20px; --classColor: ${course.color};" class="grid flex">
-                      <div style="background-color: var(--classColor); color: white;" class="block status letterGrade card">
-                        <h2 class="main">${course.letter}</h2>
-                        ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
-                        <h5 class="bottom"><i class="fluid-icon">grade</i> Grade</h5>
-                      </div>
-                      <div class="block status number75">
-                        <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(2)}</h2>
-                        <h5 class="bottom"><i class="fluid-icon">functions</i> 75% of outcomes (rounded down, ${course.gradeCalculation.dtech.results.parameters.number75thresh}) ≥</h5>
-                      </div>
-                      <div class="block status lowestScore">
-                        <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(2)}</h2>
-                        <h5 class="bottom"><i class="fluid-icon">leaderboard</i> Lowest outcome</h5>
-                      </div>
-                    </div>
-
-                    <div style="--classColor: ${course.color};${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
-                            <br />
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                    <th>&nbsp;&nbsp;Final Letter</th>
-                                    <th>75% (rounded down) of outcomes are ≥</th>
-                                    <th>No outcomes below</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    ${dtechGradeCalc.letters.map(letter => {
-                        return /*html*/`
-                                            <tr class="letter${letter} ${course.letter == letter ? `active` : ``}">
-                                                <td>&nbsp;&nbsp;${letter}</td>
-                                                <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].percentage[letter]}</td>
-                                                <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].lowest[letter]}</td>
-                                            </tr>
-                                        `
-                    }).join("")}
-                                </tbody>
-                            </table>
+                        <div id="gradeSummary" style="--size: 250px; margin: 0px 20px; --classColor: ${course.color};" class="grid flex">
+                          ${erroredAssignments.length ? /*html*/`
+                            <div style="color: #f2392c;" class="block status letterGrade card">
+                              <h2 class="main">${course.gradeCalculation.dtech.results.letter}</h2>
+                              <h5 class="bottom"><i class="fluid-icon">error</i> Data incomplete</h5>
+                            </div>
+                          ` : /*html*/`
+                            <div style="background-color: var(--classColor); color: white;" class="block status letterGrade card">
+                              <h2 class="main">${course.letter}</h2>
+                              ${course.previousLetter ? `<h5 class="previousGrade">Previous grade: ${course.previousLetter}</h5>` : ""}
+                              <h5 class="bottom"><i class="fluid-icon">grade</i> Grade</h5>
+                            </div>
+                          `}
+                          <div class="block status number75">
+                            <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.number75.toFixed(2)}</h2>
+                            <h5 class="bottom"><i class="fluid-icon">functions</i> 75% of outcomes (rounded down, ${course.gradeCalculation.dtech.results.parameters.number75thresh}) ≥</h5>
+                          </div>
+                          <div class="block status lowestScore">
+                            <h2 class="main numFont">${course.gradeCalculation.dtech.results.parameters.lowestScore.toFixed(2)}</h2>
+                            <h5 class="bottom"><i class="fluid-icon">leaderboard</i> Lowest outcome</h5>
+                          </div>
                         </div>
 
-                    <div onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).children('i').text('keyboard_arrow_up'); $(this).children('span').text('Show less'); dtps.gradebookExpanded = true;} else {$(this).children('i').text('keyboard_arrow_down'); $(this).children('span').text('Show more'); dtps.gradebookExpanded = false;}" class="gradeSummaryShowHide">
-                        ${dtps.gradebookExpanded ? `<i class="fluid-icon">keyboard_arrow_up</i> <span>Show less</span>` : `<i class="fluid-icon">keyboard_arrow_down</i> <span>Show more</span>`}
-                    </div>
-                `;
+                        <div style="--classColor: ${course.color};${dtps.gradebookExpanded ? "" : "display: none;"}" id="classGradeMore">
+                                <br />
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                        <th>&nbsp;&nbsp;Final Letter</th>
+                                        <th>75% (rounded down) of outcomes are ≥</th>
+                                        <th>No outcomes below</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        ${dtechGradeCalc.letters.map(letter => {
+                        return /*html*/`
+                                                <tr class="letter${letter} ${course.letter == letter ? `active` : ``}">
+                                                    <td>&nbsp;&nbsp;${letter}</td>
+                                                    <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].percentage[letter]}</td>
+                                                    <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].lowest[letter]}</td>
+                                                </tr>
+                                            `
+                    }).join("")}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        <div onclick="$('#classGradeMore').toggle(); if ($('#classGradeMore').is(':visible')) {$(this).children('i').text('keyboard_arrow_up'); $(this).children('span').text('Show less'); dtps.gradebookExpanded = true;} else {$(this).children('i').text('keyboard_arrow_down'); $(this).children('span').text('Show more'); dtps.gradebookExpanded = false;}" class="gradeSummaryShowHide">
+                            ${dtps.gradebookExpanded ? `<i class="fluid-icon">keyboard_arrow_up</i> <span>Show less</span>` : `<i class="fluid-icon">keyboard_arrow_down</i> <span>Show more</span>`}
+                        </div>
+
+                        ${erroredAssignments.length ? /*html*/`
+                            <div style="margin: 20px;">
+                                <h5>Incomplete Data</h5>
+                                <p>
+                                    Power+ encountered an error when fetching data for the following ${erroredAssignments.length} assignment(s): ${erroredAssignments.map(a => `<a style="cursor: pointer;" onclick="${`dtps.assignment('` + a.id + `', ` + a.class + `)`}">${a.title}</a>`).join(", ")}.
+                                    Since this appears to be an issue with Canvas that is also affecting the d.tech CBL grade dashboard, Power+ is still calculating your grade for this class with the errored data omitted.
+                                    If you have any questions or information regarding this issue, please email me at <a href="mailto:hello@jottocraft.com">hello@jottocraft.com</a>.
+                                </p>
+                            </div>
+                        ` : ``}
+                    `;
                 } else {
                     var gradeCalcSummary = ""; //no grade calculation for this class
                 }
