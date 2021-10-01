@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.1.9
+ * @version v3.2.0
  * 
  * @copyright Copyright (c) 2018-2021 jottocraft
  * @license GPL-2.0-only
@@ -36,8 +36,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
  */
 var dtps = {
-    ver: 319,
-    readableVer: "v3.1.9",
+    ver: 320,
+    readableVer: "v3.2.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -85,7 +85,8 @@ var dtps = {
             active: false
         },
         showVideoMeetingButton: true,
-        webAnalytics: true
+        webAnalytics: true,
+        angryOnRubricError: 0
     }
 };
 
@@ -800,6 +801,7 @@ dtps.showClasses = function (override) {
         if (dtps.classes[i].letter) letterGradeHTML = dtps.classes[i].letter;
         if (dtps.classes[i].letter == null) letterGradeHTML = "--";
         if (dtps.classes[i].letter == "...") letterGradeHTML = `<div class="shimmer" style="vertical-align:middle;display: inline-block;width: 22px;height: 22px;border-radius: 8px;"></div>`; //Show loading indicator for ...
+        if (dtps.classes[i].letter == "ERROR") letterGradeHTML = `<i class="fluid-icon">error</i>`;
 
         if (dtps.classes[i].group && (dtps.classes[i].group !== previousClassGroup)) {
             if (previousClassGroup) dtps.classlist.push(`</div></div>`);
@@ -1227,7 +1229,7 @@ dtps.logGrades = function (classNum) {
         gradeHistory-ID: current|previous (e.g. "A|B+" represents a change of B+ -> A)
         if there is only one grade, it is the current one
     */
-    if (!dtps.classes[classNum].letter) return;
+    if (!dtps.classes[classNum].letter || (dtps.classes[classNum].letter == "...") || (dtps.classes[classNum].letter == "ERROR")) return;
     if (window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id)) {
         var savedCurrent = window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id).split("|")[0];
         var savedPrevious = window.localStorage.getItem("gradeHistory-" + dtps.classes[classNum].id).split("|")[1];
@@ -2288,7 +2290,10 @@ dtps.init();
 * @property {string} [icon] The icon to show with this class
 * @property {string} [group] The name of the group that this class is in
 * @property {number|string} [period] The period or section the user has this class at
-* @property {Date} [endDate] The end date for this course
+* @property {Date} [startDate] The start date for this course. Only used internally for filtering out stale courses.
+* @property {Date} [endDate] The end date for this course. Only used internally for filtering out stale courses.
+* @property {Date} [termStartDate] The start date for the term this course is in. Only used internally for filtering out stale courses.
+* @property {Date} [termEndDate] The end date for the term this course is in. Only used internally for filtering out stale courses.
 * @property {Assignment[]} assignments Class assignments. Assume assignments are still loading if this is undefined. The class has no assignments if this is an empty array. Loaded in dtps.init.
 * @property {Module[]|boolean} [modules] Class modules. Assume this class supports the modules feature, but is not yet loaded, if this is true and that the class has no modules if this is an empty array. For LMSs that do not support modules, either keep it undefined or set it to false.
 * @property {DiscussionThread[]|boolean} [discussions] Class discussion threads. Assume this class supports discussions, but not yet loaded, if this is true and that the class has no threads if this is an empty array. For LMSs that do not support discussions, either keep it undefined or set it to false.

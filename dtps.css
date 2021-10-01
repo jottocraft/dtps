@@ -377,7 +377,7 @@ Power+ CSS
 
 .infoChip {
     vertical-align: middle;
-    margin: 0px 5px;
+    margin: 0px 3px;
     display: inline-block;
     font-size: 14px;
     height: 20px;
@@ -885,7 +885,8 @@ Power+ CSS
 }
 
 .gradeSummaryShowHide {
-    margin: 10px 0px;
+    margin-top: 40px;
+    margin-bottom: 20px;
     cursor: pointer;
     text-align: center;
 }
@@ -950,13 +951,13 @@ body.collapsedSidebar .fixedGradeSummary #gradeSummary {
 }
 
 .classContent.fixedGradeSummary {
-    padding-top: 160px;
+    padding-top: 130px;
 }
 
 .block .showActualGrades {
     font-size: 14px;
     position: absolute;
-    top: 50px;
+    top: 40px;
     color: var(--secText);
     cursor: pointer;
 }

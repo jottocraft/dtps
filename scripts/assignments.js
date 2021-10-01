@@ -38,6 +38,7 @@ dtps.renderAssignment = function (assignment, childDisplay) {
             <h5>
                 <!-- Assignment info -->
                 <div class="info">
+                    ${assignment.error ? `<div style="color: #f2392c;" class="infoChip weighted"><i class="fluid-icon">error</i> Error</div>` : ""}
                     ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
                     ${assignment.outcomes ? `<div class="infoChip weighted"><i class="fluid-icon">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
                     ${assignment.category ? `<div class="infoChip weighted"><i class="fluid-icon">category</i> ` + assignment.category + `</div>` : ""}
@@ -727,6 +728,18 @@ dtps.assignment = function (id, classNum, generic) {
                 ${generic ? "" : scoreHTML}
             </div>
 
+            ${assignment.error ? /*html*/`
+                <div>
+                    <div class="alert error"> 
+                        <div class="header"> 
+                          <h5><i class="fluid-icon">error</i> Assignment Error</h5> 
+                        </div> 
+
+                        <p>${assignment.error}</p> 
+                    </div>
+                </div>
+            ` : ``}
+
             <div style="margin-top: 20px;" class="assignmentBody">
                 ${assignment.body ? assignmentBodyHTML : ""}
             </div>
@@ -1159,6 +1172,7 @@ fluid.externalScreens.gradebook = (courseID) => {
 * @property {string} [letter] Letter grade on this assignment
 * @property {number} [value] Total amount of points possible for this assignment
 * @property {RubricItem[]} [rubric] Assignment rubric
+* @property {string} [error] If an error occures when processing this assignment, store an error message here to notify the user that some features/data may be unavailable
 */
 
 /**

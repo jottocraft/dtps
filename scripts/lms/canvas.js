@@ -132,7 +132,9 @@ dtpsLMS.fetchClasses = function (userID) {
                     modules: course.tabs.map(tab => tab.id).includes("modules"),
                     discussions: true || course.tabs.map(tab => tab.id).includes("discussions"),
                     endDate: course.end_at,
-                    startDate: course.start_at
+                    startDate: course.start_at,
+                    termEndDate: course.term?.end_at,
+                    termStartDate: course.term?.start_at
                 };
 
                 //Save teachers in cache
@@ -240,12 +242,21 @@ dtpsLMS.fetchAssignments = function (userID, classID) {
                     if (submission.assignment_id == assignment.id) {
                         //Add scores from this submission to the rubric
                         if (submission.rubric_assessment) {
-                            dtpsAssignment.rubric.forEach(rubric => {
-                                if (submission.rubric_assessment[rubric.id]) {
-                                    rubric.score = submission.rubric_assessment[rubric.id].points;
-                                    rubric.scoreName = temporaryScoreNames[rubric.id][rubric.score];
-                                }
-                            });
+                            let matches = 0;
+                            if (dtpsAssignment.rubric) {
+                                dtpsAssignment.rubric.forEach(rubric => {
+                                    if (submission.rubric_assessment[rubric.id]) {
+                                        rubric.score = submission.rubric_assessment[rubric.id].points;
+                                        rubric.scoreName = temporaryScoreNames[rubric.id][rubric.score];
+                                        matches++;
+                                    }
+                                });
+                            }
+
+                            if ((matches !== Object.keys(submission.rubric_assessment).length) && (dtps.remoteConfig.angryOnRubricError >= 1)) {
+                                dtpsAssignment.error = "Power+ found a rubric assessment but could not find its associated rubric data. One or more rubric/outcome assessments may be unavailable for this assignment.";
+                                if (dtpsLMS.dtech && (dtps.remoteConfig.angryOnRubricError == 2)) dtpsAssignment.error += " Please see the class grades tab for more information.";
+                            }
                         }
 
                         //Check for turned in, late, missing, gradedAt, and feedback
