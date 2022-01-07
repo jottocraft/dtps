@@ -206,11 +206,14 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
         var formula = null;
 
         //Get d.tech grade calculation formula
-        if (course.term == "S1") {
+        if (dtps.remoteConfig.dtechCurrentTerm === course.term) {
+            //use current term if available
             formula = "2020-DASH-LT";
-        } else if (course.term == "S2") {
+        } else if (!dtps.remoteConfig.dtechCurrentTerm && ((course.term === "S1") || (course.term === "S2"))) {
+            //use s1/s2 as defaults if current term is unset
             formula = "2020-DASH-LT";
         } else if (String(course.id).includes(dtps.remoteConfig.debugClassID)) {
+            //Always use grade calc on debug class
             formula = "2020-DASH-LT";
         }
 
