@@ -84,7 +84,7 @@ var dtps = {
             host: null,
             active: false
         },
-        showVideoMeetingButton: true,
+        showVideoMeetingButton: false,
         webAnalytics: true,
         angryOnRubricError: 0
     }
@@ -308,32 +308,14 @@ dtps.JS = function () {
             document.head.appendChild(script);
         }
 
-        //Firebase modules
-        jQuery.getScript("https://www.gstatic.com/firebasejs/8.2.4/firebase-app.js", () => {
-            // Your web app's Firebase configuration
-            var firebaseConfig = {
-                apiKey: "AIzaSyB7Oek4HHBvazM5e0RppZMbZ8qg6RjSDdU",
-                authDomain: "project-dtps.firebaseapp.com",
-                databaseURL: "https://project-dtps.firebaseio.com",
-                projectId: "project-dtps",
-                storageBucket: "project-dtps.appspot.com",
-                messagingSenderId: "117676227556",
-                appId: "1:117676227556:web:b0bafbea651245207ce5f1"
-            };
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-
-            //dtao/nearest-color is used for finding the nearest class color
-            jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js", () => {
-                jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
-                    //Fluid UI for core UI elements
-                    if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
-                        jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
-                    } else {
-                        jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
-                    }
-                });
-            });
+        //dtao/nearest-color is used for finding the nearest class color
+        jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
+            //Fluid UI for core UI elements
+            if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
+                jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
+            } else {
+                jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
+            }
         });
     });
 }
@@ -436,7 +418,7 @@ dtps.init = function () {
     //Fetch remote config and JavaScript modules
     Promise.all([
         new Promise((r) => {
-            jQuery.getJSON('https://project-dtps.firebaseio.com/config.json', (remoteConfig) => {
+            jQuery.getJSON('https://jottocraft-dtps-default-rtdb.firebaseio.com/config.json', (remoteConfig) => {
                 if (remoteConfig) {
                     Object.keys(remoteConfig).forEach(k => {
                         var val = remoteConfig[k];
