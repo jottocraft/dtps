@@ -209,7 +209,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
         if (course.term == "S1") {
             formula = "2020-DASH-LT";
         } else if (course.term == "S2") {
-            //formula = "2020-DASH-LT";
+            formula = "2020-DASH-LT";
         } else if (String(course.id).includes(dtps.remoteConfig.debugClassID)) {
             formula = "2020-DASH-LT";
         }
