@@ -2,8 +2,8 @@
  * @file DTPS predeploy script
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2021 jottocraft
- * @license GPL-2.0-only
+ * @copyright Copyright (c) 2018-2022 jottocraft
+ * @license MIT
  * 
  * This script file minifies DTPS and generates docs
  */

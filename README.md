@@ -25,4 +25,4 @@ For users looking to install Power+, visit the Power+ website by clicking <a hre
 
 <br /><br /><br /><br /><br /><br />
 
-(c) 2018-2021 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/main/LICENSE)
+(c) 2018-2022 jottocraft &nbsp;&nbsp; [license](https://github.com/jottocraft/dtps/blob/main/LICENSE)
