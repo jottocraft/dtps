@@ -1,19 +1,17 @@
 /**
- * @file DTPS bookmarklet loader
+ * @file DTPS loader
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2021 jottocraft
- * @license GPL-2.0-only
+ * @copyright Copyright (c) 2018-2022 jottocraft
+ * @license MIT
  */
 
-const DTPS_ROOT_URL = "https://powerplus.app/";
+window.dtpsBaseURL = "https://powerplus.app";
 
-if (window.location.hostname == "dtechhs.instructure.com") {
+if (window.location.hostname === "dtechhs.instructure.com") {
     //Load Design Tech High School script
-    jQuery.getScript(DTPS_ROOT_URL + "/scripts/lms/dtech.js");
-} else if (window.location.hostname.endsWith("instructure.com")) {
-    //Load Canvas LMS script
-    jQuery.getScript(DTPS_ROOT_URL + "/scripts/lms/canvas.js");
+    jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/dtech.js");
 } else {
-    throw "Error: Invalid domain";
+    //Load Canvas LMS script
+    jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js");
 }

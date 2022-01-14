@@ -2,8 +2,8 @@
  * @file DTPS Demo LMS
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2021 jottocraft
- * @license GPL-2.0-only
+ * @copyright Copyright (c) 2018-2022 jottocraft
+ * @license MIT
  * 
  * This LMS script is for demonstrating Power+ and doesn't fetch actual data
  * JSDoc documentation for these LMS functions can be found near the end of core.js
