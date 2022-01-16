@@ -240,7 +240,7 @@ dtpsLMS.fetchAnnouncements = function (classID) {
         resolve([{
             title: "Assignments Graded",
             postedAt: new Date().getDate(),
-            body: "<p>Hello,</p><p>The assignments have finally been graded. Sorry about the delay. There is a test coming up on Tuesday, so make sure you study for it since it will be really hard and you will probably fail.</p><br /><br /><br /><br /><p>This is a demo announcement</p>"
+            body: "<p>This is a demo announcement</p>"
         }]);
     });
 }
