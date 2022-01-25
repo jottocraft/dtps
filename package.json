@@ -2,7 +2,7 @@
   "name": "dtps",
   "description": "A better UI for Canvas LMS",
   "scripts": {
-    "start": "node server.js",
+    "start": "node dev.js",
     "build": "node build.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,7 +24,10 @@
     "url": "https://github.com/jottocraft/dtps/issues"
   },
   "homepage": "https://powerplus.app",
+  "main": "server.js",
   "devDependencies": {
+    "@cloudflare/kv-asset-handler": "^0.2.0",
+    "@jottocraft/yggdrasil": "^0.0.36",
     "express": "^4.17.2",
     "foodoc": "^0.0.9",
     "glob": "^7.2.0",
