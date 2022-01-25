@@ -1,40 +1,76 @@
 /**
- * @file DTPS development server
- * @author jottocraft
- *
- * @copyright Copyright (c) 2018-2022 jottocraft
- * @license MIT
+ * Power+ Server
+ * (c) jottocraft 2022
  */
 
-const express = require('express');
-const app = express();
+const { default : YggdrasilServer } = require("@jottocraft/yggdrasil");
+const { firestoreLogger } = require("@jottocraft/yggdrasil/lib/loggers");
+const { getAssetFromKV } = require("@cloudflare/kv-asset-handler");
 
-var port = 2750;
-
-//Check CLI args
-process.argv.forEach(arg => {
-    if (arg.startsWith("--port=")) {
-        port = Number(arg.replace("--port=", ""));
-    }
-})
-
-//Serve dev
-app.get('/dtps/dev', function(req, res) {
-    res.send(true);
+const server = new YggdrasilServer({
+    brand: {
+        title: "Power+",
+        logo: "https://powerplus.app/icon.svg",
+        favicon: "https://powerplus.app/favicon.png",
+        statusPage: {
+            href: "https://status.jottocraft.com",
+            name: "jottocraft status page"
+        }
+    },
+    statusCodes: {
+        200.1: "Success",
+        404.1: "Page not found; An asset corresponding to this request could not be found"
+    },
+    databases: {
+        firestore: {
+            ...(JSON.parse(FIRESTORE_SERVICE)),
+            projectID: "yggdrasil-db",
+            root: "OA/jottocraft/DATA/yggdrasil/SITES/dtps",
+            serviceAccount: "yggdrasil-man@yggdrasil-db.iam.gserviceaccount.com"
+        }
+    },
+    logger: firestoreLogger
 });
 
-//Serve scripts
-app.use('/scripts', express.static('scripts'));
+server.route({
+    method: "GET",
+    path: "*"
+}, async ctx => {
+    try {
+        const page = await getAssetFromKV(ctx.event);
 
-//Serve root-level scripts
-app.use('/init.js', express.static('init.js'));
-app.use('/dtps.css', express.static('dtps.css'));
+        //Store response
+        ctx.response.body = page.body;
 
-//Serve www
-app.use('/', express.static('www'));
+        //Set headers from KV
+        Object.assign(ctx.response.headers, Object.fromEntries(page.headers.entries()));
 
-app.listen(port, () => {
-    console.log("The Power+ development server is listening on port " + port);
-    console.log("\nGo to Settings -> About -> Advanced Options -> Enable debug config in Power+ to enable debug mode");
-    console.log("Read CONTRIBUTING.md for more information");
+        ctx.response.code = 200.1;
+
+        //Log entrypoint requests for analytics
+        const ref = ctx.request.headers.get("referer") && new URL(ctx.request.headers.get("referer"));
+        const isEntryPoint = ctx.url.pathname === "/init.js" || ctx.url.pathname.startsWith("/scripts/lms/");
+        const isOriginatingFromThirdParty = ref && !ref.hostname.endsWith("powerplus.app") && !ref.hostname.endsWith("jottocraft.com");
+        const isDtechFollowUp = (ref.hostname === "dtechhs.instructure.com") && (ctx.url.pathname === "/scripts/lms/canvas.js");
+
+        if (isEntryPoint && isOriginatingFromThirdParty && !isDtechFollowUp) {
+            //Record User-Agent, requested entrypoint, institution, country, state, and the Cloudflare colocation/datacenter handling the request
+            ctx.loggingEnabled = true;
+            ctx.loggingProperties = {
+                at: new Date().getTime(),
+                ua: ctx.request.headers.get("user-agent") || "unknown",
+                entry: ctx.url.pathname,
+                institution: ref.hostname,
+                country: ctx.event.request.cf.country,
+                region: ctx.event.request.cf.regionCode,
+                colo: ctx.event.request.cf.colo
+            };
+        }
+    } catch(e) {
+        ctx.response.code = 404.1;
+    }
+});
+
+addEventListener("fetch", (event) => {
+    event.respondWith(server.handleRequest(event.request, event));
 });

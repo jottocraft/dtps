@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.2.0
+ * @version v3.3.0
  * 
  * @copyright Copyright (c) 2018-2022 jottocraft
  * @license MIT
@@ -36,8 +36,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
  */
 var dtps = {
-    ver: 320,
-    readableVer: "v3.2.0",
+    ver: 330,
+    readableVer: "v3.3.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -85,7 +85,6 @@ var dtps = {
             active: false
         },
         showVideoMeetingButton: false,
-        webAnalytics: true,
         angryOnRubricError: 0
     }
 };
@@ -239,7 +238,9 @@ dtps.firstrun = function () {
             <div class="welcomeSection">
                 <i class="fluid-icon">security</i>
                 <h5>Privacy</h5>
-                <p>Power+ uses Cloudflare Web Analytics to count page views, load times, browsers, devices, and Canvas instances used with Power+.
+                <p>Power+ records your device type, Canvas institution, country, and state/region when you load Power+.
+                 Power+ does <b>not</b> utilize cookies or fingerprinting when collecting data.
+                 Additionally, data is collected solely by Power+ and is never shared with or sold to any third parties.
                  Power+ does <b>not</b> and will <b>never</b> collect any personal information, such as names, classes, or grades.
             </div>
             <div class="welcomeSection">
@@ -298,15 +299,6 @@ dtps.JS = function () {
 
         //Tinycolor used for better dark mode support
         jQuery.getScript("https://cdn.jottocraft.com/tinycolor.js");
-
-        //Cloudflare Web Analytics
-        if (dtps.remoteConfig.webAnalytics) {
-            var script = document.createElement("script");
-            script.defer = true;
-            script.src = "https://static.cloudflareinsights.com/beacon.min.js";
-            script.setAttribute("data-cf-beacon", '{"token": "9c34e6fb6b0346c9921e4c04f3ade1ed"}');
-            document.head.appendChild(script);
-        }
 
         //dtao/nearest-color is used for finding the nearest class color
         jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
