@@ -238,9 +238,9 @@ dtps.firstrun = function () {
             <div class="welcomeSection">
                 <i class="fluid-icon">security</i>
                 <h5>Privacy</h5>
-                <p>Power+ records your device type, Canvas institution, country, and state/region when you load Power+.
+                <p>Power+ records your device & network type, Canvas institution, country, and state/region when you load Power+.
                  Power+ does <b>not</b> utilize cookies or fingerprinting when collecting data.
-                 Additionally, data is collected solely by Power+ and is never shared with or sold to any third parties.
+                 Additionally, data is collected directly by Power+ and is never shared with or sold to any third parties.
                  Power+ does <b>not</b> and will <b>never</b> collect any personal information, such as names, classes, or grades.
             </div>
             <div class="welcomeSection">
