@@ -17,6 +17,22 @@ Power+ CSS
     --themeText: #261900 !important;
 }
 
+body:not(.ugShow) .assessmentWrapper.ungraded {
+    display: none;
+}
+
+.ugFilterSubmitted:not(.ugFilterUpcoming) .assessmentWrapper.ungraded:not(.ugSubmitted) {
+    display: none;
+}
+
+.ugFilterUpcoming:not(.ugFilterSubmitted) .assessmentWrapper.ungraded:not(.ugUpcoming) {
+    display: none;
+}
+
+.ugFilterUpcoming.ugFilterSubmitted .assessmentWrapper.ungraded:not(.ugUpcoming):not(.ugSubmitted) {
+    display: none;
+}
+
 .alternateFont {
     --titleFont: BlinkMacSystemFont,-apple-system,Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
     --textFont: BlinkMacSystemFont,-apple-system,Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;

@@ -227,7 +227,8 @@ dtpsLMS.fetchAssignments = function (userID, classID) {
                             value: canvasRubric.points,
                             outcome: canvasRubric.outcome_id,
                             assignmentTitle: assignment.name,
-                            assignmentID: assignment.id
+                            assignmentID: assignment.id,
+                            assignmentDue: assignment.due_at
                         });
 
                         temporaryScoreNames[canvasRubric.id] = {};
@@ -261,6 +262,7 @@ dtpsLMS.fetchAssignments = function (userID, classID) {
 
                         //Check for turned in, late, missing, gradedAt, and feedback
                         dtpsAssignment.turnedIn = submission.submission_type !== null;
+                        if (dtpsAssignment.turnedIn && dtpsAssignment.rubric) dtpsAssignment.rubric.forEach(r => r.assignmentSubmitted = true);
                         dtpsAssignment.late = submission.late;
                         dtpsAssignment.missing = submission.missing;
                         dtpsAssignment.gradedAt = submission.graded_at;

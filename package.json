@@ -27,7 +27,7 @@
   "main": "server.js",
   "devDependencies": {
     "@cloudflare/kv-asset-handler": "^0.2.0",
-    "@jottocraft/yggdrasil": "^0.0.38",
+    "@jottocraft/yggdrasil": "^0.2.0",
     "express": "^4.17.2",
     "foodoc": "^0.0.9",
     "glob": "^7.2.0",

@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.3.0
+ * @version v3.4.0
  * 
  * @copyright Copyright (c) 2018-2022 jottocraft
  * @license MIT
@@ -36,8 +36,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
  */
 var dtps = {
-    ver: 330,
-    readableVer: "v3.3.0",
+    ver: 340,
+    readableVer: "v3.4.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -900,7 +900,7 @@ dtps.presentClass = function (classNum) {
     }
 
     //Set the class image
-    if ((fluid.get("pref-showClassImages") !== "false") && dtps.classes[classNum] && dtps.classes[classNum].image) {
+    if ((fluid.get("pref-hideClassImages") != "true") && dtps.classes[classNum] && dtps.classes[classNum].image) {
         $(".headerArea").addClass("classImage");
         $(".headerArea img").attr("src", dtps.classes[classNum].image);
         $(".headerArea img").show();
