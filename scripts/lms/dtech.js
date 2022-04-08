@@ -363,7 +363,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                             //Assignment has a rubric
 
                             assignment.rubric.forEach(rubricItem => {
-                                if ((rubricItem.score !== undefined) && rubricItem.outcome) {
+                                if (rubricItem.outcome) {
                                     //Rubric item is assessed and is linked with an outcome
 
                                     if (!outcomes[rubricItem.outcome]) {
@@ -392,16 +392,22 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                 //Loop over the values of each item in the outcomes object
                 Object.values(outcomes).forEach(outcome => {
                     //Get array of scores for the outcome, remove null scores
-                    var outcomeScores = outcome.scores.map(RubricItem => RubricItem.score).filter(score => score !== null);
+                    var outcomeNumberScores = outcome.scores.map(RubricItem => RubricItem.score).filter(score => (score !== null) && (score !== undefined));
+
+                    if (outcomeNumberScores.length === 0) {
+                        outcome.scoreType = "ungraded";
+                        outcome.average = null;
+                        return;
+                    };
 
                     //Calculate outcome average with all outcome scores
-                    var average = this.average(outcomeScores);
+                    var average = this.average(outcomeNumberScores);
 
                     //Get the lowest score
-                    var lowestScore = Math.min(...outcomeScores);
+                    var lowestScore = Math.min(...outcomeNumberScores);
 
                     //Drop the lowest score to see what happens
-                    var droppedArray = outcomeScores.slice(); //copy of outcomeScores array
+                    var droppedArray = outcomeNumberScores.slice(); //copy of outcomeScores array
                     droppedArray.splice(droppedArray.indexOf(lowestScore), 1); //remove lowest score from array
 
                     var droppedAverage = this.average(droppedArray); //calculate average from droppedArray
@@ -424,7 +430,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                 // ------- [2020-DASH-LT] Step 3: Calculate letter grade variations -------
 
                 //All outcomes variation
-                var outcomeAvgs = Object.values(outcomes).map(outcome => outcome.average);
+                var outcomeAvgs = Object.values(outcomes).map(outcome => outcome.average).filter(avg => avg !== null);
                 gradeVariations.push(this.getLetter(outcomeAvgs, formula, "all"));
 
             }
@@ -538,6 +544,30 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
     };
 
     dtpsLMS.gradebook = function (course) {
+        //Add hide ungraded body class if enabled and preference listener
+        if (!dtpsLMS.ungradedListenerAdded) {
+            dtpsLMS.ungradedListenerAdded = true;
+            if (!fluid.get("pref-cblUngradedVisibility")) fluid.set("pref-cblUngradedVisibility", "hide");
+            const ramp = ["hide", "submitted", "upcoming", "all"];
+            function updateUngradedClasses(s) {
+                const p = ramp.indexOf(s);
+                jQuery('body').removeClass('ugShow');
+                jQuery('body').removeClass('ugFilterSubmitted');
+                jQuery('body').removeClass('ugFilterUpcoming');
+
+                if (s == "hide") return;
+                if (p >= 1) jQuery('body').addClass('ugShow');
+                if (p == 3) return;
+
+                if (p >= 1) jQuery('body').addClass('ugFilterSubmitted');
+                if (p == 2) jQuery('body').addClass('ugFilterUpcoming');
+            }
+            document.addEventListener("pref-cblUngradedVisibility", function (e) {
+                updateUngradedClasses(e.detail);
+            });
+            updateUngradedClasses(fluid.get("pref-cblUngradedVisibility"));
+        }
+
         return new Promise((resolve, reject) => {
             if (course.gradeCalculation && course.gradeCalculation.dtech) {
                 //RENDERER: RENDER GRADE CALCULATION SUMMARY ------------------------------------
@@ -596,6 +626,20 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                             ${dtps.gradebookExpanded ? `<i class="fluid-icon">keyboard_arrow_up</i> <span>Show less</span>` : `<i class="fluid-icon">keyboard_arrow_down</i> <span>Show more</span>`}
                         </div>
 
+                        <br /><br /><br />
+
+                        <div style="margin: 0px 20px; display: flex; flex-direction: row; align-items: center;">
+                            <p style="margin-right: 10px;"><i style="font-size: 26px;" class="fluid-icon">filter_alt</i></p>
+                            <div>
+                                <div style="margin: 0px;" class="btns row small pref-cblUngradedVisibility">
+                                    <button onclick="fluid.set('pref-cblUngradedVisibility', 'hide')" class="btn hide">Graded only</button>
+                                    <button onclick="fluid.set('pref-cblUngradedVisibility', 'submitted')" class="btn submitted">Graded & submitted</button>
+                                    <button onclick="fluid.set('pref-cblUngradedVisibility', 'upcoming')" class="btn upcoming">Graded, submitted & upcoming</button>
+                                    <button onclick="fluid.set('pref-cblUngradedVisibility', 'all')" class="btn all">All</button>
+                                </div>
+                            </div>
+                        </div>
+
                         ${erroredAssignments.length ? /*html*/`
                             <div style="margin: 20px;">
                                 <h5>Incomplete Data</h5>
@@ -633,11 +677,9 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                     ${divider ? `<h5 style="font-weight: bold;margin: 75px 75px 10px 75px;">Unassesed outcomes</h5>` : ""}
 
                     <div style="border-radius: 20px;padding: 22px; padding-bottom: 20px;" class="card outcomeResults outcome-${outcomeID}">
-                        <h5 style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer;">${outcome.title}</h5>
+                        <h5 style="max-width: calc(100% - 50px); font-size: 24px; margin: 0px; margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${outcome.title}</h5>
 
-                        ${outcome.average !== undefined ? `
-                            <div id="outcomeScore${outcomeID}" class="numFont" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ${dtechRubricColor(outcome.average)}">${outcome.average.toFixed(2)}</div>
-                        ` : ``}
+                        <div id="outcomeScore${outcomeID}" class="numFont" style="position: absolute; top: 20px; right: 20px; font-size: 26px; font-weight: bold; display: inline-block; color: ${dtechRubricColor(outcome.average)}">${outcome.average === null ? "" : outcome.average.toFixed(2)}</div>
                         
                         <div class="assessments">
                             ${outcome.scores.length == 0 ? `
@@ -645,8 +687,8 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
                             ` :
                             outcome.scores.map((assessment, aIndex) => {
                                 return /*html*/`
-                                        <div class="assessmentWrapper ${aIndex == outcome.droppedScore ? "dropped" : ""}" id="outcome${assessment.outcome}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
-                                            <div style="color: ${assessment.color};" aIndex="${aIndex}" outcomeID="${outcomeID}" class="editableScore" ${dtps.remoteConfig.allowWhatIfGrades ? `contenteditable` : ""}>${assessment.score}</div>
+                                        <div class="assessmentWrapper ${assessment.score === null || assessment.score === undefined ? "ungraded" : ""} ${new Date(assessment.assignmentDue) > new Date() ? "ugUpcoming" : ""} ${assessment.assignmentSubmitted ? "ugSubmitted" : ""} ${aIndex == outcome.droppedScore ? "dropped" : ""}" id="outcome${assessment.outcome}assessment${aIndex}" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 6px 0px;">
+                                            <div style="color: ${assessment.color};" aIndex="${aIndex}" outcomeID="${outcomeID}" class="editableScore" ${dtps.remoteConfig.allowWhatIfGrades ? `contenteditable` : ""}>${assessment.score ?? ""}</div>
                                             <span class="assessmentTitle" style="cursor: pointer;" onclick="dtps.assignment('${assessment.assignmentID}', ${course.num});">${assessment.assignmentTitle}</span>
                                         </div>
                                     `;
@@ -675,6 +717,8 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
     //Enable What-If grades
     var scrollListenerAdded = false;
     dtpsLMS.gradebookDidRender = function (course) {
+        fluid.init();
+
         //Add event listeners for every editable score in the gradebook
         $(".card.outcomeResults .assessments .editableScore").toArray().forEach(ele => {
             listenForWhatIf(ele, course);
@@ -835,7 +879,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
 
                 //Update outcome average
                 if (outcome.average !== undefined) {
-                    $("#outcomeScore" + outcomeID).html(outcome.average.toFixed(2));
+                    $("#outcomeScore" + outcomeID).html(outcome.average?.toFixed(2) ?? "");
                     $("#outcomeScore" + outcomeID).css("color", dtechRubricColor(outcome.average));
                 }
 

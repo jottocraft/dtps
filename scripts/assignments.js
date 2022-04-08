@@ -174,6 +174,7 @@ dtps.mainStream = function () {
         jQuery(".classContent").html(/*html*/`
             <div style="letter-spacing: 0px;">
                 <div style="float: left; width: 45%; display: inline-block;" class="dash">
+                    <div id="remoteUpdateImportant"></div>
                     ${dtps.leftDashboard.map(dashboardItem => {
             return dashboardContainerHTML(dashboardItem);
         }).join("")}
@@ -356,7 +357,7 @@ dtps.renderUpdates = function (dateSelected) {
     var updatesHTML = "";
 
     if (dtps.remoteConfig.remoteUpdate.active && (dtps.remoteConfig.remoteUpdate.host ? dtps.remoteConfig.remoteUpdate.host == window.location.host : true)) {
-        updatesHTML += /*html*/`
+        $("#remoteUpdateImportant").html(/*html*/`
             <div style="cursor: auto; padding: 20px; --classColor: var(--secText);" class="announcement card open">
                 <div class="className">
                     <img src="${dtps.baseURL + "/icon.svg"}" style="vertical-align: middle;width: 22px;margin-right: 5px;" />
@@ -364,7 +365,7 @@ dtps.renderUpdates = function (dateSelected) {
                 </div>
                 ${dtps.remoteConfig.remoteUpdate.html}
             </div>
-        `;
+        `);
     }
 
     if (dateSelected && (dtps.selectedClass == "dash")) {
