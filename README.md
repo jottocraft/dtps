@@ -1,4 +1,4 @@
-![Power+ wordmark](https://i.imgur.com/upFXZF4.png){width=320px}
+![Power+ wordmark](https://i.imgur.com/GJt7WbW.png)
 
 <br />
 
