@@ -4,4 +4,4 @@ pipelines:
   default:
     - step:
         script:
-          - git push --mirror git@github.com:jottocraft/dtps-mirror.git
+          - git push --mirror git@github.com:jottocraft/dtps.git
