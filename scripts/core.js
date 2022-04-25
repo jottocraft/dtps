@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.4.0
+ * @version v3.5.0
  * 
  * @copyright Copyright (c) 2018-2022 jottocraft
  * @license MIT
@@ -36,8 +36,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
  */
 var dtps = {
-    ver: 340,
-    readableVer: "v3.4.0",
+    ver: 350,
+    readableVer: "v3.5.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -1279,6 +1279,30 @@ dtps.settingsReloadWarning = function () {
  * Renders the grades tab in settings
  */
 dtps.renderGradesInSettings = function () {
+    //Render d.tech dangerous CBL settings
+    if (dtpsLMS.dtech) {
+        $("#classCBLChex").html(dtps.classes.map(course => {    
+            return (
+                `<div>
+                <div onclick="fluid.set('pref-enabledCBLFor${course.id}')" class="checkbox pref-enabledCBLFor${course.id}"><i class="fluid-icon">check</i></div>
+                <div class="label">${course.name}</div>
+              </div><br />`
+            )
+        }));
+    }
+
+    //Add CBL area toggle listener
+    if (fluid.get("pref-dangerousCBL") == "true") { jQuery('#cblSwitchesArea').show(); }
+    document.addEventListener("pref-dangerousCBL", function (e) {
+        if ((e.detail == "true") || (e.detail == true)) {
+            //dangerous CBL has been enabled, show class toggle area
+            jQuery('#cblSwitchesArea').show();
+        } else {
+            //dangerous has been disabled, hide class toggle area
+            jQuery('#cblSwitchesArea').hide();
+        }
+    });
+
     //Render class grade bars
     $("#classGradeBars").html(dtps.classes.map(course => {
         //Percentages below are for visualization purposes only
@@ -1326,6 +1350,9 @@ dtps.renderGradesInSettings = function () {
     } else {
         $("#dtpsGpaText").text((sum / values).toFixed(1));
     }
+
+    //Initialize Fluid UI again
+    fluid.init();
 }
 
 /**
@@ -1763,6 +1790,11 @@ dtps.renderLite = function () {
             <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();" class="item">
                 <i class="fluid-icon">format_paint</i> Theme
             </div>
+            ${dtpsLMS.dtech ? /*html*/`
+                <div onclick="$('.abtpage').hide();$('.abtpage.cblCalc').show();" class="item">
+                    <i class="fluid-icon">calculate</i> CBL
+                </div>
+            ` : ``}
             <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
                 <i class="fluid-icon">assessment</i> GPA
             </div>
@@ -1856,6 +1888,35 @@ dtps.renderLite = function () {
                 <h5><b>Theme</b></h5>
                 <br />
                 <div class="themeSelectionUI flat"></div>
+            </div>
+
+            <div style="display: none;" class="abtpage cblCalc">
+                <h5><b>d.tech CBL</b></h5>
+                
+                <div>
+                    <p style="color: var(--secText);"><i>CBL features are not actively updated and may become obsolete. Use at your own risk.</i></p>
+                </div>
+                
+                <br />
+                
+                <div onclick="fluid.set('pref-dangerousCBL');" class="switch pref-dangerousCBL"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">functions</i> Allow CBL features (updated Spring 2022)</div>
+
+                <br /><br /><br />
+                
+                <div id="cblSwitchesArea" style="display: none;">
+                
+                    <div class="divider"></div>
+
+                    <br />
+
+                    <p>CBL will be enabled for the classes checked below:</p>
+
+                    <br />
+
+                    <div id="classCBLChex"></div>
+
+                </div>
             </div>
 
             <div style="display: none;" class="abtpage grades">
