@@ -1,7 +1,8 @@
 clone:
   depth: full
 pipelines:
-  default:
-    - step:
-        script:
-          - git push --mirror git@github.com:jottocraft/dtps.git
+  branches:
+    main:
+      - step:
+          script:
+            - git push --mirror git@github.com:jottocraft/dtps.git
