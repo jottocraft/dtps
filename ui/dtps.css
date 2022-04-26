@@ -1,0 +1,1204 @@
+/*
+Power+ CSS
+(c) jottocraft 2018-2022
+*/
+
+body.requiredModal .card.alert .footer {
+    margin-top: 25px;
+}
+
+body.requiredModal .card.alert .fluid-icon.close {
+    display: none;
+}
+
+body.requiredModal .card.alert .footer .btn {
+    width: 100%;
+}
+
+body.requiredModal {
+    pointer-events: none;
+}
+
+body.requiredModal .card.alert {
+    pointer-events: auto;
+}
+
+[data-theme-image] .sidebar {
+    background-color: transparent;
+}
+
+[data-theme-type=light] {
+    --theme: #ccac56 !important;
+    --themeText: #ffffff !important;
+}
+
+[data-theme-type=dark] {
+    --theme: #cc9e54 !important;
+    --themeText: #261900 !important;
+}
+
+body:not(.ugShow) .assessmentWrapper.ungraded {
+    display: none;
+}
+
+.ugFilterSubmitted:not(.ugFilterUpcoming) .assessmentWrapper.ungraded:not(.ugSubmitted) {
+    display: none;
+}
+
+.ugFilterUpcoming:not(.ugFilterSubmitted) .assessmentWrapper.ungraded:not(.ugUpcoming) {
+    display: none;
+}
+
+.ugFilterUpcoming.ugFilterSubmitted .assessmentWrapper.ungraded:not(.ugUpcoming):not(.ugSubmitted) {
+    display: none;
+}
+
+.alternateFont {
+    --titleFont: BlinkMacSystemFont,-apple-system,Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --textFont: BlinkMacSystemFont,-apple-system,Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.dashboardItem {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid var(--elements);
+    background: var(--cards);
+    cursor: move;
+    margin: 10px;
+    user-select: none; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.dashboardColumn {
+    vertical-align: top;
+    display: inline-block;
+    width: calc(50% - 20px);
+    margin: 0px 5px;
+    min-height: 100px;
+    padding-bottom: 100px;
+    padding-top: 25px;
+}
+
+.dashboardItem h5 span {
+    font-size: 20px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.dashboardItem i {
+    vertical-align: middle;
+}
+
+.welcomeSection {
+    margin: 50px 0px;
+}
+
+.welcomeSection h5 {
+    font-weight: bold;
+    font-size: 22px;
+    margin: 0px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.welcomeSection i {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.welcomeSection p {
+    color: var(--lightText);
+}
+
+.dtpsSubmissionComment {
+    margin: 32px 12px;
+}
+
+.dtpsSubmissionComment img {
+    width: 34px;
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+.dtpsSubmissionComment h5 {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 5px;
+    font-size: 17px;
+    color: var(--lightText);
+}
+
+.dtpsAssignmentRubricItem {
+    margin: 32px 12px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: var(--lightShadow);
+    background: var(--elements);
+}
+
+.dtpsAssignmentRubricItem:nth-child(1), .dtpsSubmissionComment:nth-child(1) {
+    margin-top: 12px;
+}
+
+.dtpsAssignmentRubricItem h5 {
+    font-size: 20px;
+    margin: 0px;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dtpsAssignmentRubricItem .score p {
+    display: inline-block;
+    margin: 0px;
+}
+
+.dtpsAssignmentRubricItem .score .scoreName {
+    font-size: 16px;
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+.dtpsAssignmentRubricItem .score .points {
+    float: right;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.dtpsAssignmentRubricItem .score .points .earned {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.dtpsAssignmentRubricItem .score .points .possible {
+    opacity: 0.5;
+    font-size: 12px;
+    vertical-align: bottom;
+}
+
+.dtpsRubricScore {
+    height: 24px;
+    display: inline-block;
+}
+
+.dtpsRubricScore div {
+    display: inline-block;
+    font-size: 14px;
+    height: 24px;
+    line-height: 24px;
+    font-weight: bold;
+}
+
+.discussionHeader {
+    margin: 12px 0px;
+    margin-bottom: 20px;
+}
+
+.discussionHeader h5 {
+    display: inline-block; 
+    vertical-align: middle;
+    color: var(--lightText);
+    font-size: 18px;
+    margin: 0px;
+}
+
+.discussionHeader img {
+    width: 28px;
+    vertical-align: middle;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.discussionHeader i {
+    color: var(--secText);
+    vertical-align: middle;
+    margin-left: 20px;
+    font-size: 16px;
+}
+
+.discussionHeader span {
+    color: var(--secText);
+    vertical-align: middle;
+    margin-left: 5px;
+    font-size: 14px;
+}
+
+.discussionFooter {
+    margin-top: 22px;
+}
+
+.discussionReply {
+    border-left: 2px solid var(--elementHover);
+    padding: 10px 0px;
+    padding-left: 30px;
+}
+
+.discussionReply h5 {
+    font-size: 18px;
+    color: var(--lightText);
+}
+
+.dash .colorBar {
+    width: 7px;
+    height: calc(100% - 32px);
+    position: absolute;
+    top: 16px;
+    left: 14px;
+    border-radius: 10px;
+    display: block !important;
+}
+
+.dash .colorBar {
+    background: var(--classColor);
+}
+
+.colorBar {
+    display: none;
+}
+
+.announcement .className {
+    color: var(--classColor);
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.assessmentWrapper.dropped span.assessmentTitle, .assessmentWrapper.dropped .editableScore:not(.focused) {
+    opacity: 0.4;
+}
+
+.assessmentWrapper.dropped span.assessmentTitle {
+    text-decoration: line-through;
+}
+
+.assessmentWrapper span.assessmentTitle {
+    transition: opacity 0.2s;
+}
+
+.recentGrade.card {
+    padding: 20px;
+    cursor: pointer;
+}
+
+.recentGrade h5 {
+    color: var(--classColor);
+    display: flex;
+    justify-content: space-between;
+    margin: 0px;
+    font-size: 18px;
+}
+
+.recentGrade h5 span {
+    font-weight: bold;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.recentGrade p {
+    margin: 0px;
+    margin-top: 7px;
+    color: var(--secText);
+}
+
+.numFont {
+    font-family: Cascadia Code,Consolas,Andale Mono WT,Andale Mono,Lucida Console,Lucida Sans Typewriter,DejaVu Sans Mono,Bitstream Vera Sans Mono,Liberation Mono,Nimbus Mono L,Monaco,Courier New,Courier,monospace !important;
+}
+
+.classContent .card.collapsed {
+    padding: 10px 20px;
+}
+
+.classContent .card.collapsed h4 {
+    font-size: 18px !important;
+    font-weight: normal !important;
+}
+
+.classContent .card.collapsed h4 i {
+    margin-top: -3px;
+}
+
+.classContent .card.collapsed .moduleContents {
+    display: none;
+}
+
+.classGradeCircle {
+    display: inline-block;
+    text-align: right;
+    float: right;
+    vertical-align: middle;
+}
+
+.classGradeCircle .percentage {
+    color: var(--lightText);
+    font-size: 20px;
+    font-weight: bold;
+    vertical-align: middle;
+    width: 200px;
+    text-align: center;
+    display: inline-block;
+}
+
+.classGradeCircle .letter {
+    color: var(--classColor);
+    font-weight: bold;
+    font-size: 40px;
+    vertical-align: middle;
+    width: 200px;
+    text-align: center;
+    display: inline-block;
+}
+
+.gradeStat {
+    height: 60px; 
+    line-height: 60px;
+    color: var(--lightText); 
+    font-size: 24px; 
+    margin: 0px;
+}
+
+.smallStat {
+    height: 40px; 
+    line-height: 40px;
+    color: var(--secText); 
+    font-size: 20px; 
+    margin: 5px 0px;
+}
+
+.gradeStat .numFont, .smallStat .numFont {
+    display: inline-block; 
+    width: 200px; 
+    text-align: center; 
+    height: 60px; 
+    line-height: 60px; 
+    border-radius: 50%; 
+    float: right; 
+    vertical-align: middle; 
+    font-size: 26px; 
+    color: var(--text); 
+    font-weight: bold;
+}
+
+.smallStat .numFont {
+    height: 40px; 
+    line-height: 40px;
+    font-size: 18px; 
+    color: var(--lightText);
+}
+
+.numFont.fraction {
+    font-size: 0px;
+}
+
+.numFont .earned {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.numFont .total {
+    color: var(--secText);
+    font-size: 12px;
+}
+
+.gradeTitle {
+    margin-bottom: 10px; 
+    margin-top: 0px; 
+    font-weight: bold;
+    font-size: 32px;
+}
+
+.infoChip {
+    vertical-align: middle;
+    margin: 0px 3px;
+    display: inline-block;
+    font-size: 14px;
+    height: 20px;
+    line-height: 20px;
+	color: var(--lightText);
+}
+
+.infoChip:nth-child(1) {
+    margin-left: 0px;
+}
+
+.assignmentChip {
+    padding: 5px 10px;
+    display: inline-block;
+    border-radius: 20px;
+    line-height: 24px;
+    margin: 0px 2px;
+    color: var(--lightText);
+    vertical-align: middle;
+}
+
+.assignmentChip i {
+    vertical-align: middle;
+}
+
+.assignmentChip span {
+    margin-left: 7px;
+    vertical-align: middle;
+}
+
+.progressBar {
+    padding: 5px;
+    background-color: var(--elements);
+    border-radius: 12px;
+    height: 30px;
+    margin: 10px 5px;
+    cursor: pointer;
+}
+
+.progressLabel {
+    position: absolute;
+    z-index: 5;
+    color: var(--themeText);
+}
+
+.progressBar .progress {
+    height: 32px;
+    background-color: var(--theme);
+    margin: -6px;
+    border-radius: 12px;
+    position: absolute;
+}
+
+.progressBar.big {
+    height: 50px;
+    padding: 10px;
+}
+
+.progressBar.big .progressLabel {
+    height: 32px;
+    line-height: 32px;
+    font-size: 18px;
+}
+
+.progressBar.big .progress {
+    height: 42px;
+}
+
+.infoChip i {
+    vertical-align: middle;
+    font-size: 18px;
+}
+
+.announcement:not(.open) {
+    max-height: 200px;
+}
+
+.announcement {
+    overflow: hidden;
+}
+
+.classContent .assignmentPicker .btn.active {
+    background: var(--elementHover) !important;
+    color: var(--elementText) !important;
+}
+
+[data-theme-type=dark] .sidebar .item:not(.active) {
+    filter: brightness(1.2) !important;
+}
+
+.sidebar .item .grade {
+    text-align: center;
+    font-size: 18px;
+    font-family: var(--textFont);
+    font-weight: bold;
+    margin: 0px;
+}
+
+.sidebar .item .grade.letter, .sidebar .item .grade .letter {
+    font-size: 18px;
+    width: 32px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.sidebar .item .grade.percentage, .sidebar .item .grade .percentage {
+    font-size: 14px;
+    min-width: 32px;
+    vertical-align: middle;
+    display: inline-block;
+}
+
+.sidebar .item .grade.percentage.large, .sidebar .item .grade .percentage.large {
+    font-size: 12px;
+}
+
+.sidebar .item .grade .percentSymbol {
+    font-size: 10px;
+}
+
+.sidebar .item .grade:hover .letter, .sidebar .item .grade:not(:hover) .percentage {
+    display: none;
+}
+
+.hidegrades .sidebar .item .grade {
+    visibility: hidden !important;
+    width: 5px;
+}
+
+.class:not(.main):not(.active) {
+    color: var(--classColor);
+}
+
+.class:not(.main).active {
+    background-color: var(--classColor) !important;
+    color: white !important;
+}
+
+.classContent .card {
+    margin: 12px 20px;
+    text-align: left;
+    border-radius: 25px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 40px auto;
+    background-color: var(--secText);
+    border-radius: 100%;
+    -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+    animation: sk-scaleout 1.0s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-scaleout {
+    0% {
+        -webkit-transform: scale(0)
+    }
+
+    100% {
+        -webkit-transform: scale(1.0);
+        opacity: 0;
+    }
+}
+
+@keyframes sk-scaleout {
+    0% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    }
+
+    100% {
+        -webkit-transform: scale(1.0);
+        transform: scale(1.0);
+        opacity: 0;
+    }
+}
+
+.assignment .weighted {
+    color: var(--secText);
+    font-size: 14px;
+}
+
+.assignment .weighted i {
+    font-size: 16px !important;
+    margin-top: -3px;
+}
+
+.assignment {
+    cursor: pointer;
+    padding: 15px 18px;
+    position: relative;
+    border-radius: var(--cardRadius);
+    border: 2px solid transparent;
+    transition: border 0.2s, background-color 0.2s;
+    user-select: none;
+}
+
+.assignment:hover {
+    background-color: var(--elements);
+    border-color: var(--highlight);
+}
+
+.classContent .assignment h5 {
+    margin: 0px;
+    margin-top: 6px;
+    font-size: 1rem !important;
+    min-height: 20px;
+    white-space: nowrap; 
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+}
+
+.classContent .assignment h5 .status {
+    flex-shrink: 0;
+}
+
+.classContent .card.assignment h4 {
+    font-size: 18px;
+    margin: 0px !important;
+    white-space: nowrap;
+    height: 24px;
+    line-height: 24px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.classContent .card.assignment span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.assignment .statusIcon {
+    float: right;
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+.assignmentGrade {
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 0px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.assignmentGrade div {
+    display: inline-block;
+}
+
+.assignmentGrade .grade {
+    font-weight: bold;
+    font-size: 18px;
+    color: var(--text);
+    vertical-align: bottom;
+}
+
+.assignmentGrade .value {
+    font-size: 14px;
+    color: var(--secText);
+    vertical-align: bottom;
+    margin-left: 2px;
+}
+
+.assignmentGrade:not(:hover) .letter, .assignmentGrade:not(:hover) .percentage {
+    display: none;
+}
+
+.assignmentGrade:hover .grade, .assignmentGrade:hover .value {
+    display: none;
+}
+
+.assignmentGrade .letter {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text);
+    vertical-align: middle;
+}
+
+.assignmentGrade .percentage {
+    font-size: 14px;
+    color: var(--secText);
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+.gradebookAssignment {
+    padding: 0px 32px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.gradebookAssignment h5 {
+    margin: 0px;
+    font-size: 18px;
+    height: 54px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.gradebookAssignment .stats div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.gradebookAssignment .stats {
+    float: right;
+    text-align: right;
+}
+
+.gradebookAssignment .gradebookLetter {
+    font-weight: bold;
+    font-size: 24px;
+    width: 50px;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.gradebookAssignment .gradebookScore {
+    font-weight: bold;
+    font-size: 20px;
+    width: 80px;
+    text-align: right;
+}
+
+.gradebookAssignment .gradebookValue {
+    color: var(--secText);
+    font-size: 16px;
+    width: 70px;
+    margin-right: 10px;
+    text-align: left;
+}
+
+.gradebookAssignment .gradebookPercentage {
+    color: var(--lightText);
+    font-size: 18px;
+    width: 60px;
+    text-align: center;
+}
+
+.card.module h4 {
+    margin: 0px 2px; 
+    font-size: 24px; 
+    font-weight: bold;
+}
+
+.card.module h4 i {
+    cursor: pointer; 
+    vertical-align: middle; 
+    color: var(--lightText);
+}
+
+.moduleItem {
+    color: var(--lightText); 
+    padding:5px;
+    font-size:14px;
+    border-radius:15px;
+    margin:5px 0; 
+    cursor: pointer;
+}
+
+.moduleItem i {
+    vertical-align: middle; 
+    margin-right: 4px;
+    font-size: 20px;
+}
+
+.dash .assignment {
+    padding-left: 34px;
+}
+
+.dash .weighted {
+    color: var(--classColor) !important;
+    opacity: 0.7;
+}
+
+/* FullCalendar Fluid UI CSS cutomizations v5.3.2 */
+#calendar .fc-toolbar-title {
+    font-size: 32px !important;
+}
+
+#calendar .fc-button-primary {
+    background: none;
+    box-shadow: none;
+    border: none;
+    color: var(--text);
+}
+
+#calendar td, #calendar th, #calendar .fc-scrollgrid {
+    border: none;
+}
+
+#calendar a {
+    color: var(--text);
+}
+
+#calendar .fc-event-time {
+    display: none;
+}
+
+#calendar .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 10px;
+}
+
+#calendar .fc-h-event {
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+#calendar .fc-event-title i {
+    color: #c44848; 
+    font-size: 12px; 
+    vertical-align: middle; 
+}
+
+#calendar .fc-daygrid-day {
+    border-radius: 5px;
+    transition: background-color 0.4s;
+    cursor: pointer;
+}
+
+#calendar .fc-daygrid-day:hover {
+    background-color: var(--elements);
+}
+
+#calendar .fc-daygrid-day.active {
+    background-color: var(--elementHover);
+}
+
+#calendar .fc-event-title span {
+    vertical-align: middle; 
+}
+
+#calendar .fc-daygrid-day.fc-day-today {
+    background-color: var(--theme);
+}
+
+#calendar.dateSelected .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    border-radius: 50%;
+    background-color: var(--theme);
+}
+
+#calendar.dateSelected .fc-daygrid-day.fc-day-today {
+    background-color: transparent;
+}
+
+#calendar .fc-daygrid-day.fc-day-today a {
+    color: var(--themeText);
+}
+
+#calendar .fc-scroller-liquid-absolute, #calendar .fc-view-harness-active>.fc-view {
+    position: relative;
+}
+
+#calendar .fc-view-harness {
+    height: auto !important;
+}
+
+#calendar .fc-col-header, #calendar .fc-daygrid-body, #calendar .fc-daygrid-body>table {
+    width: 100% !important; 
+}
+
+#calendar .fc-h-event .fc-event-title {
+    font-size: 12px;
+}
+
+.headerArea {
+    margin: 10px 20px;
+    width: auto;
+    height: 250px;
+}
+
+#dtpsUnstable {
+    position: absolute; 
+    color: #ff4e4e;
+    cursor: auto;
+}
+
+@media(max-width: 1700px) {
+    #dtpsUnstable {
+        top: 55px;
+        right: 5px;
+    }
+}
+
+#headText {
+    transition: color 0.2s;
+    white-space: nowrap;
+    max-width: 95%;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#headText span {
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+#headText i {
+    margin-right: 5px;
+    vertical-align: middle;
+    font-size: 36px;
+}
+
+.gradeSummaryShowHide {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.gradeSummaryShowHide i, .gradeSummaryShowHide span {
+    vertical-align: middle;
+}
+
+.gradeSummaryShowHide i {
+    margin-right: 5px;
+}
+
+#classGradeMore {
+    margin: 0px 20px;
+    padding: 20px;
+}
+
+.block.status .bottom {
+    font-size: 18px;
+}
+
+.block .previousGrade {
+    font-size: 14px;
+    opacity: 0.5;
+    position: absolute;
+    top: 40px;
+}
+
+.fixedGradeSummary #gradeSummary {
+    left: 275px;
+    border-radius: 0px 0px 20px 20px;
+    padding: 20px;
+    position: fixed;
+    top: 60px;
+    z-index: 98;
+    width: calc(100% - 275px);
+    margin: 0px !important;
+    background: var(--acrylic);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--cardShadow);
+}
+
+.block.status {
+    min-height: 120px !important;
+}
+
+.block.status .main {
+    font-size: 28px !important;
+}
+
+.block.status .bottom {
+    font-size: 14px !important;
+}
+
+.block i {
+    font-size: 20px !important;
+}
+
+body.collapsedSidebar .fixedGradeSummary #gradeSummary {
+    left: 72px;
+    width: calc(100% - 72px);
+}
+
+.classContent.fixedGradeSummary {
+    padding-top: 130px;
+}
+
+.block .showActualGrades {
+    font-size: 14px;
+    position: absolute;
+    top: 40px;
+    color: var(--secText);
+    cursor: pointer;
+}
+
+#classGradeMore .table tr.active {
+    background-color: var(--classColor); 
+}
+
+#classGradeMore .table tr.active, #classGradeMore .table tr.active * {
+    color: white;
+    font-weight: bold;
+}
+
+#classGradeMore.whatIf .table tr.active {
+    background-color: var(--elements); 
+}
+
+#classGradeMore.whatIf .table tr.active, #classGradeMore.whatIf .table tr.active * {
+    color: var(--classColor);
+}
+
+.editableScore {
+    outline: none;
+    font-size: 20px; 
+    vertical-align: middle; 
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 5px;
+    margin-right: 5px; 
+    transition: background-color 0.2s, border-color 0.2s, opacity 0.2s;
+    border: 2px solid transparent;
+    width: 45px;
+    text-align: center;
+}
+
+.editableScore.modified, .editableScore.focused, .editableScore:hover {
+    background-color: var(--inputColor);
+    border-color: var(--elements);
+}
+
+.teacherName {
+    color: var(--text);
+    font-size: 18px;
+}
+
+.teacherImage {
+    margin-right: 4px;
+    height: 32px; 
+    width: 32px;
+    border-radius: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: var(--elements);
+    vertical-align: middle;
+}
+
+#dtpsFixedSearch {
+    position: fixed; 
+    left: calc(50% - 250px);
+    margin: 0px;
+}
+
+#dtpsSearchResults {
+    position: fixed;
+    z-index: 100;
+    width: 500px;
+    top: 70px;
+    left: calc(50% - 250px);
+    box-shadow: 0px 0px 20px rgb(0 0 0 / 0.5);
+    border: 2px solid var(--elements);
+}
+
+#dtpsSearchResults h5 {
+    margin-top: 0px;
+}
+
+#dtpsSearchResults h5 i {
+    vertical-align: middle;
+}
+
+#dtpsSearchResults h5 span {
+    font-size: 18px;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+.card.searchResult {
+    padding: 15px 18px;
+    position: relative;
+    border-radius: var(--cardRadius);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: border 0.2s, background-color 0.2s;
+    user-select: none;
+}
+
+.card.searchResult h4 {
+    font-size: 20px;
+    margin: 0px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 24px;
+    line-height: 24px;
+    font-weight: bold;
+}
+
+.card.searchResult h5 {
+    margin: 0px;
+}
+
+.card.searchResult .highlight {
+    font-weight: bold;
+    background-color: var(--theme);
+    color: var(--themeText);
+}
+
+.card.searchResult .highlight i {
+    color: var(--themeText) !important;
+    font-weight: bold !important;
+}
+
+.card.searchResult .statusIcon {
+    font-size: 18px;
+    color: var(--secText);
+}
+
+.searchResult.mixedClasses .colorBar {
+    width: 7px;
+    height: calc(100% - 32px);
+    position: absolute;
+    top: 16px;
+    left: 14px;
+    border-radius: 10px;
+    display: block !important;
+}
+
+.searchResult.mixedClasses .colorBar {
+    background: var(--classColor);
+}
+
+.searchResult.mixedClasses {
+    padding-left: 34px;
+}
+
+.searchResult:hover {
+    background-color: var(--elements);
+    border-color: var(--highlight);
+}
+
+#searchFilterContainer {
+    width: 400px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#searchFilterContainer .card {
+    margin-right: 10px;
+}
+
+#searchResultsContainer.withFilters {
+    margin-left: 0px;
+    width: calc(100% - 410px);
+    display: inline-block;
+}
+
+#searchResultsContainer.withFilters .card {
+    margin-left: 10px;
+}
+
+#searchFilterContainer .card h5 {
+    margin-top: 0px;
+    font-weight: bold;
+}
+
+#searchFilterContainer .card h5 span {
+    vertical-align: middle;
+    font-weight: bold;
+}
+
+#searchFilterContainer .card h5 i {
+    vertical-align: middle;
+    margin-right: 3px;
+}
+
+#searchFilterContainer .card .checkContainer {
+    margin: 10px 0px;
+}
+
+.fixedSearchFilters #searchFilterContainer .card {
+    top: 60px;
+    position: fixed;
+    width: 370px;
+}
+
+/*Theme image styling*/
+[data-theme-image] .headerArea .content {
+    background: none;
+}
+
+[data-theme-image] .headerArea img {
+    display: none !important;
+}
+
+:not([data-theme-image]) .headerArea:not(.classImage) h1 {
+    text-shadow: none;
+}

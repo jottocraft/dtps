@@ -69,8 +69,10 @@ dtps.renderAssignment = function (assignment, childDisplay) {
 dtps.renderAssignmentScore = function (assignment) {
     var scoreHTML = "";
 
+    const useRubricGrades = dtpsLMS.useRubricGrades instanceof Array ? dtpsLMS.useRubricGrades.includes(dtps.classes[assignment.class].id) : dtpsLMS.useRubricGrades;
+
     //Use rubric score over points score if possible
-    if (dtpsLMS.useRubricGrades && assignment.rubric) {
+    if (useRubricGrades && assignment.rubric) {
         var rubricHTML = [];
 
         assignment.rubric.forEach(rubricItem => {
@@ -85,7 +87,7 @@ dtps.renderAssignmentScore = function (assignment) {
 
         if (rubricHTML.length) scoreHTML = `<div class="dtpsRubricScore">${rubricHTML.join("")}</div>`;
 
-    } else if (!dtpsLMS.useRubricGrades && (assignment.grade || (assignment.grade == 0))) {
+    } else if (!useRubricGrades && (assignment.grade || (assignment.grade == 0))) {
         scoreHTML = /*html*/`
             <div class="assignmentGrade">
                 <div class="grade">${Number(assignment.grade.toFixed(2))}</div>
@@ -1051,7 +1053,7 @@ dtps.gradebook = function (classID) {
             gradedAssignments++;
 
             assignmentHTML += /*html*/`
-                <div onclick="dtps.assignment('${assignment.id}', ${classNum})" class="gradebookAssignment card">
+                <div onclick="dtps.assignment('${assignment.id}', ${classNum})" class="gradebookAssignment">
                     <h5>
                         ${assignment.title}
 
@@ -1146,7 +1148,14 @@ fluid.externalScreens.moduleStream = (courseID) => {
 }
 
 fluid.externalScreens.gradebook = (courseID) => {
-    dtps.gradebook(courseID);
+    const courseLMSGradebookAllowed = dtpsLMS.lmsGradebookAllowlist ? dtpsLMS.lmsGradebookAllowlist.includes(courseID) : true;
+    if (dtpsLMS.gradebook && courseLMSGradebookAllowed && !((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
+        //Handle LMS gradebook
+        dtps.showLMSGradebook(courseID);
+    } else if (dtpsLMS.genericGradebook || ((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
+        //Generic gradebook script
+        dtps.gradebook(courseID);
+    }
 }
 
 //Type definitions

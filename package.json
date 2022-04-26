@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jottocraft/dtps.git"
+    "url": "git+https://bitbucket.org/jottocraft/dtps.git"
   },
   "keywords": [
     "canvas-lms",
@@ -21,7 +21,7 @@
   "author": "jottocraft",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jottocraft/dtps/issues"
+    "url": "https://jottocraft.atlassian.net/browse/DTPS"
   },
   "homepage": "https://powerplus.app",
   "main": "server.js",
