@@ -16,7 +16,7 @@ var dtpsLMS = {
     description: "Power+ integration for Canvas LMS",
     url: "https://www.instructure.com/canvas/",
     logo: "https://i.imgur.com/rGjNVoc.png",
-    source: "https://github.com/jottocraft/dtps/blob/main/scripts/lms/canvas.js",
+    source: "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/canvas.js",
     genericGradebook: true
 };
 
@@ -253,11 +253,6 @@ dtpsLMS.fetchAssignments = function (userID, classID) {
                                     }
                                 });
                             }
-
-                            if ((matches !== Object.keys(submission.rubric_assessment).length) && (dtps.remoteConfig.angryOnRubricError >= 1)) {
-                                dtpsAssignment.error = "Power+ found a rubric assessment but could not find its associated rubric data. One or more rubric/outcome assessments may be unavailable for this assignment.";
-                                if (dtpsLMS.dtech && (dtps.remoteConfig.angryOnRubricError == 2)) dtpsAssignment.error += " Please see the class grades tab for more information.";
-                            }
                         }
 
                         //Check for turned in, late, missing, gradedAt, and feedback
@@ -476,10 +471,6 @@ dtpsLMS.fetchUsers = function (classID) {
                         url: "/courses/" + classID + "/users/" + student.id
                     });
                 });
-                var dtechMatch = section.name.match(/[0-9](?=\(A)/);
-                if (dtpsLMS.dtech && dtechMatch) {
-                    section.name = dtechMatch[0] == 7 ? "@d.tech" : "Period " + dtechMatch[0];
-                }
                 sections.push({
                     title: section.name,
                     id: section.id,

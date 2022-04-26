@@ -26,9 +26,13 @@ app.get('/dtps/dev', function(req, res) {
 //Serve scripts
 app.use('/scripts', express.static('scripts'));
 
-//Serve root-level scripts
+//Serve root-level script
 app.use('/init.js', express.static('init.js'));
-app.use('/dtps.css', express.static('dtps.css'));
+
+//Serve UI files
+app.use('/dtps.css', express.static('ui/dtps.css'));
+app.use('/fluid/fluid.css', express.static('ui/fluid.css'));
+app.use('/fluid/fluid.js', express.static('ui/fluid.js'));
 
 //Serve www
 app.use('/', express.static('www'));
