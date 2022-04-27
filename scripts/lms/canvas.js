@@ -44,7 +44,7 @@ dtpsLMS.fetchQueue = [];
 dtpsLMS.fetchWrapper = function () {
     //Start a queue interval if it isn't already started
     if (!dtpsLMS.fetchInterval) {
-        dtpsLMS.fetchInterval = setInterval(function() {
+        dtpsLMS.fetchInterval = setInterval(function () {
             //Run request at the start of the queue
             if (dtpsLMS.fetchQueue[0]) {
                 dtpsLMS.fetchQueue[0]();
@@ -111,6 +111,12 @@ dtpsLMS.fetchClasses = function (userID) {
 
             //Add courses from canvas to courses array as a DTPS course object
             courseData.forEach((course, index) => {
+                const forceAllClasses = fluid.get("pref-showAllClasses") == "true";
+                if (!forceAllClasses) {
+                    if (course.end_at && (new Date() > new Date(course.end_at))) return;
+                    if (course.term?.end_at && (new Date() > new Date(course.term?.end_at))) return;
+                }
+
                 var termSegments = course.course_code.split(" - ");
                 var dtpsCourse = {
                     name: course.course_code,

@@ -77,10 +77,6 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
         return new Promise((resolve, reject) => {
             var tmpNewArray = [];
             classes.forEach((course, i) => {
-                //Fitler out outdated courses [TODO: [DTPS-38] generalize]
-                //if (course.endDate && (new Date() > new Date(course.endDate))) return;
-                //if (course.termEndDate && (new Date() > new Date(course.termEndDate))) return;
-
                 //Add course to list
                 tmpNewArray.push(course);
 
