@@ -1845,6 +1845,18 @@ dtps.renderLite = function () {
                 <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
                 <div class="label"><i class="fluid-icon">image</i> Hide class images</div>
 
+                ${dtpsLMS.shortName === "Canvas" ? /*html*/`
+                    <br /><br />
+                    <div onclick="fluid.set('pref-showAllClasses'); dtps.settingsReloadWarning();" class="switch pref-showAllClasses"><span class="head"></span></div>
+                    <div class="label"><i class="fluid-icon">visibility</i> Show all classes, including those which may be outdated</div>
+                ` : ""}
+
+                <br /><br />
+                <p>Assignments</p>
+
+                <div onclick="fluid.set('pref-unusualDueDates')" class="switch pref-unusualDueDates active"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">highlight</i> Highlight outlying due dates</div>
+
                 <div id="dtpsPrereleaseTesting" style="${window.localStorage.prereleaseEnabled || (dtps.env == "dev") || window.localStorage.githubRepo || window.localStorage.externalReleaseURL ? "" : "display: none;"}">
                     <br /><br />
                     <p>Prerelease testing</p>
