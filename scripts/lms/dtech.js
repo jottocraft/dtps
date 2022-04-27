@@ -30,22 +30,6 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
     dtpsLMS.genericGradebook = true;
     dtpsLMS.dtech = true;
 
-    //Check if due date is usual
-    //TODO: [DTPS-39] Generalize unusual assignment due dates
-    dtpsLMS.isUsualDueDate = function (date) {
-        var date = new Date(date);
-
-        if (date.getHours() >= 22) {
-            return true;
-        } else if ((date.getHours() == 21) && (date.getMinutes() > 50)) {
-            return true;
-        } else if (date.getHours() < 8) {
-            return true;
-        }
-
-        return false;
-    };
-
     //Update assignments
     //This is for customizing rubric names and colors to match d.tech CBL
     dtpsLMS.updateAssignments = function (rawAssignments, course) {

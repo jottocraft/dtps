@@ -349,6 +349,21 @@ dtps.CSS = function () {
 }
 
 /**
+ * Gets the amount of minutes elapsed in the day
+ * 
+ * @param {date} d The day
+ * @returns The amount of minutes or null if the date is invalid
+ */
+dtps.dayTimeMinutes = function (d) {
+    if (!d) return null;
+
+    d = new Date(d);
+    if (isNaN(d.getTime())) return null;
+
+    return (d.getHours() * 60) + d.getMinutes();
+}
+
+/**
  * Starts DTPS (entrypoint function)
  */
 dtps.init = function () {
@@ -567,6 +582,19 @@ dtps.init = function () {
                     }
                 });
             }).then(assignments => {
+                //Map due date array
+                const dueDates = assignments.map(a => dtps.dayTimeMinutes(a.dueAt)).filter(d => d !== null).sort((a, b) => a - b);
+
+                if (dueDates && dueDates.length >= 10) {
+                    //Get due date IQR
+                    var q1 = dueDates[Math.floor((dueDates.length / 5))];
+                    var q3 = dueDates[Math.ceil((dueDates.length * (4 / 5)))];
+                    var iqr = q3 - q1;
+
+                    //Find min and max within reasonable range
+                    course.usualDueRange = [(q1 - (iqr * 1.5)) - 120, (q3 + (iqr * 1.5)) + 120];
+                }
+
                 //Store assignments in the class
                 course.assignments = assignments;
 
@@ -1842,7 +1870,7 @@ dtps.renderLite = function () {
                 <div class="label"><i class="fluid-icon">title</i> Show full class names</div>
                     
                 <br /><br />
-                <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
+                <div onclick="fluid.set('pref-hideClassImages'); fluid.screen();" class="switch pref-hideClassImages"><span class="head"></span></div>
                 <div class="label"><i class="fluid-icon">image</i> Hide class images</div>
 
                 ${dtpsLMS.shortName === "Canvas" ? /*html*/`
@@ -1854,7 +1882,7 @@ dtps.renderLite = function () {
                 <br /><br />
                 <p>Assignments</p>
 
-                <div onclick="fluid.set('pref-unusualDueDates')" class="switch pref-unusualDueDates active"><span class="head"></span></div>
+                <div onclick="fluid.set('pref-unusualDueDates'); fluid.screen();" class="switch pref-unusualDueDates active"><span class="head"></span></div>
                 <div class="label"><i class="fluid-icon">highlight</i> Highlight outlying due dates</div>
 
                 <div id="dtpsPrereleaseTesting" style="${window.localStorage.prereleaseEnabled || (dtps.env == "dev") || window.localStorage.githubRepo || window.localStorage.externalReleaseURL ? "" : "display: none;"}">
@@ -2329,6 +2357,7 @@ dtps.init();
 * @property {string} userID The ID of the user this class is associated with (from the parameter of dtpsLMS.fetchClasses)
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
+* @property {number[]} usualDueRange The range of usual due dates for this course [min,max]. Anything outside this range is considered unusual and highlighted if enabled.
 * @property {ClassSection[]|boolean} [people] Users in this class. True if the class supports the "People" tab, but not yet loaded. If this is true dtpsLMS.fetchUsers must be implemented.
 * @property {string} [icon] The icon to show with this class
 * @property {string} [group] The name of the group that this class is in

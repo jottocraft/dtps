@@ -17,6 +17,15 @@ dtps.renderAssignment = function (assignment, childDisplay) {
     //Render points/letter score
     var scoreHTML = dtps.renderAssignmentScore(assignment);
 
+    let highlightUnusualDate = false;
+    if (assignment.dueAt && (fluid.get("pref-unusualDueDates") != "false")) {
+        const dayTimeMinutes = dtps.dayTimeMinutes(assignment.dueAt);
+        const range = dtps.classes[assignment.class].usualDueRange;
+        if (range && !isNaN(range[0]) && !isNaN(range[1]) && (dayTimeMinutes !== null)) {
+            if ((dayTimeMinutes < range[0]) || (dayTimeMinutes > range[1])) highlightUnusualDate = true;
+        }
+    }
+
     var HTML = /*html*/`
         <div 
             onclick="${`dtps.assignment('` + assignment.id + `', ` + assignment.class + `, ` + (!isNaN(childDisplay) ? true : false) + `)`}" 
@@ -39,7 +48,7 @@ dtps.renderAssignment = function (assignment, childDisplay) {
                 <!-- Assignment info -->
                 <div class="info">
                     ${assignment.error ? `<div style="color: #f2392c;" class="infoChip weighted"><i class="fluid-icon">error</i> Error</div>` : ""}
-                    ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
+                    ${assignment.dueAt ? `<div ${highlightUnusualDate ? `style="font-weight: bold;color: var(--themeText);background-color: var(--theme);padding: 0px 8px;border-radius: 10px;"` : ""} class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
                     ${assignment.outcomes ? `<div class="infoChip weighted"><i class="fluid-icon">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
                     ${assignment.category ? `<div class="infoChip weighted"><i class="fluid-icon">category</i> ` + assignment.category + `</div>` : ""}
                     ${childDisplay ? `<div class="infoChip weighted"><i class="fluid-icon">person</i> ` + childDisplay + `</div>` : ""}

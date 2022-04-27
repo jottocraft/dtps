@@ -28,8 +28,8 @@ body.requiredModal .card.alert {
 }
 
 [data-theme-type=light] {
-    --theme: #ccac56 !important;
-    --themeText: #ffffff !important;
+    --theme: #cc9e54 !important;
+    --themeText: #261900 !important;
 }
 
 [data-theme-type=dark] {
