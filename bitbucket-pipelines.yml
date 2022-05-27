@@ -1,13 +1,12 @@
 pipelines:
-  default:
-    - step:
-        name: Mirror to GitHub
-        clone:
-          depth: full
-        script:
-          - git push --mirror git@github.com:jottocraft/dtps.git
   branches:
     main:
+      - step:
+          name: Mirror to GitHub
+          clone:
+            depth: full
+          script:
+            - git push --mirror git@github.com:jottocraft/dtps.git
       - step:
           name: Deploy to production
           deployment: production
