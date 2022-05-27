@@ -1,15 +1,17 @@
-clone:
-  depth: full
 pipelines:
   default:
     - step:
         name: Mirror to GitHub
+        clone:
+          depth: full
         script:
           - git push --mirror git@github.com:jottocraft/dtps.git
   branches:
     main:
       - step:
           name: Deploy to production
+          deployment: production
+          image: node:16
           script:
             - npm ci
             - npm run build
