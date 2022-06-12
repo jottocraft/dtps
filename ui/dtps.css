@@ -3,6 +3,10 @@ Power+ CSS
 (c) jottocraft 2018-2022
 */
 
+.card.alert h5 {
+    font-size: 20px;
+}
+
 body.requiredModal .card.alert .footer {
     margin-top: 25px;
 }
