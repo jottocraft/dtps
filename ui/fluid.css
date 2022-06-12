@@ -1657,10 +1657,12 @@ body.dark .alert:not(.card) {
 
 .card.alert {
   position: fixed !important;
-  top: 20vh;
+  top: 10vh;
   width: 500px;
   left: calc(50% - 250px);
+  max-height: calc(100% - 16vh);
   z-index: 88;
+  overflow: auto;
 }
 
 .card.alert .body {

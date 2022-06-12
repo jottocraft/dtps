@@ -1400,6 +1400,8 @@ dtps.renderGradesInSettings = function () {
 
     if (sum == null) {
         $("#dtpsGpaText").text("...");
+    } else if (values === 0) {
+        $("#dtpsGpaText").text("Not available");
     } else {
         $("#dtpsGpaText").text((sum / values).toFixed(1));
     }
@@ -1559,10 +1561,6 @@ dtps.render = function () {
           </div>
 
           <div class="items" style="float: right;">
-            <div style="font-size: 14px;" class="navitem" onclick="window.open('https://jottocraft.atlassian.net/secure/CreateIssueDetails!init.jspa?pid=10009&issuetype=10005')">
-                <i style="font-size: 18px;" class="fluid-icon">bug_report</i>
-                <span>Report a bug</span>
-            </div>
             <div class="navitem" onclick="dtps.settings();">
                 <i class="fluid-icon">settings</i>
                 <span>Settings</span>
@@ -1909,7 +1907,7 @@ dtps.renderLite = function () {
                 ${dtpsLMS.shortName === "Canvas" ? /*html*/`
                     <br /><br />
                     <div onclick="fluid.set('pref-showAllClasses'); dtps.settingsReloadWarning();" class="switch pref-showAllClasses"><span class="head"></span></div>
-                    <div class="label"><i class="fluid-icon">visibility</i> Show all classes, including those which may be outdated</div>
+                    <div class="label"><i class="fluid-icon">visibility</i> Show all published classes, including those which may have ended</div>
                 ` : ""}
 
                 <br /><br />
@@ -1970,7 +1968,7 @@ dtps.renderLite = function () {
                 
                 <div>
                     <p><span style="width: 32px; display: inline-block; text-align: center;">⚠️</span> CBL features are no longer actively updated and may become (or are already) obsolete. Use at your own risk.</p>
-                    <p><span style="width: 32px; display: inline-block; text-align: center;">ℹ️</span> Algorithm last updated in <a href="${dtps.cblSpec}">August 2021</a>.</p>
+                    <p><span style="width: 32px; display: inline-block; text-align: center;">ℹ️</span> CBL features follow the <a href="${dtps.cblSpec}">August 2021</a> specification.</p>
                 </div>
                 
                 <br />
@@ -2026,7 +2024,7 @@ dtps.renderLite = function () {
             ${dtps.env == "dev" ? /*html*/`
                 <div style="display: none;" class="abtpage debugging">
                    <h5><b>Debugging</b></h5>
-                   <p>These settings are for development only and might break Power+. Use at your own risk.</p>
+                   <p>These settings are for development purposes only and might break Power+. Use at your own risk.</p>
 
                    <div>
                     <button onclick="dtps.firstrun()" class="btn small"><i class="fluid-icon">web_asset</i> Show firstrun screen</button>
