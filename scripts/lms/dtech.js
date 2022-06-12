@@ -10,43 +10,38 @@
 
 //Load Canvas integration
 jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
+    //Get global dangerous CBL preference
+    const dangerousCBLEnabled = window.localStorage.getItem("pref-dangerousCBL") == "true";
+
+    //This array should be used for checking if CBL should be used
+    //dangerousCBL doesn't need to be checked since it is already checked before classes are added here
+    const consentedCBLCourses = [];
+
     //Add d.tech-specific items to dtpsLMS
     dtpsLMS.name = "d.tech";
     dtpsLMS.legalName = "Canvas LMS, Design Tech High School, or Instructure Inc";
-    dtpsLMS.description = "Power+ integration for Canvas LMS, customized for d.tech";
+    dtpsLMS.description = "Unsupported CBL features for Power+";
     dtpsLMS.logo = "https://i.imgur.com/efGrLq3.png";
-    dtpsLMS.source = "https://github.com/jottocraft/dtps/blob/main/scripts/lms/dtech.js";
-    dtpsLMS.useRubricGrades = true;
+    dtpsLMS.source = "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/dtech.js";
+    dtpsLMS.useRubricGrades = consentedCBLCourses;
+    dtpsLMS.gradeCalculationAllowlist = consentedCBLCourses;
+    dtpsLMS.lmsGradebookAllowlist = consentedCBLCourses;
     dtpsLMS.institutionSpecific = true;
-    dtpsLMS.genericGradebook = false;
+    dtpsLMS.genericGradebook = true;
     dtpsLMS.dtech = true;
-
-    //Check if due date is usual
-    dtpsLMS.isUsualDueDate = function (date) {
-        var date = new Date(date);
-
-        if (date.getHours() >= 22) {
-            return true;
-        } else if ((date.getHours() == 21) && (date.getMinutes() > 50)) {
-            return true;
-        } else if (date.getHours() < 8) {
-            return true;
-        }
-
-        return false;
-    };
 
     //Update assignments
     //This is for customizing rubric names and colors to match d.tech CBL
-    dtpsLMS.updateAssignments = function (rawAssignments) {
+    dtpsLMS.updateAssignments = function (rawAssignments, course) {
         return new Promise((resolve, reject) => {
             var updatedAssignments = rawAssignments.map(assignment => {
+                //Skip if CBL is not enabled for this course
+                if (!consentedCBLCourses.includes(course.id)) return assignment;
+
                 //Check if assignment has rubric
                 if (assignment.rubric) {
                     //Update assignment rubric
                     assignment.rubric.forEach(rubricItem => {
-                        rubricItem.scoreName = shortenDtechRubricScoreName(rubricItem.scoreName);
-
                         if (rubricItem.score !== undefined) {
                             rubricItem.color = dtechRubricColor(rubricItem.score);
                         }
@@ -66,163 +61,27 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
         return new Promise((resolve, reject) => {
             var tmpNewArray = [];
             classes.forEach((course, i) => {
-                //Fitler out outdated courses
-                if (course.endDate && (new Date() > new Date(course.endDate))) return;
-                if (course.termEndDate && (new Date() > new Date(course.termEndDate))) return;
-
-                //Get course period
-                var matches = course.period.match(/[0-9](?=\(A)/);
-                if (matches && matches[0]) {
-                    course.period = matches[0] == "7" ? 0 : Number(matches[0]);
-                } else if (/(exploration)|(april 2021)/gi.test(course.name)) {
-                    course.period = (/PM/g.test(course.name) || /afternoon/gi.test(course.name)) ? 12 : 11;
-
-                    //Remove old intersession courses
-                    var startDate = new Date(course.startDate);
-                    if ((startDate.getFullYear() == 2020) && (startDate.getMonth() == 9)) return;
-
-                    //Automatically detect AM/PM exploration and set the class name accordingly
-                    if (/AM/g.test(course.name) || /morning/gi.test(course.name)) course.subject = "Morning Exploration";
-                    if (/PM/g.test(course.name) || /afternoon/gi.test(course.name)) course.subject = "Afternoon Exploration";
-                } else {
-                    course.period = Infinity;
-                }
-
-                //Get course cycle
-                if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
-                    if (false && (course.term == "S1")) {
-                        course.group = "Semester 1";
-                    } else if ((course.period >= 1) && (course.period <= 3)) {
-                        course.group = "Cycle 1/3";
-                    } else if ((course.period >= 4) && (course.period <= 6)) {
-                        course.group = "Cycle 2/4";
-                    } else if ((course.period == 11) || (course.period == 12)) {
-                        course.group = "Intersession";
-                        course.term = "int";
-                    }
-                }
-
-                //Check if course is ineligible for videoMeetingURL
-                if (!dtps.remoteConfig.showVideoMeetingButton || dtps.user.parent || !course.homepage || !course.group || (course.group == "Semester 1")) {
-                    course.videoMeetingURL = null;
-                }
-
-                //Add course icon
-                if (course.id == dtps.remoteConfig.debugClassID) {
-                    course.icon = "bug_report";
-                } else if (/Game/gi.test(course.subject)) {
-                    course.icon = "games";
-                } else if (/Architecture/gi.test(course.subject)) {
-                    course.icon = "architecture";
-                } else if (/History/gi.test(course.subject)) {
-                    course.icon = "history_edu";
-                } else if (/Biology/gi.test(course.subject)) {
-                    course.icon = "biotech";
-                } else if (/Physics|Science|Chemistry/gi.test(course.subject)) {
-                    course.icon = "science";
-                } else if (/Math|Algebra|Geometry|Calculus|Statistics/gi.test(course.subject)) {
-                    course.icon = "calculate";
-                } else if (/Engineering|DRG/gi.test(course.subject)) {
-                    course.icon = "engineering";
-                } else if (/((d|design)(\.| |-)?lab)|Prototyping/gi.test(course.subject)) {
-                    course.icon = "design_services";
-                } else if (/Exploration/gi.test(course.subject)) {
-                    course.icon = "explore";
-                } else if (/@d.?tech/gi.test(course.subject)) {
-                    course.icon = "supervisor_account";
-                } else if (/English/gi.test(course.subject)) {
-                    course.icon = "description";
-                } else if (/Model( |-|)(United Nations|UN)/gi.test(course.subject)) {
-                    course.icon = "public";
-                } else if (/Spanish|Language/gi.test(course.subject)) {
-                    course.icon = "translate";
-                } else if (/Government/gi.test(course.subject)) {
-                    course.icon = "gavel";
-                } else if (/(Koi|Live)( |-|)Stream/gi.test(course.subject)) {
-                    course.icon = "live_tv";
-                } else if (/Film/gi.test(course.subject)) {
-                    course.icon = "camera_roll";
-                } else if (/Leadership/gi.test(course.subject)) {
-                    course.icon = "stars";
-                } else if (/Athletics/gi.test(course.subject)) {
-                    course.icon = "sports_handball";
-                } else if (/Beyond/gi.test(course.subject)) {
-                    course.icon = "school";
-                }
-
                 //Add course to list
                 tmpNewArray.push(course);
+
+                //Add course to CBL-enabled list
+                if (dangerousCBLEnabled && (fluid.get("pref-enabledCBLFor" + course.id) == "true")) {
+                    consentedCBLCourses.push(course.id);
+                }
             });
             classes = tmpNewArray;
-
-            //Automatically sort and group classes if enabled
-            if (!dtps.user.parent && (window.localStorage.getItem("pref-autoGroupClasses") !== "false")) {
-                classes.sort((a, b) => {
-                    /*var termA = a.term == "20-21" ? 1 : a.term == "S2" ? 2 : a.term == "int" ? 3 : 4;
-                    var termB = b.term == "20-21" ? 1 : b.term == "S2" ? 2 : b.term == "int" ? 3 : 4;
-                    return termA - termB;*/
-                    return a.period - b.period;
-                });
-            }
 
             resolve(classes);
         });
     }
 
-    //Fetch videoMeetingURL for a class
-    dtpsLMS.fetchMeetingURL = function (classID) {
-        return new Promise((resolve, reject) => {
-            var course = dtps.classes.find(course => course.id == classID);
-
-            if (course.homepage && (course.term == dtps.remoteConfig.dtechCurrentTerm)) {
-                dtpsLMS.fetchHomepage(classID).then(homepage => {
-                    //get zoom link
-                    var meetingURL = null;
-                    var matches = 0;
-                    for (var i = 0; i < $(homepage).find("a").length; i++) {
-                        var link = $($(homepage).find("a")[i]);
-                        if (link.children("img").attr("alt") && link.children("img").attr("alt").toUpperCase().includes("ZOOM BUTTON") && link.attr("href")) {
-                            //Button labelled as zoom button
-                            meetingURL = link.attr("href");
-                        } else if (link.attr("href") && link.attr("href").includes("zoom.us")) {
-                            //Button link goes to a zoom meeting, only use this if there is no other zoom link
-                            //if (!meetingURL) meetingURL = link.attr("href");
-                        }
-                    }
-
-                    if (matches > 1) {
-                        //Multiple zoom links found
-                        meetingURL = null;
-                    }
-
-                    resolve(meetingURL);
-                });
-            }
-        })
-    }
-
     //Run d.tech grade calculation algorithm (defined below)
     dtpsLMS.calculateGrade = function (course, assignments) {
-        var formula = null;
+        //If the user has not consented to dangerous CBL for this course, don't calculate
+        if (!consentedCBLCourses.includes(course.id)) return;
 
-        //Get d.tech grade calculation formula
-        if (dtps.remoteConfig.dtechCurrentTerm === course.term) {
-            //use current term if available
-            formula = "2020-DASH-LT";
-        } else if (!dtps.remoteConfig.dtechCurrentTerm && ((course.term === "S1") || (course.term === "S2"))) {
-            //use s1/s2 as defaults if current term is unset
-            formula = "2020-DASH-LT";
-        } else if (String(course.id).includes(dtps.remoteConfig.debugClassID)) {
-            //Always use grade calc on debug class
-            formula = "2020-DASH-LT";
-        }
-
-        //If there is no grade calculation formula, don't run grade calc
-        if (!formula) return;
-
-        if (assignments.find(a => a.error)) {
-            if (dtps.remoteConfig.angryOnRubricError == 1) return;
-        }
+        //The unique identifier for the CBL formula
+        const formula = "2020-DASH-LT";
 
         //Run d.tech grade calculation
         var dtechResults = dtechGradeCalc.run(assignments, formula);
@@ -240,16 +99,6 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
     }
 
     //Local functions & variables, not part of the dtpsLMS specification ----------------------------------------------
-
-    //Shortens rubric name for d.tech CBL rubrics
-    var shortenDtechRubricScoreName = function (rating) {
-        if (String(rating).toUpperCase().includes("PIONEERING")) return "Pioneering";
-        if (String(rating).toUpperCase().includes("PROFICIENT")) return "Proficient";
-        if (String(rating).toUpperCase().includes("DEVELOPING")) return "Developing";
-        if (String(rating).toUpperCase().includes("EMERGING")) return "Emerging";
-        if (!String(rating).includes(" ") && (String(rating).length <= 20)) return rating;
-        return "";
-    }
 
     //Get score color from rubric percentage
     var dtechRubricColor = function (score) {

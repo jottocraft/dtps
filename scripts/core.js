@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.4.0
+ * @version v3.5.0
  * 
  * @copyright Copyright (c) 2018-2022 jottocraft
  * @license MIT
@@ -23,6 +23,7 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} baseURL The base URL that DTPS is being loaded from
  * @property {boolean} unstable This is true if loading an unstable version of DTPS
  * @property {boolean} gradebookExpanded True if gradebook details (Show more...) is open. Used in the generic gradebook and may be used in custom gradebook implementations.
+ * @property {boolean} reloadPending True if the user has made changes that require a reload
  * @property {string|undefined} popup Popup to show when loaded. Either undefined (no popup), "firstrun", or "changelog". 
  * @property {User} user Current user, fetched with dtps.init
  * @property {number|string} selectedClass The selected class number, or "dash" if the dashboard is selected. Set when the first screen is loaded in dtps.init.
@@ -34,16 +35,19 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
+ * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 340,
-    readableVer: "v3.4.0",
+    ver: 350,
+    readableVer: "v3.5.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
     unstable: window.dtpsBaseURL !== "https://powerplus.app",
     gradebookExpanded: false,
+    reloadPending: false,
     updates: [],
+    cblSpec: "https://docs.google.com/document/d/1AO5OcQozr1HAt_gT-mfmv8A2ibUP2l3PHPYWoL3xivo/edit",
     dashboardItems: [
         {
             name: "Calendar",
@@ -75,7 +79,6 @@ var dtps = {
         allowWhatIfGrades: true,
         canvasRequestSpacing: 25,
         debugClassID: "1455",
-        dtechCurrentTerm: "S1",
         gradeCalculationEnabled: true,
         loadingAlert: false,
         remoteUpdate: {
@@ -83,9 +86,7 @@ var dtps = {
             html: null,
             host: null,
             active: false
-        },
-        showVideoMeetingButton: false,
-        angryOnRubricError: 0
+        }
     }
 };
 
@@ -187,7 +188,7 @@ dtps.changelog = function (onlyIfNewVersion) {
  * @param {...*} msg The debugging messages to log
  */
 dtps.log = function () {
-    if (dtps.env == "dev") console.log("[DTPS]", ...arguments);
+    console.log("[DTPS]", ...arguments);
 }
 
 
@@ -226,6 +227,7 @@ dtps.firstrun = function () {
             <h5>${dtpsLMS.gradebook ? "Manage your coursework and grades" : "Manage your coursework"}</h5>
             <p>Power+ organizes all of your coursework so you can easily see what you need to do next. The dashboard shows upcoming assignments, recent grades, and announcements.
             ${dtpsLMS.gradebook ? `Power+ includes a gradebook designed for ${dtpsLMS.name} to help you understand your grades.` : ``}</p>
+            ${dtpsLMS.dtech ? `<p style="color: var(--text);"><b>As of June 2022, d.tech CBL features are no longer actively updated. If you'd like to use these potentially obsolete features, you must opt-in at Settings (top-right) -> CBL.</b></p>` : ``}
         </div>
 
         ${dtpsLMS.isDemoLMS ? /*html*/`
@@ -303,11 +305,7 @@ dtps.JS = function () {
         //dtao/nearest-color is used for finding the nearest class color
         jQuery.getScript("https://cdn.jottocraft.com/nearest-color.dtao.js", () => {
             //Fluid UI for core UI elements
-            if (window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true") {
-                jQuery.getScript('http://localhost:1222/dev/fluid.js', resolve);
-            } else {
-                jQuery.getScript('https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.js', resolve);
-            }
+            jQuery.getScript(dtps.baseURL + "/fluid/fluid.js", resolve);
         });
     });
 }
@@ -319,7 +317,7 @@ dtps.CSS = function () {
     jQuery("<link/>", {
         rel: "stylesheet",
         type: "text/css",
-        href: window.localStorage.getItem("pref-debuggingLocalFluidUI") == "true" ? "http://localhost:1222/dev/fluid.css" : "https://cdn.jottocraft.com/fluid/build/v5/latest/fluid.css",
+        href: dtps.baseURL + "/fluid/fluid.css",
         class: "dtpsHeadItem"
     }).appendTo("head");
 
@@ -350,6 +348,21 @@ dtps.CSS = function () {
         href: "https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css",
         class: "dtpsHeadItem"
     }).appendTo("head");
+}
+
+/**
+ * Gets the amount of minutes elapsed in the day
+ * 
+ * @param {date} d The day
+ * @returns The amount of minutes or null if the date is invalid
+ */
+dtps.dayTimeMinutes = function (d) {
+    if (!d) return null;
+
+    d = new Date(d);
+    if (isNaN(d.getTime())) return null;
+
+    return (d.getHours() * 60) + d.getMinutes();
 }
 
 /**
@@ -534,7 +547,8 @@ dtps.init = function () {
         dtps.classes.forEach(course => {
             course.color = course.color ? nearestCourseColor(course.color).value : "gray";
 
-            if (dtpsLMS.calculateGrade && dtps.remoteConfig.gradeCalculationEnabled) {
+            const classGradeCalcAllowed = dtpsLMS.gradeCalculationAllowlist ? dtpsLMS.gradeCalculationAllowlist.includes(course.id) : true;
+            if (dtpsLMS.calculateGrade && classGradeCalcAllowed && dtps.remoteConfig.gradeCalculationEnabled) {
                 //This LMS/Institution supports grade calculation, show loading indicator for grade
                 //Grade will be calculated once assignments are fetched
 
@@ -552,14 +566,7 @@ dtps.init = function () {
         fluid.screens.search = dtps.baseURL + "/scripts/search.js";
         fluid.screens.pages = dtps.baseURL + "/scripts/pages-discussions.js";
         fluid.screens.discussions = dtps.baseURL + "/scripts/pages-discussions.js";
-
-        if (dtpsLMS.gradebook && !((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
-            //Handle LMS gradebook
-            fluid.screens.gradebook = dtps.showLMSGradebook;
-        } else if (dtpsLMS.genericGradebook || ((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
-            //Generic gradebook script
-            fluid.screens.gradebook = dtps.baseURL + "/scripts/assignments.js";
-        }
+        fluid.screens.gradebook = dtps.baseURL + "/scripts/assignments.js";
 
         //Begin fetching class assignments
         var fetchedAnnouncements = [];
@@ -568,7 +575,7 @@ dtps.init = function () {
                 return new Promise((resolve, reject) => {
                     if (dtpsLMS.institutionSpecific && dtpsLMS.updateAssignments) {
                         //Using an institution-specific script, make any nessasary changes and return updated assignments
-                        dtpsLMS.updateAssignments(rawAssignments).then(updatedAssignments => {
+                        dtpsLMS.updateAssignments(rawAssignments, course).then(updatedAssignments => {
                             resolve(updatedAssignments);
                         }).catch(reject);
                     } else {
@@ -577,6 +584,19 @@ dtps.init = function () {
                     }
                 });
             }).then(assignments => {
+                //Map due date array
+                const dueDates = assignments.map(a => dtps.dayTimeMinutes(a.dueAt)).filter(d => d !== null).sort((a, b) => a - b);
+
+                if (dueDates && dueDates.length >= 10) {
+                    //Get due date IQR
+                    var q1 = dueDates[Math.floor((dueDates.length / 5))];
+                    var q3 = dueDates[Math.ceil((dueDates.length * (4 / 5)))];
+                    var iqr = q3 - q1;
+
+                    //Find min and max within reasonable range
+                    course.usualDueRange = [(q1 - (iqr * 1.5)) - 120, (q3 + (iqr * 1.5)) + 120];
+                }
+
                 //Store assignments in the class
                 course.assignments = assignments;
 
@@ -604,7 +624,8 @@ dtps.init = function () {
                 if (dtps.updates.length > 15) dtps.updates.length = 15;
 
                 //Calculate class grade if supported
-                if (dtpsLMS.calculateGrade && dtps.remoteConfig.gradeCalculationEnabled) {
+                const classGradeCalcAllowed = dtpsLMS.gradeCalculationAllowlist ? dtpsLMS.gradeCalculationAllowlist.includes(course.id) : true;
+                if (dtpsLMS.calculateGrade && classGradeCalcAllowed && dtps.remoteConfig.gradeCalculationEnabled) {
                     let gradeCalcResults = dtpsLMS.calculateGrade(course, assignments);
 
                     if (gradeCalcResults) {
@@ -968,7 +989,8 @@ dtps.presentClass = function (classNum) {
         }
 
         //Show gradebook if the LMS and the class supports it, otherwise, hide it
-        if ((dtpsLMS.genericGradebook || dtpsLMS.gradebook) && dtps.classes[classNum].hasGradebook) {
+        const courseLMSGradebookAllowed = dtpsLMS.lmsGradebookAllowlist ? dtpsLMS.lmsGradebookAllowlist.includes(dtps.classes[classNum].id) : true;
+        if ((dtpsLMS.genericGradebook || (dtpsLMS.gradebook && courseLMSGradebookAllowed)) && dtps.classes[classNum].hasGradebook) {
             $(".btns .btn.grades").show();
         } else {
             $(".btns .btn.grades").hide();
@@ -1269,16 +1291,71 @@ dtps.settings = function (forceRerenderDashboard) {
 }
 
 /**
- * Shows a warning telling the user that they must reload for setting changes to take effect
+ * Enables the reload warning when the user exists settings
  */
 dtps.settingsReloadWarning = function () {
-    $("#settingsReloadWarning").show();
+    dtps.reloadPending = true;
+}
+
+/**
+ * Prompts for dangerous CBL enablement
+ * 
+ * @param {boolean} [accepted] True if the disclaimer has been accepted
+ */
+dtps.dangerousCBLPrompt = function(accepted) {
+    const dangerousCBLEnabled = fluid.get("pref-dangerousCBL") == "true";
+    if (dangerousCBLEnabled) {
+        fluid.set("pref-dangerousCBL", "false");
+        dtps.settingsReloadWarning();
+    } else if (accepted) {
+        fluid.set("pref-dangerousCBL", "true");
+        dtps.settingsReloadWarning();
+    } else {
+        //Prompt for acceptance
+        fluid.alert("Allow CBL Features", [
+            `<style>.card.alert .body {max-height: none !important;}</style>`,
+            `<p>You must read and accept the following disclaimers to allow the usage of d.tech CBL features:</p>`,
+            `<ol style="line-height: 1.5;">`,
+            `<li>Starting June 2022, CBL features in Power+ are no longer actively updated. CBL features continue to be provided as-is for use at your own discretion.</li>`,
+            `<li>Power+ does not guarantee that CBL features will be up-to-date with the d.tech CBL spec. By proceeding, you accept all risks resulting from the usage of a potentially obsolete system.</li>`,
+            `<li>You are responsible for checking that the <a href="${dtps.cblSpec}">CBL spec Power+ is using</a> is correct for your use case.</li>`,
+            `<li><b>In short, these features may become (or are already) obsolete. <span style="background: red; color: white;">Proceed at your own risk.<span></b></li>`,
+            `</ol>`
+        ].join(""), "report", [
+            { name: "Accept", icon: "warning", action: () => dtps.dangerousCBLPrompt(true) },
+            { name: "Cancel", icon: "close", action: () => fluid.exitAlert() }
+        ], "red");
+    }
 }
 
 /**
  * Renders the grades tab in settings
  */
 dtps.renderGradesInSettings = function () {
+    //Render d.tech dangerous CBL settings
+    if (dtpsLMS.dtech) {
+        $("#classCBLChex").html(dtps.classes.map(course => {
+            return (
+                `<div>
+                    <div onclick="fluid.set('pref-enabledCBLFor${course.id}'); dtps.settingsReloadWarning();" class="checkbox pref-enabledCBLFor${course.id}"><i class="fluid-icon">check</i></div>
+                    <div class="label">${course.name}</div>
+                </div><br />`
+            );
+        }));
+    }
+
+    //Add CBL area toggle listener
+    if (fluid.get("pref-dangerousCBL") == "true") { jQuery('#cblSwitchesArea').show(); }
+    document.addEventListener("pref-dangerousCBL", function (e) {
+        if ((e.detail == "true") || (e.detail == true)) {
+            //dangerous CBL has been enabled, show class toggle area
+            jQuery('#cblSwitchesArea').show();
+        } else {
+            //dangerous has been disabled, hide class toggle area
+            jQuery('#cblSwitchesArea').hide();
+        }
+    });
+
     //Render class grade bars
     $("#classGradeBars").html(dtps.classes.map(course => {
         //Percentages below are for visualization purposes only
@@ -1323,9 +1400,14 @@ dtps.renderGradesInSettings = function () {
 
     if (sum == null) {
         $("#dtpsGpaText").text("...");
+    } else if (values === 0) {
+        $("#dtpsGpaText").text("Not available");
     } else {
         $("#dtpsGpaText").text((sum / values).toFixed(1));
     }
+
+    //Initialize Fluid UI again
+    fluid.init();
 }
 
 /**
@@ -1548,7 +1630,7 @@ dtps.render = function () {
                 </button>
                 <button init="true" onclick="fluid.screen('gradebook', dtps.classes[dtps.selectedClass].id);" class="btn grades">
                     <i class="fluid-icon">assessment</i>
-                    ${dtpsLMS.gradebook ? "Grades" : "Gradebook"}
+                    Gradebook
                 </button>
             </div>
           </div>
@@ -1743,6 +1825,21 @@ dtps.renderLite = function () {
         }
     });
 
+    /**
+     * A callback for blocking Fluid UI card closes
+     */
+    dtps.closeScreen = function () {
+        if (dtps.reloadPending) {
+            jQuery("body").addClass("requiredModal");
+            fluid.alert("Reload required", "Some of the settings you've changed require a reload to take effect.", "refresh", [
+                { name: "Reload Power+", icon: "refresh", action: () => window.location.reload() }
+            ], "var(--theme)");
+            return true;
+        }
+
+        return false;
+    }
+
     //Render settings card
     var baseHost = new URL(dtps.baseURL).hostname;
     jQuery(".card.settingsCard").html(/*html*/`
@@ -1763,6 +1860,11 @@ dtps.renderLite = function () {
             <div onclick="$('.abtpage').hide();$('.abtpage.theme').show();" class="item">
                 <i class="fluid-icon">format_paint</i> Theme
             </div>
+            ${dtpsLMS.dtech ? /*html*/`
+                <div onclick="$('.abtpage').hide();$('.abtpage.cblCalc').show();" class="item">
+                    <i class="fluid-icon">calculate</i> CBL
+                </div>
+            ` : ``}
             <div onclick="$('.abtpage').hide();$('.abtpage.grades').show();" class="item">
                 <i class="fluid-icon">assessment</i> GPA
             </div>
@@ -1785,21 +1887,12 @@ dtps.renderLite = function () {
         <div style="min-height: 100%" class="content">
             <div class="abtpage settings">
                 <h5><b>Settings</b></h5>
-
-                <p style="display: none;" id="settingsReloadWarning">You need to reload for the changes you've made to take effect</p>
                 
                 <br />
                 <p>Sidebar</p>
 
                 <div onclick="fluid.set('pref-hideGrades');" class="switch pref-hideGrades"><span class="head"></span></div>
                 <div class="label"><i class="fluid-icon">visibility_off</i> Hide class grades</div>
-
-                ${dtpsLMS.dtech && !dtps.user.parent ? /*html*/`
-                        <br /><br />
-                        <div onclick="fluid.set('pref-autoGroupClasses'); dtps.settingsReloadWarning();" class="switch pref-autoGroupClasses active"><span class="head"></span></div>
-                        <div class="label"><i class="fluid-icon">sort</i> Automatically group and sort classes</div>
-                    ` : ""
-        }
 
                 <br /><br />
                 <p>Classes</p>
@@ -1808,8 +1901,20 @@ dtps.renderLite = function () {
                 <div class="label"><i class="fluid-icon">title</i> Show full class names</div>
                     
                 <br /><br />
-                <div onclick="fluid.set('pref-hideClassImages')" class="switch pref-hideClassImages"><span class="head"></span></div>
+                <div onclick="fluid.set('pref-hideClassImages'); fluid.screen();" class="switch pref-hideClassImages"><span class="head"></span></div>
                 <div class="label"><i class="fluid-icon">image</i> Hide class images</div>
+
+                ${dtpsLMS.shortName === "Canvas" ? /*html*/`
+                    <br /><br />
+                    <div onclick="fluid.set('pref-showAllClasses'); dtps.settingsReloadWarning();" class="switch pref-showAllClasses"><span class="head"></span></div>
+                    <div class="label"><i class="fluid-icon">visibility</i> Show all published classes, including those which may have ended</div>
+                ` : ""}
+
+                <br /><br />
+                <p>Assignments</p>
+
+                <div onclick="fluid.set('pref-unusualDueDates'); fluid.screen();" class="switch pref-unusualDueDates active"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">highlight</i> Highlight outlying due dates</div>
 
                 <div id="dtpsPrereleaseTesting" style="${window.localStorage.prereleaseEnabled || (dtps.env == "dev") || window.localStorage.githubRepo || window.localStorage.externalReleaseURL ? "" : "display: none;"}">
                     <br /><br />
@@ -1858,6 +1963,36 @@ dtps.renderLite = function () {
                 <div class="themeSelectionUI flat"></div>
             </div>
 
+            <div style="display: none;" class="abtpage cblCalc">
+                <h5><b>d.tech CBL</b></h5>
+                
+                <div>
+                    <p><span style="width: 32px; display: inline-block; text-align: center;">⚠️</span> CBL features are no longer actively updated and may become (or are already) obsolete. Use at your own risk.</p>
+                    <p><span style="width: 32px; display: inline-block; text-align: center;">ℹ️</span> CBL features follow the <a href="${dtps.cblSpec}">August 2021</a> specification.</p>
+                </div>
+                
+                <br />
+                
+                <div onclick="dtps.dangerousCBLPrompt();" class="switch pref-dangerousCBL"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">functions</i> Allow CBL features</div>
+
+                <br /><br /><br />
+                
+                <div id="cblSwitchesArea" style="display: none;">
+                
+                    <div class="divider"></div>
+
+                    <br />
+
+                    <p>CBL will be enabled for the classes checked below:</p>
+
+                    <br />
+
+                    <div id="classCBLChex"></div>
+
+                </div>
+            </div>
+
             <div style="display: none;" class="abtpage grades">
                 <h5><b>GPA</b></h5>
                 
@@ -1889,7 +2024,7 @@ dtps.renderLite = function () {
             ${dtps.env == "dev" ? /*html*/`
                 <div style="display: none;" class="abtpage debugging">
                    <h5><b>Debugging</b></h5>
-                   <p>These settings are for development only and might break Power+. Use at your own risk.</p>
+                   <p>These settings are for development purposes only and might break Power+. Use at your own risk.</p>
 
                    <div>
                     <button onclick="dtps.firstrun()" class="btn small"><i class="fluid-icon">web_asset</i> Show firstrun screen</button>
@@ -1924,17 +2059,6 @@ dtps.renderLite = function () {
                    <br />
                    <div onclick="fluid.set('pref-debuggingGenericGradebook')" class="switch pref-debuggingGenericGradebook"><span class="head"></span></div>
                    <div class="label">Always use the generic gradebook</div>
-
-                   <br /><br />
-                   <div onclick="fluid.set('pref-debuggingLocalFluidUI')" class="switch pref-debuggingLocalFluidUI"><span class="head"></span></div>
-                   <div class="label">Use local Fluid UI</div>
-
-                   <br /><br />
-
-                   <br /><br />
-                   <input type="date" />
-                   <br /><br />
-                   <input type="color" />
                 </div>
                 <div style="display: none;" class="abtpage experiments">
                     <h5><b>Experiments</b></h5>
@@ -2021,9 +2145,11 @@ dtps.renderLite = function () {
                 ${dtps.env == "dev" ? `` : `<p style="cursor: pointer; color: var(--secText, gray)" onclick="$('.advancedOptions').show(); $(this).hide();" class="advOp">Show advanced options</p>`}
 
                 <div style="text-align: center; padding: 50px 0px;">
-                    <img style="height: 45px; margin-right: 20px; vertical-align: middle;" src="https://cdn.jottocraft.com/images/footerImage.png" />
-                    <h5 style="display: inline-block; vertical-align: middle;">jottocraft</h5>
-                    <p>(c) jottocraft 2018-2022 &nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps">source code</a>&nbsp;&nbsp;<a href="https://github.com/jottocraft/dtps/blob/main/LICENSE">license</a></p>
+                    <a href="https://jottocraft.com">
+                        <img style="height: 38px; margin-right: 10px; vertical-align: middle;" src="https://cdn.jottocraft.com/images/footerImage.png" />
+                        <h5 style="display: inline-block; vertical-align: middle; color: var(--text);">jottocraft</h5>
+                    </a>
+                    <p>(c) jottocraft 2018-2022. This project is <a href="https://jottocraft.com/oss">open source</a>.
                 </div>
             </div>
         </div>
@@ -2063,8 +2189,10 @@ dtps.init();
  * @property {string} source URL to the LMS integration's source code
  * @property {boolean} [dtech] True if this LMS is d.tech
  * @property {boolean} [institutionSpecific] True if the LMS is designed for a specific institution instead of a broader LMS
- * @property {boolean} [preferRubricGrades] True if DTPS should prefer rubric grades for assignments
+ * @property {boolean|string[]} [useRubricGrades] True if DTPS should use rubric grades for assignments. If an array is provided, only assignments whose class ID is in the array will use rubric grades.
  * @property {boolean} [genericGradebook] True if DTPS should show the generic gradebook. Ignored if dtpsLMS.gradebook defined.
+ * @property {string[]} [gradeCalculationAllowlist] An array of class IDs that will use dtpsLMS.calculateGrade, if provided. All other classes will bypass dtpsLMS.calculateGrade and instead use the default LMS grade.
+ * @property {string[]} [lmsGradebookAllowlist] An array of class IDs that will use dtpsLMS.gradebook, if provided. All other classes will bypass dtpsLMS.gradebook and instead use the generic gradebook if enabled.
  */
 
 /**
@@ -2222,6 +2350,7 @@ dtps.init();
 * @description [OPTIONAL, INSTITUTION ONLY] This function can be implemented by institution-specific scripts to loop through and override assignment data returned by the LMS.
 * @kind function
 * @param {Assignment[]} assignments Original assignments array
+* @param {Class} course The class that the assignment is in
 * @return {Promise<Assignment[]>} A promise that resolves to the updated assignments array
 */
 
@@ -2260,6 +2389,7 @@ dtps.init();
 * @property {string} userID The ID of the user this class is associated with (from the parameter of dtpsLMS.fetchClasses)
 * @property {number} num Index of the class in the dtps.classes array
 * @property {string} subject Class subject
+* @property {number[]} usualDueRange The range of usual due dates for this course [min,max]. Anything outside this range is considered unusual and highlighted if enabled.
 * @property {ClassSection[]|boolean} [people] Users in this class. True if the class supports the "People" tab, but not yet loaded. If this is true dtpsLMS.fetchUsers must be implemented.
 * @property {string} [icon] The icon to show with this class
 * @property {string} [group] The name of the group that this class is in
