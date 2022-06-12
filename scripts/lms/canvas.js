@@ -16,7 +16,7 @@ var dtpsLMS = {
     description: "Power+ integration for Canvas LMS",
     url: "https://www.instructure.com/canvas/",
     logo: "https://i.imgur.com/rGjNVoc.png",
-    source: "https://github.com/jottocraft/dtps/blob/main/scripts/lms/canvas.js",
+    source: "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/canvas.js",
     genericGradebook: true
 };
 
@@ -44,7 +44,7 @@ dtpsLMS.fetchQueue = [];
 dtpsLMS.fetchWrapper = function () {
     //Start a queue interval if it isn't already started
     if (!dtpsLMS.fetchInterval) {
-        dtpsLMS.fetchInterval = setInterval(function() {
+        dtpsLMS.fetchInterval = setInterval(function () {
             //Run request at the start of the queue
             if (dtpsLMS.fetchQueue[0]) {
                 dtpsLMS.fetchQueue[0]();
@@ -111,6 +111,12 @@ dtpsLMS.fetchClasses = function (userID) {
 
             //Add courses from canvas to courses array as a DTPS course object
             courseData.forEach((course, index) => {
+                const forceAllClasses = fluid.get("pref-showAllClasses") == "true";
+                if (!forceAllClasses) {
+                    if (course.end_at && (new Date() > new Date(course.end_at))) return;
+                    if (course.term?.end_at && (new Date() > new Date(course.term?.end_at))) return;
+                }
+
                 var termSegments = course.course_code.split(" - ");
                 var dtpsCourse = {
                     name: course.course_code,
@@ -252,11 +258,6 @@ dtpsLMS.fetchAssignments = function (userID, classID) {
                                         matches++;
                                     }
                                 });
-                            }
-
-                            if ((matches !== Object.keys(submission.rubric_assessment).length) && (dtps.remoteConfig.angryOnRubricError >= 1)) {
-                                dtpsAssignment.error = "Power+ found a rubric assessment but could not find its associated rubric data. One or more rubric/outcome assessments may be unavailable for this assignment.";
-                                if (dtpsLMS.dtech && (dtps.remoteConfig.angryOnRubricError == 2)) dtpsAssignment.error += " Please see the class grades tab for more information.";
                             }
                         }
 
@@ -476,10 +477,6 @@ dtpsLMS.fetchUsers = function (classID) {
                         url: "/courses/" + classID + "/users/" + student.id
                     });
                 });
-                var dtechMatch = section.name.match(/[0-9](?=\(A)/);
-                if (dtpsLMS.dtech && dtechMatch) {
-                    section.name = dtechMatch[0] == 7 ? "@d.tech" : "Period " + dtechMatch[0];
-                }
                 sections.push({
                     title: section.name,
                     id: section.id,

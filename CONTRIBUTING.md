@@ -20,7 +20,7 @@ You can read the Power+ docs at [powerplus.app/docs](https://powerplus.app/docs)
 To get Power+ up and running locally, you'll need git and node installed on your system.
 
 ```bash
-git clone https://github.com/jottocraft/dtps.git dtps
+git clone https://bitbucket.org/jottocraft/dtps.git
 cd dtps
 npm install
 npm start

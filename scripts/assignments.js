@@ -17,6 +17,15 @@ dtps.renderAssignment = function (assignment, childDisplay) {
     //Render points/letter score
     var scoreHTML = dtps.renderAssignmentScore(assignment);
 
+    let highlightUnusualDate = false;
+    if (assignment.dueAt && (fluid.get("pref-unusualDueDates") != "false")) {
+        const dayTimeMinutes = dtps.dayTimeMinutes(assignment.dueAt);
+        const range = dtps.classes[assignment.class].usualDueRange;
+        if (range && !isNaN(range[0]) && !isNaN(range[1]) && (dayTimeMinutes !== null)) {
+            if ((dayTimeMinutes < range[0]) || (dayTimeMinutes > range[1])) highlightUnusualDate = true;
+        }
+    }
+
     var HTML = /*html*/`
         <div 
             onclick="${`dtps.assignment('` + assignment.id + `', ` + assignment.class + `, ` + (!isNaN(childDisplay) ? true : false) + `)`}" 
@@ -39,7 +48,7 @@ dtps.renderAssignment = function (assignment, childDisplay) {
                 <!-- Assignment info -->
                 <div class="info">
                     ${assignment.error ? `<div style="color: #f2392c;" class="infoChip weighted"><i class="fluid-icon">error</i> Error</div>` : ""}
-                    ${assignment.dueAt ? `<div ${dtpsLMS.isUsualDueDate && !dtpsLMS.isUsualDueDate(assignment.dueAt) ? `style="font-weight: bold;color: var(--text);"` : ""} class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
+                    ${assignment.dueAt ? `<div ${highlightUnusualDate ? `style="font-weight: bold;color: var(--themeText);background-color: var(--theme);padding: 0px 8px;border-radius: 10px;"` : ""} class="infoChip"><i style="margin-top: -2px;" class="fluid-icon">alarm</i> Due ` + dtps.formatDate(assignment.dueAt) + `</div>` : ""}
                     ${assignment.outcomes ? `<div class="infoChip weighted"><i class="fluid-icon">adjust</i>` + assignment.outcomes.length + `</div>` : ""}
                     ${assignment.category ? `<div class="infoChip weighted"><i class="fluid-icon">category</i> ` + assignment.category + `</div>` : ""}
                     ${childDisplay ? `<div class="infoChip weighted"><i class="fluid-icon">person</i> ` + childDisplay + `</div>` : ""}
@@ -69,8 +78,10 @@ dtps.renderAssignment = function (assignment, childDisplay) {
 dtps.renderAssignmentScore = function (assignment) {
     var scoreHTML = "";
 
+    const useRubricGrades = dtpsLMS.useRubricGrades instanceof Array ? dtpsLMS.useRubricGrades.includes(dtps.classes[assignment.class].id) : dtpsLMS.useRubricGrades;
+
     //Use rubric score over points score if possible
-    if (dtpsLMS.useRubricGrades && assignment.rubric) {
+    if (useRubricGrades && assignment.rubric) {
         var rubricHTML = [];
 
         assignment.rubric.forEach(rubricItem => {
@@ -85,7 +96,7 @@ dtps.renderAssignmentScore = function (assignment) {
 
         if (rubricHTML.length) scoreHTML = `<div class="dtpsRubricScore">${rubricHTML.join("")}</div>`;
 
-    } else if (!dtpsLMS.useRubricGrades && (assignment.grade || (assignment.grade == 0))) {
+    } else if (!useRubricGrades && (assignment.grade || (assignment.grade == 0))) {
         scoreHTML = /*html*/`
             <div class="assignmentGrade">
                 <div class="grade">${Number(assignment.grade.toFixed(2))}</div>
@@ -1051,7 +1062,7 @@ dtps.gradebook = function (classID) {
             gradedAssignments++;
 
             assignmentHTML += /*html*/`
-                <div onclick="dtps.assignment('${assignment.id}', ${classNum})" class="gradebookAssignment card">
+                <div onclick="dtps.assignment('${assignment.id}', ${classNum})" class="gradebookAssignment">
                     <h5>
                         ${assignment.title}
 
@@ -1146,7 +1157,14 @@ fluid.externalScreens.moduleStream = (courseID) => {
 }
 
 fluid.externalScreens.gradebook = (courseID) => {
-    dtps.gradebook(courseID);
+    const courseLMSGradebookAllowed = dtpsLMS.lmsGradebookAllowlist ? dtpsLMS.lmsGradebookAllowlist.includes(courseID) : true;
+    if (dtpsLMS.gradebook && courseLMSGradebookAllowed && !((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
+        //Handle LMS gradebook
+        dtps.showLMSGradebook(courseID);
+    } else if (dtpsLMS.genericGradebook || ((dtps.env == "dev") && (fluid.get("pref-debuggingGenericGradebook") == "true"))) {
+        //Generic gradebook script
+        dtps.gradebook(courseID);
+    }
 }
 
 //Type definitions

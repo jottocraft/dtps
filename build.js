@@ -71,11 +71,16 @@ function minifyJS() {
 function copyStatic() {
     console.log("\n[2/3] Copying static files...");
 
-    //Make build folder if it doesn't already exist
+    //Make build and Fluid UI folders they doesn't already exist
     mkdirp.sync("build");
+    mkdirp.sync(path.join("build", "fluid"));
 
     //Copy dtps.css
-    fs.copyFileSync("dtps.css", "build/dtps.css");
+    fs.copyFileSync("ui/dtps.css", "build/dtps.css");
+
+    //Copy Fluid UI
+    fs.copyFileSync("ui/fluid.css", "build/fluid/fluid.css");
+    fs.copyFileSync("ui/fluid.js", "build/fluid/fluid.js");
 
     //Write CNAME
     fs.writeFileSync(path.join("build", "CNAME"), dev ? "dev.dtps.jottocraft.com" : "powerplus.app", "utf8");

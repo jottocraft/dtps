@@ -16,7 +16,7 @@ var dtpsLMS = {
     description: "All content in this LMS is not real and is for demonstration purposes only",
     url: "https://powerplus.app",
     logo: "https://powerplus.app/logo.png",
-    source: "https://github.com/jottocraft/dtps/blob/main/scripts/lms/demo.js",
+    source: "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/demo.js",
     genericGradebook: false,
     useRubricGrades: true,
     isDemoLMS: true
