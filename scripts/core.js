@@ -35,6 +35,7 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {DashboardItem[]} rightDashboard Items on the right side of the dashboard based on dtps.dashboardItems and user prefrences. Set in dtps.loadDashboardPrefs.
  * @property {object} remoteConfig Configuration variables that can be remotely changed
  * @property {boolean} searchScrollListener True if the search scroll listener has been added
+ * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
     ver: 350,
@@ -46,6 +47,7 @@ var dtps = {
     gradebookExpanded: false,
     reloadPending: false,
     updates: [],
+    cblSpec: "https://docs.google.com/document/d/1AO5OcQozr1HAt_gT-mfmv8A2ibUP2l3PHPYWoL3xivo/edit",
     dashboardItems: [
         {
             name: "Calendar",
@@ -225,7 +227,7 @@ dtps.firstrun = function () {
             <h5>${dtpsLMS.gradebook ? "Manage your coursework and grades" : "Manage your coursework"}</h5>
             <p>Power+ organizes all of your coursework so you can easily see what you need to do next. The dashboard shows upcoming assignments, recent grades, and announcements.
             ${dtpsLMS.gradebook ? `Power+ includes a gradebook designed for ${dtpsLMS.name} to help you understand your grades.` : ``}</p>
-            ${dtpsLMS.dtech ? `<p style="color: var(--text);"><b>As of June 2022, d.tech CBL features are no longer actively updated. If you'd like to use these potentially obsolete features, you must opt-in by clicking "Settings" at the top-right corner and selecting the "CBL" item in the sidebar.</b></p>` : ``}
+            ${dtpsLMS.dtech ? `<p style="color: var(--text);"><b>As of June 2022, d.tech CBL features are no longer actively updated. If you'd like to use these potentially obsolete features, you must opt-in at Settings (top-right) -> CBL.</b></p>` : ``}
         </div>
 
         ${dtpsLMS.isDemoLMS ? /*html*/`
@@ -1296,6 +1298,37 @@ dtps.settingsReloadWarning = function () {
 }
 
 /**
+ * Prompts for dangerous CBL enablement
+ * 
+ * @param {boolean} [accepted] True if the disclaimer has been accepted
+ */
+dtps.dangerousCBLPrompt = function(accepted) {
+    const dangerousCBLEnabled = fluid.get("pref-dangerousCBL") == "true";
+    if (dangerousCBLEnabled) {
+        fluid.set("pref-dangerousCBL", "false");
+        dtps.settingsReloadWarning();
+    } else if (accepted) {
+        fluid.set("pref-dangerousCBL", "true");
+        dtps.settingsReloadWarning();
+    } else {
+        //Prompt for acceptance
+        fluid.alert("Allow CBL Features", [
+            `<style>.card.alert .body {max-height: none !important;}</style>`,
+            `<p>You must read and accept the following disclaimers to allow the usage of d.tech CBL features:</p>`,
+            `<ol style="line-height: 1.5;">`,
+            `<li>Starting June 2022, CBL features in Power+ are no longer actively updated. CBL features continue to be provided as-is for use at your own discretion.</li>`,
+            `<li>Power+ does not guarantee that CBL features will be up-to-date with the d.tech CBL spec. By proceeding, you accept all risks resulting from the usage of a potentially obsolete system.</li>`,
+            `<li>You are responsible for checking that the <a href="${dtps.cblSpec}">CBL spec Power+ is using</a> is correct for your use case.</li>`,
+            `<li><b>In short, these features may become (or are already) obsolete. <span style="background: red; color: white;">Proceed at your own risk.<span></b></li>`,
+            `</ol>`
+        ].join(""), "report", [
+            { name: "Accept", icon: "warning", action: () => dtps.dangerousCBLPrompt(true) },
+            { name: "Cancel", icon: "close", action: () => fluid.exitAlert() }
+        ], "red");
+    }
+}
+
+/**
  * Renders the grades tab in settings
  */
 dtps.renderGradesInSettings = function () {
@@ -1936,13 +1969,14 @@ dtps.renderLite = function () {
                 <h5><b>d.tech CBL</b></h5>
                 
                 <div>
-                    <p style="color: var(--secText);"><i>CBL features are not actively updated and may become obsolete. Use at your own risk.</i></p>
+                    <p><span style="width: 32px; display: inline-block; text-align: center;">⚠️</span> CBL features are no longer actively updated and may become (or are already) obsolete. Use at your own risk.</p>
+                    <p><span style="width: 32px; display: inline-block; text-align: center;">ℹ️</span> Algorithm last updated in <a href="${dtps.cblSpec}">August 2021</a>.</p>
                 </div>
                 
                 <br />
                 
-                <div onclick="fluid.set('pref-dangerousCBL'); dtps.settingsReloadWarning();" class="switch pref-dangerousCBL"><span class="head"></span></div>
-                <div class="label"><i class="fluid-icon">functions</i> Allow CBL features (updated Spring 2022)</div>
+                <div onclick="dtps.dangerousCBLPrompt();" class="switch pref-dangerousCBL"><span class="head"></span></div>
+                <div class="label"><i class="fluid-icon">functions</i> Allow CBL features</div>
 
                 <br /><br /><br />
                 
