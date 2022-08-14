@@ -436,12 +436,6 @@ dtps.calendar = function (doneLoading) {
                 course.assignments.forEach(assignment => {
                     //Show assignments due before 9AM on the previous day
                     var date = new Date(assignment.dueAt);
-                    if (date.getHours() < 9) {
-                        //Set the date to 23:59 the previous day for calendar display
-                        date.setTime(date.getTime() - 86400000);
-                        date.setHours(23);
-                        date.setMinutes(59);
-                    }
 
                     var existingEvent = calEvents.find(e => e.id == assignment.id);
                     if (existingEvent && assignment.missing) {

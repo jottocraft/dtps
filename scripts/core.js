@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 350,
-    readableVer: "v3.5.0",
+    ver: 351,
+    readableVer: "v3.5.1",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
