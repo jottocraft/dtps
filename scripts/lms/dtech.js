@@ -20,7 +20,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
     //Add d.tech-specific items to dtpsLMS
     dtpsLMS.name = "d.tech";
     dtpsLMS.legalName = "Canvas LMS, Design Tech High School, or Instructure Inc";
-    dtpsLMS.description = "Unsupported CBL features for Power+";
+    dtpsLMS.description = "CBL features for Power+. No longer actively maintained.";
     dtpsLMS.logo = "https://i.imgur.com/efGrLq3.png";
     dtpsLMS.source = "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/dtech.js";
     dtpsLMS.useRubricGrades = consentedCBLCourses;
