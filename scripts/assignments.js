@@ -220,22 +220,14 @@ dtps.mainStream = function () {
  * @param {Date} date Date to check 
  * @param {Date} [onDate] Date checked against (defaults to today)
  */
-dtps.isDueOnDate = function (date, onDate) {
-    var today = onDate ? new Date(onDate) : new Date();
-    var tomorrow = new Date(today.getTime() + 86400000);
-    var d1 = new Date(date);
+dtps.isDueOnDate = function (date, onDate = new Date()) {
+    const d1 = new Date(date);
 
-    var isActuallyTodayAfter9 = d1.getFullYear() === today.getFullYear() &&
-        d1.getMonth() === today.getMonth() &&
-        d1.getDate() === today.getDate() &&
-        d1.getHours() >= 9;
+    const isOnDate = d1.getFullYear() === onDate.getFullYear() &&
+        d1.getMonth() === onDate.getMonth() &&
+        d1.getDate() === onDate.getDate();
 
-    var isTomorrowBefore9 = d1.getFullYear() === tomorrow.getFullYear() &&
-        d1.getMonth() === tomorrow.getMonth() &&
-        d1.getDate() === tomorrow.getDate() &&
-        d1.getHours() < 9;
-
-    return isActuallyTodayAfter9 || isTomorrowBefore9;
+    return isOnDate;
 }
 
 /**
@@ -434,7 +426,6 @@ dtps.calendar = function (doneLoading) {
             if (course.assignments) {
                 //Class has assignments
                 course.assignments.forEach(assignment => {
-                    //Show assignments due before 9AM on the previous day
                     var date = new Date(assignment.dueAt);
 
                     var existingEvent = calEvents.find(e => e.id == assignment.id);

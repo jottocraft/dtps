@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.5.0
+ * @version v3.6.0
  * 
  * @copyright Copyright (c) 2018-2022 jottocraft
  * @license MIT
@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 351,
-    readableVer: "v3.5.1",
+    ver: 360,
+    readableVer: "v3.6.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -153,31 +153,65 @@ document.onkeydown = function (event) {
 /**
  * Fetches and displays the DTPS changelog modal
  * 
- * @param onlyIfNewVersion True if the changelog should only show if this is a new version
+ * @param {number} fromVersion The previous version of DTPS installed. Will show popup changelogs since that version, if there aren't any, it will silently skip.
  */
-dtps.changelog = function (onlyIfNewVersion) {
-    //Fetch latest changelog from GitHub releases
+dtps.changelog = function (fromVersion) {
+    let changelogFetchURL;
+    if (fromVersion) {
+        //Check for popup w/ all previous important updates query
+        changelogFetchURL = `https://bugs.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: released version code: ${fromVersion + 1} .. ${dtps.ver} popup: popup sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))`;
+    } else {
+        //Latest query
+        changelogFetchURL = `https://bugs.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: released version code: * .. ${dtps.ver} sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))&$top=1`;
+    }
+
     jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js", function () {
         markdown = new showdown.Converter();
-        jQuery.getJSON("https://api.github.com/repos/jottocraft/dtps/releases/latest", function (data) {
-            //Convert changelog to HTML and render in the changelog card
-            var changelogHTML = markdown.makeHtml(data.body);
-            jQuery(".card.changelog").html(`<i onclick="fluid.cards.close('.card.changelog')" class="fluid-icon close">close</i>` + changelogHTML);
+        //Fetch changelog for the current release
+        jQuery.getJSON(changelogFetchURL, function (data) {
+            window.localStorage.setItem('dtps', dtps.ver);
 
-            if (!onlyIfNewVersion) {
-                //Show changelog
-                fluid.cards.close(".card.focus");
-                fluid.cards(".card.changelog");
-            } else if (Number(data.tag_name.replace(/[^0-9]/g, '')) > Number(window.localStorage.dtps)) {
-                //Show changelog if this is a new(er) version
-                localStorage.setItem('dtps', data.tag_name.replace(/[^0-9]/g, ''));
+            let releasesHTML = [];
 
-                if (!data.tag_name.includes("s")) {
-                    //s in tag_name means a silent release
-                    fluid.cards.close(".card.focus");
-                    fluid.cards(".card.changelog");
+            data.forEach(release => {
+                const releaseDate = release.customFields?.find(f => f.projectCustomField?.field?.name === "Release date")?.value;
+                const releaseDateFormatted = new Date(releaseDate).toLocaleDateString();
+
+                //Convert changelog to HTML and render in the changelog card
+                var changelogHTML = markdown.makeHtml(release.description);
+                releasesHTML.push(`
+                    <div style="display: flex; flex-direction: row; align-items: center;">
+                        <i style="margin-right: 6px;" class="fluid-icon">browser_updated</i>
+                        <h4 style="margin: 6px 0px;">${release.summary}</h4>
+                    </div>
+                    <div style="display: flex; flex-direction: row; align-items: center; color: var(--lightText);">
+                        <i style="margin-right: 4px; font-size: 18px;" class="fluid-icon">event</i>
+                        <p style="margin: 6px 0px;">${releaseDateFormatted}</p>
+                    </div>
+                    <br />
+                    ${changelogHTML}
+                `);
+            });
+
+            if (!releasesHTML.length) {
+                if (fromVersion) {
+                    //No data for popups, silently skip
+                    return;
                 }
+
+                releasesHTML.push(`<p>Couldn't find any changelog data</p>`);
             }
+
+            jQuery(".card.changelog").html(`
+                <i onclick="fluid.cards.close('.card.changelog')" class="fluid-icon close">close</i>
+                ${releasesHTML.join(`<div style="margin: 40px 0px !important;" class="divider"></div>`)}
+                <br /><br />
+                <button onclick="window.open('https://bugs.jottocraft.com/issues?q=project:%20RRS%20product:%20dtps%20rollout:%20released%20sort%20by:%20%7Bversion%20code%7D%20desc')" class="btn small outline"><i class="fluid-icon">update</i> View previous changelogs</button>
+            `);
+
+            //Show changelog
+            fluid.cards.close(".card.focus");
+            fluid.cards(".card.changelog");
         });
     });
 };
@@ -226,7 +260,6 @@ dtps.firstrun = function () {
             <i class="fluid-icon">dashboard</i>
             <h5>${dtpsLMS.gradebook ? "Manage your coursework and grades" : "Manage your coursework"}</h5>
             <p>Power+ organizes all of your coursework so you can easily see what you need to do next. The dashboard shows upcoming assignments, recent grades, and announcements.
-            ${dtpsLMS.gradebook ? `Power+ includes a gradebook designed for ${dtpsLMS.name} to help you understand your grades.` : ``}</p>
             ${dtpsLMS.dtech ? `<p style="color: var(--text);"><b>As of June 2022, d.tech CBL features are no longer actively updated. If you'd like to use these potentially obsolete features, you must opt-in at Settings (top-right) -> CBL.</b></p>` : ``}
         </div>
 
@@ -724,7 +757,7 @@ dtps.init = function () {
             dtps.firstrun();
         } else if (dtps.popup == "changelog") {
             //Changelog will only show if the release notes are on GitHub
-            dtps.changelog(true);
+            dtps.changelog(Number(window.localStorage.dtps));
         }
     }).catch(function (err) {
         //Web request error
@@ -1302,7 +1335,7 @@ dtps.settingsReloadWarning = function () {
  * 
  * @param {boolean} [accepted] True if the disclaimer has been accepted
  */
-dtps.dangerousCBLPrompt = function(accepted) {
+dtps.dangerousCBLPrompt = function (accepted) {
     const dangerousCBLEnabled = fluid.get("pref-dangerousCBL") == "true";
     if (dangerousCBLEnabled) {
         fluid.set("pref-dangerousCBL", "false");
@@ -2092,7 +2125,7 @@ dtps.renderLite = function () {
 
                     <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="fluid-icon" style="vertical-align: middle">update</i> Changelog</a>
                         <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px; cursor: pointer;"><i class="fluid-icon" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="fluid-icon" style="vertical-align: middle">email</i> hello@jottocraft.com</a>
+                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="fluid-icon" style="vertical-align: middle">email</i> Contact me (hello@jottocraft.com)</a>
                     </div>
                 </div>
 
