@@ -15,6 +15,7 @@ var dtpsLMS = {
     legalName: "Canvas LMS or Instructure Inc.",
     description: "Power+ integration for Canvas LMS",
     url: "https://www.instructure.com/canvas/",
+    inboxURL: "/conversations",
     logo: "https://i.imgur.com/rGjNVoc.png",
     source: "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/canvas.js",
     genericGradebook: true
@@ -94,6 +95,15 @@ dtpsLMS.fetchUser = function () {
             resolve(user);
         }
     })
+}
+
+//Fetch unread message count from Canvas
+dtpsLMS.fetchUnreadMessageCount = function () {
+    return new Promise(function (resolve, reject) {
+        dtpsLMS.fetchWrapper("/api/v1/conversations/unread_count", { headers: dtpsLMS.commonHeaders }).then(response => response.json()).then(data => {
+            resolve(data.unread_count);
+        }).catch(reject);
+    });
 }
 
 //Fetch class data from Canvas

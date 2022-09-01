@@ -1539,28 +1539,29 @@ body.disableOverflow .navbar {
 .navbar .navitem {
   display: inline-block;
   cursor: pointer;
-  padding: 0px 10px;
+  padding: 0px 8px;
   height: 32px;
   line-height: 32px;
-  margin: 2px 4px;
-  color: var(--secText);
+  margin: 2px;
+  color: var(--lightText);
   transition: color 0.2s;
   user-select: none;
+  border-radius: 4px;
 }
 
 .navbar .navitem.active {
-  color: var(--text);
+  color: var(--themeText);
+  background-color: var(--theme);
 }
 
 .navbar .navitem.active span, .navbar .navitem.active i {
   font-weight: bold;
-  text-shadow: var(--lightShadow);
 }
 
 .navbar .navitem i {
   vertical-align: middle;
   margin-right: 2px;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .navbar .navitem span {

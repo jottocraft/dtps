@@ -32,13 +32,13 @@ body.requiredModal .card.alert {
 }
 
 [data-theme-type=light] {
-    --theme: #cc9e54 !important;
-    --themeText: #261900 !important;
+    --theme: #af9018 !important;
+    --themeText: #fdf8f2 !important;
 }
 
 [data-theme-type=dark] {
-    --theme: #cc9e54 !important;
-    --themeText: #261900 !important;
+    --theme: #d8ae44 !important;
+    --themeText: #22201a !important;
 }
 
 body:not(.ugShow) .assessmentWrapper.ungraded {
