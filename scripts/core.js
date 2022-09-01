@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.6.0
+ * @version v3.7.0
  * 
  * @copyright Copyright (c) 2018-2022 jottocraft
  * @license MIT
@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 360,
-    readableVer: "v3.6.0",
+    ver: 370,
+    readableVer: "v3.7.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -758,6 +758,19 @@ dtps.init = function () {
         } else if (dtps.popup == "changelog") {
             //Changelog will only show if the release notes are on GitHub
             dtps.changelog(Number(window.localStorage.dtps));
+        }
+        
+        //Render inbox
+        if (dtpsLMS.fetchUnreadMessageCount) {
+            dtpsLMS.fetchUnreadMessageCount().then(count => {
+                jQuery("#dtpsUnreadCount span").text(count);
+
+                if (Number(count) > 0) {
+                    jQuery("#dtpsUnreadCount").addClass("active");
+                }
+
+                jQuery("#dtpsUnreadCount").show();
+            });
         }
     }).catch(function (err) {
         //Web request error
@@ -1594,6 +1607,10 @@ dtps.render = function () {
           </div>
 
           <div class="items" style="float: right;">
+            <a style="display: none;" id="dtpsUnreadCount" target="_blank" href="/conversations" class="navitem">
+                <i class="fluid-icon">inbox</i>
+                <span></span>
+            </a>
             <div class="navitem" onclick="dtps.settings();">
                 <i class="fluid-icon">settings</i>
                 <span>Settings</span>
@@ -2220,6 +2237,7 @@ dtps.init();
  * @property {string} logo LMS logo image URL
  * @property {string} url URL to the LMS' website
  * @property {string} source URL to the LMS integration's source code
+ * @property {string} [inboxURL] URL to the LMS inbox. Required only if dtpsLMS.fetchUnreadMessageCount count is implemented
  * @property {boolean} [dtech] True if this LMS is d.tech
  * @property {boolean} [institutionSpecific] True if the LMS is designed for a specific institution instead of a broader LMS
  * @property {boolean|string[]} [useRubricGrades] True if DTPS should use rubric grades for assignments. If an array is provided, only assignments whose class ID is in the array will use rubric grades.
@@ -2233,6 +2251,13 @@ dtps.init();
  * @description [REQUIRED] Fetches data for the current user from the LMS. If the user is not signed in, reject with an object that looks like {action: "login", redirectURL: "..."} to login the user.
  * @kind function
  * @return {Promise<User>} A promise which resolves to a User object
+ */
+
+/**
+ * @name dtpsLMS.fetchUnreadMessageCount
+ * @description [OPTIONAL] Fetches the unread message count for the current user
+ * @kind function
+ * @return {Promise<string>} A promise which resolves to a string depicting the count of unread messages
  */
 
 /**
