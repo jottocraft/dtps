@@ -9,7 +9,7 @@
  */
 
 //Load Canvas integration
-jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js", function () {
+jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js?upstream=true", function () {
     //Get global dangerous CBL preference
     const dangerousCBLEnabled = window.localStorage.getItem("pref-dangerousCBL") == "true";
 

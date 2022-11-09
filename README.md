@@ -12,7 +12,7 @@ For users looking to install Power+, visit the Power+ website by clicking <a hre
 ## Resources
 
 - [Source code](https://bitbucket.org/jottocraft/dtps)
-- [Issue tracker](https://jottocraft.atlassian.net/jira/software/c/projects/DTPS/issues)
+- [Issue tracker](https://bugs.jottocraft.com)
 - [Developer documentation](https://powerplus.app/docs)
 
 <br /><br /><br /><br /><br /><br />

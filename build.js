@@ -82,9 +82,6 @@ function copyStatic() {
     fs.copyFileSync("ui/fluid.css", "build/fluid/fluid.css");
     fs.copyFileSync("ui/fluid.js", "build/fluid/fluid.js");
 
-    //Write CNAME
-    fs.writeFileSync(path.join("build", "CNAME"), dev ? "dev.dtps.jottocraft.com" : "powerplus.app", "utf8");
-
     //Copy www
     ncp("www", "build", function () {
         if (dev) {

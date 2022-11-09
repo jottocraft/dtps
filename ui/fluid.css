@@ -180,7 +180,7 @@ body.themeImage .label, body.themeImage li {
 }
 
 body.themeImage input:not(.filled):not([type=submit]):not([type=color]):not([type=range]):not([type=file]):not([type=checkbox]):not([type=button]):not([type=radio]):not([type=reset]), 
-body.themeImage button.outline, body.themeImage textarea, body.themeImage .block:not(.clickable):not(.card), body.themeImage code {
+body.themeImage button.outline, body.themeImage textarea, body.themeImage .block:not(.clickable):not(.card) {
   backdrop-filter: blur(20px) !important;
   background: var(--lightAcrylic) !important;
 }
@@ -811,166 +811,6 @@ button.small, select.small {
   color: var(--themeText);
   box-shadow: var(--elementShadow);
 }
-
-/* Code
---------------------------------------------------  */
-
-code {
-  display: block;
-  font-family: monospace, monospace !important;
-  font-size: 16px;
-  padding: 20px;
-  box-shadow: var(--lightShadow) !important;
-  overflow: auto;
-  border-radius: var(--cardRadius);
-  background: var(--content);
-}
-
-code * {
-  font-family: monospace, monospace !important;
-}
-
-/* desert scheme ported from vim to google prettify */
-
-code .nocode {
-  background-color: none;
-  color: var(--text);
-}
-
-code .str {
-  color: #ffa0a0
-}
-
-/* string  - pink */
-
-code .kwd {
-  color: #f0e68c
-}
-
-code .com {
-  color: #87ceeb
-}
-
-/* comment - skyblue */
-
-code .typ {
-  color: #98fb98
-}
-
-/* type    - lightgreen */
-
-code .lit {
-  color: #cd5c5c
-}
-
-/* literal - darkred */
-
-code .pun {
-  color: var(--text)
-}
-
-/* punctuation */
-
-code .pln {
-  color: var(--text)
-}
-
-/* plaintext */
-
-code .tag {
-  color: #f0e68c
-}
-
-/* html/xml tag    - lightyellow */
-
-code .atn {
-  color: #bdb76b
-}
-
-/* attribute name  - khaki */
-
-code .atv {
-  color: #ffa0a0
-}
-
-/* attribute value - pink */
-
-code .dec {
-  color: #98fb98
-}
-
-/* decimal         - lightgreen */
-
-/* stackoverflow code formatting for light themes */
-
-[data-theme-type=light] code .nocode {
-  background-color: none;
-  color: var(--text);
-}
-
-[data-theme-type=light] code .str {
-  color: #7D2727
-}
-
-/* string  - pink */
-
-[data-theme-type=light] code .kwd {
-  color: #101094
-}
-
-[data-theme-type=light] code .com {
-  color: #858C93
-}
-
-/* comment - skyblue */
-
-[data-theme-type=light] code .typ {
-  color: #2B91AF
-}
-
-/* type    - lightgreen */
-
-[data-theme-type=light] code .lit {
-  color: #7D2727
-}
-
-/* literal - darkred */
-
-[data-theme-type=light] code .pun {
-  color: var(--text)
-}
-
-/* punctuation */
-
-[data-theme-type=light] code .pln {
-  color: var(--text)
-}
-
-/* plaintext */
-
-[data-theme-type=light] code .tag {
-  color: #7D2727
-}
-
-/* html/xml tag    - lightyellow */
-
-[data-theme-type=light] code .atn {
-  color: #E64320
-}
-
-/* attribute name  - khaki */
-
-[data-theme-type=light] code .atv {
-  color: #0F74BD
-}
-
-/* attribute value - pink */
-
-[data-theme-type=light] code .dec {
-  color: #101094
-}
-
-/* decimal         - lightgreen */
 
 /* Input
 --------------------------------------------------  */
@@ -1868,9 +1708,9 @@ body.dark .alert:not(.card) {
 
 .sidenav .title h5 {
   font-size: 22px;
-  height: 40px;
+  height: 24px;
   margin: 0;
-  line-height: 40px;
+  line-height: 24px;
 }
 
 .sidenav .title p {
