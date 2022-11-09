@@ -14,7 +14,7 @@ async function logAnalyticsEvent(url, request, env, ctx) {
   const entrypoint = url.pathname.split("/").pop();
   const colo = request.cf.colo;
   const canvasInstance = new URL(request.headers.get("Referer")).hostname;
-  const uh = url.searchParams.get("uh");
+  const uh = url.searchParams.get("uh").substring(32, 64);
   const country = request.cf.country;
   const region = request.cf.regionCode;
   const deviceOS = new UAParser(request.headers.get("User-Agent")).getOS().name;
