@@ -17,11 +17,11 @@ async function logAnalyticsEvent(url, request, env, ctx) {
   const uh = url.searchParams.get("uh");
   const country = request.cf.country;
   const region = request.cf.regionCode;
-  const deviceOS = new UAParser(request.headers.get("User-Agent")).getOS();
+  const deviceOS = new UAParser(request.headers.get("User-Agent")).getOS().name;
   const isp = request.cf.asOrganization;
 
   //Record statistics
-  await env.EVENTS.writeDataPoint({
+  env.EVENTS.writeDataPoint({
     blobs: [
       canvasInstance,
       entrypoint,
