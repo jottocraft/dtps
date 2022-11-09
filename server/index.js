@@ -50,7 +50,7 @@ async function serveKV(request, env, ctx) {
       }
     );
 
-    ctx.waitUntil(async function () {
+    ctx.waitUntil((async function () {
       //Log analytics event
       if (
         url.pathname.startsWith("/scripts/lms/")
@@ -60,7 +60,7 @@ async function serveKV(request, env, ctx) {
       ) {
         logAnalyticsEvent(url, request, env, ctx);
       }
-    });
+    })());
 
     return res;
   } catch (e) {
