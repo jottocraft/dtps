@@ -1,23 +1,33 @@
 {
-  "manifest_version": 2,
-
+  "manifest_version": 3,
   "name": "Power+",
   "description": "A better UI for Canvas LMS",
-  "version": "3.0.6",
-  "background": {
-    "scripts": ["background.js"]
-  },
+  "version": "3.1.0",
   "content_scripts": [
     {
       "run_at": "document_start",
-      "matches": ["https://*.instructure.com/*", "https://powerplus.app/"],
-      "js": ["communicator.js"]
+      "matches": [
+        "https://*/*"
+      ],
+      "js": [
+        "injector.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "loader.js"
+      ],
+      "matches": [
+        "*://*/*"
+      ]
     }
   ],
   "icons": {
-      "16": "16.png",
-      "32": "32.png",
-      "48": "48.png",
-      "128": "128.png"
-    }
+    "16": "16.png",
+    "32": "32.png",
+    "48": "48.png",
+    "128": "128.png"
+  }
 }

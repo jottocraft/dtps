@@ -4,6 +4,8 @@
   "scripts": {
     "start": "node dev.js",
     "build": "node build.js",
+    "wd": "wrangler dev --port 2750",
+    "deploy": "wrangler publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,11 +23,12 @@
   "author": "jottocraft",
   "license": "MIT",
   "bugs": {
-    "url": "https://jottocraft.atlassian.net/browse/DTPS"
+    "url": "https://bugs.jottocraft.com"
   },
   "homepage": "https://powerplus.app",
   "main": "server.js",
   "devDependencies": {
+    "@cloudflare/kv-asset-handler": "^0.2.0",
     "express": "^4.17.2",
     "foodoc": "^0.0.9",
     "glob": "^7.2.0",
@@ -34,6 +37,7 @@
     "ncp": "^2.0.0",
     "rimraf": "^3.0.2",
     "terser": "^5.10.0",
+    "ua-parser-js": "^1.0.32",
     "wrangler": "^2.0.6"
   }
 }

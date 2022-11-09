@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.7.0
+ * @version v3.8.0
  * 
  * @copyright Copyright (c) 2018-2022 jottocraft
  * @license MIT
@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 370,
-    readableVer: "v3.7.0",
+    ver: 380,
+    readableVer: "v3.8.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -154,15 +154,16 @@ document.onkeydown = function (event) {
  * Fetches and displays the DTPS changelog modal
  * 
  * @param {number} fromVersion The previous version of DTPS installed. Will show popup changelogs since that version, if there aren't any, it will silently skip.
+ * @param {boolean} draft True to show draft changelogs
  */
-dtps.changelog = function (fromVersion) {
+dtps.changelog = function (fromVersion, draft = false) {
     let changelogFetchURL;
     if (fromVersion) {
         //Check for popup w/ all previous important updates query
         changelogFetchURL = `https://bugs.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: released version code: ${fromVersion + 1} .. ${dtps.ver} popup: popup sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))`;
     } else {
         //Latest query
-        changelogFetchURL = `https://bugs.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: released version code: * .. ${dtps.ver} sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))&$top=1`;
+        changelogFetchURL = `https://bugs.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: ${draft ? "draft" : "released"} version code: * .. ${dtps.ver} sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))&$top=1`;
     }
 
     jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js", function () {
@@ -189,7 +190,9 @@ dtps.changelog = function (fromVersion) {
                         <p style="margin: 6px 0px;">${releaseDateFormatted}</p>
                     </div>
                     <br />
-                    ${changelogHTML}
+                    <div id="changelogStyles">
+                        ${changelogHTML}
+                    </div>
                 `);
             });
 
@@ -205,7 +208,7 @@ dtps.changelog = function (fromVersion) {
             jQuery(".card.changelog").html(`
                 <i onclick="fluid.cards.close('.card.changelog')" class="fluid-icon close">close</i>
                 ${releasesHTML.join(`<div style="margin: 40px 0px !important;" class="divider"></div>`)}
-                <br /><br />
+                <br />
                 <button onclick="window.open('https://bugs.jottocraft.com/issues?q=project:%20RRS%20product:%20dtps%20rollout:%20released%20sort%20by:%20%7Bversion%20code%7D%20desc')" class="btn small outline"><i class="fluid-icon">update</i> View previous changelogs</button>
             `);
 
@@ -273,10 +276,12 @@ dtps.firstrun = function () {
             <div class="welcomeSection">
                 <i class="fluid-icon">security</i>
                 <h5>Privacy</h5>
-                <p>Power+ records your device & network type, Canvas institution, country, and state/region when you load Power+.
-                 Power+ does <b>not</b> utilize cookies or fingerprinting when collecting data.
-                 Additionally, data is collected directly by Power+ and is never shared with or sold to any third parties.
+                <p>
+                 Power+ records your device and network type, Canvas institution, and region when you load Power+.
+                 Analytics events are associated with a unique ID generated with a one-way-hash from your Canvas ID and institution.
+                 Data is collected directly by Power+ and is never shared with or sold to any third parties.
                  Power+ does <b>not</b> and will <b>never</b> collect any personal information, such as names, classes, or grades.
+                </p>
             </div>
             <div class="welcomeSection">
                 <i class="fluid-icon">priority_high</i>
@@ -759,7 +764,7 @@ dtps.init = function () {
             //Changelog will only show if the release notes are on GitHub
             dtps.changelog(Number(window.localStorage.dtps));
         }
-        
+
         //Render inbox
         if (dtpsLMS.fetchUnreadMessageCount) {
             dtpsLMS.fetchUnreadMessageCount().then(count => {
@@ -1900,7 +1905,12 @@ dtps.renderLite = function () {
 	            <img src="${dtps.baseURL + "/icon.svg"}" style="width: 50px;vertical-align: middle;padding: 7px; padding-top: 14px;" />
 	            <div style="vertical-align: middle; display: inline-block;">
                     <h5 style="font-weight: bold;display: inline-block;vertical-align: middle;">Power+</h5>
-                    <p>${dtps.readableVer + (dtps.unstable ? ` <span style="font-size: 12px; color: red;">(unstable)</span>` : "")}</p>
+                    <p>
+                        <span style="vertical-align: middle;">${dtps.readableVer}</span>
+                        <span style="margin: 0 1.5px; display: inline-block; color: var(--secText);"></span>
+                        <a target="_blank" style="color: var(--lightText); font-size: 12px; vertical-align: middle;" href="https://jottocraft.com/feedback?key=dtps"><i class="fluid-icon" style="vertical-align: middle; font-size: 14px; margin: 0 1px 0 0;">feedback</i> Feedback</a>
+                    </p>
+                    ${(dtps.unstable ? `<p style="font-size: 12px; color: red; margin-top: 6px;">UNSTABLE</p>` : "")}
 	            </div>
             </div>
 
@@ -2080,6 +2090,10 @@ dtps.renderLite = function () {
                     <button onclick="dtps.firstrun()" class="btn small"><i class="fluid-icon">web_asset</i> Show firstrun screen</button>
                    </div>
 
+                   <div>
+                    <button onclick="dtps.changelog(undefined, true);" class="btn small"><i class="fluid-icon">description</i> Show draft changelog</button>
+                   </div>
+
                    <br /><br />
 
                    <h5>Release configuration</h5>
@@ -2141,8 +2155,7 @@ dtps.renderLite = function () {
                     </div>
 
                     <div style="margin-top: 15px; margin-bottom: 7px;"><a onclick="dtps.changelog();" style="color: var(--lightText); margin: 0px 5px;" href="#"><i class="fluid-icon" style="vertical-align: middle">update</i> Changelog</a>
-                        <a onclick="if (window.confirm('Are you sure you want to uninstall Power+? The extension will be removed and all of your Power+ data will be erased. If you use the Power+ bookmarklet, you will have to remove that yourself.')) { document.dispatchEvent(new CustomEvent('extensionData', { detail: 'extensionUninstall' })); window.localStorage.clear(); window.alert('Power+ has been uninstalled. Reload the page to go back to ${dtpsLMS.shortName}.') }" style="color: var(--lightText); margin: 0px 5px; cursor: pointer;"><i class="fluid-icon" style="vertical-align: middle">delete_outline</i> Uninstall</a>
-                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="fluid-icon" style="vertical-align: middle">email</i> Contact me (hello@jottocraft.com)</a>
+                        <a style="color: var(--lightText); margin: 0px 5px;" href="mailto:hello@jottocraft.com"><i class="fluid-icon" style="vertical-align: middle">email</i> Contact me: hello@jottocraft.com</a>
                     </div>
                 </div>
 

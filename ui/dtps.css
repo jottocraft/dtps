@@ -3,6 +3,18 @@ Power+ CSS
 (c) jottocraft 2018-2022
 */
 
+#changelogStyles {
+    line-height: 1.6;
+}
+
+#changelogStyles li {
+    margin: 8px 0px;
+}
+
+#changelogStyles h4 {
+    font-size: 22px;
+}
+
 .card.alert h5 {
     font-size: 20px;
 }
