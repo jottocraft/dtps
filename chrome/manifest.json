@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Power+",
   "description": "A better UI for Canvas LMS",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "content_scripts": [
     {
       "run_at": "document_start",
