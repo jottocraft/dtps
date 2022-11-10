@@ -14,14 +14,14 @@ async function logAnalyticsEvent(url, request, env, ctx) {
   const entrypoint = url.pathname.split("/").pop();
   const colo = request.cf.colo;
   const canvasInstance = new URL(request.headers.get("Referer")).hostname;
-  const uh = url.searchParams.get("uh").substring(32, 64);
+  const uh = url.searchParams.get("uh").substring(0, 32);
   const country = request.cf.country;
   const region = request.cf.regionCode;
   const deviceOS = new UAParser(request.headers.get("User-Agent")).getOS().name;
   const isp = request.cf.asOrganization;
 
   //Record statistics
-  env.EVENTS.writeDataPoint({
+  env.STATS.writeDataPoint({
     blobs: [
       canvasInstance,
       entrypoint,
@@ -57,6 +57,7 @@ async function serveKV(request, env, ctx) {
         && url.pathname.endsWith(".js")
         && (url.searchParams.get("upstream") !== "true")
         && url.searchParams.get("uh")
+        && (url.searchParams.get("uh") !== "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855") //filter empty/garbage data (crx <3.1.2)
       ) {
         logAnalyticsEvent(url, request, env, ctx);
       }
