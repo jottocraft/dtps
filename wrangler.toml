@@ -9,5 +9,5 @@ bucket = "./build"
 
 [[unsafe.bindings]]
 type = "analytics_engine"
-name = "EVENTS"
-dataset = "dtps_events"
+name = "STATS"
+dataset = "dtps_stats"
