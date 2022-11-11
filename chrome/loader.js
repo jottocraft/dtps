@@ -1,15 +1,15 @@
 (function () {
     try {
         function verifyCanvasInstance(cb) {
-            window.onload = function () {
-                //Check global ENV
+            window.addEventListener("load", function () {
+                //What are the odds that another non-Canvas page uses this?
+                //Hopefully slim-to-none because I'm using this as an indicator of a Canvas instance...
                 if (window.ENV?.current_user_global_id) {
-                    //What are the odds that another non-Canvas page uses this?
-                    //Hopefully slim-to-none because I'm using this as an indicator of a Canvas instance...
+                    //Remember that this is Canvas to speed up future page loads
                     window.localStorage.setItem("dtpsThinksThisIsCanvas", "true");
                     cb();
                 }
-            }
+            });
         }
 
         //Is this a Canvas instance? (always YES for instructure.com subdomains)
@@ -99,15 +99,15 @@
             s.setAttribute("dtps", "true");
             document.documentElement.appendChild(s);
 
-            //Hash global user ID for extra privacy
-            window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(guuid)).then(data => {
-                //unique hash
-                let uh = Array.from(new Uint8Array(data)).map((b) => b.toString(16).padStart(2, '0')).join('');
+            //Wait for page to load
+            window.onload = function () {
+                //Stop observer
+                observer.disconnect();
 
-                //Wait for page to load
-                window.onload = function () {
-                    //Stop observer
-                    observer.disconnect();
+                //Hash global user ID for extra privacy
+                window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(guuid)).then(data => {
+                    //unique hash
+                    let uh = Array.from(new Uint8Array(data)).map((b) => b.toString(16).padStart(2, '0')).join('');
 
                     //Determine LMS script to load
                     var lmsScript = null;
@@ -137,8 +137,8 @@
                             document.getElementById("dtpsLoadingScreenStatus").innerText = "Could not load Power+. Please try again later.";
                         }
                     };
-                }
-            });
+                });
+            }
         } else if (window.location.search.includes("dtpsLogin=true") && knownCanvasInstance) {
             //redirect to Power+ after login
             console.log("[DTPS Chrome] Redirecting after login...");
@@ -186,5 +186,5 @@
                 });
             }
         }
-    } catch(e) {}
+    } catch (e) { }
 })();
