@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://bitbucket.org/jottocraft/dtps.git"
+    "url": "git+https://gitlab.com/jottocraft/dtps.git"
   },
   "keywords": [
     "canvas-lms",

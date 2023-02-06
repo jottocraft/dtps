@@ -2,7 +2,7 @@
  * @file d.tech-specific features, CBL & grade calculation
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2022 jottocraft
+ * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
  * 
  * JSDoc documentation for these LMS functions can be found near the end of core.js
@@ -22,7 +22,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js?upstream=true", fu
     dtpsLMS.legalName = "Canvas LMS, Design Tech High School, or Instructure Inc";
     dtpsLMS.description = "CBL features for Power+. No longer actively maintained.";
     dtpsLMS.logo = "https://i.imgur.com/efGrLq3.png";
-    dtpsLMS.source = "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/dtech.js";
+    dtpsLMS.source = "https://gitlab.com/jottocraft/dtps/-/blob/main/scripts/lms/dtech.js";
     dtpsLMS.useRubricGrades = consentedCBLCourses;
     dtpsLMS.gradeCalculationAllowlist = consentedCBLCourses;
     dtpsLMS.lmsGradebookAllowlist = consentedCBLCourses;

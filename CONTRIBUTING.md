@@ -1,10 +1,10 @@
 # Contributing
 
-Before adding new features or making major changes, please open an issue or contact me at [git@jottocraft.com](mailto:git@jottocraft.com).
+Before adding new features or making major changes, please open an issue or contact me at [hello@jottocraft.com](mailto:hello@jottocraft.com).
 
 ## Documentation
 
-You can read the Power+ docs at [powerplus.app/docs](https://powerplus.app/docs). 
+You can read the Power+ docs at [powerplus.app/docs/](https://powerplus.app/docs/). 
 
 ## Code Organization
 
@@ -20,7 +20,7 @@ You can read the Power+ docs at [powerplus.app/docs](https://powerplus.app/docs)
 To get Power+ up and running locally, you'll need git and node installed on your system.
 
 ```bash
-git clone https://bitbucket.org/jottocraft/dtps.git
+git clone https://gitlab.com/jottocraft/dtps.git
 cd dtps
 npm install
 npm start

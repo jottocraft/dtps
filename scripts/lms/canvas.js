@@ -2,7 +2,7 @@
  * @file DTPS Canvas LMS Integration
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2022 jottocraft
+ * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
  * 
  * JSDoc documentation for these LMS functions can be found near the end of core.js
@@ -17,7 +17,7 @@ var dtpsLMS = {
     url: "https://www.instructure.com/canvas/",
     inboxURL: "/conversations",
     logo: "https://i.imgur.com/rGjNVoc.png",
-    source: "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/canvas.js",
+    source: "https://gitlab.com/jottocraft/dtps/-/blob/main/scripts/lms/canvas.js",
     genericGradebook: true
 };
 

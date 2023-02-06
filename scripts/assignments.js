@@ -2,7 +2,7 @@
  * @file DTPS assignment functions
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2022 jottocraft
+ * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
  */
 

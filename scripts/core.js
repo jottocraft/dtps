@@ -3,7 +3,7 @@
  * @author jottocraft
  * @version v3.8.0
  * 
- * @copyright Copyright (c) 2018-2022 jottocraft
+ * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
  */
 
@@ -761,7 +761,7 @@ dtps.init = function () {
         if (dtps.popup == "firstrun") {
             dtps.firstrun();
         } else if (dtps.popup == "changelog") {
-            //Changelog will only show if the release notes are on GitHub
+            //Changelog will only show if the release notes are on bugs.jottocraft.com
             dtps.changelog(Number(window.localStorage.dtps));
         }
 
@@ -2212,7 +2212,7 @@ dtps.renderLite = function () {
                         <img style="height: 38px; margin-right: 10px; vertical-align: middle;" src="https://cdn.jottocraft.com/images/footerImage.png" />
                         <h5 style="display: inline-block; vertical-align: middle; color: var(--text);">jottocraft</h5>
                     </a>
-                    <p>(c) jottocraft 2018-2022. This project is <a href="https://jottocraft.com/oss">open source</a>.
+                    <p>(c) jottocraft 2018-2023. This project is <a href="https://jottocraft.com/oss">open source</a>.
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@
  * @file DTPS Demo LMS
  * @author jottocraft
  * 
- * @copyright Copyright (c) 2018-2022 jottocraft
+ * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
  * 
  * This LMS script is for demonstrating Power+ and doesn't fetch actual data
@@ -16,7 +16,7 @@ var dtpsLMS = {
     description: "All content in this LMS is not real and is for demonstration purposes only",
     url: "https://powerplus.app",
     logo: "https://powerplus.app/logo.png",
-    source: "https://bitbucket.org/jottocraft/dtps/src/main/scripts/lms/demo.js",
+    source: "https://gitlab.com/jottocraft/dtps/-/blob/main/scripts/lms/demo.js",
     genericGradebook: false,
     useRubricGrades: true,
     isDemoLMS: true
