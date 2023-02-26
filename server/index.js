@@ -1,6 +1,6 @@
 /**
  * Power+ Production Server v2
- * (c) jottocraft 2022. All rights reserved.
+ * (c) jottocraft 2022-2023. All rights reserved.
  */
 
 import { getAssetFromKV, NotFoundError, MethodNotAllowedError } from '@cloudflare/kv-asset-handler';
@@ -66,21 +66,11 @@ async function serveKV(request, env, ctx) {
     return res;
   } catch (e) {
     if (e instanceof NotFoundError) {
-      url.pathname = "/404.html";
-      return await getAssetFromKV(
-        {
-          request: new Request(url, request),
-          waitUntil: (promise) => ctx.waitUntil(promise)
-        },
-        {
-          ASSET_NAMESPACE: env.__STATIC_CONTENT,
-          ASSET_MANIFEST: assetManifest
-        }
-      );
+      return fetch("https://http-status-pages.jottocraft.com/?status=404&brand=dtps");
     } else if (e instanceof MethodNotAllowedError) {
-      return new Response('Error 405 Method Not Allowed', { status: 405 });
+      return fetch("https://http-status-pages.jottocraft.com/?status=405&brand=dtps");
     } else {
-      return new Response('Error 500 An unexpected error occurred', { status: 500 });
+      return fetch("https://http-status-pages.jottocraft.com/?status=500&brand=dtps");
     }
   }
 }
