@@ -66,11 +66,11 @@ async function serveKV(request, env, ctx) {
     return res;
   } catch (e) {
     if (e instanceof NotFoundError) {
-      return fetch("https://http-status-pages.jottocraft.com/?status=404&brand=dtps");
+      return env.HTTP_STATUS_PAGES.fetch("https://http-status-pages.jottocraft.com/?status=404&brand=dtps");
     } else if (e instanceof MethodNotAllowedError) {
-      return fetch("https://http-status-pages.jottocraft.com/?status=405&brand=dtps");
+      return env.HTTP_STATUS_PAGES.fetch("https://http-status-pages.jottocraft.com/?status=405&brand=dtps");
     } else {
-      return fetch("https://http-status-pages.jottocraft.com/?status=500&brand=dtps");
+      return env.HTTP_STATUS_PAGES.fetch("https://http-status-pages.jottocraft.com/?status=500&brand=dtps");
     }
   }
 }
