@@ -1,6 +1,4 @@
-![Power+ wordmark](https://i.imgur.com/GJt7WbW.png)
-
-<br />
+![Power+ wordmark](./www/README.png)
 
 <a href="https://bugs.jottocraft.com/issues?q=project:%20RRS%20product:%20dtps%20rollout:%20released%20sort%20by:%20%7Bversion%20code%7D%20desc&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))&$top=1"><img src="https://img.shields.io/badge/releases-view%20at%20bugs.jottocraft.com-blue" /></a>
 <a href="https://powerplus.app"><img src="https://img.shields.io/website/https/powerplus.app.svg?label=server%20status" /></a>

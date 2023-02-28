@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.8.0
+ * @version v3.9.0
  * 
  * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 380,
-    readableVer: "v3.8.0",
+    ver: 390,
+    readableVer: "v3.9.0",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -2174,7 +2174,7 @@ dtps.renderLite = function () {
                 </div>
 
                 <div class="card" style="padding: 10px 20px; box-shadow: none !important; border: 2px solid var(--elements); margin-top: 20px;">
-                    <img src="${dtpsLMS.logo}" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px; border-radius: 50%; background: #ee5034;" />
+                    <img src="${dtpsLMS.logo}" style="height: 50px; margin-right: 10px; vertical-align: middle; margin-top: 20px; border-radius: 50%;" />
 
                     <div style="display: inline-block; vertical-align: middle;">
                         <h4 style="font-weight: bold; font-size: 32px; margin-bottom: 0px;">${dtpsLMS.name}</h4>

@@ -1,89 +1,60 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   fill="#1a1a1a"
-   version="1.1"
-   viewBox="8 0 49 65.539238"
-   x="0px"
-   y="0px"
-   id="svg6"
-   sodipodi:docname="new power+ prototype.svg"
-   width="49"
-   height="65.539238"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
-  <metadata
-     id="metadata12">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title>book-bookmark</dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs10">
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient841">
-      <stop
-         style="stop-color:#e3ba4b;stop-opacity:1"
-         offset="0"
-         id="stop837" />
-      <stop
-         style="stop-color:#f5c669;stop-opacity:1"
-         offset="1"
-         id="stop839" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient841"
-       id="linearGradient843"
-       x1="7.0668874"
-       y1="-1.5925453"
-       x2="57.066414"
-       y2="65.191643"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(0.5,0.5)" />
-  </defs>
-  <sodipodi:namedview
-     inkscape:document-rotation="0"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1368"
-     inkscape:window-height="850"
-     id="namedview8"
-     showgrid="false"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:zoom="7.501776"
-     inkscape:cx="24.96859"
-     inkscape:cy="35.965696"
-     inkscape:window-x="-6"
-     inkscape:window-y="-6"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg6" />
-  <title
-     id="title2">book-bookmark</title>
-  <path
-     d="M 13.833,0.5 C 10.887,0.5 8.5,2.9 8.5,5.833 v 48 c 0,2.933 2.388,5.333 5.333,5.333 h 5.333 v 5.333 l 6.667,-5.333 6.667,5.333 v -5.333 h 18.667 c 2.947,0 5.333,-2.4 5.333,-5.333 v -2.667 c 0,2.933 -2.387,5.333 -5.333,5.333 H 32.5 V 51.166 H 19.167 v 5.333 h -4 c -2.209,0 -4,-1.867 -4,-4 0,-2.4 1.791,-4 4,-4 h 36 c 2.947,0 5.333,-2.4 5.333,-5.333 V 5.833 C 56.5,2.9 54.113,0.5 51.167,0.5 H 13.834 Z"
-     id="path4"
-     style="fill:url(#linearGradient843);fill-opacity:1;stroke:#daaf3c;stroke-opacity:1" />
+<?xml version="1.0" encoding="UTF-8"?>
+<svg fill="none" version="1.1" viewBox="0 0 22 28.1" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-5 -1.684)" filter="url(#a)">
+  <path d="M6.625 1.684H25a2 2 0 0 1 2 2v22H6.625Z" fill="url(#b)"/>
+  <path d="M6.625 1.684H25a2 2 0 0 1 2 2v22H6.625Z" fill="url(#c)"/>
+ </g>
+ <path d="M.5 24.5H22V27h-.5l-.5.5H.5Z" fill="url(#d)"/>
+ <path d="M.5 24.5H22V27h-.5l-.5.5H.5Z" fill="url(#e)"/>
+ <path d="M1.5 0A1.5 1.5 0 0 0 0 1.5V26h1a1 1 0 0 1 1-1h1V0Z" fill="url(#f)"/>
+ <g transform="translate(-5 -1.684)" filter="url(#g)">
+  <path d="M6.5 25.684a1.5 1.5 0 0 0-1.5 1.5v1a1.5 1.5 0 0 0 1.5 1.5h19.408c.653 0 1.092-.334 1.092-1H7a1 1 0 1 1 0-2h20v-1z" fill="url(#h)"/>
+ </g>
+ <defs>
+  <linearGradient id="b" x1="17.5" x2="17.5" y1="1.684" y2="25.684" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#e6b72e" offset="0"/>
+   <stop stop-color="#e3972f" offset="1"/>
+  </linearGradient>
+  <linearGradient id="c" x1="27.156" x2="25.188" y1="5.215" y2="5.497" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#ffe465" offset=".014"/>
+   <stop stop-color="#f6be45" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <linearGradient id="d" x1="6.721" x2="26.819" y1="28.1" y2="28.1" gradientTransform="translate(-5 -1.684)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#D5BCEB" offset="0"/>
+   <stop stop-color="#DCCCED" offset="1"/>
+   <stop stop-color="#E3D3F2" offset="1"/>
+  </linearGradient>
+  <linearGradient id="e" x1="16.25" x2="16.25" y1="26.422" y2="27.842" gradientTransform="translate(-5 -1.684)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#9F84AE" offset="0"/>
+   <stop stop-color="#C5B1D6" stop-opacity="0" offset="1"/>
+  </linearGradient>
+  <linearGradient id="f" x1="5.205" x2="7.563" y1="16.422" y2="16.434" gradientTransform="translate(-5 -1.684)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#be542c" offset="0"/>
+   <stop stop-color="#c87742" offset="1"/>
+  </linearGradient>
+  <linearGradient id="h" x1="6.431" x2="27" y1="28.648" y2="28.616" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#b4501c" offset="0"/>
+   <stop stop-color="#c6732b" offset="1"/>
+  </linearGradient>
+  <filter id="a" x="6.625" y="1.684" width="20.375" height="24.1" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+   <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+   <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+   <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"/>
+   <feOffset dy=".1"/>
+   <feGaussianBlur stdDeviation=".25"/>
+   <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"/>
+   <feColorMatrix values="0 0 0 0 0.839216 0 0 0 0 0.384314 0 0 0 0 0.0745098 0 0 0 1 0"/>
+   <feBlend in2="shape" result="effect1_innerShadow_18_20839"/>
+  </filter>
+  <filter id="g" x="5" y="25.684" width="22" height="4.1" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+   <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+   <feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+   <feColorMatrix in="SourceAlpha" result="hardAlpha" values="0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 127.00000 0.0000000 "/>
+   <feOffset dy=".1"/>
+   <feGaussianBlur stdDeviation=".15"/>
+   <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic"/>
+   <feColorMatrix values="0.0000000 0.0000000 0.0000000 0.0000000 0.64000000 0.0000000 0.0000000 0.0000000 0.0000000 0.30000000 0.0000000 0.0000000 0.0000000 0.0000000 0.24000000 0.0000000 0.0000000 0.0000000 1.0000000 0.0000000 "/>
+   <feBlend in2="shape" result="effect1_innerShadow_18_20839"/>
+  </filter>
+ </defs>
 </svg>

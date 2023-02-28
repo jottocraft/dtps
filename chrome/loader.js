@@ -36,6 +36,8 @@
             let guuid;
 
             const useClassicDTPS = window.location.search && window.location.search.includes("classicEdition=true");
+            if (useClassicDTPS) light = false;
+            
             const observer = new MutationObserver(mutations => {
                 mutations.forEach(({ addedNodes }) => {
                     addedNodes.forEach(node => {
@@ -43,7 +45,7 @@
                         if (node.nodeType === 1 && node.tagName === 'BODY') {
                             node.insertAdjacentHTML("afterbegin", /*html*/`
                           <div dtps="true" id="dtpsNativeOverlay" style="background-color: inherit; position: fixed; top: 0px; left: 0px; width: 100%; height: 100vh; z-index: 99;text-align: center;z-index: 999;transition: opacity 0.2s;">
-                            <img dtps="true" style="height: 100px; margin-top: 132px;" src="${useClassicDTPS ? "https://i.imgur.com/fqqPF9i.png" : (light ? "https://i.imgur.com/0WzWwb1.png" : "https://i.imgur.com/7dDUVh2.png")}" />
+                            <img dtps="true" style="height: 90px; margin-top: 132px;" src="${useClassicDTPS ? "https://i.imgur.com/fqqPF9i.png" : (light ? "https://i.imgur.com/bZHcHoE.png" : "https://i.imgur.com/NrjqsVI.png")}" />
                                   <br dtps="true" />
                             <div dtps="true" class="progress"><div id="dtpsLoadingScreenBar" dtps="true" class="indeterminate"></div></div>
                             <style dtps="true">body {background-color: ${light ? "white" : "#151515"}; --crxElements: ${light ? "#ececec" : "#2b2b2b"}; --crxText: ${light ? "#333" : "#efefef"}; overflow: hidden;}*,:after,:before{box-sizing:border-box}.progress{background:var(--crxElements);position:relative;width:600px;height:5px;overflow:hidden;border-radius:12px;backdrop-filter:opacity(.4);display:inline-block;margin-top:75px}.progress .indeterminate{position:absolute;background:#e3ba4b;height:5px;animation:indeterminate 1.4s infinite;animation-timing-function:linear}@keyframes indeterminate{0%{width:5%;left:-15%}to{width:100%;left:110%}}p{font-family:BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;color: var(--crxText);margin-top: 24px;}</style>
@@ -154,7 +156,9 @@
                 <li class="menu-item ic-app-header__menu-list-item ">
                   <a id="global_nav_dtps_link" role="button" href="/power+/" class="ic-app-header__menu-list-link">
                     <div class="menu-item-icon-container" aria-hidden="true">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="ic-icon-svg ic-icon-svg--dtps" version="1.1" viewBox="0 0 48 63.999"><path d="m5.333 0c-2.946 0-5.333 2.4-5.333 5.333v48c0 2.933 2.388 5.333 5.333 5.333h5.333v5.333l6.667-5.333 6.667 5.333v-5.333h18.667c2.947 0 5.333-2.4 5.333-5.333v-2.667c0 2.933-2.387 5.333-5.333 5.333h-18.667v-5.333h-13.333v5.333h-4c-2.209 0-4-1.867-4-4 0-2.4 1.791-4 4-4h36c2.947 0 5.333-2.4 5.333-5.333v-37.333c0-2.933-2.387-5.333-5.333-5.333h-37.333z"/></svg>
+                        <svg class="ic-icon-svg ic-icon-svg--dtps" version="1.1" viewBox="0 0 23.122 29" xmlns="http://www.w3.org/2000/svg">
+                            <path d="m0 2c0-1.1046 0.89543-2 2-2h18.5c1.3807 0 2.5 1.1193 2.5 2.5v23.5h-20.5c-0.27614 0-0.5 0.2239-0.5 0.5s0.22386 0.5 0.5 0.5h20.622l-0.2356 0.6666c-0.2744 0.7761-1.0145 1.3334-1.8861 1.3334h-19c-1.1046 0-2-0.8954-2-2zm20.645 22 1.3553-1.3553v-3.5858l-4.9411 4.9411zm-16.645-21.941v3.5858l4.6447-4.6447h-3.5858zm6.0589-1.0589-6.0589 6.0589v3.5858l9.6447-9.6447zm5 0-11.059 11.059v3.5858l14.645-14.645zm5 0-16.059 16.059v3.5858l18-18v-0.1447c0-0.82843-0.6716-1.5-1.5-1.5zm1.9411 3.0589-18 18v1.9411h1.6447l16.355-16.355zm0 5-14.941 14.941h3.5858l11.355-11.355zm0 5-9.9411 9.9411h3.5858l6.3553-6.3553z" />
+                        </svg>
                     </div>
                     <div class="menu-item__text">${releaseType || "Power+"}</div>
                   </a>

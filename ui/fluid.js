@@ -986,18 +986,6 @@ fluid.exitAlert = function () {
     window.requestAnimationFrame(checkReady);
 })();
 
-fluid.tcoh = function () {
-    fluid.theme("light", true);
-    $("body").addClass("pizzapizza");
-    $('img').attr('src', 'https://i.imgur.com/uhZT30E.png');
-    var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-    link.type = 'image/png';
-    link.rel = 'shortcut icon';
-    link.href = 'https://i.imgur.com/uhZT30E.png';
-    document.getElementsByTagName('head')[0].appendChild(link);
-    document.title = "LITTLE CESERS HOT N READY FOR ONLY FIVE DOLALARS EXTRA MOST BESTEST IS ONLY SIX FOR EXTRA CHEESE AND PEPERONI AND THE NATIONS BEST PRICE"
-}
-
 //Fluid UI commands
 var allowedKeys = {
     38: 'up',
@@ -1013,8 +1001,6 @@ var darkOverride = ['up', 'up', 'down', 'down', 'f8'];
 var darkOverridePosition = 0;
 var imageOverride = ['up', 'up', 'down', 'down', 'f9'];
 var imageOverridePosition = 0;
-var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a'];
-var konamiCodePos = 0;
 document.addEventListener('keydown', function (e) {
     var key = allowedKeys[e.keyCode];
     var requiredKey = darkOverride[darkOverridePosition];
@@ -1043,17 +1029,5 @@ document.addEventListener('keydown', function (e) {
         }
     } else {
         imageOverridePosition = 0;
-    }
-
-    var requiredKey = konamiCode[konamiCodePos];
-    if (key == requiredKey) {
-        konamiCodePos++;
-        if (konamiCodePos == konamiCode.length) {
-            fluid.tcoh();
-            konamiCodePos = 0;
-            e.preventDefault();
-        }
-    } else {
-        konamiCodePos = 0;
     }
 });

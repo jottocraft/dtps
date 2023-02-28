@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Power+",
   "description": "A better UI for Canvas LMS",
-  "version": "3.1.2",
+  "version": "3.2.0",
   "content_scripts": [
     {
       "run_at": "document_start",
@@ -29,5 +29,10 @@
     "32": "32.png",
     "48": "48.png",
     "128": "128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{45a61d8d-6de3-4718-b422-a8a777f2d8aa}"
+    }
   }
 }
