@@ -26,7 +26,7 @@ var dtpsLMS = {
  * Common headers used for Canvas web requests.
  * This variable is specific to Canvas LMS integration in DTPS and is not required for other LMS integrations.
  */
-dtpsLMS.commonHeaders = { Accept: "application/json+canvas-string-ids, application/json" };
+dtpsLMS.commonHeaders = { Accept: "application/json+canvas-string-ids, application/json", "From": "jottocraft/dtps <ua@jottocraft.com>" };
 
 /**
  * List of teachers from dtpsLMS.fetchClasses for use in other methods
@@ -66,15 +66,17 @@ dtpsLMS.fetchWrapper = function () {
 //Fetch userdata from Canvas
 dtpsLMS.fetchUser = function () {
     return new Promise(function (resolve, reject) {
-        if (!window.ENV || !window.ENV.current_user.id) reject({ action: "login", redirectURL: "/?dtpsLogin=true" });
+        dtpsLMS.fetchWrapper("/api/v1/users/self", { headers: dtpsLMS.commonHeaders }).then(response => {
+            if (response.status !== 200) reject({ action: "login", redirectURL: "/?dtpsLogin=true" });
 
-        var user = {
-            name: window.ENV.current_user.display_name,
-            id: window.ENV.current_user.id,
-            photoURL: ENV.current_user.avatar_image_url
-        };
+            return response.json();
+        }).then(userData => {
+            var user = {
+                name: userData.name,
+                id: userData.id,
+                photoURL: userData.avatar_url
+            };
 
-        if (window.ENV.current_user_roles.includes("observer")) {
             dtpsLMS.fetchWrapper("/api/v1/users/self/observees?include[]=avatar_url", { headers: dtpsLMS.commonHeaders }).then(response => {
                 return response.json();
             }).then(childrenData => {
@@ -91,9 +93,7 @@ dtpsLMS.fetchUser = function () {
 
                 resolve(user);
             }).catch(reject);
-        } else {
-            resolve(user);
-        }
+        });
     })
 }
 

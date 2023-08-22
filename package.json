@@ -23,10 +23,9 @@
   "author": "jottocraft",
   "license": "MIT",
   "bugs": {
-    "url": "https://bugs.jottocraft.com"
+    "url": "https://dev.jottocraft.com/projects/DTPS"
   },
   "homepage": "https://powerplus.app",
-  "main": "server.js",
   "devDependencies": {
     "@cloudflare/kv-asset-handler": "^0.2.0",
     "express": "^4.17.2",

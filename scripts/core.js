@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.9.0
+ * @version v3.9.1
  * 
  * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 390,
-    readableVer: "v3.9.0",
+    ver: 3_09_1,
+    readableVer: "v3.9.1",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
@@ -160,10 +160,10 @@ dtps.changelog = function (fromVersion, draft = false) {
     let changelogFetchURL;
     if (fromVersion) {
         //Check for popup w/ all previous important updates query
-        changelogFetchURL = `https://bugs.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: released version code: ${fromVersion + 1} .. ${dtps.ver} popup: popup sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))`;
+        changelogFetchURL = `https://dev.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: released version code: ${fromVersion + 1} .. ${dtps.ver} popup: popup sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))`;
     } else {
         //Latest query
-        changelogFetchURL = `https://bugs.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: ${draft ? "draft" : "released"} version code: * .. ${dtps.ver} sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))&$top=1`;
+        changelogFetchURL = `https://dev.jottocraft.com/api/issues?query=${encodeURIComponent(`project: RRS product: dtps rollout: ${draft ? "draft" : "released"} version code: * .. ${dtps.ver} sort by: {version code} desc`)}&fields=summary,description,idReadable,customFields(projectCustomField(field(name)),value(name))&$top=1`;
     }
 
     jQuery.getScript("https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js", function () {
@@ -209,7 +209,7 @@ dtps.changelog = function (fromVersion, draft = false) {
                 <i onclick="fluid.cards.close('.card.changelog')" class="fluid-icon close">close</i>
                 ${releasesHTML.join(`<div style="margin: 40px 0px !important;" class="divider"></div>`)}
                 <br />
-                <button onclick="window.open('https://bugs.jottocraft.com/issues?q=project:%20RRS%20product:%20dtps%20rollout:%20released%20sort%20by:%20%7Bversion%20code%7D%20desc')" class="btn small outline"><i class="fluid-icon">update</i> View previous changelogs</button>
+                <button onclick="window.open('https://dev.jottocraft.com/issues?q=project:%20RRS%20product:%20dtps%20rollout:%20released%20sort%20by:%20%7Bversion%20code%7D%20desc')" class="btn small outline"><i class="fluid-icon">update</i> View previous changelogs</button>
             `);
 
             //Show changelog
@@ -761,7 +761,7 @@ dtps.init = function () {
         if (dtps.popup == "firstrun") {
             dtps.firstrun();
         } else if (dtps.popup == "changelog") {
-            //Changelog will only show if the release notes are on bugs.jottocraft.com
+            //Changelog will only show if the release notes are on dev.jottocraft.com
             dtps.changelog(Number(window.localStorage.dtps));
         }
 
@@ -2044,7 +2044,7 @@ dtps.renderLite = function () {
 
                     <br />
 
-                    <p>CBL will be enabled for the classes checked below:</p>
+                    <p>Check the boxes below to opt-in to CBL features for each class you'd like to use them with:</p>
 
                     <br />
 
@@ -2060,7 +2060,7 @@ dtps.renderLite = function () {
 
                 <div>
                 <h6>Unweighted GPA: <b id="dtpsGpaText">...</b></h6>
-                <p style="color: var(--secText);"><i>This GPA calculation is based on the letter grades shown below and is not official</i></p>
+                <p style="color: var(--secText);"><i>This GPA calculation is based on the letter grades shown below and is not official.</i></p>
                 </div>
                 
                 <br />
