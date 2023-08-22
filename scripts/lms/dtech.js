@@ -392,6 +392,10 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js?upstream=true", fu
         }
     };
 
+    function cssClassForLetterGrade(letter) {
+        return "letter-" + letter.replace("-", "-minus").replace("+", "-plus");
+    }
+
     dtpsLMS.gradebook = function (course) {
         //Add hide ungraded body class if enabled and preference listener
         if (!dtpsLMS.ungradedListenerAdded) {
@@ -460,7 +464,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js?upstream=true", fu
                                     <tbody>
                                         ${dtechGradeCalc.letters.map(letter => {
                         return /*html*/`
-                                                <tr class="letter${letter} ${course.letter == letter ? `active` : ``}">
+                                                <tr class="${cssClassForLetterGrade(letter)} ${course.letter == letter ? `active` : ``}">
                                                     <td>&nbsp;&nbsp;${letter}</td>
                                                     <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].percentage[letter]}</td>
                                                     <td>${dtechGradeCalc.params[course.gradeCalculation.dtech.formula].lowest[letter]}</td>
@@ -718,7 +722,7 @@ jQuery.getScript(window.dtpsBaseURL + "/scripts/lms/canvas.js?upstream=true", fu
             $("#gradeSummary .block.number75 h2.main").html(results.results.parameters.number75.toFixed(2));
             $("#gradeSummary .block.lowestScore h2.main").html(results.results.parameters.lowestScore.toFixed(2));
             $("#classGradeMore .table tr").removeClass("active");
-            $("#classGradeMore .table tr.letter" + results.results.letter).addClass("active");
+            $("#classGradeMore .table tr." + cssClassForLetterGrade(results.results.letter)).addClass("active");
 
             //Remove dropped state
             $(".card.outcomeResults .dropped").removeClass("dropped");

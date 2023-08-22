@@ -1,7 +1,7 @@
 /**
  * @file DTPS Core functions and module loader
  * @author jottocraft
- * @version v3.9.1
+ * @version v3.9.2
  * 
  * @copyright Copyright (c) 2018-2023 jottocraft
  * @license MIT
@@ -38,8 +38,8 @@ if (typeof dtps !== "undefined") throw "Error: DTPS is already loading";
  * @property {string} cblSpec A URL to the CBL specification document used by dangerous Power+ CBL features
  */
 var dtps = {
-    ver: 3_09_1,
-    readableVer: "v3.9.1",
+    ver: 3_09_2,
+    readableVer: "v3.9.2",
     env: new URL(window.dtpsBaseURL || "https://powerplus.app").hostname == "localhost" ? "dev" : window.jottocraftSatEnv || "prod",
     classes: [],
     baseURL: window.dtpsBaseURL || "https://powerplus.app",
