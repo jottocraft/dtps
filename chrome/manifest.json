@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Power+",
   "description": "A better UI for Canvas LMS",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "content_scripts": [
     {
       "run_at": "document_start",
@@ -30,7 +30,6 @@
     "48": "48.png",
     "128": "128.png"
   },
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjXCLvusGSp3pirlE8WJ3jA5MtpKC5IdKuDEKBz9xqgDkJMeJ5+i6xpt9AeThgRx8G454O068TbSTSFAITU7P3kRQqaEMMkBLfojMfwYnO1YsvwiDd1bWebwsZQ/ArD4OybrYikn81FFGVW8bReOZ4iXspj9jP3ciCu1uHD4fPfUiJen+54I3JdoolUz0oTEZtFMPEmoukotH3AZAaFmMInR0RPa+GbrkZOspXpegI4O/ur/3t/DY7Q3QpoKruJi9UJNf31VLX8MMalvNQxWn7WmOoIhO1phAE0ytAZ62uqCkIwaJaQfl9++QftuQ5GjNoswWSqlXtj1D6sqMx0ZvtQIDAQAB",
   "browser_specific_settings": {
     "gecko": {
       "id": "{45a61d8d-6de3-4718-b422-a8a777f2d8aa}"

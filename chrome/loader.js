@@ -164,18 +164,18 @@
             console.log("[DTPS Chrome]", "Redirecting after login...");
             window.location.href = "/power+/";
         } else {
-            console.log("[DTPS Chrome]", "Initializing the DTPS button...");
-
-            let releaseType = null;
-            const loaderPref = window.localStorage.getItem("dtpsLoaderPref");
-            if (loaderPref === "external") releaseType = "Power+ (external)";
-            if (loaderPref === "local") releaseType = "Power+ (local)";
-
             let dtpsWasInjected = false;
-
             function injectDTPSButton(node) {
                 if (dtpsWasInjected) return;
                 dtpsWasInjected = true;
+				
+				console.log("[DTPS Chrome]", "Initializing the DTPS button...");
+				
+				let releaseType = null;
+				const loaderPref = window.localStorage.getItem("dtpsLoaderPref");
+				if (loaderPref === "external") releaseType = "Power+ (external)";
+				if (loaderPref === "local") releaseType = "Power+ (local)";
+
                 node.insertAdjacentHTML("beforeend", /*html*/`
                 <li class="menu-item ic-app-header__menu-list-item">
                   <a onclick="" id="global_nav_dtps_link" role="button" href="/power+/" class="ic-app-header__menu-list-link" referrerpolicy="no-referrer">
